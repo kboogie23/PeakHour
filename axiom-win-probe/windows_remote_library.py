@@ -21,7 +21,7 @@ from pathlib import Path
 from flask import jsonify, request
 
 from windows_virtualdj_database import read_database, VirtualDJDatabaseError
-from windows_virtualdj_library import axiom_track, MEDIA_EXTENSIONS
+from windows_virtualdj_library import axiom_track, file_checker, MEDIA_EXTENSIONS
 
 UPLOAD_LIMIT = 256 * 1024 * 1024
 SOURCES = {'virtualdj': 'VirtualDJ', 'serato': 'Serato'}
@@ -38,12 +38,12 @@ def foreign(tracks):
 
 
 def virtualdj_tracks(app, path):
-    tracks = []
+    tracks, isfile = [], file_checker()
     for track in read_database(path)['tracks']:
         name = track.get('path', '')
         extension = (ntpath.splitext(name)[1] or os.path.splitext(name)[1]).lower()
         if name and extension in MEDIA_EXTENSIONS:
-            tracks.append(axiom_track(track, app, check_file=not on_laptop()))
+            tracks.append(axiom_track(track, app, check_file=not on_laptop(), isfile=isfile))
     return foreign(tracks) if on_laptop() else tracks
 
 
