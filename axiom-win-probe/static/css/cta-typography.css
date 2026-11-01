@@ -1,0 +1,11 @@
+/*
+ * CTA typography migration
+ *
+ * JavaScript adds this class only after it has measured a text CTA and
+ * confirmed the button is not already using Bebas Neue. The measured size is
+ * stored on the element so existing Bebas buttons remain completely untouched.
+ */
+html body .axiom-cta-type-upgraded {
+  font-family: 'Bebas Neue', Impact, sans-serif !important;
+  font-size: var(--axiom-cta-upgraded-font-size) !important;
+}

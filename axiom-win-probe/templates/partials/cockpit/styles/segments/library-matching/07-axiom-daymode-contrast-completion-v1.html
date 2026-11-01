@@ -1,0 +1,547 @@
+
+<style id="axiom-daymode-contrast-completion-v1">
+  /* Day Mode completion pass. Health review routes were authored as dark
+     consoles, while the shared Day shell makes their page background light.
+     Keep the workflows intact and translate every review surface to AXIOM's
+     blue, white, and dark-ink Day system. */
+  html body.light-mode :is(
+    #tab-content-health-review.health-review-page,
+    #tab-content-duplicates.health-review-page,
+    #tab-content-era-review.health-review-page
+  ) {
+    --day-review-blue: #0047ab;
+    --day-review-blue-soft: #eaf2ff;
+    --day-review-ink: #07111f;
+    --day-review-muted: #526173;
+    --day-review-line: rgba(0, 71, 171, .22);
+    --day-review-surface: #ffffff;
+    background: #f4f7fc !important;
+    color: var(--day-review-ink) !important;
+    color-scheme: light !important;
+  }
+
+  html body.light-mode :is(
+    #tab-content-health-review,
+    #tab-content-duplicates,
+    #tab-content-era-review
+  ) :is(
+    #health-review-title,
+    #duplicates-review-title,
+    #era-review-title,
+    .duplicate-outcome-lead h3,
+    .era-receipt-lead h3
+  ) {
+    color: var(--day-review-ink) !important;
+    -webkit-text-fill-color: var(--day-review-ink) !important;
+  }
+
+  html body.light-mode :is(
+    #tab-content-health-review,
+    #tab-content-duplicates,
+    #tab-content-era-review
+  ) :is(
+    #health-review-copy,
+    #duplicates-review-copy,
+    #era-review-copy,
+    .health-review-back
+  ) {
+    color: var(--day-review-muted) !important;
+    -webkit-text-fill-color: var(--day-review-muted) !important;
+  }
+
+  html body.light-mode :is(
+    #health-review-ready-badge,
+    #duplicates-review-ready-badge,
+    #era-review-ready-badge
+  ) {
+    border-color: var(--day-review-line) !important;
+    background: var(--day-review-blue-soft) !important;
+    color: var(--day-review-blue) !important;
+    -webkit-text-fill-color: var(--day-review-blue) !important;
+    filter: none !important;
+  }
+
+  html body.light-mode :is(
+    #tab-content-health-review,
+    #tab-content-duplicates,
+    #tab-content-era-review
+  ) :is(
+    .health-clean-review-summary,
+    .health-clean-review-proof,
+    .health-clean-review-receipt,
+    .health-restore-filter-bar,
+    .health-restore-trust,
+    .health-restore-one,
+    .health-review-loading,
+    .health-review-error,
+    .duplicate-review-controls,
+    .duplicate-review-trust-strip,
+    .duplicate-review-progress,
+    .duplicate-review-empty,
+    .duplicate-outcome-hero,
+    .duplicate-outcome-copy,
+    .era-review-trust-strip,
+    .era-review-controls,
+    .era-review-summary,
+    .era-review-empty,
+    .era-receipt-hero,
+    .connected-health-trust,
+    .connected-health-summary,
+    .connected-health-issue,
+    .connected-health-healthy,
+    .connected-health-loading
+  ) {
+    border-color: var(--day-review-line) !important;
+    background: var(--day-review-surface) !important;
+    box-shadow: 0 10px 28px rgba(28, 64, 120, .06) !important;
+  }
+
+  html body.light-mode :is(
+    #tab-content-health-review,
+    #tab-content-duplicates,
+    #tab-content-era-review
+  ) :is(
+    .health-clean-review-stat + .health-clean-review-stat,
+    .health-clean-review-proof > div + div,
+    .duplicate-review-trust-strip > div + div,
+    .duplicate-outcome-fact + .duplicate-outcome-fact,
+    .era-review-trust-strip > div + div,
+    .era-review-summary > div + div,
+    .connected-health-trust > div + div,
+    .connected-health-summary > div + div
+  ) {
+    border-color: var(--day-review-line) !important;
+  }
+
+  html body.light-mode :is(
+    #tab-content-health-review,
+    #tab-content-duplicates,
+    #tab-content-era-review
+  ) :is(
+    .health-clean-review-columns,
+    .health-clean-review-row,
+    .duplicate-review-columns,
+    .duplicate-review-row,
+    .duplicate-outcome-pair,
+    .duplicate-outcome-pending,
+    .health-restore-columns,
+    .health-restore-row,
+    .health-restore-receipt-row,
+    .era-review-columns,
+    .era-review-row,
+    .era-receipt-row,
+    .connected-health-list,
+    .connected-health-row
+  ) {
+    border-color: rgba(7, 17, 31, .16) !important;
+  }
+
+  html body.light-mode :is(
+    #tab-content-health-review,
+    #tab-content-duplicates,
+    #tab-content-era-review
+  ) :is(
+    .health-clean-review-stat span,
+    .health-clean-review-stat strong,
+    .health-clean-review-track strong,
+    .health-clean-review-value,
+    .health-clean-review-value.proposed,
+    .health-clean-review-preview-button,
+    .health-clean-review-proof strong,
+    .health-clean-review-receipt-head strong,
+    .health-restore-track strong,
+    .health-restore-source strong,
+    .health-restore-progress-head,
+    .duplicate-review-track strong,
+    .duplicate-review-version strong,
+    .duplicate-review-progress-head,
+    .duplicate-review-empty strong,
+    .duplicate-outcome-copy strong,
+    .duplicate-outcome-fact strong,
+    .duplicate-outcome-pending strong,
+    .duplicate-review-trust-strip strong,
+    .era-review-track strong,
+    .era-review-era strong,
+    .era-review-summary strong,
+    .era-review-empty strong,
+    .era-review-trust-strip strong,
+    .era-receipt-row strong,
+    .connected-health-trust strong,
+    .connected-health-summary strong,
+    .connected-health-track strong,
+    .connected-health-issue-title strong,
+    .connected-health-loading-head,
+    .health-review-loading strong,
+    .health-review-error strong
+  ) {
+    color: var(--day-review-ink) !important;
+    -webkit-text-fill-color: var(--day-review-ink) !important;
+  }
+
+  html body.light-mode :is(
+    #tab-content-health-review,
+    #tab-content-duplicates,
+    #tab-content-era-review
+  ) :is(
+    .health-clean-review-columns,
+    .health-clean-review-stat small,
+    .health-clean-review-track small,
+    .health-clean-review-why,
+    .health-clean-review-trustline,
+    .health-clean-review-proof small,
+    .health-clean-review-receipt-head span,
+    .health-restore-track small,
+    .health-restore-source small,
+    .health-restore-reason,
+    .duplicate-review-columns,
+    .duplicate-review-track small,
+    .duplicate-review-version small,
+    .duplicate-review-meta,
+    .duplicate-review-why,
+    .duplicate-review-empty p,
+    .duplicate-outcome-copy small,
+    .duplicate-outcome-copy em,
+    .duplicate-outcome-fact span,
+    .duplicate-outcome-pending,
+    .duplicate-review-trust-strip small,
+    .era-review-columns,
+    .era-review-track small,
+    .era-review-era small,
+    .era-review-reason,
+    .era-review-summary span,
+    .era-review-summary small,
+    .era-review-empty p,
+    .era-review-trust-strip small,
+    .era-receipt-row small,
+    .era-receipt-row span,
+    .connected-health-trust small,
+    .connected-health-summary span,
+    .connected-health-summary small,
+    .connected-health-track small,
+    .connected-health-issue-title small,
+    .connected-health-change span,
+    .connected-health-issue-copy,
+    .connected-health-healthy,
+    .connected-health-loading p,
+    .health-review-loading p,
+    .health-review-error p
+  ) {
+    color: var(--day-review-muted) !important;
+    -webkit-text-fill-color: var(--day-review-muted) !important;
+  }
+
+  html body.light-mode :is(
+    #tab-content-health-review,
+    #tab-content-duplicates,
+    #tab-content-era-review
+  ) .health-clean-review-preview-button {
+    border-color: rgba(0, 71, 171, .28) !important;
+    background: #ffffff !important;
+    color: var(--day-review-blue) !important;
+    -webkit-text-fill-color: var(--day-review-blue) !important;
+  }
+
+  html body.light-mode :is(
+    #tab-content-health-review,
+    #tab-content-duplicates,
+    #tab-content-era-review
+  ) .health-clean-review-preview-button img,
+  html body.light-mode :is(
+    #tab-content-health-review,
+    #tab-content-duplicates,
+    #tab-content-era-review
+  ) .health-clean-review-trustline img {
+    filter: brightness(0) saturate(100%) invert(22%) sepia(99%) saturate(2459%) hue-rotate(205deg) brightness(79%) contrast(110%) !important;
+    opacity: .9 !important;
+  }
+
+  html body.light-mode :is(
+    #tab-content-health-review,
+    #tab-content-duplicates,
+    #tab-content-era-review
+  ) :is(
+    .health-clean-review-stat.ready strong,
+    .health-clean-review-value mark,
+    .health-restore-receipt-row b,
+    .duplicate-review-version.keep strong,
+    .duplicate-review-version.keep .duplicate-review-meta,
+    .duplicate-outcome-copy.keep > span,
+    .duplicate-outcome-fact.safe strong,
+    .duplicate-outcome-fact.safe span,
+    .era-review-era.proposed strong,
+    .era-review-summary .ready strong,
+    .era-receipt-facts strong,
+    .era-receipt-row b,
+    .connected-health-summary .ready strong,
+    .connected-health-trust .zero-change strong,
+    .connected-health-change b,
+    .connected-health-chip.ready,
+    .connected-health-chip.healthy
+  ) {
+    color: var(--day-review-blue) !important;
+    -webkit-text-fill-color: var(--day-review-blue) !important;
+    filter: none !important;
+  }
+
+  html body.light-mode :is(
+    #tab-content-health-review,
+    #tab-content-duplicates,
+    #tab-content-era-review
+  ) :is(
+    .health-clean-review-stat img,
+    .health-clean-review-proof img,
+    .duplicate-review-trust-strip img,
+    .duplicate-review-empty img,
+    .duplicate-outcome-lead img,
+    .duplicate-outcome-arrow img,
+    .era-review-trust-strip img,
+    .era-receipt-lead img
+  ) {
+    filter: brightness(0) saturate(100%) invert(22%) sepia(99%) saturate(2459%) hue-rotate(205deg) brightness(79%) contrast(110%) !important;
+    opacity: .86 !important;
+  }
+
+  html body.light-mode :is(
+    #tab-content-health-review,
+    #tab-content-duplicates,
+    #tab-content-era-review
+  ) :is(
+    .health-clean-review-check,
+    .era-review-check
+  ) {
+    accent-color: var(--day-review-blue) !important;
+  }
+
+  html body.light-mode :is(
+    #tab-content-health-review,
+    #tab-content-duplicates,
+    #tab-content-era-review
+  ) :is(
+    .duplicate-review-mode select,
+    .health-restore-filter,
+    .era-review-search input,
+    .era-review-actions select
+  ) {
+    border-color: var(--day-review-line) !important;
+    background: #ffffff !important;
+    color: var(--day-review-ink) !important;
+    -webkit-text-fill-color: var(--day-review-ink) !important;
+    color-scheme: light !important;
+  }
+
+  html body.light-mode :is(
+    #tab-content-health-review,
+    #tab-content-duplicates,
+    #tab-content-era-review
+  ) :is(.health-clean-review-actions, .era-review-actions) {
+    border-color: var(--day-review-line) !important;
+    background: rgba(244, 247, 252, .97) !important;
+  }
+
+  html body.light-mode :is(
+    #tab-content-health-review,
+    #tab-content-duplicates,
+    #tab-content-era-review
+  ) .health-clean-review-button {
+    border-color: rgba(0, 71, 171, .32) !important;
+    background: #ffffff !important;
+    color: var(--day-review-blue) !important;
+    -webkit-text-fill-color: var(--day-review-blue) !important;
+  }
+
+  html body.light-mode :is(
+    #tab-content-health-review,
+    #tab-content-duplicates,
+    #tab-content-era-review
+  ) .health-clean-review-button:is(:hover, :focus-visible) {
+    border-color: var(--day-review-blue) !important;
+    background: var(--day-review-blue-soft) !important;
+    color: var(--day-review-blue) !important;
+  }
+
+  html body.light-mode :is(
+    #tab-content-health-review,
+    #tab-content-duplicates,
+    #tab-content-era-review
+  ) .health-clean-review-button.primary {
+    border-color: var(--day-review-blue) !important;
+    background: var(--day-review-blue) !important;
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+    box-shadow: 0 8px 22px rgba(0, 71, 171, .18) !important;
+  }
+
+  html body.light-mode :is(
+    #tab-content-health-review,
+    #tab-content-duplicates,
+    #tab-content-era-review
+  ) :is(.duplicate-review-progress-track, .health-restore-progress-track, .connected-health-loading-track) {
+    background: rgba(0, 71, 171, .12) !important;
+  }
+
+  html body.light-mode :is(
+    #tab-content-health-review,
+    #tab-content-duplicates,
+    #tab-content-era-review
+  ) :is(.duplicate-review-progress-track span, .health-restore-progress-track span, .connected-health-loading-track span) {
+    background: var(--day-review-blue) !important;
+  }
+
+  /* The Playlist checker had dark empty-state cards with Day Mode ink. */
+  html body.light-mode .library-gap-status {
+    border-color: rgba(0, 71, 171, .2) !important;
+    background: #f7faff !important;
+    color: #07111f !important;
+  }
+
+  html body.light-mode .library-gap-status.is-ready {
+    border: 1px solid rgba(0, 71, 171, .32) !important;
+    border-top: 3px solid #0047ab !important;
+    border-radius: 6px !important;
+    background: linear-gradient(145deg, #edf4ff 0%, #f7faff 52%, #ffffff 100%) !important;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .9), 0 18px 42px rgba(0, 71, 171, .1) !important;
+  }
+
+  html body.light-mode .library-gap-status.is-ready img {
+    width: 48px !important;
+    height: 48px !important;
+    margin-bottom: 10px !important;
+    filter: brightness(0) saturate(100%) invert(22%) sepia(99%) saturate(2459%) hue-rotate(205deg) brightness(79%) contrast(110%) drop-shadow(0 8px 12px rgba(0, 71, 171, .2)) !important;
+  }
+
+  html body.light-mode .library-gap-status.is-ready strong {
+    color: #003f99 !important;
+    -webkit-text-fill-color: #003f99 !important;
+    letter-spacing: .1em !important;
+  }
+
+  html body.light-mode .library-gap-status.is-ready span {
+    max-width: 300px !important;
+    color: #526173 !important;
+    -webkit-text-fill-color: #526173 !important;
+    font-size: 11px !important;
+    line-height: 1.55 !important;
+  }
+
+  html body.light-mode .library-gap-status :is(strong, span),
+  html body.light-mode .library-gap-source-helper {
+    color: #07111f !important;
+    -webkit-text-fill-color: #07111f !important;
+  }
+
+  html body.light-mode .library-gap-status span,
+  html body.light-mode .library-gap-source-helper {
+    color: #526173 !important;
+    -webkit-text-fill-color: #526173 !important;
+  }
+
+
+  /* Late Library rows can otherwise combine a pale metric surface with the
+     old white Night Mode value. */
+  html body.light-mode #tab-content-library.library-cockpit #search-results > .library-track-card > .library-bpm-cell .library-bpm-value.bpm-block {
+    border-color: rgba(0, 71, 171, .22) !important;
+    background: #eef4ff !important;
+    color: #003f99 !important;
+    -webkit-text-fill-color: #003f99 !important;
+  }
+
+  html body.light-mode #tab-content-library.library-cockpit #search-results > .library-track-card > .library-track-main .library-dna-chip.dna-badge {
+    color: #07111f !important;
+    -webkit-text-fill-color: #07111f !important;
+  }
+
+  html body.light-mode #tab-content-library.library-cockpit:has(#smart-links-panel:not(.hidden)) #search-results > .library-track-card > .library-bpm-cell .library-bpm-value.bpm-block {
+    background: #eef4ff !important;
+    color: #003f99 !important;
+    -webkit-text-fill-color: #003f99 !important;
+  }
+
+  html body.light-mode #tab-content-library.library-cockpit:has(#smart-links-panel:not(.hidden)) #search-results > .library-track-card > .library-track-main .library-dna-chip.dna-badge {
+    color: #07111f !important;
+    -webkit-text-fill-color: #07111f !important;
+  }
+
+  html body.light-mode #playlist-undo-snackbar .undo-label {
+    color: #40516a !important;
+    -webkit-text-fill-color: #40516a !important;
+  }
+
+  html body.light-mode #tab-content-library #library-brief-lens[data-library-brief-panel="closed"] :is(
+    #library-fresh-rotate,
+    #library-brief-collapse,
+    .library-gap-launch
+  ) {
+    border-color: rgba(0, 71, 171, .38) !important;
+    color: #0047ab !important;
+    -webkit-text-fill-color: #0047ab !important;
+  }
+
+  /* Performance remains its own dark cockpit, but status accents in Day Mode
+     must not use the Night-only acid green on light host chrome. */
+  html body.light-mode #tab-content-performance.performance-cockpit :is(
+    .performance-hero-eyebrow,
+    .performance-status-pill,
+    .performance-live-status
+  ) {
+    border-color: rgba(0, 71, 171, .35) !important;
+    color: #0b66d1 !important;
+    -webkit-text-fill-color: #0b66d1 !important;
+  }
+
+  html body.light-mode #tab-content-performance.performance-cockpit .performance-live-dot {
+    background: #0b66d1 !important;
+    box-shadow: 0 0 18px rgba(11, 102, 209, .38) !important;
+  }
+
+  html body.light-mode #tab-content-performance.performance-cockpit .performance-status-pill {
+    background: rgba(0, 71, 171, .09) !important;
+  }
+
+  html body.light-mode #tab-content-performance.performance-cockpit {
+    background: #f4f7fc !important;
+  }
+
+  html body.light-mode #tab-content-performance.performance-cockpit :is(
+    .performance-hero,
+    .performance-command-card,
+    .performance-panel
+  ) {
+    background: #ffffff !important;
+  }
+
+  html body.light-mode #tab-content-performance.performance-cockpit .performance-command-card p.text-primary-contrast:not(.performance-hero-eyebrow) {
+    color: #526173 !important;
+    -webkit-text-fill-color: #526173 !important;
+  }
+
+  html body.light-mode #tab-content-performance.performance-cockpit .performance-assist-activation {
+    border-color: rgba(0, 71, 171, .24) !important;
+    border-top-color: rgba(0, 71, 171, .24) !important;
+    background: #ffffff !important;
+    color: #07111f !important;
+    box-shadow: 0 10px 28px rgba(28, 64, 120, .08) !important;
+  }
+
+  html body.light-mode #tab-content-performance.performance-cockpit .performance-assist-copy :is(small, strong) {
+    color: #07111f !important;
+    -webkit-text-fill-color: #07111f !important;
+  }
+
+  html body.light-mode #tab-content-performance.performance-cockpit .performance-assist-copy strong {
+    color: #0047ab !important;
+    -webkit-text-fill-color: #0047ab !important;
+  }
+
+  html body.light-mode #tab-content-performance.performance-cockpit .performance-assist-live-dot {
+    background: #0b66d1 !important;
+    box-shadow: 0 0 14px rgba(11, 102, 209, .34) !important;
+  }
+
+  html body.light-mode.studio-health-mode #health-inbox-app.health-approved-shell :is(
+    .health-approved-task-copy,
+    .health-approved-results-empty
+  ) {
+    color: #40516a !important;
+    -webkit-text-fill-color: #40516a !important;
+  }
+</style>

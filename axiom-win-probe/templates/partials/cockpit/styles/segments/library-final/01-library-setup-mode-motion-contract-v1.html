@@ -1,0 +1,626 @@
+<style id="library-setup-mode-motion-contract-v1">
+  /* Setup and Matching Songs are independent Library states. Setup alone owns
+     the temporary Health-style steel cue; Matching Songs owns only its rail. */
+  #tab-content-library.library-cockpit {
+    --library-panel-motion-duration: 280ms;
+    --library-panel-motion-easing: cubic-bezier(.22, .82, .22, 1);
+    isolation: isolate;
+  }
+
+  /* The reference treatment is a complete brushed-steel work surface to the
+     right of the AXIOM sidebar. The existing Library controls remain real,
+     black inset modules above that surface. */
+  #tab-content-library.library-cockpit::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0;
+    background-color: #626766;
+    background-image:
+      linear-gradient(180deg, rgba(255,255,255,.24), rgba(255,255,255,.055) 16%, rgba(0,0,0,.16) 100%),
+      url('/static/textures/axiom-brushed-gunmetal-steel.png');
+    background-position: center top, center top;
+    background-size: 100% 100%, 100% 256px;
+    background-repeat: no-repeat, repeat-y;
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,.62),
+      inset 0 -2px 0 rgba(0,0,0,.58);
+    transition: opacity var(--library-panel-motion-duration) var(--library-panel-motion-easing);
+  }
+
+  #tab-content-library.library-cockpit > .library-topbar,
+  #tab-content-library.library-cockpit > .library-main-grid {
+    position: relative;
+    z-index: 1;
+  }
+
+  html body:not(.light-mode).library-steel-mode
+    #tab-content-library.library-cockpit[data-library-steel="active"]::after {
+    opacity: 1;
+  }
+
+  #tab-content-library.library-cockpit > .library-main-grid {
+    transition:
+      grid-template-columns var(--library-panel-motion-duration) var(--library-panel-motion-easing),
+      gap var(--library-panel-motion-duration) var(--library-panel-motion-easing) !important;
+  }
+
+  html body #tab-content-library.library-cockpit #smart-links-panel.recommendations-panel {
+    display: flex !important;
+    transition:
+      opacity var(--library-panel-motion-duration) var(--library-panel-motion-easing),
+      transform var(--library-panel-motion-duration) var(--library-panel-motion-easing),
+      width var(--library-panel-motion-duration) var(--library-panel-motion-easing),
+      max-width var(--library-panel-motion-duration) var(--library-panel-motion-easing),
+      padding var(--library-panel-motion-duration) var(--library-panel-motion-easing),
+      border-width var(--library-panel-motion-duration) var(--library-panel-motion-easing),
+      visibility 0s linear 0s !important;
+  }
+
+  html body.library-matching-songs-disabled #tab-content-library.library-cockpit > .library-main-grid {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 0fr) !important;
+    gap: 0 !important;
+  }
+
+  html body.library-matching-songs-disabled #tab-content-library.library-cockpit #smart-links-panel.recommendations-panel {
+    display: flex !important;
+    width: 0 !important;
+    min-width: 0 !important;
+    max-width: 0 !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    border-left-width: 0 !important;
+    border-right-width: 0 !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    transform: translateX(24px) !important;
+    overflow: hidden !important;
+    transition:
+      opacity var(--library-panel-motion-duration) var(--library-panel-motion-easing),
+      transform var(--library-panel-motion-duration) var(--library-panel-motion-easing),
+      width var(--library-panel-motion-duration) var(--library-panel-motion-easing),
+      max-width var(--library-panel-motion-duration) var(--library-panel-motion-easing),
+      padding var(--library-panel-motion-duration) var(--library-panel-motion-easing),
+      border-width var(--library-panel-motion-duration) var(--library-panel-motion-easing),
+      visibility 0s linear var(--library-panel-motion-duration) !important;
+  }
+
+  html body #tab-content-library.library-cockpit
+    #smart-links-panel.recommendations-panel[data-library-matching-motion="closed"] {
+    visibility: hidden !important;
+  }
+
+  html body #tab-content-library.library-cockpit
+    #smart-links-panel.recommendations-panel[data-library-matching-motion="closing"] {
+    visibility: visible !important;
+  }
+
+  html body:not(.library-matching-songs-disabled) #tab-content-library.library-cockpit > .library-main-grid {
+    grid-template-columns: minmax(0, 1fr) minmax(330px, 400px) !important;
+    gap: clamp(18px, 2vw, 28px) !important;
+  }
+
+  html body:not(.library-matching-songs-disabled) #tab-content-library.library-cockpit #smart-links-panel.recommendations-panel {
+    width: 100% !important;
+    max-width: 400px !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
+    transform: translateX(0) !important;
+  }
+
+  html body:not(.library-matching-songs-disabled) #tab-content-library.library-cockpit
+    #smart-links-panel.recommendations-panel[data-library-matching-motion="opening"] {
+    width: 0 !important;
+    min-width: 0 !important;
+    max-width: 0 !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    border-left-width: 0 !important;
+    border-right-width: 0 !important;
+    opacity: 0 !important;
+    visibility: visible !important;
+    pointer-events: none !important;
+    transform: translateX(24px) !important;
+    overflow: hidden !important;
+  }
+
+  html body:not(.library-matching-songs-disabled) #tab-content-library.library-cockpit
+    #smart-links-panel.recommendations-panel[data-library-matching-motion="open"] {
+    visibility: visible !important;
+  }
+
+  #tab-content-library.library-cockpit #library-brief-collapse {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
+  }
+
+  #tab-content-library.library-cockpit #library-brief-settings[data-library-panel-motion="opening"] {
+    opacity: 0;
+    transform: translateY(-14px);
+  }
+
+  #tab-content-library.library-cockpit #library-brief-settings[data-library-panel-motion="open"] {
+    opacity: 1;
+    transform: translateY(0);
+    transition:
+      opacity var(--library-panel-motion-duration) var(--library-panel-motion-easing),
+      transform var(--library-panel-motion-duration) var(--library-panel-motion-easing) !important;
+  }
+
+  #tab-content-library.library-cockpit #library-brief-settings[data-library-panel-motion="closing"] {
+    opacity: 0;
+    transform: translateY(-14px);
+    transition:
+      opacity var(--library-panel-motion-duration) var(--library-panel-motion-easing),
+      transform var(--library-panel-motion-duration) var(--library-panel-motion-easing) !important;
+  }
+
+  /* The steel cue is deliberately absent from the default Library and from
+     Matching Songs. It appears only while Show Setup is active. */
+  html body:not(.light-mode) #tab-content-library.library-cockpit #library-brief-lens {
+    transition:
+      border-width var(--library-panel-motion-duration) var(--library-panel-motion-easing),
+      box-shadow var(--library-panel-motion-duration) var(--library-panel-motion-easing),
+      background-color var(--library-panel-motion-duration) var(--library-panel-motion-easing) !important;
+  }
+
+  html body:not(.light-mode).library-steel-mode
+    #tab-content-library.library-cockpit#tab-content-library
+    #library-brief-lens.library-brief-lens#library-brief-lens[data-library-brief-panel="setup"]:has(#library-brief-settings:not(.hidden)) {
+    border-style: solid !important;
+    border-width: 1px !important;
+    border-color: rgba(0,0,0,.92) !important;
+    border-radius: 6px !important;
+    border-image: none !important;
+    background:
+      linear-gradient(90deg, rgba(163,255,0,.04), transparent 26%),
+      linear-gradient(180deg, #070a08, #020403) !important;
+    box-shadow:
+      inset 4px 0 0 var(--accent),
+      inset 0 1px 0 rgba(255,255,255,.10),
+      inset 0 -1px 0 rgba(0,0,0,.88),
+      0 0 0 1px rgba(255,255,255,.17),
+      0 16px 34px rgba(0,0,0,.42) !important;
+  }
+
+  html body:not(.light-mode).library-steel-mode
+    #tab-content-library.library-cockpit[data-library-steel="active"] .library-search-input,
+  html body:not(.light-mode).library-steel-mode
+    #tab-content-library.library-cockpit[data-library-steel="active"] #search-results > * {
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,.055),
+      0 0 0 1px rgba(0,0,0,.72),
+      0 10px 24px rgba(0,0,0,.24) !important;
+  }
+
+  html body:not(.light-mode).library-steel-mode
+    #tab-content-library.library-cockpit[data-library-steel="active"] #smart-links-panel.recommendations-panel {
+    border-color: rgba(0,0,0,.92) !important;
+    background:
+      linear-gradient(180deg, rgba(7,10,8,.99), rgba(2,4,3,.99)) !important;
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,.09),
+      0 0 0 1px rgba(255,255,255,.15),
+      0 16px 34px rgba(0,0,0,.34) !important;
+  }
+
+  html body:not(.light-mode).library-steel-mode
+    #tab-content-library.library-cockpit[data-library-steel="active"] .library-control-row > p {
+    color: rgba(7,16,5,.78) !important;
+    text-shadow: 0 1px 0 rgba(255,255,255,.18) !important;
+  }
+
+  /* The player is part of the same work surface in the approved reference.
+     Its controls stay interactive above a fading steel layer. */
+  #audio-player.library-player-upgrade {
+    isolation: isolate;
+  }
+
+  #audio-player.library-player-upgrade::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0;
+    background-color: #626766;
+    background-image:
+      linear-gradient(180deg, rgba(255,255,255,.22), rgba(255,255,255,.045) 48%, rgba(0,0,0,.18)),
+      url('/static/textures/axiom-brushed-gunmetal-steel.png');
+    background-position: center top, center center;
+    background-size: 100% 100%, 100% 256px;
+    background-repeat: no-repeat, repeat-y;
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,.58),
+      inset 0 -1px 0 rgba(0,0,0,.66);
+    transition: opacity var(--library-panel-motion-duration, 280ms) var(--library-panel-motion-easing, cubic-bezier(.22,.82,.22,1));
+  }
+
+  #audio-player.library-player-upgrade > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  html body:not(.light-mode).library-steel-mode #audio-player.library-player-upgrade::before {
+    opacity: 1;
+  }
+
+  html body:not(.light-mode).library-steel-mode #audio-player.library-player-upgrade :is(#ap-title, #ap-artist, #ap-time, #ap-duration, .player-autoplay-toggle, .player-volume-zone svg) {
+    color: #101510 !important;
+    text-shadow: 0 1px 0 rgba(255,255,255,.22) !important;
+  }
+
+  html body:not(.light-mode).library-steel-mode #audio-player.library-player-upgrade #progress-container {
+    background: rgba(3,6,4,.72) !important;
+    box-shadow: inset 0 1px 2px rgba(0,0,0,.72) !important;
+  }
+
+  html body:not(.light-mode):not(.library-steel-mode) #tab-content-library.library-cockpit
+    #library-brief-lens {
+    border-image-source: none !important;
+    border-left-width: 1px !important;
+    border-right-width: 1px !important;
+  }
+
+  /* Screenshot-accurate Setup Mode: a compact set summary and three quiet
+     control rails replace the old wall of nine cards. The original selects
+     and handlers are preserved inside the expandable groups. */
+  #library-setup-overview {
+    display: none;
+  }
+
+  html body.library-setup-open #tab-content-library.library-cockpit
+    #library-brief-lens[data-library-brief-panel="setup"] {
+    display: block !important;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: calc(100% - 12px) !important;
+    padding: 18px 22px 16px !important;
+    overflow: visible !important;
+  }
+
+  html body.library-setup-open #tab-content-library.library-cockpit
+    #library-brief-lens[data-library-brief-panel="setup"] #library-brief-topline {
+    display: grid !important;
+    grid-template-columns: minmax(240px, 1fr) 190px 144px !important;
+    align-items: start !important;
+    gap: 14px !important;
+    min-height: 64px !important;
+    margin: 0 !important;
+    padding: 0 0 14px !important;
+    border-bottom: 0 !important;
+  }
+
+  html body.library-setup-open #tab-content-library.library-cockpit
+    #library-brief-lens[data-library-brief-panel="setup"] .library-brief-copy {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 4px !important;
+    min-height: 54px !important;
+  }
+
+  html body.library-setup-open #tab-content-library.library-cockpit
+    #library-brief-lens[data-library-brief-panel="setup"] .library-brief-copy > span {
+    color: var(--accent) !important;
+    font-size: 11px !important;
+    letter-spacing: .14em !important;
+  }
+
+  html body.library-setup-open #tab-content-library.library-cockpit
+    #library-brief-lens[data-library-brief-panel="setup"] .library-brief-copy > strong {
+    font-family: 'Bebas Neue', Impact, sans-serif !important;
+    font-size: 34px !important;
+    line-height: .92 !important;
+    letter-spacing: .035em !important;
+  }
+
+  html body.library-setup-open #tab-content-library.library-cockpit
+    #library-brief-lens[data-library-brief-panel="setup"] #library-brief-lane-dropdown {
+    grid-column: 2 !important;
+    grid-row: 1 !important;
+    width: 190px !important;
+  }
+
+  html body.library-setup-open #tab-content-library.library-cockpit
+    #library-brief-lens[data-library-brief-panel="setup"] #library-brief-action-rail {
+    display: block !important;
+    grid-column: 3 !important;
+    grid-row: 1 !important;
+    width: 144px !important;
+    min-width: 144px !important;
+    max-height: none !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    overflow: visible !important;
+  }
+
+  html body.library-setup-open #tab-content-library.library-cockpit
+    #library-brief-lens[data-library-brief-panel="setup"] :is(#library-brief-actions-toggle, #library-fresh-rotate, .library-gap-launch, #library-preparation-toggle) {
+    display: none !important;
+  }
+
+  html body.library-setup-open #tab-content-library.library-cockpit
+    #library-brief-lens[data-library-brief-panel="setup"] #library-brief-collapse {
+    display: inline-flex !important;
+    position: static !important;
+    width: 144px !important;
+    min-width: 144px !important;
+    height: 46px !important;
+    min-height: 46px !important;
+    margin: 0 !important;
+    padding: 0 18px !important;
+    border-color: rgba(255,255,255,.24) !important;
+    background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.025)) !important;
+    color: #f4f7f3 !important;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.11), 0 5px 12px rgba(0,0,0,.26) !important;
+  }
+
+  html body.library-setup-open #tab-content-library.library-cockpit
+    #library-brief-lens[data-library-brief-panel="setup"] #library-brief-collapse:hover {
+    border-color: var(--accent) !important;
+    color: var(--accent) !important;
+  }
+
+  html body.library-setup-open #tab-content-library.library-cockpit
+    #library-brief-lens[data-library-brief-panel="setup"] #library-setup-overview {
+    display: grid !important;
+    grid-template-columns: minmax(280px, 1fr) 110px 150px 180px !important;
+    align-items: center !important;
+    gap: 0 !important;
+    min-height: 92px !important;
+    margin: 0 0 14px !important;
+    padding: 12px 0 14px !important;
+    border-top: 1px solid rgba(255,255,255,.07) !important;
+    border-bottom: 1px solid rgba(255,255,255,.10) !important;
+  }
+
+  .library-setup-overview-copy {
+    min-width: 0;
+    padding-right: 22px;
+  }
+
+  .library-setup-overview-copy p {
+    margin: 0;
+    overflow: hidden;
+    color: rgba(242,247,241,.82);
+    font-family: 'Barlow', sans-serif;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: .08em;
+    line-height: 1.8;
+    text-overflow: ellipsis;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .library-setup-overview-copy p + p {
+    color: rgba(242,247,241,.58);
+  }
+
+  .library-setup-health,
+  .library-setup-fit {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 58px;
+    padding: 0 22px;
+    border-left: 1px solid rgba(255,255,255,.13);
+    text-transform: uppercase;
+  }
+
+  .library-setup-health span,
+  .library-setup-fit span {
+    color: rgba(242,247,241,.55);
+    font-size: 10px;
+    font-weight: 900;
+    letter-spacing: .16em;
+  }
+
+  .library-setup-health strong,
+  .library-setup-fit strong {
+    margin-top: 4px;
+    color: var(--accent);
+    font-family: 'Bebas Neue', Impact, sans-serif;
+    font-size: 22px;
+    line-height: 1;
+    letter-spacing: .08em;
+  }
+
+  .library-setup-health strong[data-state="review"] {
+    color: #ffd91a;
+  }
+
+  #library-setup-view-tracks {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 180px;
+    min-height: 52px;
+    border: 1px solid var(--accent);
+    border-radius: 0;
+    background: linear-gradient(180deg, #b4ff26, #93eb00);
+    color: #071005;
+    font-size: 11px;
+    font-weight: 950;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.48), 0 7px 18px rgba(0,0,0,.28);
+  }
+
+  html body.library-setup-open #tab-content-library.library-cockpit
+    #library-brief-lens[data-library-brief-panel="setup"] > .library-brief-panel,
+  html body.library-setup-open #tab-content-library.library-cockpit
+    #library-brief-lens[data-library-brief-panel="setup"] #library-brief-settings:not(.hidden) {
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    overflow: visible !important;
+  }
+
+  html body.library-setup-open #tab-content-library.library-cockpit
+    #library-brief-lens[data-library-brief-panel="setup"] .library-brief-control-grid {
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 0 !important;
+    width: 100% !important;
+    overflow: visible !important;
+  }
+
+  .library-setup-control-group {
+    position: relative;
+    min-width: 0;
+    border: 0;
+    border-left: 1px solid rgba(255,255,255,.12);
+    background: linear-gradient(180deg, rgba(255,255,255,.035), rgba(0,0,0,.17));
+  }
+
+  .library-setup-control-group:first-child {
+    border-left: 0;
+  }
+
+  .library-setup-control-group > summary {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 18px;
+    align-items: center;
+    gap: 14px;
+    min-height: 64px;
+    padding: 0 18px;
+    cursor: pointer;
+    list-style: none;
+  }
+
+  .library-setup-control-group > summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .library-setup-control-group > summary > strong {
+    color: #fff;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 10px;
+    font-weight: 950;
+    letter-spacing: .15em;
+    text-transform: uppercase;
+  }
+
+  .library-setup-control-group > summary > img {
+    width: 15px;
+    height: 15px;
+    opacity: .72;
+    transition: transform 180ms ease;
+  }
+
+  .library-setup-control-group[open] {
+    grid-column: 1 / -1;
+    border: 1px solid rgba(163,255,0,.28);
+    background: rgba(4,10,6,.97);
+  }
+
+  .library-setup-control-group[open] > summary {
+    border-bottom: 1px solid rgba(163,255,0,.18);
+  }
+
+  .library-setup-control-group[open] > summary > img {
+    transform: rotate(180deg);
+  }
+
+  .library-setup-control-group-fields {
+    display: none;
+  }
+
+  .library-setup-control-group[open] > .library-setup-control-group-fields {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+    padding: 12px;
+  }
+
+  html body.library-setup-open #tab-content-library.library-cockpit
+    .library-setup-control-group-fields > .library-bpm-filter-wrap {
+    display: grid !important;
+    grid-template-rows: auto 38px !important;
+    gap: 7px !important;
+    width: 100% !important;
+    min-height: 68px !important;
+    height: auto !important;
+    max-height: none !important;
+    padding: 9px 11px !important;
+    border: 1px solid rgba(255,255,255,.12) !important;
+    background: rgba(0,0,0,.32) !important;
+  }
+
+  html body.library-setup-open #tab-content-library.library-cockpit
+    .library-setup-control-group-fields > .library-bpm-filter-wrap > span {
+    margin: 0 !important;
+    color: var(--accent) !important;
+    font-family: 'Barlow', sans-serif !important;
+    font-size: 9px !important;
+    font-weight: 950 !important;
+    letter-spacing: .14em !important;
+  }
+
+  html body.library-setup-open #tab-content-library.library-cockpit
+    .library-setup-control-group-fields select {
+    height: 38px !important;
+    min-height: 38px !important;
+    max-height: 38px !important;
+    line-height: 38px !important;
+  }
+
+  html body.library-setup-open #tab-content-library.library-cockpit
+    #library-brief-lens[data-library-brief-panel="setup"] :is(#library-brief-active-summary, #library-brief-copy) {
+    display: none !important;
+  }
+
+  #library-brief-lens[data-library-brief-panel="preparation"] #library-brief-topline {
+    grid-template-columns: minmax(0, 1fr) auto auto !important;
+  }
+
+  #library-brief-lens[data-library-brief-panel="preparation"] #library-brief-collapse {
+    position: static !important;
+    grid-column: 2 !important;
+    display: inline-flex !important;
+    min-width: 116px !important;
+    min-height: 30px !important;
+    padding: 0 12px !important;
+  }
+
+  #library-brief-lens[data-library-brief-panel="preparation"] #library-preparation-toggle.library-preparation-toggle {
+    grid-column: 3 !important;
+  }
+
+  @media (max-width: 920px) {
+    html body.library-matching-songs-disabled #tab-content-library.library-cockpit > .library-main-grid,
+    html body:not(.library-matching-songs-disabled) #tab-content-library.library-cockpit > .library-main-grid {
+      grid-template-columns: minmax(0, 1fr) !important;
+    }
+
+    html body.library-matching-songs-disabled #tab-content-library.library-cockpit #smart-links-panel.recommendations-panel {
+      max-height: 0 !important;
+      height: 0 !important;
+    }
+
+    html body:not(.library-matching-songs-disabled) #tab-content-library.library-cockpit #smart-links-panel.recommendations-panel {
+      max-width: none !important;
+      max-height: 420px !important;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    #tab-content-library.library-cockpit > .library-main-grid,
+    #tab-content-library.library-cockpit #smart-links-panel.recommendations-panel,
+    #tab-content-library.library-cockpit #library-brief-lens,
+    #tab-content-library.library-cockpit #library-brief-settings,
+    #tab-content-library.library-cockpit::after,
+    #audio-player.library-player-upgrade::before {
+      transition: none !important;
+    }
+  }
+</style>

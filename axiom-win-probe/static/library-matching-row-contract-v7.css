@@ -1,0 +1,697 @@
+/*
+ * Authoritative split-view layout for the real rendered AXIOM row structure.
+ * Direct children are: marker, artwork, identity, waveform, BPM, key, Add, star.
+ */
+html body #tab-content-library#tab-content-library:has(#smart-links-panel:not(.hidden))
+  .library-results-column {
+  width: 100% !important;
+  max-width: none !important;
+  min-width: 0 !important;
+  padding-right: 0 !important;
+  box-sizing: border-box !important;
+}
+
+/* --------------------------------------------------------------------------
+ * Standard Library row finish
+ *
+ * Matching Songs owns the Focus Deck marker and its split-view rail. When the
+ * feature is off, the ordinary Library list should keep its own song-row
+ * hierarchy instead of inheriting the matching marker, label, and bright
+ * selection block.
+ * -------------------------------------------------------------------------- */
+html body.library-matching-songs-disabled #tab-content-library.library-cockpit
+  #search-results#search-results > .library-track-card.axiom-focus-deck-row
+  > .axiom-focus-marker {
+  display: none !important;
+}
+
+html body.library-matching-songs-disabled:not(.light-mode)
+  #tab-content-library.library-cockpit #search-results#search-results
+  > .library-track-card.axiom-focus-deck-row {
+  color: #f5f7f2 !important;
+  border-top: 1px solid rgba(163, 255, 0, 0.13) !important;
+  border-right: 0 !important;
+  border-bottom: 1px solid rgba(163, 255, 0, 0.13) !important;
+  border-left: 0 !important;
+  background: linear-gradient(90deg, rgba(14, 36, 12, 0.32), rgba(3, 7, 6, 0.82) 42%, rgba(0, 0, 0, 0.5)) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.035) !important;
+}
+
+html body.library-matching-songs-disabled:not(.light-mode)
+  #tab-content-library.library-cockpit #search-results#search-results
+  > .library-track-card.axiom-focus-deck-row
+  :is(.library-track-title, .track-title-resize) {
+  color: #f5f7f2 !important;
+  -webkit-text-fill-color: #f5f7f2 !important;
+  text-shadow: none !important;
+}
+
+html body.library-matching-songs-disabled:not(.light-mode)
+  #tab-content-library.library-cockpit #search-results#search-results
+  > .library-track-card.axiom-focus-deck-row
+  :is(.library-track-artist, .track-artist-resize) {
+  color: rgba(230, 235, 225, 0.72) !important;
+  -webkit-text-fill-color: rgba(230, 235, 225, 0.72) !important;
+  text-shadow: none !important;
+}
+
+html body.library-matching-songs-disabled:not(.light-mode)
+  #tab-content-library.library-cockpit #search-results#search-results
+  > .library-track-card.axiom-focus-deck-row:is(.selected, .playing-track, .library-track-playing) {
+  border-top-color: rgba(163, 255, 0, 0.66) !important;
+  border-bottom-color: rgba(163, 255, 0, 0.66) !important;
+  background: linear-gradient(90deg, rgba(163, 255, 0, 0.11), rgba(8, 17, 10, 0.96) 34%, rgba(12, 22, 13, 0.98)) !important;
+  box-shadow:
+    inset 4px 0 0 rgba(163, 255, 0, 0.86),
+    inset 0 1px 0 rgba(255, 255, 255, 0.055),
+    0 0 24px rgba(163, 255, 0, 0.08) !important;
+}
+
+html body.library-matching-songs-disabled:not(.light-mode)
+  #tab-content-library.library-cockpit #search-results#search-results
+  > .library-track-card.axiom-focus-deck-row:is(.selected, .playing-track, .library-track-playing)
+  :is(.library-track-title, .track-title-resize) {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+
+html body.library-matching-songs-disabled.light-mode
+  #tab-content-library.library-cockpit #search-results#search-results
+  > .library-track-card.axiom-focus-deck-row {
+  color: #07111f !important;
+  border-top: 1px solid rgba(0, 71, 171, 0.14) !important;
+  border-right: 0 !important;
+  border-bottom: 1px solid rgba(0, 71, 171, 0.14) !important;
+  border-left: 0 !important;
+  background: #ffffff !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.92) !important;
+}
+
+html body.library-matching-songs-disabled.light-mode
+  #tab-content-library.library-cockpit #search-results#search-results
+  > .library-track-card.axiom-focus-deck-row
+  :is(.library-track-title, .track-title-resize) {
+  color: #07111f !important;
+  -webkit-text-fill-color: #07111f !important;
+  text-shadow: none !important;
+}
+
+html body.library-matching-songs-disabled.light-mode
+  #tab-content-library.library-cockpit #search-results#search-results
+  > .library-track-card.axiom-focus-deck-row
+  :is(.library-track-artist, .track-artist-resize) {
+  color: #40516a !important;
+  -webkit-text-fill-color: #40516a !important;
+  text-shadow: none !important;
+}
+
+html body.library-matching-songs-disabled.light-mode
+  #tab-content-library.library-cockpit #search-results#search-results
+  > .library-track-card.axiom-focus-deck-row:is(.selected, .playing-track, .library-track-playing) {
+  border-top-color: #0047ab !important;
+  border-bottom-color: #0047ab !important;
+  background: linear-gradient(90deg, #eef4ff 0%, #ffffff 43%, #f7faff 100%) !important;
+  box-shadow:
+    inset 4px 0 0 #0047ab,
+    inset 0 1px 0 rgba(255, 255, 255, 0.92),
+    0 0 22px rgba(0, 71, 171, 0.10) !important;
+}
+
+html body #tab-content-library#tab-content-library:has(#smart-links-panel:not(.hidden))
+  #search-results#search-results {
+  width: 100% !important;
+  max-width: none !important;
+  min-width: 0 !important;
+}
+
+html body #tab-content-library#tab-content-library:has(#smart-links-panel:not(.hidden))
+  > .library-main-grid {
+  gap: 14px !important;
+}
+
+html body #tab-content-library#tab-content-library:has(#smart-links-panel:not(.hidden))
+  #smart-links-panel#smart-links-panel {
+  width: 320px !important;
+  min-width: 320px !important;
+  max-width: 320px !important;
+  padding-left: 14px !important;
+  box-sizing: border-box !important;
+}
+
+@media (min-width: 1181px) {
+  html body #tab-content-library#tab-content-library:has(#smart-links-panel:not(.hidden)) {
+    padding-right: 14px !important;
+  }
+
+  html body #tab-content-library#tab-content-library:has(#smart-links-panel:not(.hidden))
+    #smart-links-panel#smart-links-panel {
+    justify-self: stretch !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+  }
+}
+
+html body #tab-content-library#tab-content-library:has(#smart-links-panel:not(.hidden))
+  #search-results#search-results > .library-track-card.axiom-focus-deck-row {
+  display: grid !important;
+  grid-template-columns: 14px 62px minmax(0, 1fr) 58px 58px 62px 28px !important;
+  grid-template-rows: minmax(70px, auto) !important;
+  align-items: center !important;
+  column-gap: 10px !important;
+  min-width: 0 !important;
+  min-height: 86px !important;
+  height: auto !important;
+  max-height: none !important;
+  padding: 8px 10px 8px 0 !important;
+  overflow: hidden !important;
+  box-sizing: border-box !important;
+}
+
+html body #tab-content-library#tab-content-library:has(#smart-links-panel:not(.hidden))
+  #search-results#search-results > .library-track-card.axiom-focus-deck-row > .axiom-focus-marker {
+  grid-column: 1 !important;
+  grid-row: 1 !important;
+  align-self: stretch !important;
+  justify-self: stretch !important;
+  width: 14px !important;
+  min-width: 14px !important;
+  max-width: 14px !important;
+  height: auto !important;
+  min-height: 70px !important;
+  margin: -8px 0 !important;
+  position: static !important;
+  inset: auto !important;
+  transform: none !important;
+  overflow: hidden !important;
+  box-sizing: border-box !important;
+}
+
+html body #tab-content-library#tab-content-library:has(#smart-links-panel:not(.hidden))
+  #search-results#search-results > .library-track-card.axiom-focus-deck-row:is(.selected, .is-selected, [aria-selected="true"]) {
+  grid-template-columns: 32px 62px minmax(0, 1fr) 58px 58px 62px 28px !important;
+}
+
+html body #tab-content-library#tab-content-library:has(#smart-links-panel:not(.hidden))
+  #search-results#search-results > .library-track-card.axiom-focus-deck-row:is(.selected, .is-selected, [aria-selected="true"])
+  > .axiom-focus-marker {
+  width: 32px !important;
+  min-width: 32px !important;
+  max-width: 32px !important;
+}
+
+html body #tab-content-library#tab-content-library:has(#smart-links-panel:not(.hidden))
+  #search-results#search-results > .library-track-card.axiom-focus-deck-row > .track-artwork-shell.library-artwork {
+  grid-column: 2 !important;
+  grid-row: 1 !important;
+  align-self: center !important;
+  justify-self: center !important;
+  display: block !important;
+  width: 62px !important;
+  min-width: 62px !important;
+  max-width: 62px !important;
+  height: 62px !important;
+  min-height: 62px !important;
+  max-height: 62px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  position: relative !important;
+  inset: auto !important;
+  transform: none !important;
+  overflow: hidden !important;
+  box-sizing: border-box !important;
+}
+
+html body #tab-content-library#tab-content-library:has(#smart-links-panel:not(.hidden))
+  #search-results#search-results > .library-track-card.axiom-focus-deck-row > .library-track-main {
+  grid-column: 3 !important;
+  grid-row: 1 !important;
+  align-self: stretch !important;
+  justify-self: stretch !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  min-width: 0 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  height: auto !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  position: static !important;
+  inset: auto !important;
+  transform: none !important;
+  overflow: hidden !important;
+  box-sizing: border-box !important;
+}
+
+html body #tab-content-library#tab-content-library:has(#smart-links-panel:not(.hidden))
+  #search-results#search-results > .library-track-card.axiom-focus-deck-row
+  > .library-track-main > .library-track-identity {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  justify-content: center !important;
+  gap: 4px !important;
+  min-width: 0 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  height: auto !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  position: static !important;
+  inset: auto !important;
+  transform: none !important;
+  overflow: hidden !important;
+  box-sizing: border-box !important;
+}
+
+html body #tab-content-library#tab-content-library:has(#smart-links-panel:not(.hidden))
+  #search-results#search-results > .library-track-card.axiom-focus-deck-row
+  > .library-track-main > .library-track-identity > .library-track-title,
+html body #tab-content-library#tab-content-library:has(#smart-links-panel:not(.hidden))
+  #search-results#search-results > .library-track-card.axiom-focus-deck-row
+  > .library-track-main > .library-track-identity > .library-track-artist {
+  display: block !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  position: static !important;
+  inset: auto !important;
+  transform: none !important;
+  overflow: hidden !important;
+  white-space: nowrap !important;
+  text-overflow: ellipsis !important;
+  text-align: left !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+html body #tab-content-library#tab-content-library:has(#smart-links-panel:not(.hidden))
+  #search-results#search-results > .library-track-card.axiom-focus-deck-row
+  > .library-track-main > .library-track-identity > .library-track-title {
+  font-size: 17px !important;
+  line-height: 1.05 !important;
+}
+
+html body #tab-content-library#tab-content-library:has(#smart-links-panel:not(.hidden))
+  #search-results#search-results > .library-track-card.axiom-focus-deck-row
+  > .library-track-main > .library-track-identity > .library-track-artist {
+  font-size: 12px !important;
+  line-height: 1.1 !important;
+}
+
+html body #tab-content-library#tab-content-library:has(#smart-links-panel:not(.hidden))
+  #search-results#search-results > .library-track-card.axiom-focus-deck-row
+  > .library-track-main > .library-track-identity > .library-row-meta-stack {
+  display: flex !important;
+  flex-flow: row nowrap !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  gap: 7px !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  min-height: 14px !important;
+  margin: 1px 0 0 !important;
+  padding: 0 !important;
+  position: static !important;
+  inset: auto !important;
+  transform: none !important;
+  overflow: hidden !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+html body #tab-content-library#tab-content-library:has(#smart-links-panel:not(.hidden))
+  #search-results#search-results > .library-track-card.axiom-focus-deck-row
+  > .library-track-main > .library-track-detail-lane,
+html body #tab-content-library#tab-content-library:has(#smart-links-panel:not(.hidden))
+  #search-results#search-results > .library-track-card.axiom-focus-deck-row > .library-waveform {
+  display: none !important;
+}
+
+html body #tab-content-library#tab-content-library:has(#smart-links-panel:not(.hidden))
+  #search-results#search-results > .library-track-card.axiom-focus-deck-row > .library-bpm-cell {
+  grid-column: 4 !important;
+  grid-row: 1 !important;
+}
+
+html body #tab-content-library#tab-content-library:has(#smart-links-panel:not(.hidden))
+  #search-results#search-results > .library-track-card.axiom-focus-deck-row > .library-key-cell {
+  grid-column: 5 !important;
+  grid-row: 1 !important;
+}
+
+html body #tab-content-library#tab-content-library:has(#smart-links-panel:not(.hidden))
+  #search-results#search-results > .library-track-card.axiom-focus-deck-row
+  > .library-key-cell.has-key,
+html body #tab-content-library#tab-content-library:has(#smart-links-panel:not(.hidden))
+  #search-results#search-results > .library-track-card.axiom-focus-deck-row
+  > .library-key-cell.has-key > .camelot-pill,
+html body #tab-content-library#tab-content-library:has(#smart-links-panel:not(.hidden))
+  #search-results#search-results > .library-track-card.axiom-focus-deck-row
+  > .library-key-cell.has-key > small {
+  color: #24dfff !important;
+}
+
+html body #tab-content-library#tab-content-library:has(#smart-links-panel:not(.hidden))
+  #search-results#search-results > .library-track-card.axiom-focus-deck-row
+  > .library-key-cell.has-key {
+  background: rgba(0, 19, 22, 0.8) !important;
+  border-color: #24dfff !important;
+}
+
+html body #tab-content-library#tab-content-library:has(#smart-links-panel:not(.hidden))
+  #search-results#search-results > .library-track-card.axiom-focus-deck-row
+  > .library-key-cell.is-missing {
+  background: rgba(234, 179, 8, 0.08) !important;
+  border-color: rgba(234, 179, 8, 0.58) !important;
+}
+
+html body #tab-content-library#tab-content-library:has(#smart-links-panel:not(.hidden))
+  #search-results#search-results > .library-track-card.axiom-focus-deck-row
+  > .library-key-cell.is-missing > .camelot-pill,
+html body #tab-content-library#tab-content-library:has(#smart-links-panel:not(.hidden))
+  #search-results#search-results > .library-track-card.axiom-focus-deck-row
+  > .library-key-cell.is-missing > small {
+  display: flex !important;
+  color: #eab308 !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+html body #tab-content-library#tab-content-library:has(#smart-links-panel:not(.hidden))
+  #search-results#search-results > .library-track-card.axiom-focus-deck-row > .library-add-btn {
+  grid-column: 6 !important;
+  grid-row: 1 !important;
+}
+
+html body #tab-content-library#tab-content-library:has(#smart-links-panel:not(.hidden))
+  #search-results#search-results > .library-track-card.axiom-focus-deck-row > .fav-star-btn {
+  grid-column: 7 !important;
+  grid-row: 1 !important;
+}
+
+html body #smart-links-panel#smart-links-panel:not(.hidden)
+  #lib-suggestions-list#lib-suggestions-list > .recommendation-card.axiom-focus-deck-row {
+  display: grid !important;
+  grid-template-columns: 52px minmax(0, 1fr) 54px !important;
+  grid-template-rows: minmax(52px, auto) !important;
+  align-items: center !important;
+  column-gap: 10px !important;
+  min-width: 0 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  min-height: 70px !important;
+  height: auto !important;
+  margin: 0 0 8px !important;
+  padding: 8px 8px 8px 10px !important;
+  position: relative !important;
+  overflow: hidden !important;
+  box-sizing: border-box !important;
+}
+
+html body #smart-links-panel#smart-links-panel:not(.hidden)
+  #lib-suggestions-list#lib-suggestions-list > .recommendation-card.axiom-focus-deck-row
+  > .track-artwork-shell.recommendation-artwork {
+  grid-column: 1 !important;
+  grid-row: 1 !important;
+  align-self: center !important;
+  justify-self: center !important;
+  display: block !important;
+  width: 52px !important;
+  min-width: 52px !important;
+  max-width: 52px !important;
+  height: 52px !important;
+  min-height: 52px !important;
+  max-height: 52px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  position: relative !important;
+  inset: auto !important;
+  transform: none !important;
+  overflow: hidden !important;
+  box-sizing: border-box !important;
+}
+
+html body #smart-links-panel#smart-links-panel:not(.hidden)
+  #lib-suggestions-list#lib-suggestions-list > .recommendation-card.axiom-focus-deck-row
+  > .recommendation-main {
+  grid-column: 2 !important;
+  grid-row: 1 !important;
+  align-self: center !important;
+  justify-self: stretch !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  justify-content: center !important;
+  gap: 4px !important;
+  min-width: 0 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  height: auto !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  position: static !important;
+  inset: auto !important;
+  transform: none !important;
+  overflow: hidden !important;
+  box-sizing: border-box !important;
+}
+
+html body #smart-links-panel#smart-links-panel:not(.hidden)
+  #lib-suggestions-list#lib-suggestions-list > .recommendation-card.axiom-focus-deck-row
+  > .recommendation-main > .recommendation-title,
+html body #smart-links-panel#smart-links-panel:not(.hidden)
+  #lib-suggestions-list#lib-suggestions-list > .recommendation-card.axiom-focus-deck-row
+  > .recommendation-main > .recommendation-artist {
+  display: block !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  position: static !important;
+  inset: auto !important;
+  transform: none !important;
+  overflow: hidden !important;
+  white-space: nowrap !important;
+  text-overflow: ellipsis !important;
+  text-align: left !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+html body #smart-links-panel#smart-links-panel:not(.hidden)
+  #lib-suggestions-list#lib-suggestions-list > .recommendation-card.axiom-focus-deck-row
+  > .recommendation-main > .recommendation-title {
+  font-size: 14px !important;
+  line-height: 1.08 !important;
+}
+
+html body #smart-links-panel#smart-links-panel:not(.hidden)
+  #lib-suggestions-list#lib-suggestions-list > .recommendation-card.axiom-focus-deck-row
+  > .recommendation-main > .recommendation-artist {
+  font-size: 10px !important;
+  line-height: 1.1 !important;
+}
+
+html body #smart-links-panel#smart-links-panel:not(.hidden)
+  #lib-suggestions-list#lib-suggestions-list > .recommendation-card.axiom-focus-deck-row
+  > .recommendation-favorite {
+  display: none !important;
+}
+
+html body #smart-links-panel#smart-links-panel:not(.hidden)
+  #lib-suggestions-list#lib-suggestions-list > .recommendation-card.axiom-focus-deck-row
+  > .recommendation-meta {
+  display: contents !important;
+}
+
+/* Matching Songs off is a first-class Library layout, not an empty split view.
+ * The preference keeps the recommendation rail mounted but hidden, so remove
+ * every split-view width cap and let the existing row contract span the deck. */
+html body.library-matching-songs-disabled
+  #tab-content-library#tab-content-library > .library-main-grid {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  column-gap: 0 !important;
+}
+
+html body.library-matching-songs-disabled
+  #tab-content-library#tab-content-library .library-results-column {
+  grid-column: 1 !important;
+  justify-self: stretch !important;
+  width: 100% !important;
+  max-width: none !important;
+  min-width: 0 !important;
+  padding-right: 0 !important;
+  border-right: 0 !important;
+  box-sizing: border-box !important;
+}
+
+html body.library-matching-songs-disabled
+  #tab-content-library#tab-content-library #search-results#search-results {
+  width: 100% !important;
+  max-width: none !important;
+  min-width: 0 !important;
+  overflow-x: hidden !important;
+}
+
+html body.library-matching-songs-disabled
+  #tab-content-library#tab-content-library #search-results#search-results
+  > .library-track-card.axiom-focus-deck-row {
+  width: 100% !important;
+  max-width: none !important;
+  min-width: 0 !important;
+  box-sizing: border-box !important;
+}
+
+html body.library-matching-songs-disabled
+  #tab-content-library#tab-content-library #smart-links-panel#smart-links-panel {
+  display: none !important;
+}
+
+html body #smart-links-panel#smart-links-panel:not(.hidden)
+  #lib-suggestions-list#lib-suggestions-list > .recommendation-card.axiom-focus-deck-row
+  > .recommendation-meta > :not(.recommendation-add-btn) {
+  display: none !important;
+}
+
+html body #smart-links-panel#smart-links-panel:not(.hidden)
+  #lib-suggestions-list#lib-suggestions-list > .recommendation-card.axiom-focus-deck-row
+  > .recommendation-meta > .recommendation-add-btn {
+  grid-column: 3 !important;
+  grid-row: 1 !important;
+  align-self: center !important;
+  justify-self: center !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 54px !important;
+  min-width: 54px !important;
+  max-width: 54px !important;
+  height: 40px !important;
+  min-height: 40px !important;
+  margin: 0 !important;
+  padding: 0 5px !important;
+  position: static !important;
+  inset: auto !important;
+  transform: none !important;
+  overflow: hidden !important;
+  box-sizing: border-box !important;
+}
+
+/* Compact installed-app windows keep both decks usable without overlap. */
+@media (max-width: 1180px) and (min-width: 900px) {
+  html body #tab-content-library#tab-content-library:has(#smart-links-panel:not(.hidden))
+    > .library-main-grid {
+    grid-template-columns: minmax(0, 1fr) 280px !important;
+    gap: 14px !important;
+    min-width: 0 !important;
+  }
+
+  html body #tab-content-library#tab-content-library:has(#smart-links-panel:not(.hidden))
+    .library-results-column {
+    width: auto !important;
+    max-width: none !important;
+    min-width: 0 !important;
+    padding-right: 0 !important;
+  }
+
+  html body #tab-content-library#tab-content-library:has(#smart-links-panel:not(.hidden))
+    #smart-links-panel#smart-links-panel {
+    width: 280px !important;
+    min-width: 280px !important;
+    max-width: 280px !important;
+    margin-left: 0 !important;
+    padding: 18px !important;
+    box-sizing: border-box !important;
+  }
+
+  html body #tab-content-library#tab-content-library:has(#smart-links-panel:not(.hidden))
+    #search-results#search-results > .library-track-card.axiom-focus-deck-row {
+    grid-template-columns: 12px 54px minmax(0, 1fr) 50px 50px 54px 24px !important;
+    column-gap: 6px !important;
+    min-height: 80px !important;
+  }
+
+  html body #tab-content-library#tab-content-library:has(#smart-links-panel:not(.hidden))
+    #search-results#search-results > .library-track-card.axiom-focus-deck-row:is(.selected, .is-selected, [aria-selected="true"]) {
+    grid-template-columns: 26px 54px minmax(0, 1fr) 50px 50px 54px 24px !important;
+  }
+
+  html body #tab-content-library#tab-content-library:has(#smart-links-panel:not(.hidden))
+    #search-results#search-results > .library-track-card.axiom-focus-deck-row > .axiom-focus-marker {
+    width: 12px !important;
+    min-width: 12px !important;
+    max-width: 12px !important;
+  }
+
+  html body #tab-content-library#tab-content-library:has(#smart-links-panel:not(.hidden))
+    #search-results#search-results > .library-track-card.axiom-focus-deck-row:is(.selected, .is-selected, [aria-selected="true"])
+    > .axiom-focus-marker {
+    width: 26px !important;
+    min-width: 26px !important;
+    max-width: 26px !important;
+  }
+
+  html body #tab-content-library#tab-content-library:has(#smart-links-panel:not(.hidden))
+    #search-results#search-results > .library-track-card.axiom-focus-deck-row > .track-artwork-shell.library-artwork {
+    width: 54px !important;
+    min-width: 54px !important;
+    max-width: 54px !important;
+    height: 54px !important;
+    min-height: 54px !important;
+    max-height: 54px !important;
+  }
+
+  html body #tab-content-library#tab-content-library:has(#smart-links-panel:not(.hidden))
+    #search-results#search-results > .library-track-card.axiom-focus-deck-row > .library-bpm-cell,
+  html body #tab-content-library#tab-content-library:has(#smart-links-panel:not(.hidden))
+    #search-results#search-results > .library-track-card.axiom-focus-deck-row > .library-key-cell {
+    width: 50px !important;
+    min-width: 50px !important;
+    max-width: 50px !important;
+  }
+
+  html body #tab-content-library#tab-content-library:has(#smart-links-panel:not(.hidden))
+    #search-results#search-results > .library-track-card.axiom-focus-deck-row > .library-add-btn {
+    width: 54px !important;
+    min-width: 54px !important;
+    max-width: 54px !important;
+  }
+
+  html body #smart-links-panel#smart-links-panel:not(.hidden)
+    #lib-suggestions-list#lib-suggestions-list > .recommendation-card.axiom-focus-deck-row {
+    grid-template-columns: 44px minmax(0, 1fr) 46px !important;
+    column-gap: 6px !important;
+    min-height: 62px !important;
+    padding: 6px !important;
+  }
+
+  html body #smart-links-panel#smart-links-panel:not(.hidden)
+    #lib-suggestions-list#lib-suggestions-list > .recommendation-card.axiom-focus-deck-row
+    > .track-artwork-shell.recommendation-artwork {
+    width: 44px !important;
+    min-width: 44px !important;
+    max-width: 44px !important;
+    height: 44px !important;
+    min-height: 44px !important;
+    max-height: 44px !important;
+  }
+
+  html body #smart-links-panel#smart-links-panel:not(.hidden)
+    #lib-suggestions-list#lib-suggestions-list > .recommendation-card.axiom-focus-deck-row
+    > .recommendation-meta > .recommendation-add-btn {
+    width: 46px !important;
+    min-width: 46px !important;
+    max-width: 46px !important;
+    height: 38px !important;
+    min-height: 38px !important;
+  }
+}

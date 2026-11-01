@@ -1,0 +1,44 @@
+<style id="studio-matching-songs-hover-glow-v1">
+  /* Matching Songs keeps its approved resting state. Hover and keyboard focus
+     add a contained halo so the action feels live without lighting the row. */
+  html body #studio-active-view#studio-active-view
+    #active-playlist-container#active-playlist-container
+    .playlist-row.studio-transition-row.axiom-focus-deck-row
+    > .studio-smart-btn.button--green-outline {
+    transition: border-color 150ms ease, box-shadow 150ms ease, background-color 150ms ease !important;
+  }
+
+  html body:not(.light-mode) #studio-active-view#studio-active-view
+    #active-playlist-container#active-playlist-container
+    .playlist-row.studio-transition-row.axiom-focus-deck-row
+    > .studio-smart-btn.button--green-outline:not(:disabled):is(:hover, :focus-visible) {
+    border-color: var(--accent) !important;
+    box-shadow:
+      0 0 0 1px rgba(163, 255, 0, .28),
+      0 0 14px rgba(163, 255, 0, .52),
+      0 0 30px rgba(163, 255, 0, .26),
+      inset 0 0 12px rgba(163, 255, 0, .08) !important;
+    outline: none !important;
+  }
+
+  html body.light-mode #studio-active-view#studio-active-view
+    #active-playlist-container#active-playlist-container
+    .playlist-row.studio-transition-row.axiom-focus-deck-row
+    > .studio-smart-btn.button--green-outline:not(:disabled):is(:hover, :focus-visible) {
+    border-color: #0047ab !important;
+    box-shadow:
+      0 0 0 1px rgba(0, 71, 171, .18),
+      0 0 14px rgba(0, 71, 171, .34),
+      0 0 26px rgba(0, 71, 171, .16) !important;
+    outline: none !important;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html body #studio-active-view#studio-active-view
+      #active-playlist-container#active-playlist-container
+      .playlist-row.studio-transition-row.axiom-focus-deck-row
+      > .studio-smart-btn.button--green-outline {
+      transition: none !important;
+    }
+  }
+</style>

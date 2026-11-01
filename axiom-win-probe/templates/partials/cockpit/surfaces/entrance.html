@@ -1,0 +1,23 @@
+<section id="axiom-entrance" class="axiom-entrance" aria-label="AXIOM entrance">
+  <div class="entrance-door entrance-left" aria-hidden="true"></div>
+  <div class="entrance-door entrance-right" aria-hidden="true"></div>
+  <div class="entrance-floor" aria-hidden="true"></div>
+  <div class="entrance-smoke" aria-hidden="true"><img class="entrance-smoke-left" src="/static/images/entrance/smoke-soft.png" alt=""><img class="entrance-smoke-right" src="/static/images/entrance/smoke-soft.png" alt=""><img class="entrance-smoke-floor" src="/static/images/entrance/smoke-soft.png" alt=""></div>
+  <div class="entrance-light" aria-hidden="true"></div>
+  <div class="entrance-brand">
+    <div class="entrance-wordmark" aria-label="PEAK HOUR">PEAK HOUR</div>
+    <div class="entrance-tagline">BUILT FOR HIP-HOP DJS</div>
+    <span class="entrance-logo-badge">{% if axiom_lite %}<img class="entrance-build-icon" src="/static/axiom-release-mark-transparent-v1.png" alt="AXIOM Lite logo" width="96" height="96">{% else %}<img class="entrance-build-icon" src="/static/axiom-pro-mark.png?v=20260920-pro-logo-hd" alt="PEAK HOUR logo" width="96" height="96">{% endif %}</span>
+    <div id="entrance-welcome" class="entrance-welcome" hidden><p>Add your music to open AXIOM.</p></div>
+    <div class="entrance-actions">
+      <button id="axiom-entrance-open" type="button" disabled><img class="entrance-lock" src="/static/icons/lock-keyhole.svg" alt="" width="18" height="18">BUILD A SET</button>
+      {% if not axiom_lite %}<button id="axiom-entrance-remix" type="button" disabled aria-label="Make a remix or mixtape" data-axiom-cta-skip="true"><span class="entrance-remix-rest" aria-hidden="true">MAKE A REMIX</span><span class="entrance-remix-hover" aria-hidden="true">REMIX / MIXTAPE</span></button>{% endif %}
+    </div>
+  </div>
+  <button id="entrance-sound-toggle" type="button" class="entrance-sound-toggle" aria-pressed="true">Door sound: On</button>
+</section>
+<div id="entrance-library-chooser" class="entrance-library-chooser" role="dialog" aria-label="Add your music" hidden>
+  <header><h2>ADD YOUR MUSIC</h2><button type="button" data-entrance-dismiss aria-label="Close music choices"><img src="/static/icons/x.svg" alt="" width="18" height="18"></button></header>
+  <button type="button" data-axiom-cta-skip="true" data-entrance-source="folder"><img src="/static/icons/folder-open.svg" alt=""><span><strong>Choose Music Folder</strong><small>Find music on this Mac or a connected drive</small></span><img src="/static/icons/arrow-right.svg" alt=""></button>
+  <footer>Your music stays where it is.</footer>
+</div>

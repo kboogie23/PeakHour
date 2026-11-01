@@ -1,0 +1,403 @@
+
+
+<!-- Authoritative Library + Matching Songs split-view layout. -->
+<style id="library-matching-row-contract-v6">
+  /*
+   * Main Library row contract in split view:
+   * selection rail | artwork + identity | BPM | key | add | favourite
+   * Artwork remains inside library-track-main, so that lane owns its inset.
+   */
+  #tab-content-library:has(#smart-links-panel:not(.hidden))
+    #search-results > .library-track-card {
+    display: grid !important;
+    grid-template-columns: 32px minmax(0, 1fr) 58px 58px 62px 26px !important;
+    align-items: center !important;
+    column-gap: 10px !important;
+    min-width: 0 !important;
+    min-height: 86px !important;
+    height: auto !important;
+    padding: 8px 10px 8px 0 !important;
+    overflow: hidden !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Keep the selected marker in its own lane instead of over the artwork. */
+  #tab-content-library:has(#smart-links-panel:not(.hidden))
+    #search-results > .library-track-card > div:first-of-type:not(.library-track-main) {
+    grid-column: 1 !important;
+    grid-row: 1 !important;
+    position: static !important;
+    inset: auto !important;
+    transform: none !important;
+    align-self: stretch !important;
+    width: 32px !important;
+    min-width: 32px !important;
+    max-width: 32px !important;
+    height: auto !important;
+    margin: -8px 0 -8px 0 !important;
+    overflow: hidden !important;
+    z-index: 1 !important;
+  }
+
+  #tab-content-library:has(#smart-links-panel:not(.hidden))
+    #search-results > .library-track-card > .library-track-main {
+    grid-column: 2 !important;
+    grid-row: 1 !important;
+    display: grid !important;
+    grid-template-columns: 62px minmax(0, 1fr) !important;
+    align-items: center !important;
+    justify-content: stretch !important;
+    gap: 14px !important;
+    min-width: 0 !important;
+    width: 100% !important;
+    height: auto !important;
+    margin: 0 !important;
+    padding: 0 0 0 8px !important;
+    position: relative !important;
+    left: auto !important;
+    right: auto !important;
+    transform: none !important;
+    overflow: visible !important;
+    box-sizing: border-box !important;
+  }
+
+  /* The first main-row child is the artwork/play shell in the rendered markup. */
+  #tab-content-library:has(#smart-links-panel:not(.hidden))
+    #search-results > .library-track-card > .library-track-main
+    > :first-child:not(.library-track-identity) {
+    grid-column: 1 !important;
+    grid-row: 1 !important;
+    position: relative !important;
+    inset: auto !important;
+    transform: none !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 62px !important;
+    min-width: 62px !important;
+    max-width: 62px !important;
+    height: 62px !important;
+    min-height: 62px !important;
+    max-height: 62px !important;
+    margin: 0 !important;
+    overflow: hidden !important;
+    box-sizing: border-box !important;
+    z-index: 2 !important;
+  }
+
+  #tab-content-library:has(#smart-links-panel:not(.hidden))
+    #search-results > .library-track-card > .library-track-main
+    > :first-child:not(.library-track-identity) img {
+    width: 100% !important;
+    height: 100% !important;
+    max-width: 100% !important;
+    max-height: 100% !important;
+    object-fit: cover !important;
+  }
+
+  #tab-content-library:has(#smart-links-panel:not(.hidden))
+    #search-results > .library-track-card .library-track-identity {
+    grid-column: 2 !important;
+    grid-row: 1 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    justify-content: center !important;
+    gap: 4px !important;
+    min-width: 0 !important;
+    width: 100% !important;
+    height: auto !important;
+    margin: 0 !important;
+    padding: 2px 0 !important;
+    position: static !important;
+    transform: none !important;
+    overflow: hidden !important;
+    box-sizing: border-box !important;
+  }
+
+  #tab-content-library:has(#smart-links-panel:not(.hidden))
+    #search-results > .library-track-card .library-track-title {
+    display: block !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    font-size: 17px !important;
+    line-height: 1.08 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+
+  #tab-content-library:has(#smart-links-panel:not(.hidden))
+    #search-results > .library-track-card .library-track-artist {
+    display: block !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    font-size: 12px !important;
+    line-height: 1.15 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+
+  /* Restore genre/root and year under the artist, side by side. */
+  #tab-content-library:has(#smart-links-panel:not(.hidden))
+    #search-results > .library-track-card :is(.library-row-meta-stack, .library-meta-line) {
+    display: flex !important;
+    flex-flow: row nowrap !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    gap: 7px !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    min-height: 14px !important;
+    margin: 1px 0 0 !important;
+    padding: 0 !important;
+    position: static !important;
+    transform: none !important;
+    overflow: hidden !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+
+  #tab-content-library:has(#smart-links-panel:not(.hidden))
+    #search-results > .library-track-card
+    :is(.library-row-meta-stack, .library-meta-line)
+    :is(.library-dna-chip, .dna-badge, .library-genre-chip, .library-root-chip) {
+    display: inline-flex !important;
+    align-items: center !important;
+    flex: 0 1 auto !important;
+    max-width: 132px !important;
+    min-height: 14px !important;
+    margin: 0 !important;
+    padding: 2px 6px !important;
+    font-size: 9px !important;
+    line-height: 1 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+
+  #tab-content-library:has(#smart-links-panel:not(.hidden))
+    #search-results > .library-track-card
+    :is(.library-row-meta-stack, .library-meta-line)
+    :is(.library-year, .library-row-year, .track-year, [data-library-year]) {
+    display: inline-flex !important;
+    align-items: center !important;
+    flex: 0 0 auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    font-size: 10px !important;
+    line-height: 1 !important;
+    white-space: nowrap !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+
+  #tab-content-library:has(#smart-links-panel:not(.hidden))
+    #search-results > .library-track-card > .library-bpm-cell {
+    grid-column: 3 !important;
+    grid-row: 1 !important;
+    align-self: center !important;
+    justify-self: center !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 58px !important;
+    min-width: 58px !important;
+    max-width: 58px !important;
+    height: 54px !important;
+    min-height: 54px !important;
+    margin: 0 !important;
+    padding: 4px !important;
+    position: static !important;
+    transform: none !important;
+    box-sizing: border-box !important;
+    text-align: center !important;
+    overflow: hidden !important;
+  }
+
+  #tab-content-library:has(#smart-links-panel:not(.hidden))
+    #search-results > .library-track-card > .library-bpm-cell .library-bpm-value {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 100% !important;
+    height: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    outline: 0 !important;
+    box-shadow: none !important;
+    font-size: 20px !important;
+    line-height: 1 !important;
+    text-align: center !important;
+  }
+
+  #tab-content-library:has(#smart-links-panel:not(.hidden))
+    #search-results > .library-track-card > .library-key-cell {
+    grid-column: 4 !important;
+    grid-row: 1 !important;
+    align-self: center !important;
+    justify-self: center !important;
+    width: 58px !important;
+    min-width: 58px !important;
+    max-width: 58px !important;
+    height: 54px !important;
+    min-height: 54px !important;
+    margin: 0 !important;
+    position: static !important;
+    transform: none !important;
+    box-sizing: border-box !important;
+  }
+
+  #tab-content-library:has(#smart-links-panel:not(.hidden))
+    #search-results > .library-track-card > .library-add-btn {
+    grid-column: 5 !important;
+    grid-row: 1 !important;
+    align-self: center !important;
+    justify-self: center !important;
+    width: 62px !important;
+    min-width: 62px !important;
+    max-width: 62px !important;
+    height: 46px !important;
+    min-height: 46px !important;
+    margin: 0 !important;
+    padding: 0 6px !important;
+    position: static !important;
+    transform: none !important;
+    box-sizing: border-box !important;
+  }
+
+  #tab-content-library:has(#smart-links-panel:not(.hidden))
+    #search-results > .library-track-card > .fav-star-btn {
+    grid-column: 6 !important;
+    grid-row: 1 !important;
+    align-self: center !important;
+    justify-self: center !important;
+    width: 26px !important;
+    min-width: 26px !important;
+    max-width: 26px !important;
+    height: 34px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    position: static !important;
+    transform: none !important;
+    font-size: 24px !important;
+    line-height: 1 !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Narrow Matching Songs cards: artwork/play, title + artist, and Add only. */
+  #smart-links-panel:not(.hidden) #lib-suggestions-list > .vampire-row {
+    display: grid !important;
+    grid-template-columns: 52px minmax(0, 1fr) 54px !important;
+    align-items: center !important;
+    gap: 10px !important;
+    min-width: 0 !important;
+    min-height: 72px !important;
+    height: auto !important;
+    margin: 0 0 8px !important;
+    padding: 8px 8px 8px 10px !important;
+    overflow: hidden !important;
+    box-sizing: border-box !important;
+  }
+
+  #smart-links-panel:not(.hidden) #lib-suggestions-list > .vampire-row
+    > :first-child:not(.recommendation-main):not(.recommendation-meta) {
+    grid-column: 1 !important;
+    width: 52px !important;
+    min-width: 52px !important;
+    max-width: 52px !important;
+    height: 52px !important;
+    min-height: 52px !important;
+    max-height: 52px !important;
+    margin: 0 !important;
+    position: relative !important;
+    overflow: hidden !important;
+  }
+
+  #smart-links-panel:not(.hidden) #lib-suggestions-list
+    :is(.recommendation-main, .recommendation-copy, .recommendation-identity) {
+    grid-column: 2 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    justify-content: center !important;
+    gap: 4px !important;
+    min-width: 0 !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+  }
+
+  #smart-links-panel:not(.hidden) #lib-suggestions-list
+    :is(.recommendation-title, .track-title, .library-track-title) {
+    display: block !important;
+    width: 100% !important;
+    margin: 0 !important;
+    font-size: 14px !important;
+    line-height: 1.08 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+
+  #smart-links-panel:not(.hidden) #lib-suggestions-list
+    :is(.recommendation-artist, .track-artist, .library-track-artist, .artist-name) {
+    display: block !important;
+    width: 100% !important;
+    margin: 0 !important;
+    font-size: 10px !important;
+    line-height: 1.1 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+
+  #smart-links-panel:not(.hidden) #lib-suggestions-list .recommendation-meta {
+    grid-column: 3 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 54px !important;
+    min-width: 54px !important;
+    max-width: 54px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    position: static !important;
+    overflow: visible !important;
+  }
+
+  #smart-links-panel:not(.hidden) #lib-suggestions-list
+    :is(.recommendation-bpm, .recommendation-key-metric, .recommendation-fit, .fav-star-btn) {
+    display: none !important;
+  }
+
+  #smart-links-panel:not(.hidden) #lib-suggestions-list [id^="lib-sugg-add"],
+  #smart-links-panel:not(.hidden) #lib-suggestions-list .library-add-btn {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 54px !important;
+    min-width: 54px !important;
+    max-width: 54px !important;
+    height: 40px !important;
+    min-height: 40px !important;
+    margin: 0 !important;
+    padding: 0 5px !important;
+    position: static !important;
+    transform: none !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+  }
+</style>

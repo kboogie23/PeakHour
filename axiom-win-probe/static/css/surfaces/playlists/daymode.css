@@ -1,0 +1,66 @@
+/* Playlists surface: Day Mode contrast and selected-state treatment. */
+
+html body.light-mode #playlist-undo-snackbar .undo-btn {
+  border-color: rgba(255, 255, 255, 0.82) !important;
+  background: #0047ab !important;
+  color: #ffffff !important;
+  box-shadow: none !important;
+}
+
+html body.light-mode #tab-content-playlists,
+html body.light-mode #tab-content-playlists .playlists-shell,
+html body.light-mode #tab-content-playlists .playlists-shell > aside,
+html body.light-mode #tab-content-playlists .playlists-shell > section {
+  border-color: rgba(0, 71, 171, 0.18) !important;
+  background: #ffffff !important;
+  color: #07111f !important;
+  box-shadow: none !important;
+}
+
+html body.light-mode #tab-content-playlists > .flex:first-child {
+  border-bottom-color: rgba(0, 71, 171, 0.16) !important;
+  background: #ffffff !important;
+}
+
+html body.light-mode #tab-content-playlists :is(h2, #playlist-listen-title, .playlist-empty-state strong) {
+  color: #07111f !important;
+  text-shadow: none !important;
+}
+
+html body.light-mode #tab-content-playlists :is(.playlist-empty-state, #saved-playlists-list, #playlist-listen-tracks) {
+  border-color: rgba(0, 71, 171, 0.18) !important;
+  background: #ffffff !important;
+  color: #40516a !important;
+}
+
+html body.light-mode #tab-content-playlists :is(.playlist-listen-row:hover, .playlist-listen-row.playing-track) {
+  background: rgba(0, 71, 171, 0.06) !important;
+}
+
+html body.light-mode #tab-content-playlists #saved-playlists-list .playlist-crate-row.active {
+  border-color: #0047ab !important;
+  background: #0047ab !important;
+  color: #ffffff !important;
+}
+
+html body.light-mode #tab-content-playlists #saved-playlists-list .playlist-crate-row.active :is(p, span, .playlist-quiet-action) {
+  color: #ffffff !important;
+}
+
+html body.light-mode #tab-content-playlists #saved-playlists-list .playlist-crate-row.active .playlist-edit-cta {
+  border-color: #ffffff !important;
+  background: #ffffff !important;
+  color: #0047ab !important;
+}
+
+html body.light-mode #tab-content-playlists :is(button, .playlist-quiet-action) {
+  border-color: rgba(0, 71, 171, 0.30) !important;
+  color: #0047ab !important;
+  box-shadow: none !important;
+}
+
+html body.light-mode #tab-content-playlists :is(button.bg-axiom-accent, button[class*="bg-axiom-accent"]) {
+  border-color: #0047ab !important;
+  background: #0047ab !important;
+  color: #ffffff !important;
+}

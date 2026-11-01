@@ -1,0 +1,558 @@
+<style id="native-webkit-ui-alignment-contract-v1">
+  /* Release-critical native alignment contract.
+     Keep Track Prep on explicit wrapper grids. Older macOS WebKit releases
+     do not reliably flatten nested form/details controls with display:contents,
+     and parent-sensitive layout selectors can resolve differently from Chromium. */
+  html body.library-preparation-open
+    #tab-content-library.library-cockpit#tab-content-library
+    > .library-main-grid {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  html body.library-preparation-open
+    #tab-content-library.library-cockpit#tab-content-library
+    #smart-links-panel.recommendations-panel {
+    display: none !important;
+  }
+
+  html body.library-preparation-open
+    #tab-content-library.library-cockpit#tab-content-library
+    .library-control-row > #library-preparation-page-title {
+    display: inline-flex !important;
+    flex: 0 0 132px !important;
+    align-items: center !important;
+    justify-content: flex-end !important;
+    width: 132px !important;
+    min-width: 132px !important;
+    height: 42px !important;
+    margin: 0 8px 0 auto !important;
+  }
+
+  html body.library-preparation-open
+    #tab-content-library.library-cockpit#tab-content-library#tab-content-library
+    .library-results-column > #library-brief-lens#library-brief-lens#library-brief-lens[data-library-brief-panel="preparation"] {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1.55fr) minmax(420px, .9fr) !important;
+    grid-template-rows: minmax(52px, auto) auto auto !important;
+    align-items: start !important;
+    column-gap: 8px !important;
+    row-gap: 0 !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    height: auto !important;
+    min-height: 66px !important;
+    max-height: none !important;
+    padding: 6px 8px !important;
+    overflow: visible !important;
+    box-sizing: border-box !important;
+  }
+
+  html body.library-preparation-open
+    #tab-content-library#tab-content-library
+    #library-brief-lens#library-brief-lens[data-library-brief-panel="preparation"]
+    > .library-brief-panel {
+    grid-column: 1 !important;
+    grid-row: 1 / 4 !important;
+    display: block !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  html body.library-preparation-open
+    #tab-content-library#tab-content-library
+    #library-brief-lens#library-brief-lens[data-library-brief-panel="preparation"]
+    > .library-brief-panel > #library-brief-settings#library-brief-settings:not(.hidden) {
+    display: block !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  html body.library-preparation-open
+    #tab-content-library#tab-content-library
+    #library-brief-lens#library-brief-lens[data-library-brief-panel="preparation"]
+    #library-preparation-toolbar#library-preparation-toolbar.library-preparation-toolbar {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) minmax(140px, .68fr) !important;
+    align-items: center !important;
+    gap: 6px !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    min-height: 44px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  html body.library-preparation-open
+    #tab-content-library#tab-content-library
+    #library-brief-lens#library-brief-lens[data-library-brief-panel="preparation"][data-library-prep-scan-visible="false"]
+    #library-preparation-toolbar#library-preparation-toolbar.library-preparation-toolbar {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  html body.library-preparation-open
+    #tab-content-library#tab-content-library
+    #library-brief-lens#library-brief-lens[data-library-brief-panel="preparation"]
+    #library-preparation-toolbar#library-preparation-toolbar > label:nth-of-type(1),
+  html body.library-preparation-open
+    #tab-content-library#tab-content-library
+    #library-brief-lens#library-brief-lens[data-library-brief-panel="preparation"]
+    #library-preparation-toolbar#library-preparation-toolbar > label:nth-of-type(2),
+  html body.library-preparation-open
+    #tab-content-library#tab-content-library
+    #library-brief-lens#library-brief-lens[data-library-brief-panel="preparation"]
+    #library-preparation-toolbar#library-preparation-toolbar > #library-preparation-scan-visible#library-preparation-scan-visible {
+    grid-row: 1 !important;
+    min-width: 0 !important;
+  }
+
+  html body.library-preparation-open
+    #tab-content-library#tab-content-library
+    #library-brief-lens#library-brief-lens[data-library-brief-panel="preparation"]
+    #library-preparation-toolbar#library-preparation-toolbar > label:nth-of-type(1) {
+    grid-column: 1 !important;
+  }
+
+  html body.library-preparation-open
+    #tab-content-library#tab-content-library
+    #library-brief-lens#library-brief-lens[data-library-brief-panel="preparation"]
+    #library-preparation-toolbar#library-preparation-toolbar > label:nth-of-type(2) {
+    grid-column: 2 !important;
+  }
+
+  html body.library-preparation-open
+    #tab-content-library#tab-content-library
+    #library-brief-lens#library-brief-lens[data-library-brief-panel="preparation"]
+    #library-preparation-toolbar#library-preparation-toolbar > #library-preparation-scan-visible#library-preparation-scan-visible {
+    grid-column: 3 !important;
+  }
+
+  html body.library-preparation-open
+    #tab-content-library#tab-content-library
+    #library-brief-lens#library-brief-lens[data-library-brief-panel="preparation"]
+    > #library-brief-topline#library-brief-topline {
+    grid-column: 2 !important;
+    grid-row: 1 !important;
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) 120px !important;
+    align-items: center !important;
+    gap: 6px !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    min-height: 44px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  html body.library-preparation-open
+    #tab-content-library#tab-content-library
+    #library-brief-lens#library-brief-lens[data-library-brief-panel="preparation"]
+    #library-brief-topline#library-brief-topline > #library-setup-utility-bar#library-setup-utility-bar {
+    grid-column: 1 !important;
+    grid-row: 1 !important;
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) 116px !important;
+    align-items: center !important;
+    gap: 6px !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  html body.library-preparation-open
+    #tab-content-library#tab-content-library
+    #library-brief-lens#library-brief-lens[data-library-brief-panel="preparation"]
+    #library-setup-utility-bar#library-setup-utility-bar > #library-brief-lane-dropdown#library-brief-lane-dropdown {
+    grid-column: 1 !important;
+    grid-row: 1 !important;
+  }
+
+  html body.library-preparation-open
+    #tab-content-library#tab-content-library
+    #library-brief-lens#library-brief-lens[data-library-brief-panel="preparation"]
+    #library-setup-utility-bar#library-setup-utility-bar > #library-brief-collapse#library-brief-collapse {
+    grid-column: 2 !important;
+    grid-row: 1 !important;
+  }
+
+  html body.library-preparation-open
+    #tab-content-library#tab-content-library
+    #library-brief-lens#library-brief-lens[data-library-brief-panel="preparation"]
+    #library-brief-topline#library-brief-topline > #library-brief-action-rail#library-brief-action-rail {
+    grid-column: 2 !important;
+    grid-row: 1 !important;
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    align-items: center !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  html body.library-preparation-open
+    #tab-content-library#tab-content-library
+    #library-brief-lens#library-brief-lens[data-library-brief-panel="preparation"]
+    #library-brief-action-rail#library-brief-action-rail > #library-preparation-toggle#library-preparation-toggle {
+    grid-column: 1 !important;
+    grid-row: 1 !important;
+  }
+
+  html body.library-preparation-open
+    #tab-content-library#tab-content-library
+    #library-brief-lens#library-brief-lens[data-library-brief-panel="preparation"]
+    > :is(#library-preparation-inherited-filters, #library-preparation-scan-receipt) {
+    grid-column: 1 / -1 !important;
+  }
+
+  /* The visible Track Prep state is the fail-closed source of truth. Do not
+     depend on a body class or a render-timing side effect to cancel the older
+     display:contents layout: installed WebKit can paint that flattened state
+     before the JavaScript layout synchroniser runs. */
+  html body
+    #tab-content-library#tab-content-library
+    .library-results-column > #library-brief-lens#library-brief-lens#library-brief-lens[data-library-brief-panel="preparation"] {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1.55fr) minmax(420px, .9fr) !important;
+    grid-template-rows: minmax(52px, auto) auto auto !important;
+    align-items: start !important;
+    column-gap: 8px !important;
+    row-gap: 0 !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    min-height: 66px !important;
+    height: auto !important;
+    padding: 6px 8px !important;
+    overflow: visible !important;
+    box-sizing: border-box !important;
+  }
+
+  html body
+    #tab-content-library#tab-content-library
+    #library-brief-lens#library-brief-lens[data-library-brief-panel="preparation"]
+    > .library-brief-panel,
+  html body
+    #tab-content-library#tab-content-library
+    #library-brief-lens#library-brief-lens[data-library-brief-panel="preparation"]
+    > .library-brief-panel > #library-brief-settings#library-brief-settings:not(.hidden) {
+    display: block !important;
+    min-width: 0 !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  html body
+    #tab-content-library#tab-content-library
+    #library-brief-lens#library-brief-lens[data-library-brief-panel="preparation"]
+    > .library-brief-panel {
+    grid-column: 1 !important;
+    grid-row: 1 / 4 !important;
+  }
+
+  html body
+    #tab-content-library#tab-content-library
+    #library-brief-lens#library-brief-lens[data-library-brief-panel="preparation"]
+    #library-preparation-toolbar#library-preparation-toolbar.library-preparation-toolbar {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) minmax(140px, .68fr) !important;
+    align-items: center !important;
+    gap: 6px !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    min-height: 44px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  html body
+    #tab-content-library#tab-content-library
+    #library-brief-lens#library-brief-lens[data-library-brief-panel="preparation"][data-library-prep-scan-visible="false"]
+    #library-preparation-toolbar#library-preparation-toolbar.library-preparation-toolbar {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  html body
+    #tab-content-library#tab-content-library
+    #library-brief-lens#library-brief-lens[data-library-brief-panel="preparation"]
+    #library-preparation-toolbar#library-preparation-toolbar > .library-preparation-toolbar-copy {
+    display: none !important;
+  }
+
+  html body
+    #tab-content-library#tab-content-library
+    #library-brief-lens#library-brief-lens[data-library-brief-panel="preparation"]
+    #library-preparation-toolbar#library-preparation-toolbar > label.library-preparation-menu-field {
+    position: relative !important;
+    display: grid !important;
+    grid-template-rows: 10px 32px !important;
+    align-self: center !important;
+    gap: 2px !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    height: 44px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: visible !important;
+  }
+
+  html body
+    #tab-content-library#tab-content-library
+    #library-brief-lens#library-brief-lens[data-library-brief-panel="preparation"]
+    #library-preparation-toolbar#library-preparation-toolbar > label.library-preparation-menu-field:nth-of-type(1) {
+    grid-column: 1 !important;
+    grid-row: 1 !important;
+  }
+
+  html body
+    #tab-content-library#tab-content-library
+    #library-brief-lens#library-brief-lens[data-library-brief-panel="preparation"]
+    #library-preparation-toolbar#library-preparation-toolbar > label.library-preparation-menu-field:nth-of-type(2) {
+    grid-column: 2 !important;
+    grid-row: 1 !important;
+  }
+
+  html body
+    #tab-content-library#tab-content-library
+    #library-brief-lens#library-brief-lens[data-library-brief-panel="preparation"]
+    .library-preparation-menu {
+    position: relative !important;
+    display: block !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    height: 32px !important;
+    margin: 0 !important;
+    overflow: visible !important;
+  }
+
+  html body
+    #tab-content-library#tab-content-library
+    #library-brief-lens#library-brief-lens[data-library-brief-panel="preparation"]
+    .library-preparation-menu > summary {
+    display: block !important;
+    position: relative !important;
+    list-style: none !important;
+    grid-template-columns: minmax(0, 1fr) 28px !important;
+    align-items: center !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    height: 32px !important;
+    min-height: 32px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  html body
+    #tab-content-library#tab-content-library
+    #library-brief-lens#library-brief-lens[data-library-brief-panel="preparation"]
+    #library-preparation-toolbar#library-preparation-toolbar > label > select.library-preparation-native-select {
+    display: none !important;
+  }
+
+  html body
+    #tab-content-library#tab-content-library
+    #library-brief-lens#library-brief-lens[data-library-brief-panel="preparation"][data-library-prep-scan-visible="true"]
+    #library-preparation-toolbar#library-preparation-toolbar > #library-preparation-scan-visible#library-preparation-scan-visible {
+    grid-column: 3 !important;
+    grid-row: 1 !important;
+    display: block !important;
+    align-self: center !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    height: 36px !important;
+    min-height: 36px !important;
+    margin: 0 !important;
+    padding: 0 8px !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+  }
+
+  html body
+    #tab-content-library#tab-content-library
+    #library-brief-lens#library-brief-lens[data-library-brief-panel="preparation"][data-library-prep-scan-visible="false"]
+    #library-preparation-toolbar#library-preparation-toolbar > #library-preparation-scan-visible#library-preparation-scan-visible {
+    display: none !important;
+  }
+
+  html body.library-preparation-open
+    #search-results .library-no-results .library-track-prep-complete-title {
+    font-family: 'Bebas Neue', Impact, sans-serif !important;
+    font-size: 24px !important;
+    line-height: 29px !important;
+  }
+
+  /* Keep a live Health job visible from every app surface without covering the
+     Library search row or the Health readiness header. */
+  html body.health-scan-banner-active #tab-content-library.tab-content:not(.hidden),
+  html body.health-scan-banner-active #tab-content-studio.tab-content:not(.hidden) {
+    padding-top: calc(3rem + 58px) !important;
+  }
+
+  html body.health-scan-banner-active.studio-health-mode
+    #tab-content-studio.tab-content:not(.hidden) #health-view {
+    padding-top: 76px !important;
+  }
+
+  html body .health-top-scan-banner {
+    top: 0 !important;
+    left: 18rem !important;
+    right: 0 !important;
+    grid-template-columns: minmax(210px, .72fr) minmax(0, 1.28fr) !important;
+    gap: 22px !important;
+    min-height: 58px !important;
+    height: 58px !important;
+    padding: 0 30px !important;
+    box-sizing: border-box !important;
+  }
+
+  html body .health-top-scan-main,
+  html body .health-top-scan-side {
+    min-width: 0 !important;
+  }
+
+  html body .health-top-scan-side {
+    grid-template-columns: auto minmax(120px, 1fr) auto auto !important;
+  }
+
+  /* Large repair totals must remain contained beside the Health title. */
+  html body #health-inbox-app#health-inbox-app .health-readiness-header {
+    grid-template-columns: minmax(0, 1fr) minmax(300px, 360px) !important;
+    gap: 22px !important;
+  }
+
+  html body #health-inbox-app#health-inbox-app .health-readiness-copy,
+  html body #health-inbox-app#health-inbox-app .health-readiness-actions,
+  html body #health-inbox-app#health-inbox-app .health-approved-title-row,
+  html body #health-inbox-app#health-inbox-app #health-readiness-title {
+    min-width: 0 !important;
+    max-width: 100% !important;
+  }
+
+  html body #health-inbox-app#health-inbox-app #health-readiness-title {
+    font-size: clamp(40px, 3.4vw, 58px) !important;
+    overflow-wrap: normal !important;
+  }
+
+  html body #health-inbox-app#health-inbox-app .health-readiness-action-module {
+    grid-template-columns: minmax(112px, .42fr) minmax(0, .58fr) !important;
+  }
+
+  html body #health-inbox-app#health-inbox-app .health-readiness-badge {
+    min-width: 0 !important;
+    padding: 0 10px !important;
+    overflow: hidden !important;
+  }
+
+  html body #health-inbox-app#health-inbox-app .health-readiness-badge strong {
+    max-width: 100% !important;
+    font-size: clamp(30px, 2.45vw, 38px) !important;
+    line-height: .86 !important;
+    white-space: nowrap !important;
+  }
+
+  /* The real worker heartbeat lives inside the visible console header. Its
+     text advances from JavaScript, so old WebKit and Reduce Motion both show
+     unmistakable activity without relying on CSS keyframes. */
+  html body #health-inbox-app#health-inbox-app .health-approved-worker-state {
+    display: block !important;
+    min-width: 180px !important;
+    margin-top: 8px !important;
+    color: #25d9ff !important;
+    font-family: 'Barlow', Arial, sans-serif !important;
+    font-size: 8px !important;
+    font-weight: 900 !important;
+    letter-spacing: .12em !important;
+    text-transform: uppercase !important;
+  }
+
+  @media (max-width: 1180px) {
+    html body.library-preparation-open
+      #tab-content-library#tab-content-library
+      #library-brief-lens#library-brief-lens[data-library-brief-panel="preparation"] {
+      grid-template-columns: minmax(0, 1fr) !important;
+      grid-template-rows: auto auto auto auto !important;
+      row-gap: 6px !important;
+      min-height: 116px !important;
+    }
+
+    html body.library-preparation-open
+      #tab-content-library#tab-content-library
+      #library-brief-lens#library-brief-lens[data-library-brief-panel="preparation"]
+      > .library-brief-panel {
+      grid-column: 1 !important;
+      grid-row: 1 !important;
+    }
+
+    html body.library-preparation-open
+      #tab-content-library#tab-content-library
+      #library-brief-lens#library-brief-lens[data-library-brief-panel="preparation"]
+      > #library-brief-topline#library-brief-topline {
+      grid-column: 1 !important;
+      grid-row: 2 !important;
+    }
+
+    html body #health-inbox-app#health-inbox-app .health-readiness-header {
+      grid-template-columns: minmax(0, 1fr) minmax(280px, 330px) !important;
+    }
+  }
+
+  @media (max-width: 1023px) {
+    html body #health-inbox-app#health-inbox-app .health-readiness-header {
+      grid-template-columns: minmax(0, 1fr) !important;
+    }
+  }
+
+  @media (min-width: 761px) and (max-width: 1200px) {
+    html body .health-top-scan-banner {
+      grid-template-columns: minmax(0, 1fr) !important;
+      gap: 4px !important;
+      height: 82px !important;
+      padding: 8px 18px !important;
+    }
+    html body .health-top-scan-side {
+      grid-template-columns: auto minmax(40px, 1fr) auto auto !important;
+      gap: 12px !important;
+    }
+    html body.health-scan-banner-active #tab-content-library.tab-content:not(.hidden),
+    html body.health-scan-banner-active #tab-content-studio.tab-content:not(.hidden) {
+      padding-top: calc(3rem + 82px) !important;
+    }
+    html body.health-scan-banner-active.studio-health-mode
+      #tab-content-studio.tab-content:not(.hidden) #health-view {
+      padding-top: 100px !important;
+    }
+  }
+
+  @media (max-width: 760px) {
+    html body .health-top-scan-banner {
+      top: 56px !important;
+      left: 0 !important;
+      grid-template-columns: minmax(0, 1fr) !important;
+      gap: 2px !important;
+      height: 84px !important;
+      min-height: 84px !important;
+      padding: 6px 14px !important;
+    }
+
+    html body.health-scan-banner-active #tab-content-library.tab-content:not(.hidden),
+    html body.health-scan-banner-active #tab-content-studio.tab-content:not(.hidden) {
+      padding-top: calc(3rem + 84px) !important;
+    }
+
+    html body .health-top-scan-side {
+      grid-template-columns: auto minmax(72px, 1fr) auto !important;
+      gap: 8px !important;
+    }
+
+    html body .health-top-scan-checks {
+      display: none !important;
+    }
+  }
+</style>

@@ -1,0 +1,1747 @@
+/* COLOUR LAWS IMPLEMENTATION FOR DJ APP */
+/* Enforces WCAG AA compliance and theme consistency */
+
+/* ===========================================
+   LAW 1: CONTRAST RATIO ENFORCEMENT
+   =========================================== */
+
+/* Utility classes for contrast validation */
+.contrast-text-primary { /* 4.5:1 minimum */ }
+.contrast-text-secondary { /* 4.5:1 minimum */ }
+.contrast-interactive { /* 3:1 minimum */ }
+
+/* ===========================================
+   LAW 2: THEME-SPECIFIC BASE PALETTES
+   =========================================== */
+
+/* INDIGO THEME (Night Mode) - User's Preferred Black & Green */
+:root[data-theme="indigo"] {
+  /* Backgrounds */
+  --bg-primary: #000000;      /* Pure black background */
+  --bg-primary-rgb: 0, 0, 0;
+  --bg-secondary: #0a0a0a;    /* Slightly lighter black */
+  --bg-secondary-rgb: 10, 10, 10;
+  --bg-surface: #1a1a1a;      /* Dark gray surface */
+  --bg-surface-rgb: 26, 26, 26;
+  --bg-surface-alt: #222222;  /* Alternative surface */
+  --bg-surface-alt-rgb: 34, 34, 34;
+
+  /* Text Colors */
+  --text-primary: #ffffff;    /* White text for readability */
+  --text-primary-rgb: 255, 255, 255;
+  --text-secondary: #cccccc;  /* Light gray */
+  --text-secondary-rgb: 204, 204, 204;
+  --text-muted: #888888;      /* Muted gray */
+  --text-muted-rgb: 136, 136, 136;
+
+  /* Interactive Elements */
+  --accent-primary: #a3ff00;  /* Original bright green accent */
+  --accent-primary-rgb: 163, 255, 0;
+  --accent-secondary: #00ff88; /* Bright green secondary */
+  --accent-secondary-rgb: 0, 255, 136;
+  --accent-success: #a3ff00;   /* Same as primary for consistency */
+  --accent-success-rgb: 163, 255, 0;
+  --accent-warning: #a3ff00;   /* Green for warnings (matching accent) */
+  --accent-warning-rgb: 163, 255, 0;
+  --accent-error: #FF4444;     /* Red for errors */
+  --accent-error-rgb: 255, 68, 68;
+
+  /* Borders */
+  --border-primary: rgba(255, 255, 255, 0.1);
+  --border-secondary: rgba(255, 255, 255, 0.05);
+}
+
+/* DAY THEME (legacy data-theme="green") - White, black, and AXIOM blue */
+:root[data-theme="green"] {
+  /* Backgrounds */
+  --bg-primary: #f8f9fa;      /* Very light gray */
+  --bg-primary-rgb: 248, 249, 250;
+  --bg-secondary: #ffffff;    /* Pure white */
+  --bg-secondary-rgb: 255, 255, 255;
+  --bg-surface: #e9ecef;      /* Light gray surface */
+  --bg-surface-rgb: 233, 236, 239;
+  --bg-surface-alt: #f1f3f4;  /* Alternative surface */
+  --bg-surface-alt-rgb: 241, 243, 244;
+
+  /* Text Colors */
+  --text-primary: #212529;    /* Dark gray for readability */
+  --text-primary-rgb: 33, 37, 41;
+  --text-secondary: #495057;  /* Medium gray */
+  --text-secondary-rgb: 73, 80, 87;
+  --text-muted: #6c757d;      /* Muted gray */
+  --text-muted-rgb: 108, 117, 125;
+
+  /* Interactive Elements */
+  --accent-primary: #0047ab;  /* AXIOM day blue */
+  --accent-primary-rgb: 0, 71, 171;
+  --accent-secondary: #2563eb; /* Brighter interactive blue */
+  --accent-secondary-rgb: 37, 99, 235;
+  --accent-success: #0047ab;   /* Day-mode positive state */
+  --accent-success-rgb: 0, 71, 171;
+  --accent-warning: #0047ab;   /* Day-mode attention state */
+  --accent-warning-rgb: 0, 71, 171;
+  --accent-error: #dc3545;     /* Red */
+  --accent-error-rgb: 220, 53, 69;
+
+  /* Borders */
+  --border-primary: rgba(0, 0, 0, 0.125);
+  --border-secondary: rgba(0, 0, 0, 0.0625);
+}
+
+/* ===========================================
+   LAW 3: NO ADJACENT MUTED CONFLICT
+   =========================================== */
+
+/* Ensure themes don't mix conflicting colors */
+[data-theme="indigo"] {
+  /* Indigo theme rejects green accents */
+  --forbidden-accent: #a3ff00; /* Original green - banned */
+}
+
+[data-theme="green"] {
+  /* Day theme rejects night-theme indigo accents */
+  --forbidden-accent: #4B0082; /* Indigo - banned */
+}
+
+/* ===========================================
+   LAW 4: DAY/NIGHT MODE LOGIC MAPPING
+   =========================================== */
+
+/* Automatic theme switching with proper contrast */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    /* Auto-apply indigo theme for dark mode preference */
+  }
+}
+
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme]) {
+    /* Auto-apply green theme for light mode preference */
+  }
+}
+
+/* ===========================================
+   LAW 5: LIBRARY ≠ STUDIO DISTINCTIVENESS
+   =========================================== */
+
+/* Library Mode: Higher contrast, sharper */
+.library-mode {
+  --border-radius: 4px;
+  --shadow-strength: 0.15;
+  --text-weight: 600;
+}
+
+/* Studio Mode: Softer contrast for "feel" */
+.studio-mode {
+  --border-radius: 12px;
+  --shadow-strength: 0.08;
+  --text-weight: 400;
+}
+
+/* ===========================================
+   LAW 6 & 7: TEXT COLOR RESTRICTIONS
+   =========================================== */
+
+/* Banned: Black text on dark backgrounds (except in green theme) */
+[data-theme="indigo"] .text-black,
+[data-theme="indigo"] .text-gray-900,
+[data-theme="indigo"] .text-gray-800 {
+  color: var(--text-primary) !important; /* Force to white */
+}
+
+/* Allow black text in green theme (day mode) */
+[data-theme="green"] .text-black,
+[data-theme="green"] .text-gray-900,
+[data-theme="green"] .text-gray-800 {
+  color: var(--text-primary) !important; /* Keep as dark text */
+}
+
+/* Banned: White text on light backgrounds (except in indigo theme) */
+[data-theme="green"] .text-white,
+[data-theme="green"] .text-gray-100 {
+  color: var(--text-primary) !important; /* Force to dark text */
+}
+
+/* Allow white text in indigo theme (night mode) */
+[data-theme="indigo"] .text-white,
+[data-theme="indigo"] .text-gray-100 {
+  color: var(--text-primary) !important; /* Keep as white text */
+}
+
+/* ===========================================
+   LAW 8: TESTABLE CLASSES FOR CONTRAST
+   =========================================== */
+
+/* All text elements must use these classes */
+.text-primary-contrast {
+  color: var(--text-primary);
+  /* Runtime check: ensure contrast ratio >= 4.5:1 */
+}
+
+.text-secondary-contrast {
+  color: var(--text-secondary);
+  /* Runtime check: ensure contrast ratio >= 4.5:1 */
+}
+
+.interactive-contrast {
+  /* For buttons, links, etc. */
+  /* Runtime check: ensure contrast ratio >= 3:1 */
+}
+
+/* ===========================================
+   APPLICATION OF LAWS TO COMPONENTS
+   =========================================== */
+
+/* Body and global styles */
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Cards and surfaces */
+.card, .surface {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--border-radius, 8px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, var(--shadow-strength));
+}
+
+/* Interactive elements */
+.btn-primary {
+  background-color: var(--accent-primary);
+  color: var(--bg-primary);
+  border: none;
+  padding: 8px 16px;
+  border-radius: var(--border-radius, 8px);
+  font-weight: var(--text-weight);
+  transition: all 0.2s ease;
+}
+
+.btn-primary:hover {
+  filter: brightness(1.1);
+  transform: translateY(-1px);
+}
+
+/* Playing track highlight - theme appropriate */
+.track-playing {
+  border-left: 4px solid var(--accent-primary);
+  background-color: rgba(var(--accent-primary-rgb), 0.1);
+}
+
+/* Sidebar and navigation */
+.sidebar {
+  background-color: var(--bg-secondary);
+  border-right: 1px solid var(--border-primary);
+}
+
+.nav-item {
+  color: var(--text-secondary);
+  padding: 12px 20px;
+  border-left: 4px solid transparent;
+  transition: all 0.2s ease;
+}
+
+.nav-item.active {
+  color: var(--accent-primary);
+  border-left-color: var(--accent-primary);
+  background-color: rgba(var(--accent-primary-rgb), 0.1);
+}
+
+.nav-item:hover {
+  background-color: var(--bg-surface);
+  color: var(--text-primary);
+}
+
+/* Search and inputs */
+.search-input {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-primary);
+  color: var(--text-primary);
+  padding: 8px 12px;
+  border-radius: var(--border-radius, 8px);
+}
+
+.search-input::placeholder {
+  color: var(--text-muted);
+}
+
+.search-input:focus {
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 0 2px rgba(var(--accent-primary-rgb), 0.2);
+}
+
+/* Status indicators and badges */
+.status-playing {
+  background-color: var(--accent-success);
+  color: var(--bg-primary);
+}
+
+.status-paused {
+  background-color: var(--accent-warning);
+  color: var(--bg-primary);
+}
+
+.status-error {
+  background-color: var(--accent-error);
+  color: var(--bg-primary);
+}
+
+/* AXIOM day mode contract:
+   Night black becomes white. Night green becomes blue. Night green glow becomes blue glow. */
+:root[data-theme="green"],
+html.light-mode {
+  --bg-primary: #ffffff;
+  --bg-primary-rgb: 255, 255, 255;
+  --bg-secondary: #f5f7fb;
+  --bg-secondary-rgb: 245, 247, 251;
+  --bg-surface: #ffffff;
+  --bg-surface-rgb: 255, 255, 255;
+  --bg-surface-alt: #eef3fb;
+  --bg-surface-alt-rgb: 238, 243, 251;
+  --text-primary: #07111f;
+  --text-primary-rgb: 7, 17, 31;
+  --text-secondary: #40516a;
+  --text-secondary-rgb: 64, 81, 106;
+  --text-muted: #6b7a90;
+  --text-muted-rgb: 107, 122, 144;
+  --accent-primary: #0047ab;
+  --accent-primary-rgb: 0, 71, 171;
+  --accent-secondary: #2563eb;
+  --accent-secondary-rgb: 37, 99, 235;
+  --accent-success: #0047ab;
+  --accent-success-rgb: 0, 71, 171;
+  --accent-warning: #0047ab;
+  --accent-warning-rgb: 0, 71, 171;
+  --border-primary: rgba(0, 71, 171, 0.18);
+  --border-secondary: rgba(0, 71, 171, 0.10);
+}
+
+body.light-mode {
+  background: #ffffff !important;
+  color: #07111f !important;
+}
+
+body.light-mode :where(.bg-black, .bg-\[\#000\], .bg-\[\#050505\], .bg-\[\#070707\], .bg-\[\#070b07\], .bg-\[\#0a0a0a\], .bg-\[\#0d0d0d\], .bg-\[\#111\], .bg-\[\#1a1a1a\], .bg-\[\#1e1e1e\], .bg-black\/20, .bg-black\/40, .bg-black\/60, .bg-black\/80, .bg-black\/90, .bg-black\/95, .glass, .vampire-row, .library-track-card, .recommendation-card, .recommendations-panel, .smart-links-container, #audio-player, .command-center-hud, .studio-search-results) {
+  background: #ffffff !important;
+  color: #07111f !important;
+  border-color: rgba(0, 71, 171, 0.18) !important;
+}
+
+body.light-mode :where(.text-axiom-accent, .text-\[\#39FF14\], .text-\[\#a3ff00\], .text-green-400, .accent-theme-primary, .nav-item.active) {
+  color: #0047ab !important;
+  text-shadow: none !important;
+}
+
+body.light-mode :where(.bg-axiom-accent, .bg-\[\#39FF14\], .bg-\[\#ADFF2F\], .bg-\[\#a3ff00\], .status-playing, .status-paused, .btn-primary) {
+  background: #0047ab !important;
+  color: #ffffff !important;
+  border-color: #0047ab !important;
+  box-shadow: 0 0 24px rgba(0, 71, 171, 0.34) !important;
+}
+
+body.light-mode :where(.border-axiom-accent, .border-axiom-accent\/30, .border-axiom-accent\/35, .border-axiom-accent\/40, .border-axiom-accent\/55, .border-\[\#39FF14\]) {
+  border-color: rgba(0, 71, 171, 0.55) !important;
+}
+
+body.light-mode :where(.library-track-title, .recommendation-title, .recommendations-title, .studio-row-title, .track-title-resize, h1, h2, h3, h4, .font-heading) {
+  color: #07111f !important;
+  text-shadow: none !important;
+}
+
+body.light-mode :where(.library-track-artist, .recommendation-artist, .library-meta-line, .library-meta-line span, .text-axiom-muted, .text-white\/40, .text-white\/50, .track-artist-resize) {
+  color: #40516a !important;
+  text-shadow: none !important;
+}
+
+body.light-mode :where(.library-year-chip, .library-dna-chip, .dna-badge, .bpm-block, .library-bpm-value, .era-btn.active-era) {
+  color: #ffffff !important;
+  background: #0047ab !important;
+  border-color: #0047ab !important;
+  text-shadow: none !important;
+  box-shadow: 0 0 16px rgba(0,71,171,0.22) !important;
+}
+
+body.light-mode [style*="#39FF14"],
+body.light-mode [style*="#a3ff00"],
+body.light-mode [style*="rgba(57,255,20"],
+body.light-mode [style*="rgba(163,255,0"],
+body.light-mode [style*="rgba(163, 255, 0"] {
+  color: #0047ab !important;
+  border-color: #0047ab !important;
+  box-shadow: 0 0 24px rgba(0, 71, 171, 0.34) !important;
+}
+
+body.light-mode [style*="background:#39FF14"],
+body.light-mode [style*="background: #39FF14"],
+body.light-mode [style*="background:#a3ff00"],
+body.light-mode [style*="background: #a3ff00"] {
+  background: #0047ab !important;
+  color: #ffffff !important;
+}
+
+body.light-mode [style*="background:#000"],
+body.light-mode [style*="background: #000"],
+body.light-mode [style*="background:#050505"],
+body.light-mode [style*="background:#070b07"],
+body.light-mode [style*="background:#0a0a0a"],
+body.light-mode [style*="background:#0d0d0d"],
+body.light-mode [style*="background:#1e1e1e"],
+body.light-mode [style*="background: #1e1e1e"],
+body.light-mode [style*="background:#2a2a2a"] {
+  background: #ffffff !important;
+  color: #07111f !important;
+  border-color: rgba(0,71,171,0.18) !important;
+  box-shadow: 0 18px 40px rgba(7,17,31,0.10) !important;
+}
+
+body.light-mode #era-filters.library-era-strip .era-btn.active-era {
+  background: #0047ab !important;
+  color: #ffffff !important;
+  border-color: #0047ab !important;
+  box-shadow: 0 0 16px rgba(0,71,171,0.24) !important;
+}
+
+body.light-mode #search-results .vampire-row:not(.playing-track):not(.played),
+body.light-mode #search-results .vampire-row:not(.playing-track):not(.played):hover,
+body.light-mode #search-results .vampire-row:not(.playing-track):not(.played).selected,
+body.light-mode #search-results .library-track-card {
+  background: #ffffff !important;
+  color: #07111f !important;
+  border-color: rgba(0,71,171,0.18) !important;
+  box-shadow: 0 16px 34px rgba(7,17,31,0.10), inset 0 1px 0 rgba(255,255,255,0.92) !important;
+}
+
+body.light-mode #search-results .vampire-row:not(.playing-track):not(.played) p,
+body.light-mode #search-results .vampire-row:not(.playing-track):not(.played) span,
+body.light-mode #search-results .vampire-row:not(.playing-track):not(.played) .track-title-resize,
+body.light-mode #search-results .vampire-row:not(.playing-track):not(.played) .track-artist-resize,
+body.light-mode #search-results .library-track-card .library-track-title,
+body.light-mode #search-results .library-track-card .library-track-artist,
+body.light-mode #search-results .library-track-card .library-meta-line,
+body.light-mode #search-results .library-track-card .library-meta-line span {
+  color: #07111f !important;
+  opacity: 1 !important;
+  text-shadow: none !important;
+}
+
+body.light-mode #search-results .library-track-card .library-track-artist,
+body.light-mode #search-results .library-track-card .library-meta-line,
+body.light-mode #search-results .library-track-card .library-meta-line span {
+  color: #40516a !important;
+}
+
+body.light-mode #search-results .library-track-card .library-year-chip,
+body.light-mode #search-results .library-track-card .library-dna-chip,
+body.light-mode #search-results .library-track-card .library-bpm-value.bpm-block {
+  background: #0047ab !important;
+  color: #ffffff !important;
+  border-color: #0047ab !important;
+  text-shadow: none !important;
+  box-shadow: 0 0 16px rgba(0,71,171,0.22) !important;
+}
+
+body.light-mode #search-results .vampire-row.library-track-card span.library-year-chip,
+body.light-mode #search-results .vampire-row.library-track-card span.library-dna-chip,
+body.light-mode #search-results .vampire-row.library-track-card span.library-bpm-value.bpm-block,
+body.light-mode #search-results .vampire-row.library-track-card .library-meta-line span.library-year-chip,
+body.light-mode #search-results .vampire-row.library-track-card .library-meta-line span.library-dna-chip {
+  background: #0047ab !important;
+  color: #ffffff !important;
+  border-color: #0047ab !important;
+  text-shadow: none !important;
+  box-shadow: 0 0 16px rgba(0,71,171,0.22) !important;
+}
+
+/* ===========================================
+   DEBUG MODE FOR CONTRAST CHECKING
+   =========================================== */
+
+.debug-contrast [class*="text-"],
+.debug-contrast [class*="bg-"] {
+  position: relative;
+}
+
+.debug-contrast [class*="text-"]::after {
+  content: "⚠️ LOW CONTRAST";
+  position: absolute;
+  top: -20px;
+  left: 0;
+  background: #ff4444;
+  color: white;
+  font-size: 10px;
+  padding: 2px 4px;
+  border-radius: 2px;
+  display: none; /* Shown by JavaScript contrast checker */
+}
+
+/* ===========================================
+   UTILITY CLASSES FOR EASY APPLICATION
+   =========================================== */
+
+.bg-theme-primary { background-color: var(--bg-primary); }
+.bg-theme-secondary { background-color: var(--bg-secondary); }
+.bg-theme-surface { background-color: var(--bg-surface); }
+
+.text-theme-primary { color: var(--text-primary); }
+.text-theme-secondary { color: var(--text-secondary); }
+.text-theme-muted { color: var(--text-muted); }
+
+.accent-theme-primary { color: var(--accent-primary); }
+.accent-theme-secondary { color: var(--accent-secondary); }
+
+.border-theme { border-color: var(--border-primary); }
+
+body.light-mode .axiom-help-btn-compact,
+body.light-mode #studio-active-view #btn-studio-guide.axiom-help-btn-compact,
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-close-btn.axiom-help-btn-compact {
+  min-width: 104px !important;
+  min-height: 44px !important;
+  padding: 0 22px !important;
+  border: 1px solid rgba(7,16,5,0.58) !important;
+  border-radius: 16px !important;
+  background:
+    radial-gradient(circle at 18% 0%, rgba(255,255,255,0.34), transparent 30%),
+    linear-gradient(145deg, #d9ff57, #9cff00 48%, #58f000) !important;
+  color: #061000 !important;
+  font-family: 'Bebas Neue', Impact, sans-serif !important;
+  font-size: 22px !important;
+  font-weight: 950 !important;
+  letter-spacing: 0.09em !important;
+  line-height: 1 !important;
+  text-shadow: none !important;
+  box-shadow:
+    0 0 0 1px rgba(163,255,0,0.24),
+    0 0 24px rgba(163,255,0,0.24),
+    0 14px 32px rgba(7,17,31,0.18),
+    inset 0 1px 0 rgba(255,255,255,0.62) !important;
+}
+
+body.light-mode .axiom-help-btn-compact span,
+body.light-mode #studio-active-view #btn-studio-guide.axiom-help-btn-compact span {
+  color: #061000 !important;
+  text-shadow: none !important;
+}
+
+/* Day mode hard override: Studio and Anchor Selection must stay blue/light.
+   This lives at true EOF because older duplicated theme blocks appear above. */
+:root[data-theme="green"],
+html.light-mode {
+  --bg-primary: #ffffff !important;
+  --bg-secondary: #f5f7fb !important;
+  --bg-surface: #ffffff !important;
+  --bg-surface-alt: #eef3fb !important;
+  --text-primary: #07111f !important;
+  --text-secondary: #40516a !important;
+  --text-muted: #6b7a90 !important;
+  --accent-primary: #0047ab !important;
+  --accent-secondary: #2563eb !important;
+  --accent-success: #0047ab !important;
+  --accent-warning: #0047ab !important;
+  --border-primary: rgba(0, 71, 171, 0.18) !important;
+  --border-secondary: rgba(0, 71, 171, 0.10) !important;
+}
+
+body.light-mode #studio-active-view,
+body.light-mode #tab-content-studio {
+  background: #f5f7fb !important;
+  color: #07111f !important;
+}
+
+body.light-mode #studio-active-view::before {
+  background:
+    radial-gradient(circle at 54% 38%, rgba(0, 71, 171, 0.16), transparent 16%),
+    radial-gradient(circle at 74% 12%, rgba(37, 99, 235, 0.10), transparent 28%),
+    linear-gradient(rgba(0, 71, 171, 0.05), transparent 78%) !important;
+  opacity: 0.30 !important;
+}
+
+body.light-mode #studio-active-view::after {
+  background:
+    repeating-linear-gradient(90deg, rgba(0, 71, 171, 0.10) 0 1px, transparent 1px 72px),
+    repeating-linear-gradient(0deg, rgba(0, 71, 171, 0.06) 0 1px, transparent 1px 24px),
+    linear-gradient(178deg, transparent 0 34%, rgba(0, 71, 171, 0.10) 35%, transparent 36%),
+    linear-gradient(182deg, transparent 0 44%, rgba(0, 71, 171, 0.06) 45%, transparent 46%) !important;
+  opacity: 0.26 !important;
+}
+
+body.light-mode #studio-active-view .studio-header,
+body.light-mode #studio-active-view .studio-actions {
+  background: transparent !important;
+  color: #07111f !important;
+}
+
+body.light-mode #studio-active-view .studio-header::before {
+  background:
+    radial-gradient(at 52% 100%, rgba(0, 71, 171, 0.14), transparent 58%),
+    linear-gradient(90deg, transparent, rgba(37, 99, 235, 0.12), transparent) !important;
+  opacity: 0.78 !important;
+}
+
+body.light-mode #studio-active-view .studio-header h3,
+body.light-mode #studio-active-view .studio-header h3 span,
+body.light-mode #set-score-display,
+body.light-mode #set-score-display.text-axiom-accent,
+body.light-mode #set-score-display.text-green-400 {
+  color: #0047ab !important;
+  background: transparent !important;
+  border: none !important;
+  text-shadow: 0 0 20px rgba(0, 71, 171, 0.16) !important;
+}
+
+body.light-mode #set-score-display.text-red-500 {
+  color: #f43f5e !important;
+  text-shadow: none !important;
+}
+
+body.light-mode #studio-active-view .studio-action-btn,
+body.light-mode #studio-active-view .studio-save-draft-btn,
+body.light-mode #studio-active-view button[onclick="loadSetFromLocal()"],
+body.light-mode #studio-active-view button[onclick="clearSet()"],
+body.light-mode #studio-active-view button[onclick="cancelEditPlaylist()"] {
+  background: rgba(255, 255, 255, 0.94) !important;
+  color: #07111f !important;
+  border-color: rgba(0, 71, 171, 0.22) !important;
+  text-shadow: none !important;
+  box-shadow: 0 12px 26px rgba(7, 17, 31, 0.10), inset 0 1px 0 rgba(255, 255, 255, 0.84) !important;
+}
+
+body.light-mode #studio-active-view .studio-action-btn:hover,
+body.light-mode #studio-active-view .studio-action-btn:focus-visible,
+body.light-mode #studio-active-view .studio-action-btn:active {
+  background: rgba(238, 243, 251, 0.98) !important;
+  color: #0047ab !important;
+  border-color: rgba(0, 71, 171, 0.42) !important;
+  box-shadow: 0 0 0 1px rgba(0, 71, 171, 0.10), 0 0 26px rgba(0, 71, 171, 0.20), 0 16px 34px rgba(7, 17, 31, 0.12) !important;
+}
+
+body.light-mode #studio-active-view .studio-save-crate-btn,
+body.light-mode #studio-active-view #export-dropdown-btn,
+body.light-mode #studio-active-view #magic-studio-btn {
+  background: linear-gradient(135deg, #2563eb, #0047ab) !important;
+  color: #ffffff !important;
+  border-color: #0047ab !important;
+  text-shadow: none !important;
+  box-shadow: 0 0 30px rgba(0, 71, 171, 0.32), 0 16px 32px rgba(7, 17, 31, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.45) !important;
+}
+
+body.light-mode #studio-active-view .studio-save-crate-btn:hover,
+body.light-mode #studio-active-view #export-dropdown-btn:hover,
+body.light-mode #studio-active-view #magic-studio-btn:hover {
+  background: linear-gradient(135deg, #3b82f6, #0047ab) !important;
+  color: #ffffff !important;
+  box-shadow: 0 0 42px rgba(0, 71, 171, 0.40), 0 18px 38px rgba(7, 17, 31, 0.16) !important;
+}
+
+body.light-mode #studio-active-view .studio-tabbar {
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.86), rgba(238, 243, 251, 0.92), rgba(255, 255, 255, 0.86)) !important;
+  border-color: rgba(0, 71, 171, 0.18) !important;
+  border-bottom-color: rgba(0, 71, 171, 0.18) !important;
+}
+
+body.light-mode #studio-active-view .studio-mode-tab,
+body.light-mode #studio-active-view #btn-studio-guide,
+body.light-mode #studio-active-view #btn-optimize {
+  background: rgba(255, 255, 255, 0.88) !important;
+  color: #07111f !important;
+  border-color: rgba(0, 71, 171, 0.20) !important;
+  text-shadow: none !important;
+  box-shadow: 0 10px 22px rgba(7, 17, 31, 0.08) !important;
+}
+
+body.light-mode #studio-active-view .studio-mode-tab:hover,
+body.light-mode #studio-active-view .studio-mode-tab.active,
+body.light-mode #studio-active-view #btn-studio-guide:hover,
+body.light-mode #studio-active-view #btn-optimize:hover {
+  background: rgba(0, 71, 171, 0.12) !important;
+  color: #0047ab !important;
+  border-color: rgba(0, 71, 171, 0.42) !important;
+  box-shadow: 0 0 22px rgba(0, 71, 171, 0.18) !important;
+}
+
+body.light-mode .axiom-help-btn-compact,
+body.light-mode #studio-active-view #btn-studio-guide.axiom-help-btn-compact,
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-close-btn.axiom-help-btn-compact {
+  background:
+    radial-gradient(circle at 18% 0%, rgba(255,255,255,0.34), transparent 30%),
+    linear-gradient(145deg, #d9ff57, #9cff00 48%, #58f000) !important;
+  color: #061000 !important;
+  border-color: rgba(7,16,5,0.58) !important;
+  border-radius: 16px !important;
+  box-shadow:
+    0 0 0 1px rgba(163,255,0,0.24),
+    0 0 24px rgba(163,255,0,0.24),
+    0 14px 32px rgba(7,17,31,0.18),
+    inset 0 1px 0 rgba(255,255,255,0.62) !important;
+  text-shadow: none !important;
+}
+
+body.light-mode .axiom-help-btn-compact span,
+body.light-mode #studio-active-view #btn-studio-guide.axiom-help-btn-compact span {
+  color: #061000 !important;
+  text-shadow: none !important;
+}
+
+body.light-mode .axiom-help-btn-compact:hover,
+body.light-mode #studio-active-view #btn-studio-guide.axiom-help-btn-compact:hover,
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-close-btn.axiom-help-btn-compact:hover {
+  background:
+    radial-gradient(circle at 18% 0%, rgba(255,255,255,0.40), transparent 30%),
+    linear-gradient(145deg, #e4ff75, #a3ff00 48%, #62f400) !important;
+  color: #061000 !important;
+  border-color: rgba(7,16,5,0.82) !important;
+  box-shadow:
+    0 0 0 1px rgba(163,255,0,0.52),
+    0 0 44px rgba(163,255,0,0.42),
+    0 20px 46px rgba(7,17,31,0.22),
+    inset 0 1px 0 rgba(255,255,255,0.82) !important;
+}
+
+body.light-mode #energy-ladder {
+  background: rgba(255, 255, 255, 0.94) !important;
+  border-color: rgba(0, 71, 171, 0.18) !important;
+  box-shadow: 0 18px 40px rgba(7, 17, 31, 0.10), 0 0 22px rgba(0, 71, 171, 0.10), inset 0 1px 0 rgba(255, 255, 255, 0.84) !important;
+}
+
+body.light-mode #energy-ladder::before {
+  background: linear-gradient(90deg, transparent, rgba(0, 71, 171, 0.18), transparent) !important;
+  box-shadow: 0 0 24px rgba(0, 71, 171, 0.18) !important;
+}
+
+body.light-mode .energy-block,
+body.light-mode .energy-block::after,
+body.light-mode .energy-block.energy-Low,
+body.light-mode .energy-block.energy-Mid,
+body.light-mode .energy-block.energy-Peak,
+body.light-mode .energy-block.energy-High,
+body.light-mode .energy-block.energy-Unknown,
+body.light-mode .energy-block.energy-idle {
+  background: linear-gradient(135deg, #3b82f6, #0047ab) !important;
+  border-color: rgba(255, 255, 255, 0.70) !important;
+  box-shadow: 0 0 20px rgba(0, 71, 171, 0.30), inset 0 1px 0 rgba(255, 255, 255, 0.45) !important;
+}
+
+body.light-mode .energy-timeline-labels,
+body.light-mode .energy-timeline-labels span {
+  color: rgba(7, 17, 31, 0.64) !important;
+  text-shadow: none !important;
+}
+
+body.light-mode #active-playlist-container.energy-spine-active::before,
+body.light-mode #active-playlist-container.energy-spine-active::after {
+  background: linear-gradient(180deg, rgba(0, 71, 171, 0), rgba(0, 71, 171, 0.58), rgba(0, 71, 171, 0)) !important;
+  box-shadow: 0 0 28px rgba(0, 71, 171, 0.24) !important;
+  opacity: 0.42 !important;
+}
+
+body.light-mode #active-playlist-container .playlist-row,
+body.light-mode #active-playlist-container .playlist-row.studio-transition-row {
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.98), rgba(242, 246, 252, 0.98) 50%, rgba(255, 255, 255, 0.98)) !important;
+  color: #07111f !important;
+  border-color: rgba(0, 71, 171, 0.18) !important;
+  text-shadow: none !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.88), 0 16px 34px rgba(7, 17, 31, 0.10), 0 0 24px rgba(0, 71, 171, 0.10) !important;
+}
+
+body.light-mode #active-playlist-container .studio-row-title,
+body.light-mode #active-playlist-container .studio-row-artist,
+body.light-mode #active-playlist-container .track-title-resize,
+body.light-mode #active-playlist-container .track-artist-resize,
+body.light-mode #active-playlist-container .studio-row-main,
+body.light-mode #active-playlist-container .studio-row-main span,
+body.light-mode #active-playlist-container .studio-row-main p {
+  color: #07111f !important;
+  text-shadow: none !important;
+}
+
+body.light-mode #active-playlist-container .studio-row-artist,
+body.light-mode #active-playlist-container .track-artist-resize,
+body.light-mode #active-playlist-container small,
+body.light-mode #active-playlist-container .text-white\/40,
+body.light-mode #active-playlist-container .text-white\/50,
+body.light-mode #active-playlist-container .text-white\/60 {
+  color: rgba(64, 81, 106, 0.86) !important;
+  text-shadow: none !important;
+}
+
+body.light-mode #active-playlist-container .studio-dna-chip,
+body.light-mode #active-playlist-container .studio-key-pill,
+body.light-mode #active-playlist-container .studio-harmonic-indicator {
+  background: rgba(0, 71, 171, 0.10) !important;
+  color: #0047ab !important;
+  border-color: rgba(0, 71, 171, 0.30) !important;
+  text-shadow: none !important;
+  box-shadow: none !important;
+}
+
+body.light-mode .studio-smart-btn {
+  background: rgba(0, 71, 171, 0.08) !important;
+  color: #0047ab !important;
+  border-color: rgba(0, 71, 171, 0.32) !important;
+  text-shadow: none !important;
+  box-shadow: 0 8px 18px rgba(7, 17, 31, 0.08) !important;
+}
+
+body.light-mode .studio-smart-btn:hover,
+body.light-mode .studio-smart-btn:focus-visible,
+body.light-mode .studio-smart-btn:active {
+  background: linear-gradient(135deg, #3b82f6, #0047ab) !important;
+  color: #ffffff !important;
+  border-color: #0047ab !important;
+  box-shadow: 0 0 28px rgba(0, 71, 171, 0.34), 0 12px 26px rgba(7, 17, 31, 0.14) !important;
+}
+
+body.light-mode .transition-badge,
+body.light-mode .transition-badge.energy-spine-node,
+body.light-mode .transition-badge.energy-spine-node::before,
+body.light-mode .transition-badge.energy-spine-node::after,
+body.light-mode .energy-spine-node,
+body.light-mode .badge-green,
+body.light-mode .badge-yellow {
+  background: linear-gradient(135deg, #3b82f6, #0047ab) !important;
+  color: #ffffff !important;
+  border-color: rgba(255, 255, 255, 0.74) !important;
+  text-shadow: none !important;
+  box-shadow: 0 0 26px rgba(0, 71, 171, 0.34), 0 12px 24px rgba(7, 17, 31, 0.15) !important;
+}
+
+body.light-mode .transition-badge.energy-spine-node strong,
+body.light-mode .transition-badge.energy-spine-node span {
+  color: #ffffff !important;
+  text-shadow: none !important;
+}
+
+body.light-mode .studio-spine-orb {
+  background: radial-gradient(circle, #ffffff 0 12%, rgba(59, 130, 246, 0.42) 30%, rgba(0, 71, 171, 0.82) 100%) !important;
+  box-shadow: 0 0 28px rgba(0, 71, 171, 0.38) !important;
+}
+
+body.light-mode #replacement-modal.anchor-dj-modal {
+  background: radial-gradient(circle at 46% 12%, rgba(0, 71, 171, 0.12), transparent 32%), rgba(248, 251, 255, 0.94) !important;
+  color: #07111f !important;
+}
+
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-dj-shell,
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-hero-panel,
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-suggestions-panel,
+body.light-mode #replacement-modal.anchor-dj-modal .live-transition-panel,
+body.light-mode #replacement-modal.anchor-dj-modal .modal-action-panel,
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-insight-strip,
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-insight-bar,
+body.light-mode #replacement-modal.anchor-dj-modal .mix-advice-card,
+body.light-mode #replacement-modal.anchor-dj-modal .transition-stage-metric,
+body.light-mode #replacement-modal.anchor-dj-modal .transition-now-playing,
+body.light-mode #replacement-modal.anchor-dj-modal .transition-intel-stage {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(238, 243, 251, 0.96)) !important;
+  color: #07111f !important;
+  border-color: rgba(0, 71, 171, 0.20) !important;
+  text-shadow: none !important;
+  box-shadow: 0 18px 42px rgba(7, 17, 31, 0.12), 0 0 22px rgba(0, 71, 171, 0.10) !important;
+}
+
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-dj-shell::before,
+body.light-mode #replacement-modal.anchor-dj-modal .live-transition-panel::before,
+body.light-mode #replacement-modal.anchor-dj-modal .transition-now-playing::after {
+  background: radial-gradient(circle at 50% 20%, rgba(0, 71, 171, 0.14), transparent 42%) !important;
+  opacity: 0.58 !important;
+  box-shadow: none !important;
+}
+
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-cover-card,
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-suggestion-art,
+body.light-mode #replacement-modal.anchor-dj-modal .transition-focal-art {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(238, 243, 251, 0.96)) !important;
+  color: #07111f !important;
+  border-color: rgba(0, 71, 171, 0.28) !important;
+  box-shadow: 0 12px 28px rgba(7, 17, 31, 0.12), 0 0 22px rgba(0, 71, 171, 0.14) !important;
+}
+
+body.light-mode #replacement-modal.anchor-dj-modal .artwork-fallback {
+  background:
+    radial-gradient(circle at 50% 42%, rgba(0, 71, 171, 0.30), transparent 24%),
+    linear-gradient(135deg, rgba(0, 71, 171, 0.82), rgba(37, 99, 235, 0.64) 58%, rgba(238, 243, 251, 0.92)) !important;
+  color: #ffffff !important;
+  text-shadow: 0 1px 8px rgba(0, 24, 72, 0.32) !important;
+}
+
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-close-btn,
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-filter-btn,
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-filter-select,
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-search-wrap,
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-search-input,
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-sort-select,
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-wave-mode,
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-cue-select,
+body.light-mode #replacement-modal.anchor-dj-modal .transition-action {
+  background: rgba(255, 255, 255, 0.96) !important;
+  color: #07111f !important;
+  border-color: rgba(0, 71, 171, 0.24) !important;
+  text-shadow: none !important;
+  box-shadow: 0 8px 18px rgba(7, 17, 31, 0.08) !important;
+}
+
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-filter-btn:hover,
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-filter-btn.primary,
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-filter-select:hover,
+body.light-mode #replacement-modal.anchor-dj-modal .transition-action:hover,
+body.light-mode #replacement-modal.anchor-dj-modal .transition-action.primary,
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-suggestion-add {
+  background: linear-gradient(135deg, #3b82f6, #0047ab) !important;
+  color: #ffffff !important;
+  border-color: #0047ab !important;
+  text-shadow: none !important;
+  box-shadow: 0 0 28px rgba(0, 71, 171, 0.34), 0 12px 26px rgba(7, 17, 31, 0.14) !important;
+}
+
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-meta-pill,
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-tag-row span,
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-suggestion-tags span,
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-suggestion-metric,
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-suggestion-key,
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-suggestion-match,
+body.light-mode #replacement-modal.anchor-dj-modal .hot-cue-card {
+  background: rgba(0, 71, 171, 0.09) !important;
+  color: #0047ab !important;
+  border-color: rgba(0, 71, 171, 0.24) !important;
+  text-shadow: none !important;
+  box-shadow: none !important;
+}
+
+body.light-mode #replacement-modal.anchor-dj-modal .hot-cue-card::after {
+  background: linear-gradient(90deg, transparent, rgba(0, 71, 171, 0.16), transparent) !important;
+}
+
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-suggestion-row,
+body.light-mode #replacement-modal.anchor-dj-modal .vampire-row.anchor-suggestion-row {
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.98), rgba(242, 246, 252, 0.98)) !important;
+  color: #07111f !important;
+  border-color: rgba(0, 71, 171, 0.16) !important;
+  text-shadow: none !important;
+  box-shadow: 0 10px 22px rgba(7, 17, 31, 0.08) !important;
+}
+
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-suggestion-row:hover,
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-suggestion-row.selected,
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-suggestion-row.active-suggestion {
+  background: linear-gradient(90deg, rgba(238, 243, 251, 0.98), rgba(255, 255, 255, 0.98)) !important;
+  border-color: rgba(0, 71, 171, 0.42) !important;
+  box-shadow: 0 0 0 1px rgba(0, 71, 171, 0.10), 0 14px 28px rgba(7, 17, 31, 0.10), 0 0 26px rgba(0, 71, 171, 0.14) !important;
+}
+
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-suggestion-play {
+  background: linear-gradient(135deg, #3b82f6, #0047ab) !important;
+  color: #ffffff !important;
+  border-color: rgba(255, 255, 255, 0.70) !important;
+  box-shadow: 0 0 24px rgba(0, 71, 171, 0.30) !important;
+}
+
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-title,
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-subtitle,
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-section-title,
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-detail-title,
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-suggestion-title,
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-suggestion-artist,
+body.light-mode #replacement-modal.anchor-dj-modal .transition-now-title,
+body.light-mode #replacement-modal.anchor-dj-modal .transition-now-artist,
+body.light-mode #replacement-modal.anchor-dj-modal .mix-advice-card strong,
+body.light-mode #replacement-modal.anchor-dj-modal .transition-stage-metric strong,
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-suggestion-row strong,
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-suggestion-row span,
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-suggestion-row small,
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-suggestion-row p {
+  color: #07111f !important;
+  text-shadow: none !important;
+}
+
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-suggestion-artist,
+body.light-mode #replacement-modal.anchor-dj-modal .transition-stage-metric span,
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-suggestion-metric span,
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-suggestion-key span,
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-suggestion-match span,
+body.light-mode #replacement-modal.anchor-dj-modal .text-white\/40,
+body.light-mode #replacement-modal.anchor-dj-modal .text-white\/50,
+body.light-mode #replacement-modal.anchor-dj-modal .text-white\/60 {
+  color: rgba(64, 81, 106, 0.86) !important;
+}
+
+body.light-mode #replacement-modal.anchor-dj-modal .transition-stage-score,
+body.light-mode #replacement-modal.anchor-dj-modal .confidence-ring,
+body.light-mode #replacement-modal.anchor-dj-modal .transition-now-kicker,
+body.light-mode #replacement-modal.anchor-dj-modal .text-axiom-accent,
+body.light-mode #replacement-modal.anchor-dj-modal .compatibility-score,
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-meta-pill.accent,
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-suggestion-match strong {
+  color: #0047ab !important;
+  text-shadow: none !important;
+}
+
+body.light-mode #replacement-modal.anchor-dj-modal .transition-stage-score,
+body.light-mode #replacement-modal.anchor-dj-modal .confidence-ring {
+  background: radial-gradient(circle, rgba(0, 71, 171, 0.12), transparent 58%) !important;
+  border-color: rgba(0, 71, 171, 0.24) !important;
+  box-shadow: 0 0 24px rgba(0, 71, 171, 0.16) !important;
+}
+
+/* Studio and Anchor Selection day mode cleanup: no green controls and no white text on light cards. */
+body.light-mode #studio-active-view .studio-header .studio-actions .studio-action-btn,
+body.light-mode #studio-active-view .studio-action-btn,
+body.light-mode .studio-action-btn {
+  background: rgba(255, 255, 255, 0.92) !important;
+  color: #07111f !important;
+  border-color: rgba(0, 71, 171, 0.24) !important;
+  text-shadow: none !important;
+  box-shadow: 0 14px 28px rgba(7, 17, 31, 0.10), inset 0 1px 0 rgba(255,255,255,0.78) !important;
+}
+
+body.light-mode #studio-active-view .studio-header .studio-actions .studio-action-btn:hover,
+body.light-mode #studio-active-view .studio-action-btn:hover,
+body.light-mode .studio-action-btn:hover {
+  background: rgba(238, 243, 251, 0.96) !important;
+  border-color: rgba(0, 71, 171, 0.42) !important;
+  color: #0047ab !important;
+  box-shadow: 0 16px 34px rgba(7, 17, 31, 0.14), 0 0 22px rgba(0, 71, 171, 0.16) !important;
+}
+
+body.light-mode #set-score-display,
+body.light-mode #set-score-display.text-axiom-accent,
+body.light-mode #set-score-display.text-green-400 {
+  color: #0047ab !important;
+  background: transparent !important;
+  border: none !important;
+  text-shadow: 0 0 22px rgba(0, 71, 171, 0.16) !important;
+}
+
+body.light-mode #studio-active-view .studio-header .studio-actions .studio-save-crate-btn,
+body.light-mode #studio-active-view .studio-header .studio-actions #magic-studio-btn,
+body.light-mode #studio-active-view .studio-header .studio-actions #export-dropdown-btn,
+body.light-mode .studio-save-crate-btn,
+body.light-mode #magic-studio-btn,
+body.light-mode #export-dropdown-btn,
+body.light-mode .anchor-suggestion-add,
+body.light-mode .anchor-action-primary {
+  background: linear-gradient(135deg, #2563eb, #0047ab) !important;
+  color: #ffffff !important;
+  border-color: #0047ab !important;
+  text-shadow: none !important;
+  box-shadow: 0 0 28px rgba(0, 71, 171, 0.30), 0 15px 32px rgba(7, 17, 31, 0.14), inset 0 1px 0 rgba(255,255,255,0.45) !important;
+}
+
+body.light-mode #studio-active-view .studio-header .studio-actions .studio-save-crate-btn:hover,
+body.light-mode #studio-active-view .studio-header .studio-actions #magic-studio-btn:hover,
+body.light-mode #studio-active-view .studio-header .studio-actions #export-dropdown-btn:hover,
+body.light-mode .studio-save-crate-btn:hover,
+body.light-mode #magic-studio-btn:hover,
+body.light-mode #export-dropdown-btn:hover,
+body.light-mode .anchor-suggestion-add:hover,
+body.light-mode .anchor-action-primary:hover {
+  background: linear-gradient(135deg, #3b82f6, #0047ab) !important;
+  color: #ffffff !important;
+  box-shadow: 0 0 38px rgba(0, 71, 171, 0.38), 0 18px 38px rgba(7, 17, 31, 0.16) !important;
+}
+
+body.light-mode .studio-tabbar {
+  border-color: rgba(0, 71, 171, 0.18) !important;
+  border-bottom-color: rgba(0, 71, 171, 0.18) !important;
+  background: linear-gradient(90deg, rgba(255,255,255,0.82), rgba(238,243,251,0.88), rgba(255,255,255,0.82)) !important;
+}
+
+body.light-mode #studio-active-view::before {
+  background:
+    radial-gradient(circle at 54% 38%, rgba(0, 71, 171, 0.18), transparent 16%),
+    radial-gradient(circle at 74% 12%, rgba(37, 99, 235, 0.10), transparent 28%),
+    linear-gradient(rgba(0, 71, 171, 0.055), transparent 78%) !important;
+  opacity: 0.30 !important;
+}
+
+body.light-mode #studio-active-view::after {
+  background:
+    repeating-linear-gradient(90deg, rgba(0, 71, 171, 0.12) 0 1px, transparent 1px 72px),
+    repeating-linear-gradient(0deg, rgba(0, 71, 171, 0.07) 0 1px, transparent 1px 24px),
+    linear-gradient(178deg, transparent 0 34%, rgba(0, 71, 171, 0.12) 35%, transparent 36%),
+    linear-gradient(182deg, transparent 0 44%, rgba(0, 71, 171, 0.07) 45%, transparent 46%) !important;
+  opacity: 0.28 !important;
+}
+
+body.light-mode .studio-header::before {
+  background:
+    radial-gradient(at 52% 100%, rgba(0, 71, 171, 0.14), transparent 58%),
+    linear-gradient(90deg, transparent, rgba(37, 99, 235, 0.12), transparent) !important;
+  opacity: 0.78 !important;
+}
+
+body.light-mode .command-feature-icon {
+  border-color: rgba(0, 71, 171, 0.34) !important;
+  box-shadow: inset 0 0 18px rgba(0, 71, 171, 0.06), 0 0 20px rgba(0, 71, 171, 0.12) !important;
+}
+
+body.light-mode .studio-mode-tab {
+  background: rgba(0, 71, 171, 0.06) !important;
+  color: rgba(7, 17, 31, 0.62) !important;
+  border-color: rgba(0, 71, 171, 0.14) !important;
+  text-shadow: none !important;
+  box-shadow: none !important;
+}
+
+body.light-mode .studio-mode-tab:hover,
+body.light-mode .studio-mode-tab.active {
+  background: rgba(0, 71, 171, 0.12) !important;
+  color: #0047ab !important;
+  border-color: rgba(0, 71, 171, 0.42) !important;
+  box-shadow: 0 0 20px rgba(0, 71, 171, 0.18) !important;
+}
+
+body.light-mode #studio-active-view .studio-mode-tab.active,
+body.light-mode #studio-active-view .studio-mode-tab.active:hover {
+  background: rgba(0, 71, 171, 0.12) !important;
+  color: #0047ab !important;
+  border-color: rgba(0, 71, 171, 0.42) !important;
+  text-shadow: none !important;
+  box-shadow: 0 0 20px rgba(0, 71, 171, 0.18) !important;
+}
+
+body.light-mode #energy-ladder {
+  background: rgba(255, 255, 255, 0.92) !important;
+  border-color: rgba(0, 71, 171, 0.18) !important;
+  box-shadow: 0 18px 40px rgba(7, 17, 31, 0.10), inset 0 1px 0 rgba(255,255,255,0.78) !important;
+}
+
+body.light-mode .energy-block,
+body.light-mode .energy-block.energy-Low,
+body.light-mode .energy-block.energy-Mid,
+body.light-mode .energy-block.energy-Peak,
+body.light-mode .energy-block.energy-High,
+body.light-mode .energy-block.energy-Unknown,
+body.light-mode .energy-block.energy-idle {
+  background: linear-gradient(135deg, #2563eb, #0047ab) !important;
+  border-color: rgba(255, 255, 255, 0.64) !important;
+  box-shadow: 0 0 18px rgba(0, 71, 171, 0.28), inset 0 1px 0 rgba(255,255,255,0.42) !important;
+}
+
+body.light-mode .energy-timeline-labels,
+body.light-mode .energy-timeline-labels span {
+  color: rgba(7, 17, 31, 0.62) !important;
+  text-shadow: none !important;
+}
+
+body.light-mode #active-playlist-container .playlist-row,
+body.light-mode #active-playlist-container .playlist-row.studio-transition-row {
+  background: linear-gradient(90deg, rgba(255,255,255,0.97), rgba(242,246,252,0.97) 50%, rgba(255,255,255,0.97)) !important;
+  color: #07111f !important;
+  border-color: rgba(0, 71, 171, 0.18) !important;
+  text-shadow: none !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.85), 0 16px 34px rgba(7, 17, 31, 0.10), 0 0 24px rgba(0, 71, 171, 0.10) !important;
+}
+
+body.light-mode #active-playlist-container .playlist-row.studio-transition-row .studio-row-main,
+body.light-mode #active-playlist-container .playlist-row.studio-transition-row .studio-row-main p,
+body.light-mode #active-playlist-container .playlist-row.studio-transition-row .studio-row-main span,
+body.light-mode #active-playlist-container .studio-row-main,
+body.light-mode #active-playlist-container .studio-row-main p,
+body.light-mode #active-playlist-container .studio-row-main span {
+  color: #07111f !important;
+  text-shadow: none !important;
+}
+
+body.light-mode #active-playlist-container .playlist-row.studio-transition-row .studio-row-title,
+body.light-mode #active-playlist-container .playlist-row.studio-transition-row .track-title-resize,
+body.light-mode #active-playlist-container .studio-row-title,
+body.light-mode #active-playlist-container .track-title-resize {
+  color: #07111f !important;
+  text-shadow: none !important;
+}
+
+body.light-mode #active-playlist-container .playlist-row.studio-transition-row .studio-row-artist,
+body.light-mode #active-playlist-container .playlist-row.studio-transition-row .track-artist-resize,
+body.light-mode #active-playlist-container .studio-row-artist,
+body.light-mode #active-playlist-container .track-artist-resize,
+body.light-mode #active-playlist-container .text-white\/50,
+body.light-mode #active-playlist-container .text-white\/60,
+body.light-mode #active-playlist-container small {
+  color: rgba(64, 81, 106, 0.86) !important;
+  text-shadow: none !important;
+}
+
+body.light-mode #active-playlist-container .playlist-row.studio-transition-row .studio-dna-chip,
+body.light-mode #active-playlist-container .studio-dna-chip,
+body.light-mode .studio-key-pill {
+  background: rgba(0, 71, 171, 0.10) !important;
+  color: #0047ab !important;
+  border-color: rgba(0, 71, 171, 0.30) !important;
+  text-shadow: none !important;
+  box-shadow: none !important;
+}
+
+body.light-mode #active-playlist-container .playlist-row.studio-transition-row .studio-row-main .studio-dna-chip,
+body.light-mode #active-playlist-container .playlist-row.studio-transition-row .studio-dna-chip {
+  background: rgba(0, 71, 171, 0.10) !important;
+  color: #0047ab !important;
+  border-color: rgba(0, 71, 171, 0.30) !important;
+  text-shadow: none !important;
+  box-shadow: none !important;
+}
+
+body.light-mode .studio-harmonic-indicator {
+  color: #0047ab !important;
+  text-shadow: none !important;
+}
+
+body.light-mode .studio-track-artwork {
+  background: rgba(238, 243, 251, 0.96) !important;
+  border-color: rgba(0, 71, 171, 0.22) !important;
+  box-shadow: 0 12px 24px rgba(7, 17, 31, 0.10) !important;
+}
+
+body.light-mode .transition-badge,
+body.light-mode .transition-badge.energy-spine-node,
+body.light-mode .energy-spine-node,
+body.light-mode .badge-green,
+body.light-mode .badge-yellow {
+  background: linear-gradient(135deg, #2563eb, #0047ab) !important;
+  color: #ffffff !important;
+  border-color: rgba(255, 255, 255, 0.74) !important;
+  text-shadow: none !important;
+  box-shadow: 0 0 24px rgba(0, 71, 171, 0.34), 0 12px 24px rgba(7, 17, 31, 0.15) !important;
+}
+
+body.light-mode .transition-badge.energy-spine-node strong {
+  color: #ffffff !important;
+  text-shadow: none !important;
+}
+
+body.light-mode .studio-spine-orb {
+  background: radial-gradient(circle, #ffffff 0 12%, rgba(37,99,235,0.38) 30%, rgba(0,71,171,0.78) 100%) !important;
+  box-shadow: 0 0 26px rgba(0, 71, 171, 0.36) !important;
+}
+
+body.light-mode .tb-tooltip,
+body.light-mode .transition-badge .tb-tooltip {
+  background: rgba(255, 255, 255, 0.98) !important;
+  color: #07111f !important;
+  border-color: rgba(0, 71, 171, 0.24) !important;
+  box-shadow: 0 18px 42px rgba(7, 17, 31, 0.16) !important;
+}
+
+body.light-mode .tb-tooltip-title,
+body.light-mode .tb-tooltip-section-header,
+body.light-mode .tb-tooltip-row,
+body.light-mode .tb-tooltip-desc,
+body.light-mode .tb-tooltip-footer {
+  color: #07111f !important;
+  text-shadow: none !important;
+}
+
+body.light-mode .tb-tooltip-row.perfect,
+body.light-mode .tb-tooltip-desc.perfect,
+body.light-mode .tb-tooltip-section-header {
+  color: #0047ab !important;
+}
+
+body.light-mode #replacement-modal.anchor-dj-modal {
+  background: radial-gradient(circle at 46% 12%, rgba(0, 71, 171, 0.12), transparent 32%), rgba(248, 251, 255, 0.94) !important;
+}
+
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-dj-shell,
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-hero-panel,
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-results-panel,
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-live-panel,
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-insight-bar {
+  background: linear-gradient(135deg, rgba(255,255,255,0.98), rgba(238,243,251,0.96)) !important;
+  color: #07111f !important;
+  border-color: rgba(0, 71, 171, 0.20) !important;
+  box-shadow: 0 18px 42px rgba(7, 17, 31, 0.12) !important;
+}
+
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-cover-card {
+  background: linear-gradient(135deg, rgba(255,255,255,0.98), rgba(238,243,251,0.96)) !important;
+  color: #07111f !important;
+  border-color: rgba(0, 71, 171, 0.28) !important;
+  box-shadow: 0 12px 28px rgba(7, 17, 31, 0.12), 0 0 22px rgba(0, 71, 171, 0.14) !important;
+}
+
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-close-btn {
+  background: rgba(255,255,255,0.96) !important;
+  color: #0047ab !important;
+  border-color: rgba(0, 71, 171, 0.38) !important;
+  box-shadow: 0 8px 18px rgba(7, 17, 31, 0.12) !important;
+}
+
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-meta-pill,
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-meta-pill.accent,
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-tag-row span {
+  background: rgba(0, 71, 171, 0.09) !important;
+  color: #0047ab !important;
+  border-color: rgba(0, 71, 171, 0.24) !important;
+  text-shadow: none !important;
+}
+
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-title,
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-subtitle,
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-section-title,
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-detail-title,
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-suggestion-title {
+  color: #07111f !important;
+  text-shadow: none !important;
+}
+
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-search-icon,
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-sort-pill,
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-sort-pill *,
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-sort-select,
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-filter-btn,
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-filter-select {
+  background: rgba(255,255,255,0.96) !important;
+  color: #07111f !important;
+  border-color: rgba(0, 71, 171, 0.22) !important;
+  text-shadow: none !important;
+  box-shadow: none !important;
+}
+
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-sort-select:focus,
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-sort-select:hover {
+  color: #0047ab !important;
+  border-color: rgba(0, 71, 171, 0.46) !important;
+}
+
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-suggestion-row,
+body.light-mode #replacement-modal.anchor-dj-modal .vampire-row.anchor-suggestion-row {
+  background: linear-gradient(90deg, rgba(255,255,255,0.98), rgba(242,246,252,0.98)) !important;
+  color: #07111f !important;
+  border-color: rgba(0, 71, 171, 0.16) !important;
+  text-shadow: none !important;
+  box-shadow: 0 10px 22px rgba(7, 17, 31, 0.08) !important;
+}
+
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-suggestion-row:hover,
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-suggestion-row.selected,
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-suggestion-row.active-suggestion {
+  background: linear-gradient(90deg, rgba(238,243,251,0.98), rgba(255,255,255,0.98)) !important;
+  border-color: rgba(0, 71, 171, 0.42) !important;
+  box-shadow: 0 0 0 1px rgba(0, 71, 171, 0.10), 0 14px 28px rgba(7, 17, 31, 0.10), 0 0 26px rgba(0, 71, 171, 0.14) !important;
+}
+
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-suggestion-row strong,
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-suggestion-row span,
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-suggestion-row small,
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-suggestion-row p {
+  color: #07111f !important;
+  text-shadow: none !important;
+}
+
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-suggestion-row .text-axiom-muted,
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-suggestion-row .text-white\/40,
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-suggestion-row .text-white\/50,
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-suggestion-row .text-white\/60 {
+  color: rgba(64, 81, 106, 0.86) !important;
+}
+
+body.light-mode #replacement-modal.anchor-dj-modal .text-axiom-accent,
+body.light-mode #replacement-modal.anchor-dj-modal .score-lift,
+body.light-mode #replacement-modal.anchor-dj-modal .compatibility-score {
+  color: #0047ab !important;
+  text-shadow: none !important;
+}
+
+/* AXIOM day mode final active contract:
+   Night black becomes white. Night green becomes blue. Night green glow becomes blue glow. */
+body.light-mode,
+html.light-mode,
+:root[data-theme="green"] {
+  --accent: #0047ab;
+  --accent-primary: #0047ab;
+  --accent-primary-rgb: 0, 71, 171;
+  --color-accent-blue: #0047ab;
+  --day-accent-blue: #0047ab;
+  --day-accent-blue-bright: #2563eb;
+  --day-accent-blue-soft: rgba(0, 71, 171, 0.14);
+  --day-accent-blue-glow: rgba(0, 71, 171, 0.34);
+  --day-bg: #ffffff;
+  --day-panel: #ffffff;
+  --day-panel-soft: #f2f6fc;
+  --day-ink: #07111f;
+  --day-muted: #40516a;
+  --day-border: rgba(0, 71, 171, 0.22);
+}
+
+body.light-mode {
+  background:
+    radial-gradient(circle at 50% -15%, rgba(0, 71, 171, 0.12), transparent 38%),
+    linear-gradient(180deg, #ffffff 0%, #f3f7fd 100%) !important;
+  color: var(--day-ink) !important;
+}
+
+body.light-mode :where(
+  main,
+  aside,
+  #main-content-wrapper,
+  #tab-content-library,
+  #tab-content-studio,
+  #tab-content-playlists,
+  #tab-content-favorites,
+  #audio-player,
+  .glass,
+  .card,
+  .surface,
+  .vampire-row,
+  .library-track-card,
+  .recommendation-card,
+  .recommendations-panel,
+  .smart-links-container,
+  .command-center-hud,
+  .command-launch-shell,
+  #studio-start-view.command-launch-shell,
+  .command-card,
+  .command-launch-card,
+  .studio-search-results,
+  .studio-mode-controls,
+  .playlist-row,
+  .folder-build-panel,
+  .folder-source-picker,
+  .folder-build-options,
+  .folder-build-profile,
+  .folder-magic-bar,
+  .folder-drop-zone,
+  .folder-recommendations,
+  .health-section-shell,
+  .health-summary-card,
+  .health-tools-row,
+  .health-repair-review,
+  .health-repair-row,
+  .settings-shell,
+  .settings-card,
+  .settings-row,
+  .workflow-popover,
+  .modal,
+  #replacement-modal,
+  .anchor-dj-shell,
+  .anchor-dj-topline
+) {
+  background: rgba(255, 255, 255, 0.96) !important;
+  color: var(--day-ink) !important;
+  border-color: var(--day-border) !important;
+  box-shadow:
+    0 18px 44px rgba(7, 17, 31, 0.10),
+    0 0 24px rgba(0, 71, 171, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.92) !important;
+}
+
+body.light-mode :where(
+  .bg-black,
+  .bg-\[\#000\],
+  .bg-\[\#050505\],
+  .bg-\[\#070707\],
+  .bg-\[\#070b07\],
+  .bg-\[\#0a0a0a\],
+  .bg-\[\#0d0d0d\],
+  .bg-\[\#111\],
+  .bg-\[\#1a1a1a\],
+  .bg-\[\#1e1e1e\],
+  .bg-black\/20,
+  .bg-black\/40,
+  .bg-black\/60,
+  .bg-black\/80,
+  .bg-black\/90,
+  .bg-black\/95,
+  .bg-white\/5,
+  .bg-white\/10
+) {
+  background: var(--day-panel) !important;
+  color: var(--day-ink) !important;
+}
+
+body.light-mode :where(
+  h1,
+  h2,
+  h3,
+  h4,
+  .font-heading,
+  .text-white,
+  .text-gray-100,
+  .library-track-title,
+  .recommendation-title,
+  .recommendations-title,
+  .studio-row-title,
+  .track-title-resize,
+  .settings-title,
+  .health-command-title,
+  .health-repair-title,
+  .health-summary-card strong,
+  .health-repair-row strong,
+  .folder-build-title,
+  .workflow-title
+) {
+  color: var(--day-ink) !important;
+  text-shadow: none !important;
+}
+
+body.light-mode :where(
+  .text-axiom-muted,
+  .text-white\/40,
+  .text-white\/50,
+  .text-white\/60,
+  .text-white\/70,
+  .text-gray-400,
+  .library-track-artist,
+  .recommendation-artist,
+  .library-meta-line,
+  .library-meta-line span,
+  .track-artist-resize,
+  .settings-copy,
+  .health-repair-copy,
+  .folder-build-copy,
+  .workflow-item p
+) {
+  color: var(--day-muted) !important;
+  text-shadow: none !important;
+}
+
+body.light-mode :where(
+  .text-axiom-accent,
+  .text-\[\#39FF14\],
+  .text-\[\#a3ff00\],
+  .text-green-400,
+  .accent-theme-primary,
+  .nav-item.active,
+  .fav-star-btn.fav-star-active,
+  .health-command-kicker,
+  .health-repair-kicker,
+  .settings-kicker
+) {
+  color: var(--day-accent-blue) !important;
+  text-shadow: none !important;
+}
+
+body.light-mode :where(
+  .bg-axiom-accent,
+  .bg-\[\#39FF14\],
+  .bg-\[\#ADFF2F\],
+  .bg-\[\#a3ff00\],
+  .status-playing,
+  .status-paused,
+  .btn-primary,
+  .era-btn.active-era,
+  .library-year-chip,
+  .library-dna-chip,
+  .dna-badge,
+  .bpm-block,
+  .library-bpm-value,
+  .health-repair-action,
+  .health-fix-cta
+) {
+  background: linear-gradient(135deg, #2563eb, #0047ab) !important;
+  color: #ffffff !important;
+  border-color: #0047ab !important;
+  text-shadow: none !important;
+  box-shadow: 0 0 26px rgba(0, 71, 171, 0.34) !important;
+}
+
+body.light-mode :where(
+  .border-axiom-accent,
+  .border-axiom-accent\/30,
+  .border-axiom-accent\/35,
+  .border-axiom-accent\/40,
+  .border-axiom-accent\/55,
+  .border-\[\#39FF14\],
+  .border-white\/5,
+  .border-white\/10
+) {
+  border-color: rgba(0, 71, 171, 0.42) !important;
+}
+
+body.light-mode :where(
+  .library-guide-card,
+  .workflow-card
+) {
+  background:
+    radial-gradient(circle at 18% 0%, rgba(255, 255, 255, 0.30), transparent 30%),
+    linear-gradient(145deg, #2563eb, #0047ab) !important;
+  color: #ffffff !important;
+  border-color: rgba(0, 47, 112, 0.55) !important;
+  box-shadow: 0 24px 70px rgba(7, 17, 31, 0.28), 0 0 34px rgba(0, 71, 171, 0.34) !important;
+}
+
+body.light-mode #studio-start-view.command-launch-shell,
+body.light-mode .command-launch-shell {
+  background:
+    radial-gradient(circle at 72% 30%, rgba(0, 71, 171, 0.14), transparent 24%),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.96), rgba(242, 246, 252, 0.96)) !important;
+  color: #07111f !important;
+  border-color: rgba(0, 71, 171, 0.22) !important;
+  box-shadow: 0 26px 80px rgba(7, 17, 31, 0.12), 0 0 42px rgba(0, 71, 171, 0.12) !important;
+}
+
+body.light-mode .command-launch-shell :where(.command-card, .command-feature, .command-card-cta) {
+  background: rgba(255, 255, 255, 0.90) !important;
+  color: #07111f !important;
+  border-color: rgba(0, 71, 171, 0.22) !important;
+  box-shadow: 0 16px 36px rgba(7, 17, 31, 0.08) !important;
+}
+
+body.light-mode .command-launch-shell :where(.command-card-title, .command-card-desc, .command-feature strong, .command-feature span) {
+  color: #07111f !important;
+  text-shadow: none !important;
+}
+
+body.light-mode .command-launch-shell :where(.command-card-kicker, .command-card-cta) {
+  color: #0047ab !important;
+}
+
+body.light-mode :where(
+  .library-guide-card,
+  .workflow-card,
+  .library-guide-card *,
+  .workflow-card *,
+  .library-guide-kicker,
+  .library-guide-title,
+  .library-guide-copy,
+  .library-guide-detail p,
+  .workflow-kicker,
+  .workflow-title,
+  .workflow-item strong,
+  .workflow-item p
+) {
+  color: #ffffff !important;
+  text-shadow: none !important;
+}
+
+body.light-mode :where(
+  .library-guide-primary,
+  .library-guide-step span,
+  .workflow-actions .primary,
+  .workflow-item span
+) {
+  background: #ffffff !important;
+  color: #0047ab !important;
+  border-color: #ffffff !important;
+  box-shadow: none !important;
+}
+
+body.light-mode :where(
+  .era-btn:not(.active-era),
+  .library-guide-btn,
+  .library-artwork-toggle,
+  button:not(.bg-axiom-accent):not(.health-repair-action):not(.health-fix-cta)
+) {
+  color: #0047ab !important;
+  background: rgba(0, 71, 171, 0.08) !important;
+  border-color: rgba(0, 71, 171, 0.28) !important;
+  text-shadow: none !important;
+}
+
+body.light-mode :where(
+  .from-axiom-accent\/20,
+  .from-axiom-accent\/30,
+  .to-transparent,
+  [class*="from-axiom-accent"],
+  [class*="via-axiom-accent"],
+  [class*="to-axiom-accent"]
+) {
+  --tw-gradient-from: rgba(0, 71, 171, 0.20) var(--tw-gradient-from-position) !important;
+  --tw-gradient-via: rgba(0, 71, 171, 0.12) var(--tw-gradient-via-position) !important;
+  --tw-gradient-to: rgba(0, 71, 171, 0) var(--tw-gradient-to-position) !important;
+}
+
+body.light-mode :where(
+  .drop-shadow-\[0_0_8px_rgba\(163\,255\,0\,0\.8\)\],
+  .group-hover\:shadow-\[0_0_15px_\#a3ff00\],
+  .shadow-\[0_0_35px_rgba\(163\,255\,0\,0\.24\)\],
+  .hover\:shadow-\[0_0_55px_rgba\(163\,255\,0\,0\.38\)\]
+) {
+  filter: drop-shadow(0 0 8px rgba(0, 71, 171, 0.72)) !important;
+  box-shadow: 0 0 28px rgba(0, 71, 171, 0.28) !important;
+}
+
+body.light-mode [style*="#39FF14"],
+body.light-mode [style*="#a3ff00"],
+body.light-mode [style*="#A3FF00"],
+body.light-mode [style*="rgba(57,255,20"],
+body.light-mode [style*="rgba(163,255,0"],
+body.light-mode [style*="rgba(163, 255, 0"] {
+  color: #0047ab !important;
+  border-color: #0047ab !important;
+  box-shadow: 0 0 24px rgba(0, 71, 171, 0.34) !important;
+}
+
+body.light-mode [style*="background:#39FF14"],
+body.light-mode [style*="background: #39FF14"],
+body.light-mode [style*="background:#a3ff00"],
+body.light-mode [style*="background: #a3ff00"],
+body.light-mode [style*="background: rgb(163, 255, 0"],
+body.light-mode [style*="background-color: rgb(163, 255, 0"] {
+  background: linear-gradient(135deg, #2563eb, #0047ab) !important;
+  color: #ffffff !important;
+}
+
+body.light-mode [style*="background:#000"],
+body.light-mode [style*="background: #000"],
+body.light-mode [style*="background:#050505"],
+body.light-mode [style*="background:#070b07"],
+body.light-mode [style*="background:#0a0a0a"],
+body.light-mode [style*="background:#0d0d0d"],
+body.light-mode [style*="background:#111"],
+body.light-mode [style*="background:#1e1e1e"],
+body.light-mode [style*="background: #1e1e1e"],
+body.light-mode [style*="background:#2a2a2a"] {
+  background: #ffffff !important;
+  color: #07111f !important;
+  border-color: rgba(0, 71, 171, 0.22) !important;
+  box-shadow: 0 18px 40px rgba(7, 17, 31, 0.10) !important;
+}
+
+body.light-mode .command-status-readout,
+body.light-mode #btn-upload-csv.command-action-card .command-card-kicker,
+body.light-mode .command-card-kicker {
+  color: #0047ab !important;
+  text-shadow: none !important;
+}
+
+body.light-mode .command-action-card {
+  background:
+    linear-gradient(128deg, rgba(255, 255, 255, 0.86), rgba(242, 246, 252, 0.70) 44%),
+    radial-gradient(ellipse at 80% 55%, rgba(0, 71, 171, 0.10), transparent 34%),
+    rgba(255, 255, 255, 0.88) !important;
+  border-color: rgba(0, 71, 171, 0.34) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.92), 0 26px 70px rgba(7, 17, 31, 0.14), 0 0 34px rgba(0, 71, 171, 0.10) !important;
+}
+
+body.light-mode .command-action-card::before {
+  background:
+    radial-gradient(circle at 74% 50%, rgba(0, 71, 171, 0.18), transparent 24%),
+    radial-gradient(ellipse at 50% 115%, rgba(255, 255, 255, 0.88), transparent 42%),
+    linear-gradient(145deg, rgba(255, 255, 255, 0.42), transparent 36%),
+    linear-gradient(to top, rgba(0, 71, 171, 0.12), transparent 60%) !important;
+}
+
+body.light-mode .command-action-card:hover {
+  border-color: rgba(0, 71, 171, 0.72) !important;
+  box-shadow: 0 0 0 1px rgba(0, 71, 171, 0.26), 0 34px 94px rgba(7, 17, 31, 0.18), 0 0 58px rgba(0, 71, 171, 0.28) !important;
+}
+
+body.light-mode .command-action-card.primary {
+  border-color: rgba(0, 71, 171, 0.58) !important;
+  background:
+    radial-gradient(ellipse at 78% 48%, rgba(0, 71, 171, 0.16), transparent 34%),
+    linear-gradient(145deg, rgba(255, 255, 255, 0.92), rgba(238, 243, 251, 0.92)),
+    rgba(255, 255, 255, 0.86) !important;
+  box-shadow: 0 0 44px rgba(0, 71, 171, 0.20), inset 0 0 66px rgba(0, 71, 171, 0.08), 0 30px 78px rgba(7, 17, 31, 0.16) !important;
+}
+
+body.light-mode .command-action-card.secondary {
+  background:
+    radial-gradient(ellipse at 82% 56%, rgba(0, 71, 171, 0.11), transparent 30%),
+    linear-gradient(145deg, rgba(255, 255, 255, 0.92), rgba(242, 246, 252, 0.92)) !important;
+}
+
+body.light-mode .command-action-card.primary .command-card-visual::before {
+  background: repeating-linear-gradient(90deg, rgba(0, 71, 171, 0.88) 0 3px, transparent 3px 13px) !important;
+  filter: drop-shadow(0 0 24px rgba(0, 71, 171, 0.46)) !important;
+}
+
+body.light-mode .file-glyph {
+  border-color: rgba(0, 71, 171, 0.78) !important;
+  box-shadow: 0 0 26px rgba(0, 71, 171, 0.38), inset 0 0 28px rgba(0, 71, 171, 0.10) !important;
+}
+
+body.light-mode .file-glyph::before {
+  background: #0047ab !important;
+  color: #ffffff !important;
+}

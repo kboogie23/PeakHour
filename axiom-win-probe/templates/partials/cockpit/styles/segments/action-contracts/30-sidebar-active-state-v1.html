@@ -1,0 +1,56 @@
+<style id="sidebar-active-state-v1">
+  #axiom-sidebar .axiom-sidebar-nav-item[data-nav-state="inactive"] {
+    border-left-color: transparent !important;
+    background: transparent !important;
+    color: rgba(255, 255, 255, .4) !important;
+    box-shadow: none !important;
+  }
+
+  #axiom-sidebar .axiom-sidebar-nav-item[data-nav-state="active"] {
+    border-left-color: var(--accent) !important;
+    background: linear-gradient(90deg, rgba(163, 255, 0, .2), transparent) !important;
+    color: var(--accent) !important;
+    box-shadow: inset 10px 0 20px -10px rgba(163, 255, 0, .26) !important;
+  }
+
+  #axiom-sidebar .axiom-sidebar-nav-item[data-nav-state="active"]
+    :is([id^="icon-"], .axiom-sidebar-nav-icon) {
+    opacity: 1 !important;
+    filter: drop-shadow(0 0 7px rgba(163, 255, 0, .8)) !important;
+  }
+
+  body.light-mode #axiom-sidebar .axiom-sidebar-nav-item[data-nav-state="inactive"] {
+    background: transparent !important;
+    color: #526173 !important;
+  }
+
+  body.light-mode #axiom-sidebar .axiom-sidebar-nav-item[data-nav-state="active"] {
+    border-left-color: #0047ab !important;
+    background: linear-gradient(90deg, rgba(0, 71, 171, .16), rgba(0, 71, 171, .04) 62%, transparent) !important;
+    color: #0047ab !important;
+    box-shadow: inset 10px 0 20px -10px rgba(0, 71, 171, .22) !important;
+  }
+
+  body.light-mode #axiom-sidebar .axiom-sidebar-nav-item[data-nav-state="active"]
+    :is([id^="icon-"], .axiom-sidebar-nav-icon) {
+    opacity: 1 !important;
+    filter: none !important;
+  }
+
+  html body.light-mode #axiom-sidebar #lib-status,
+  html body.light-mode #axiom-sidebar #lib-status span {
+    color: #526173 !important;
+    -webkit-text-fill-color: #526173 !important;
+    text-shadow: none !important;
+  }
+
+  html body.light-mode #axiom-sidebar #lib-status::before {
+    background: #0047ab !important;
+    box-shadow: none !important;
+  }
+
+  html body.light-mode #axiom-sidebar .axiom-sidebar-nav-item[data-nav-state="inactive"]:is(:hover, :focus-visible) {
+    background: #eaf0f8 !important;
+    color: #0047ab !important;
+  }
+</style>

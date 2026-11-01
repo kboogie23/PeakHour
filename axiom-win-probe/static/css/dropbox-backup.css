@@ -1,0 +1,44 @@
+.dropbox-dialog{background:#0c110b;color:#edf4e9;-webkit-text-fill-color:#edf4e9;border:1px solid #53634a;border-radius:12px;width:min(740px,94vw);max-height:88vh;overflow:auto;padding:28px;font-family:Barlow,sans-serif;box-sizing:border-box}
+.dropbox-dialog::backdrop{background:rgba(0,0,0,.78)}
+.dropbox-dialog [hidden]{display:none!important}
+.dropbox-dialog h2,.dropbox-dialog h3{font-family:'Bebas Neue',sans-serif;margin:0;line-height:1.1}
+.dropbox-dialog h2{font-size:32px}.dropbox-dialog h3{font-size:23px}
+.dropbox-heading{display:flex;justify-content:space-between;align-items:center;gap:16px}.dropbox-heading p{font-size:11px;letter-spacing:.2em;color:#a3ff00;-webkit-text-fill-color:#a3ff00;margin:0 0 9px}
+.dropbox-dialog p,.dropbox-description{font-size:14px;line-height:1.5;margin:12px 0}.dropbox-card{background:#141c11;border:1px solid #3c4934;border-radius:8px;padding:18px;margin-top:16px}
+.dropbox-actions{display:flex;align-items:center;flex-wrap:wrap;gap:14px}.dropbox-dialog button{background:#20291c;color:#edf4e9!important;-webkit-text-fill-color:#edf4e9!important;border:1px solid #657558;border-radius:5px;padding:10px 16px;font-weight:700;cursor:pointer;min-height:42px}.dropbox-dialog button.primary,.dropbox-dialog button.primary:is(:hover,:focus,:active,:disabled){background:#a3ff00;color:#071005!important;-webkit-text-fill-color:#071005!important;border-color:#a3ff00}.dropbox-dialog button:disabled{opacity:.5;cursor:default}.dropbox-dialog button:focus-visible,.dropbox-dialog input:focus-visible{outline:2px solid #a3ff00;outline-offset:3px}
+.dropbox-dialog input[type=password]{display:block;width:100%;background:#080c07;color:#edf4e9;-webkit-text-fill-color:#edf4e9;padding:10px;margin:8px 0 12px;border:1px solid #657558;box-sizing:border-box}.dropbox-dialog label{font-size:14px}.dropbox-dialog input[type=checkbox]{accent-color:#a3ff00;margin-right:5px}#dropbox-code-step{margin-top:16px}#dropbox-message{padding-top:16px;line-height:1.5}#dropbox-message[data-error=true]{color:#ffb7b7;-webkit-text-fill-color:#ffb7b7}.dropbox-history-row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 0;border-top:1px solid #3c4934;font-size:14px}
+@media(max-width:540px){.dropbox-dialog{padding:18px}.dropbox-heading{align-items:flex-start}.dropbox-dialog h2{font-size:26px}.dropbox-history-row{flex-direction:column;align-items:flex-start}}
+.dropbox-dialog select{display:block;width:100%;margin:8px 0 14px;padding:10px;background:#080c07;color:#edf4e9;-webkit-text-fill-color:#edf4e9;border:1px solid #657558;border-radius:5px;min-height:44px}.dropbox-dialog select:focus-visible{outline:2px solid #a3ff00;outline-offset:3px}.dropbox-music-choice{display:block;font-weight:700;margin-top:16px}#dropbox-playlist-choices{max-height:220px;overflow:auto;border:1px solid #3c4934;padding:10px;margin:12px 0}#dropbox-playlist-choices label{display:block;padding:8px;border-bottom:1px solid #263021}#dropbox-playlist-choices small{display:block;color:#bac8b1;-webkit-text-fill-color:#bac8b1;margin-left:22px}#dropbox-copy-preview{border-top:1px solid #53634a;margin-top:20px;padding-top:18px}
+
+/* This dialog keeps its dark surface in both cockpit themes. Native select
+   chrome and shared Day rules must not separate field/CTA text from its fill. */
+html body #dropbox-dialog.dropbox-dialog select {
+  appearance: none;
+  -webkit-appearance: none;
+  background: #edf4e9 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpath d='m4 6 4 4 4-4' fill='none' stroke='%23071005' stroke-width='2'/%3E%3C/svg%3E") no-repeat right 12px center !important;
+  color: #071005 !important;
+  -webkit-text-fill-color: #071005 !important;
+  padding-right: 36px;
+}
+html body #dropbox-dialog.dropbox-dialog select option {
+  background: #edf4e9 !important;
+  color: #071005 !important;
+  -webkit-text-fill-color: #071005 !important;
+}
+html body #dropbox-dialog.dropbox-dialog button {
+  background: #20291c !important;
+  color: #edf4e9 !important;
+  -webkit-text-fill-color: #edf4e9 !important;
+}
+html body #dropbox-dialog.dropbox-dialog button.primary,
+html body #dropbox-dialog.dropbox-dialog button.primary:is(:hover, :focus, :active, :disabled) {
+  background: #a3ff00 !important;
+  color: #071005 !important;
+  -webkit-text-fill-color: #071005 !important;
+  border-color: #a3ff00 !important;
+}
+html body #dropbox-dialog.dropbox-dialog input[type=password] {
+  background: #080c07 !important;
+  color: #edf4e9 !important;
+  -webkit-text-fill-color: #edf4e9 !important;
+}

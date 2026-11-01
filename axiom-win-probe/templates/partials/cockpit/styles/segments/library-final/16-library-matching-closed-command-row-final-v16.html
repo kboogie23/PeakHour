@@ -1,0 +1,159 @@
+<style id="library-matching-closed-command-row-final-v16">
+  /* Matching Songs narrows the Library to a deliberate split view. The closed
+     Set Prep command bar therefore gets its own compact four-control grid
+     instead of squeezing the full-width header until labels overlap. */
+  html body:not(.library-matching-songs-disabled):not(.library-setup-open)
+    #tab-content-library.library-cockpit#tab-content-library#tab-content-library
+    .library-results-column > #library-brief-lens.library-brief-lens#library-brief-lens#library-brief-lens[data-library-brief-panel="closed"] {
+    width: 100% !important;
+    min-width: 0 !important;
+    height: auto !important;
+    min-height: 56px !important;
+    max-height: none !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+  }
+
+  html body:not(.library-matching-songs-disabled):not(.library-setup-open)
+    #tab-content-library.library-cockpit#tab-content-library#tab-content-library
+    #library-brief-lens#library-brief-lens[data-library-brief-panel="closed"]
+    > #library-brief-topline#library-brief-topline {
+    display: grid !important;
+    grid-template-columns: 96px minmax(120px, 1fr) 82px 104px !important;
+    grid-auto-rows: minmax(54px, auto) !important;
+    align-items: center !important;
+    column-gap: 8px !important;
+    row-gap: 0 !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    height: auto !important;
+    min-height: 54px !important;
+    padding: 0 12px !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+  }
+
+  html body:not(.library-matching-songs-disabled):not(.library-setup-open)
+    #tab-content-library.library-cockpit#tab-content-library
+    #library-brief-lens#library-brief-lens[data-library-brief-panel="closed"]
+    #library-brief-topline#library-brief-topline > .library-brief-copy.library-brief-copy {
+    grid-column: 1 !important;
+    grid-row: 1 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    width: 96px !important;
+    min-width: 0 !important;
+    max-width: 96px !important;
+    height: 54px !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+  }
+
+  html body:not(.library-matching-songs-disabled):not(.library-setup-open)
+    #tab-content-library.library-cockpit#tab-content-library
+    #library-brief-lens[data-library-brief-panel="closed"] #library-brief-kicker {
+    display: block !important;
+    width: auto !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+    white-space: nowrap !important;
+  }
+
+  html body:not(.library-matching-songs-disabled):not(.library-setup-open)
+    #tab-content-library.library-cockpit#tab-content-library
+    #library-brief-lens[data-library-brief-panel="closed"] #library-brief-title {
+    display: none !important;
+  }
+
+  html body:not(.library-matching-songs-disabled):not(.library-setup-open)
+    #tab-content-library.library-cockpit#tab-content-library
+    #library-brief-lens[data-library-brief-panel="closed"] #library-setup-utility-bar {
+    display: contents !important;
+  }
+
+  html body:not(.library-matching-songs-disabled):not(.library-setup-open)
+    #tab-content-library.library-cockpit#tab-content-library
+    #library-brief-lens#library-brief-lens[data-library-brief-panel="closed"]
+    #library-brief-topline#library-brief-topline #library-setup-utility-bar
+    > #library-brief-lane-dropdown#library-brief-lane-dropdown {
+    grid-column: 2 !important;
+    grid-row: 1 !important;
+    align-self: center !important;
+    justify-self: stretch !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    margin: 0 !important;
+  }
+
+  html body:not(.library-matching-songs-disabled):not(.library-setup-open)
+    #tab-content-library.library-cockpit#tab-content-library
+    #library-brief-lens#library-brief-lens[data-library-brief-panel="closed"]
+    #library-brief-topline#library-brief-topline > #library-brief-actions-toggle#library-brief-actions-toggle {
+    grid-column: 3 !important;
+    grid-row: 1 !important;
+    align-self: center !important;
+    justify-self: stretch !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    height: 36px !important;
+    min-height: 36px !important;
+    margin: 0 !important;
+  }
+
+  html body:not(.library-matching-songs-disabled):not(.library-setup-open)
+    #tab-content-library.library-cockpit#tab-content-library
+    #library-brief-lens#library-brief-lens[data-library-brief-panel="closed"]
+    #library-brief-topline#library-brief-topline #library-setup-utility-bar
+    > #library-brief-collapse#library-brief-collapse {
+    grid-column: 4 !important;
+    grid-row: 1 !important;
+    align-self: center !important;
+    justify-self: stretch !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    height: 36px !important;
+    min-height: 36px !important;
+    margin: 0 !important;
+    padding: 0 9px !important;
+  }
+
+  html body:not(.library-matching-songs-disabled):not(.library-setup-open)
+    #tab-content-library.library-cockpit#tab-content-library
+    #library-brief-lens[data-library-brief-panel="closed"] #library-brief-action-rail {
+    grid-column: 1 / -1 !important;
+    grid-row: 2 !important;
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+    overflow: hidden !important;
+  }
+
+  html body:not(.library-matching-songs-disabled):not(.library-setup-open)
+    #tab-content-library.library-cockpit#tab-content-library#tab-content-library
+    .library-results-column > #library-brief-lens#library-brief-lens#library-brief-lens[data-library-brief-panel="closed"][data-library-actions-expanded="true"] {
+    height: 102px !important;
+    min-height: 102px !important;
+    max-height: 102px !important;
+  }
+
+  html body:not(.library-matching-songs-disabled):not(.library-setup-open)
+    #tab-content-library.library-cockpit#tab-content-library#tab-content-library
+    .library-results-column > #library-brief-lens#library-brief-lens#library-brief-lens[data-library-brief-panel="closed"][data-library-actions-expanded="false"] {
+    height: 56px !important;
+    min-height: 56px !important;
+    max-height: 56px !important;
+  }
+
+  html body:not(.library-matching-songs-disabled):not(.library-setup-open)
+    #tab-content-library.library-cockpit#tab-content-library
+    #library-brief-lens[data-library-brief-panel="closed"][data-library-actions-expanded="false"]
+    #library-brief-action-rail {
+    display: none !important;
+  }
+</style>

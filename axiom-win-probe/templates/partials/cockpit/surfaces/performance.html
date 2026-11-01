@@ -1,0 +1,319 @@
+    <div id="tab-content-performance" class="tab-content hidden flex-1 performance-cockpit flex flex-col">
+      <section id="performance-session-receipt" class="performance-session-receipt" hidden aria-labelledby="performance-receipt-title">
+        <header class="performance-receipt-header">
+          <div class="performance-receipt-heading">
+            <p class="performance-receipt-eyebrow">Live Environment</p>
+            <div class="performance-receipt-title-row">
+              <h2 id="performance-receipt-title">Session Receipt</h2>
+              <div class="performance-receipt-live-recovery" role="group" aria-label="Live Assist recovery controls">
+                <span class="performance-live-dot" aria-hidden="true"></span>
+                <strong id="performance-receipt-command-provider">AXIOM Ready</strong>
+                <button id="performance-receipt-live-assist" type="button" onclick="showAxiomLiveAssist()" aria-label="Open or bring the Live Assist window to the front">Open Live Assist</button>
+              </div>
+            </div>
+            <p>Tonight's set, saved locally.</p>
+          </div>
+          <div class="performance-receipt-header-actions">
+            <button type="button" class="performance-receipt-close" onclick="closePerformanceSessionReceipt()">Back to Performance</button>
+            <button type="button" class="performance-receipt-save" onclick="performanceSaveSession()">Save Session</button>
+            <button type="button" class="performance-receipt-tracklist" onclick="performanceViewReceiptTracklist()">View Tracklist</button>
+            <details class="performance-receipt-more">
+              <summary>More</summary>
+              <div class="performance-receipt-more-menu">
+                <button id="performance-receipt-dj-auto" type="button" onclick="performanceToggleSeratoBridge()">DJ Auto Off</button>
+                <button type="button" onclick="performanceUsePlayingTrack()">Use Playing Track</button>
+                <button type="button" onclick="performanceSendToStudio()">Send To Studio</button>
+                <button type="button" onclick="performanceMarkCurrentPlayed()">Mark Played</button>
+                <button type="button" onclick="performanceResetSession()">Reset Session</button>
+              </div>
+            </details>
+          </div>
+        </header>
+
+        <nav class="performance-receipt-tabs" aria-label="Session receipt views">
+          <button id="performance-receipt-tab-session" class="active" type="button" onclick="performanceSetReceiptTab('session')">This Session</button>
+          <button id="performance-receipt-tab-recent" type="button" onclick="performanceSetReceiptTab('recent')">Recent Pattern</button>
+          <button id="performance-receipt-tab-habit" type="button" onclick="performanceSetReceiptTab('habit')">Library Habit</button>
+        </nav>
+
+        <div id="performance-receipt-summary" class="performance-receipt-summary"></div>
+
+        <div class="performance-receipt-table-head" aria-hidden="true">
+          <span>Time</span>
+          <span>Event</span>
+          <span>Details</span>
+        </div>
+        <section class="performance-ledger-panel" aria-label="Performance session timeline">
+          <div id="performance-ledger-list" class="performance-ledger-list"></div>
+        </section>
+
+        <footer class="performance-receipt-footer">
+          <div class="performance-quiet-timeline-copy">
+            <strong>Quiet Timeline</strong>
+            <span id="performance-receipt-status">Collapsed history. Your full set timeline is saved with this session.</span>
+          </div>
+          <div class="performance-quiet-timeline-actions">
+            <span id="performance-receipt-footer-total">0 min · 0 tracks</span>
+            <button id="performance-receipt-expand" type="button" onclick="performanceToggleReceiptTimeline()" aria-expanded="true">Collapse</button>
+          </div>
+        </footer>
+      </section>
+      <header class="performance-command-head" aria-label="Performance status and live controls">
+        <h1 class="performance-desk-heading">Performance</h1>
+        <div class="performance-command-status">
+          <span class="performance-live-dot" aria-hidden="true"></span>
+          <span id="performance-command-provider" class="performance-status-pill">AXIOM Ready</span>
+          <button id="performance-serato-toggle" onclick="performanceToggleSeratoBridge()" class="performance-topbar-action" type="button">DJ Auto</button>
+          <button id="performance-live-assist" onclick="showAxiomLiveAssist()" class="performance-topbar-action primary" type="button">Open Live Assist</button>
+          <button id="performance-search-access" onclick="openPerformanceAccessibilitySettings()" class="performance-topbar-action" type="button" hidden style="display:none" title="Performance is already on. Allow AXIOM in macOS Accessibility for Command-F; AXIOM connects when access is granted.">Allow Mac access</button>
+        </div>
+        <div id="performance-layout-switch" class="performance-layout-switch" role="group" aria-label="Performance layout">
+          <span>View</span>
+          <button id="performance-layout-auto" type="button" data-performance-layout="auto" onclick="performanceSetLayoutPreference('auto')" aria-pressed="true">Auto</button>
+          <button id="performance-layout-full" type="button" data-performance-layout="full" onclick="performanceSetLayoutPreference('full')" aria-pressed="false">Full</button>
+          <button id="performance-layout-compact" type="button" data-performance-layout="compact" onclick="performanceSetLayoutPreference('compact')" aria-pressed="false">Compact</button>
+        </div>
+        <details class="performance-session-menu">
+          <summary>Session</summary>
+          <div class="performance-session-menu-panel">
+            <button id="performance-save-session" onclick="performanceSaveSession()" class="performance-action primary" type="button">Save Session</button>
+            <button id="performance-open-receipt" onclick="openPerformanceSessionReceipt()" class="performance-action secondary" type="button">Session Receipt</button>
+            <button id="performance-send-studio" onclick="performanceSendToStudio()" class="performance-action secondary" type="button">Send To Studio</button>
+            <button onclick="performanceMarkCurrentPlayed()" class="performance-action secondary" type="button">Mark Played</button>
+            <button onclick="performanceResetSession()" class="performance-action secondary" type="button">Reset Session</button>
+          </div>
+        </details>
+        <p id="performance-serato-status" class="performance-live-status">DJ auto: watching when Performance is open</p>
+      </header>
+
+      <div class="performance-shell flex-1">
+        <main class="performance-main-column">
+          <section id="performance-year-prep" class="performance-panel hidden" hidden aria-label="Prepare library years">
+            <strong>Better Live Assist starts with accurate years.</strong>
+            <p id="performance-year-prep-copy" class="text-sm mt-2">Review library years in Health. Saved corrections improve future sessions.</p>
+            <div class="flex gap-3 mt-3">
+              <button type="button" class="performance-action primary" onclick="performanceOpenYearPrep()">Fix Years</button>
+              <button type="button" class="performance-action secondary" onclick="performanceContinueYearPrep()">Continue</button>
+            </div>
+          </section>
+          <section class="performance-panel performance-current-panel">
+            <div class="performance-current-heading">
+              <span>Currently Playing</span>
+              <button onclick="performanceUsePlayingTrack()" class="performance-action primary" type="button">Use Track</button>
+            </div>
+            <div id="performance-now-card" class="performance-now-track">
+              <div class="artwork-fallback" style="--art-a:#172512;--art-b:#050907;">PH</div>
+              <div>
+                <p class="performance-track-title">Choose a current track</p>
+                <p class="text-[11px] text-axiom-muted font-bold mt-2 leading-relaxed">Play a track in Serato DJ Pro or djay Pro, or choose one manually with Use Track.</p>
+              </div>
+            </div>
+            <div id="performance-deck-waveform" class="performance-deck-waveform" role="img" aria-label="Current track waveform"></div>
+            <div id="performance-cued-next" class="performance-cued-next"></div>
+          </section>
+
+          <section id="performance-coach-strip" class="performance-coach-strip is-off" aria-live="polite">
+            <span class="performance-live-dot" aria-hidden="true"></span>
+            <div class="performance-coach-copy">
+              <small>Quiet Coach</small>
+              <strong id="performance-coach-title">Let This One Breathe</strong>
+              <p id="performance-coach-detail">The current record has room to work before the next decision.</p>
+            </div>
+            <button id="performance-coach-toggle" class="performance-coach-toggle" type="button" onclick="performanceToggleCoach()" aria-pressed="false">
+              <span>Off</span><i aria-hidden="true"></i>
+            </button>
+          </section>
+
+          <section id="performance-gig-profile" class="performance-panel performance-live-crates-panel performance-gig-profile" aria-label="Live Crates and prep controls">
+            <div class="performance-gig-profile-head">
+              <div>
+                <span>Playlist Source</span>
+                <strong>Live Crates</strong>
+              </div>
+              <button id="performance-gig-profile-toggle" onclick="performanceToggleGigProfile()" class="performance-filter-chip" type="button">Off</button>
+            </div>
+            <div class="performance-gig-profile-controls">
+              <select id="performance-gig-profile-select" onchange="performanceSelectGigProfile(this.value)" aria-label="Choose Live Crates profile">
+                <option value="">No profile prepared</option>
+              </select>
+              <button onclick="openPerformanceGigProfileManager()" class="performance-mini-btn" type="button">Browse Crates</button>
+              <button id="performance-gig-profile-only-selected" onclick="performanceToggleGigProfileOnlySelected()" class="performance-filter-chip" type="button" aria-pressed="false" title="Recommend only from the selected playlists">Only Selected</button>
+            </div>
+            <p id="performance-gig-profile-summary" class="performance-gig-profile-summary">Choose Serato crates or djay Pro playlists for this gig.</p>
+          </section>
+
+          <section class="performance-panel performance-recommendation-deck min-h-0 flex flex-col">
+            <div class="performance-panel-titlebar">
+              <div>
+                <strong>Recommended Next</strong>
+                <p id="performance-results-status" class="text-[10px] font-black uppercase tracking-widest text-axiom-muted mt-1">Set a current track to start live suggestions.</p>
+                <div id="performance-lane-summary" class="performance-lane-summary"></div>
+              </div>
+              <button onclick="performanceResetTempoBaseline()" class="performance-action secondary" type="button">Refresh</button>
+            </div>
+            <div id="performance-suggestions-list" class="performance-suggestions flex-1">
+              <div class="text-center py-20 text-axiom-muted text-[10px] font-black uppercase tracking-widest">No current track selected.</div>
+            </div>
+          </section>
+        </main>
+
+        <aside class="performance-utility-rail" aria-label="Performance controls">
+          <section class="performance-utility-section performance-session-controls">
+            <strong>Session Controls</strong>
+            <div class="performance-command-actions">
+              <button id="performance-rail-open-receipt" onclick="openPerformanceSessionReceipt()" class="performance-action secondary performance-session-primary" type="button">Session Receipt</button>
+              <button id="performance-rail-save-session" onclick="performanceSaveSession()" class="performance-action primary performance-session-primary" type="button">Save Session</button>
+              <button id="performance-rail-send-studio" onclick="performanceSendToStudio()" class="performance-action secondary performance-session-pair" type="button">Send To Studio</button>
+              <button id="performance-rail-mark-played" onclick="performanceMarkCurrentPlayed()" class="performance-action secondary performance-session-pair" type="button">Mark Played</button>
+              <button id="performance-rail-reset-session" onclick="performanceResetSession()" class="performance-action secondary performance-session-reset" type="button">Reset Session</button>
+            </div>
+          </section>
+
+          <section class="performance-utility-section performance-recording-location" aria-label="Set recording destination">
+            <strong>Set Recording</strong>
+            <span>Saves To</span>
+            <p id="performance-recording-save-location" class="performance-recording-path">~/Desktop</p>
+            <button onclick="showAxiomLiveAssist()" class="performance-action secondary" type="button">Open Recorder</button>
+          </section>
+
+          <section class="performance-utility-section">
+            <strong>Target BPM</strong>
+            <div class="performance-playing-bpm-control">
+              <button onclick="performanceClearPlayingBpm()" class="performance-mini-btn" type="button" title="Return to live BPM" aria-label="Return to live BPM">−</button>
+              <input id="performance-playing-bpm-input" type="text" placeholder="Auto" inputmode="decimal" autocomplete="off" spellcheck="false" aria-label="Target BPM" oninput="performanceDraftPlayingBpm(this.value)" onkeydown="performanceHandlePlayingBpmKeydown(event)">
+              <button onclick="performanceCommitPlayingBpm()" class="performance-mini-btn" type="button">+</button>
+            </div>
+          </section>
+
+          <section class="performance-utility-section">
+            <strong>Energy</strong>
+            <div class="performance-energy-control">
+              <button id="performance-filter-energy-down" onclick="performanceSetEnergyIntent('down')" class="performance-filter-chip" type="button">−</button>
+              <span id="performance-signal-energy">Standby</span>
+              <button id="performance-filter-energy-up" onclick="performanceSetEnergyIntent('up')" class="performance-filter-chip" type="button">+</button>
+            </div>
+          </section>
+
+          <section class="performance-utility-section">
+            <strong>Time</strong>
+            <div class="performance-time-control">
+              <button id="performance-filter-half-time" onclick="performanceSetTempoIntent('half')" class="performance-filter-chip" type="button">Half Time</button>
+              <button id="performance-filter-double-time" onclick="performanceSetTempoIntent('double')" class="performance-filter-chip" type="button">Double Time</button>
+            </div>
+            <div class="performance-time-correction" role="group" aria-label="Correct current track BPM">
+              <span id="performance-time-correction-value">Current track: BPM --</span>
+              <button type="button" onclick="performanceCorrectCurrentBpm('half')" title="Save the current track BPM as half-time in AXIOM">Correct 1/2</button>
+              <button type="button" onclick="performanceCorrectCurrentBpm('double')" title="Save the current track BPM as double-time in AXIOM">Correct 2x</button>
+            </div>
+          </section>
+
+          <section class="performance-utility-section">
+            <strong>Safety</strong>
+            <button id="performance-clean-only" onclick="performanceToggleCleanOnly()" class="performance-rail-toggle" type="button" aria-pressed="false" title="Only recommend tracks positively marked Clean, Radio Edit, censored, or non-explicit">
+              <span>Clean Only</span><i aria-hidden="true"></i>
+            </button>
+          </section>
+
+          <details class="performance-compact-secondary-controls">
+            <summary>Live Tools</summary>
+            <div class="performance-compact-secondary-panel">
+              <section class="performance-utility-section">
+                <strong>Track Colours</strong>
+                <button id="performance-gig-profile-colors" onclick="performanceToggleGigProfileColors()" class="performance-rail-toggle active" type="button" aria-pressed="true">
+                  <span>On</span><i aria-hidden="true"></i>
+                </button>
+              </section>
+
+              <section class="performance-utility-section">
+                <strong>Timeline</strong>
+                <button id="performance-timeline-toggle" onclick="performanceToggleTimeline()" class="performance-rail-toggle" type="button" aria-pressed="false">
+                  <span>Compact</span><i aria-hidden="true"></i>
+                </button>
+                <p id="performance-session-count" class="performance-utility-note">0 tracks played</p>
+              </section>
+            </div>
+          </details>
+
+          <details class="performance-more-controls">
+            <summary>More Controls</summary>
+            <div class="performance-more-controls-panel">
+              <div id="performance-signal-grid" class="performance-signal-grid">
+                <div class="performance-signal"><span>Lane</span><strong id="performance-signal-root">Waiting</strong></div>
+                <div class="performance-signal"><span>Era</span><strong id="performance-signal-era">Open</strong></div>
+                <div class="performance-signal"><span>Tempo</span><strong id="performance-signal-bpm">--</strong><small id="performance-signal-bpm-detail">Waiting for live tempo</small></div>
+                <div class="performance-signal"><span>Feedback</span><strong id="performance-signal-feedback">Clean</strong></div>
+              </div>
+              <div class="performance-filter-row">
+                <button id="performance-filter-tempo-reset" onclick="performanceResetTempoBaseline()" class="performance-filter-chip" type="button">Refresh BPM</button>
+                <button id="performance-lock-urban" onclick="performanceSetLaneLock('urban')" class="performance-filter-chip" type="button">Stay Urban</button>
+                <button id="performance-lock-rnb" onclick="performanceSetLaneLock('rnb')" class="performance-filter-chip" type="button">Stay RNB</button>
+                <button id="performance-lock-singalong" onclick="performanceSetLaneLock('singalong')" class="performance-filter-chip" type="button">Singalong</button>
+                <button id="performance-lock-peak" onclick="performanceSetLaneLock('peak')" class="performance-filter-chip" type="button">Peak</button>
+                <button id="performance-rescue-mode" onclick="performanceToggleRescueMode()" class="performance-filter-chip" type="button">Rescue</button>
+                <button id="performance-safe-picks" onclick="performanceToggleSafePicks()" class="performance-filter-chip" type="button">Safe Picks</button>
+                <button id="performance-dig-deeper" onclick="performanceToggleDigDeeper()" class="performance-filter-chip" type="button">Dig Deeper</button>
+                <button id="performance-artist-cooldown" onclick="performanceToggleArtistCooldown()" class="performance-filter-chip active" type="button">No Artist Repeat</button>
+                <button id="performance-exclude-stingers" onclick="performanceToggleExclude('stingers')" class="performance-filter-chip" type="button">No Stingers</button>
+                <button id="performance-exclude-tools" onclick="performanceToggleExclude('tools')" class="performance-filter-chip" type="button">No Tools</button>
+                <button id="performance-filter-newer" onclick="performancePreferNewer()" class="performance-filter-chip" type="button">Too Old</button>
+                <button id="performance-undo-refine" onclick="performanceUndoRefine()" class="performance-filter-chip" type="button">Undo Last</button>
+                <button id="performance-filter-clear" onclick="performanceClearRefines()" class="performance-filter-chip" type="button">Clear</button>
+              </div>
+
+              <div class="performance-audit-details">
+                <input id="performance-audit-open" class="performance-audit-checkbox" type="checkbox" aria-label="Show set audit">
+                <label for="performance-audit-open" class="performance-audit-summary">
+                  <div><p>Set Audit</p><p id="performance-audit-count">Waiting for set data</p></div>
+                  <span id="performance-audit-toggle" class="performance-mini-btn">Show</span>
+                </label>
+                <div id="performance-audit" class="performance-audit">
+                  <div id="performance-audit-grid" class="performance-audit-grid"></div>
+                  <p id="performance-audit-note" class="performance-audit-note">Performance audit starts once AXIOM sees your live DJ session history.</p>
+                </div>
+              </div>
+
+              <div class="performance-audit-details">
+                <input id="performance-notes-open" class="performance-audit-checkbox performance-notes-checkbox" type="checkbox" aria-label="Show session notes">
+                <label for="performance-notes-open" class="performance-audit-summary">
+                  <div><p>Session Notes</p><p id="performance-notes-count">0 notes</p></div>
+                  <span id="performance-notes-toggle" class="performance-mini-btn">Show</span>
+                </label>
+                <div id="performance-notes" class="performance-notes">
+                  <div class="performance-filter-row">
+                    <button id="performance-note-loved" class="performance-mini-btn" type="button">Crowd Loved</button>
+                    <button id="performance-note-dip" class="performance-mini-btn" type="button">Energy Dip</button>
+                    <button id="performance-note-request" class="performance-mini-btn" type="button">Request</button>
+                    <button id="performance-note-fix" class="performance-mini-btn" type="button">Fix Metadata</button>
+                  </div>
+                  <div class="performance-note-input-row">
+                    <input id="performance-note-input" class="performance-note-input" type="text" placeholder="Add quick note..." autocomplete="off">
+                    <button id="performance-note-add" class="performance-mini-btn" type="button">Add</button>
+                  </div>
+                  <div id="performance-note-list" class="performance-note-list"><p>Notes you add while performing will stay with this session.</p></div>
+                </div>
+              </div>
+
+              <div id="performance-timeline" class="performance-timeline collapsed">
+                <p>Tracks you mark or choose will build the live set here.</p>
+              </div>
+              <div id="performance-refine-summary" class="performance-meta-line"><span>Listening for your next move</span></div>
+            </div>
+          </details>
+        </aside>
+      </div>
+      <button
+        id="performance-assist-activation"
+        class="performance-assist-activation"
+        type="button"
+        onclick="showAxiomLiveAssist()"
+        aria-label="Open AXIOM Live Assist"
+      >
+        <img src="/static/axiom-mark.png" alt="">
+        <span class="performance-assist-live-dot" aria-hidden="true"></span>
+        <span class="performance-assist-copy">
+          <small>AXIOM LIVE ASSIST</small>
+          <strong>PERFORMANCE MODE ACTIVE</strong>
+        </span>
+        <span class="performance-assist-chevron" aria-hidden="true">⌃</span>
+      </button>
+    </div>

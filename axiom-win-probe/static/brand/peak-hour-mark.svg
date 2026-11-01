@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 256 256">
+  <title>PEAK HOUR</title>
+  <defs>
+    <linearGradient id="plat" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ffffff"/><stop offset=".35" stop-color="#d9d8d6"/><stop offset=".55" stop-color="#8f9398"/><stop offset=".8" stop-color="#e5e4e2"/><stop offset="1" stop-color="#a9adb2"/>
+    </linearGradient>
+    <linearGradient id="red" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ff3346"/><stop offset="1" stop-color="#a80016"/>
+    </linearGradient>
+    <radialGradient id="vinyl" cx=".5" cy=".5" r=".5">
+      <stop offset="0" stop-color="#1c1a1a"/><stop offset="1" stop-color="#050505"/>
+    </radialGradient>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <circle cx="128" cy="128" r="118" fill="url(#plat)"/>
+  <circle cx="128" cy="128" r="108" fill="url(#vinyl)"/>
+  <g fill="none" stroke="#2a2727" stroke-width="1.5">
+    <circle cx="128" cy="128" r="98"/><circle cx="128" cy="128" r="88"/><circle cx="128" cy="128" r="78"/><circle cx="128" cy="128" r="68"/><circle cx="128" cy="128" r="58"/>
+  </g>
+  <circle cx="128" cy="128" r="36" fill="url(#red)"/>
+  <circle cx="128" cy="128" r="5" fill="#0d0c0c"/>
+  <polyline points="26,150 52,150 62,138 72,160 84,132 96,150 106,150 128,40 150,150 160,150 172,132 184,160 194,138 204,150 230,150"
+            fill="none" stroke="#ffffff" stroke-width="8" stroke-linejoin="round" stroke-linecap="round"/>
+  <polyline points="106,150 128,40 150,150" fill="none" stroke="#ff3346" stroke-width="8" stroke-linejoin="round" stroke-linecap="round" filter="url(#glow)"/>
+</svg>

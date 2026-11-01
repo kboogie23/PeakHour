@@ -1,0 +1,394 @@
+
+    /* Approved Library Health — 2026-08-14. Exact AXIOM cockpit translation. */
+    body.studio-health-mode #health-view {
+      padding-right: 8px !important;
+      padding-bottom: 112px !important;
+      background: #000;
+      scrollbar-gutter: stable;
+      overflow-anchor: none;
+    }
+
+    .health-approved-shell {
+      --health-surface: #121617;
+      --health-surface-deep: #080a0a;
+      --health-border: rgba(255,255,255,0.18);
+      --health-rule: rgba(255,255,255,0.26);
+      gap: 0;
+      min-height: auto;
+      padding: 20px 10px 24px;
+      background: #000;
+      font-family: 'Barlow', Arial, sans-serif;
+      overflow-anchor: none;
+    }
+
+    /* Health replaces cache placeholders with authoritative values after the
+       server snapshot arrives. Reserve the changing text footprints and stop
+       cosmetic transitions during that handoff so the page does not jump or
+       look as if its counts are still changing underneath the user. */
+    .health-approved-shell[data-health-snapshot-state="loading"] *,
+    .health-approved-shell[data-health-has-snapshot="false"] * {
+      animation: none !important;
+      transition: none !important;
+    }
+
+    #health-approved-improvements,
+    #health-inbox-attention-count,
+    #health-stat-total,
+    #health-inbox-track-total,
+    #health-stat-missing-file,
+    #health-repair-bpm-count,
+    #health-repair-key-count,
+    #health-repair-year-count {
+      display: inline-block;
+      min-width: 1.25ch;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .health-approved-summary { min-height: 16px; }
+    .health-new-music-intake-copy strong { min-height: 28px; }
+    .health-new-music-intake-copy small { min-height: 14px; }
+
+    .health-approved-header {
+      padding: 0 18px 14px;
+      background: #000;
+    }
+
+    .health-approved-title-row {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      min-width: 0;
+    }
+
+    .health-approved-title-row h2,
+    .health-approved-title-row > strong {
+      margin: 0;
+      font-family: 'Bebas Neue', Impact, sans-serif;
+      font-weight: 400;
+      line-height: .88;
+      text-transform: uppercase;
+    }
+
+    .health-approved-title-row h2 {
+      color: #fff;
+      font-size: clamp(40px, 4.3vw, 58px);
+      letter-spacing: .01em;
+    }
+
+    .health-approved-title-divider {
+      width: 1px;
+      height: 48px;
+      background: rgba(255,255,255,.72);
+    }
+
+    .health-approved-title-row > strong {
+      color: #ffd91a;
+      font-size: clamp(46px, 4.7vw, 64px);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .health-approved-improvements-label {
+      color: #ffd91a;
+      font-family: 'Bebas Neue', Impact, sans-serif;
+      font-size: 20px;
+      line-height: .96;
+      text-transform: uppercase;
+    }
+
+    .health-approved-improvements-label small {
+      display: block;
+      margin-top: 5px;
+      color: rgba(255,255,255,.72);
+      font-family: 'Barlow', Arial, sans-serif;
+      font-size: 11px;
+      font-weight: 500;
+    }
+
+    .health-approved-summary {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 8px;
+      color: rgba(255,255,255,.66);
+      font-size: 12px;
+      line-height: 1.3;
+    }
+
+    .health-approved-summary > span:first-child { color: #dfff00; }
+    .health-approved-summary b { color: inherit; font-weight: 500; }
+    .health-approved-summary i { color: rgba(255,255,255,.44); font-style: normal; }
+
+    body.studio-health-mode .health-approved-lanes.health-repair-center {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 0;
+      margin: 0 18px 16px;
+      padding: 12px 0 0;
+      border: 1px solid var(--health-border);
+      border-radius: 4px;
+      background: var(--health-surface);
+      box-shadow: none;
+    }
+
+    .health-approved-lanes .health-repair-center-card {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      min-width: 0;
+      min-height: 184px;
+      padding: 2px 16px 12px;
+      border: 0;
+      border-right: 1px solid var(--health-rule);
+      border-radius: 0;
+      background: transparent;
+      color: #fff;
+      cursor: pointer;
+      text-align: center;
+      box-shadow: none;
+      transition: background 140ms ease, color 140ms ease;
+    }
+
+    .health-approved-lanes .health-repair-center-card:last-of-type { border-right: 0; }
+    .health-approved-lanes .health-repair-center-card:hover,
+    .health-approved-lanes .health-repair-center-card:focus-visible {
+      background: rgba(255,255,255,.035);
+      outline: 0;
+    }
+
+    .health-approved-lanes .health-repair-center-card.active::after {
+      content: '';
+      position: absolute;
+      left: 6px;
+      right: 6px;
+      bottom: 0;
+      height: 4px;
+      background: var(--accent);
+    }
+
+    .health-approved-lanes .health-repair-center-card.key.active::after { background: #2f89ff; }
+    .health-approved-lanes .health-repair-center-card.year.active::after { background: #ffd91a; }
+
+    .health-approved-lanes .health-repair-center-card > span:first-child {
+      color: rgba(255,255,255,.86);
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 1.1;
+      text-transform: none;
+    }
+
+    .health-approved-lanes .health-repair-center-card > strong {
+      margin-top: 8px;
+      color: #8d8f90;
+      font-family: 'Bebas Neue', Impact, sans-serif;
+      font-size: 50px;
+      font-weight: 400;
+      line-height: .86;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .health-approved-lanes .health-repair-center-card > small {
+      min-height: 38px;
+      margin-top: 10px;
+      color: rgba(255,255,255,.82);
+      font-size: 11px;
+      font-weight: 450;
+      line-height: 1.4;
+    }
+
+    .health-approved-lanes .health-repair-center-card.key > span:first-child,
+    .health-approved-lanes .health-repair-center-card.key > strong { color: #2f89ff; }
+    .health-approved-lanes .health-repair-center-card.year > span:first-child,
+    .health-approved-lanes .health-repair-center-card.year > strong { color: #ffdc16; }
+
+    .health-approved-lane-control {
+      display: block;
+      width: 100%;
+      min-height: 34px;
+      margin-top: auto;
+    }
+
+    .health-approved-lanes .health-repair-card-action,
+    .health-approved-lanes .health-repair-card-clear {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      min-height: 32px;
+      margin: 0;
+      border: 1px solid rgba(255,255,255,.36);
+      border-radius: 3px;
+      background: transparent;
+      color: #fff;
+      font-family: 'Bebas Neue', Impact, sans-serif;
+      font-size: 17px;
+      font-weight: 400;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+
+    .health-approved-lanes .key .health-repair-card-action {
+      border-color: #2f89ff;
+      background: #2f89ff;
+      color: #06101d;
+    }
+
+    .health-approved-lanes .year .health-repair-card-action {
+      border-color: #ffdc16;
+      background: #ffdc16;
+      color: #171000;
+    }
+
+    .health-approved-hidden-state { display: none !important; }
+
+    .health-new-music-intake {
+      display: grid;
+      grid-template-columns: minmax(240px, 1.6fr) repeat(3, minmax(90px, .45fr)) auto;
+      align-items: center;
+      gap: 14px;
+      margin: 0 18px 16px;
+      padding: 14px 16px;
+      border: 1px solid color-mix(in srgb, var(--accent-glow-base) 34%, transparent);
+      border-radius: 4px;
+      background: linear-gradient(90deg, color-mix(in srgb, var(--accent-glow-base) 7%, transparent), #020303 42%);
+      color: #f4f7ef;
+    }
+    .health-new-music-intake-copy span,
+    .health-new-music-intake-copy strong,
+    .health-new-music-intake-copy small { display: block; }
+    .health-new-music-intake-copy span { color: var(--accent); font-size: 9px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
+    .health-new-music-intake-copy strong { margin-top: 5px; font-family: 'Bebas Neue', Impact, sans-serif; font-size: 24px; font-weight: 400; text-transform: uppercase; }
+    .health-new-music-intake-copy small { margin-top: 4px; color: rgba(244,247,239,.56); font-size: 10px; }
+    .health-new-music-stat { text-align: center; }
+    .health-new-music-stat small,
+    .health-new-music-stat strong { display: block; }
+    .health-new-music-stat small { color: rgba(244,247,239,.48); font-size: 8px; text-transform: uppercase; }
+    .health-new-music-stat strong { margin-top: 3px; font-family: 'Bebas Neue', Impact, sans-serif; font-size: 24px; font-weight: 400; }
+    .health-new-music-actions { display: flex; gap: 8px; }
+    .health-new-music-actions button { min-height: 38px; padding: 0 14px; border: 1px solid var(--accent); border-radius: 3px; background: transparent; color: var(--accent); font-family: 'Bebas Neue', Impact, sans-serif; font-size: 15px; text-transform: uppercase; }
+    .health-new-music-actions button.primary { background: var(--accent); color: #071005; }
+    .health-new-music-actions .health-new-music-add { display: none; }
+    .health-new-music-intake.is-empty { grid-template-columns: minmax(280px, 1fr) auto; }
+    .health-new-music-intake.is-empty .health-new-music-stat,
+    .health-new-music-intake.is-empty #health-new-music-check,
+    .health-new-music-intake.is-empty #health-new-music-prepare-button { display: none; }
+    .health-new-music-intake.is-empty .health-new-music-add { display: inline-flex; align-items: center; justify-content: center; }
+    @media (max-width: 1120px) {
+      .health-new-music-intake { grid-template-columns: minmax(220px, 1fr) repeat(3, 74px); }
+      .health-new-music-actions { grid-column: 1 / -1; }
+    }
+
+    .health-approved-console {
+      display: grid;
+      grid-template-columns: minmax(235px, .82fr) minmax(300px, 1.12fr) minmax(390px, 1.46fr);
+      min-height: 366px;
+      margin: 0 18px 20px;
+      border: 1px solid var(--health-border);
+      border-radius: 4px;
+      background: #020303;
+      overflow: hidden;
+    }
+
+    .health-approved-console > article {
+      min-width: 0;
+      padding: 18px;
+      border-right: 1px solid var(--health-rule);
+      background: #020303;
+    }
+    .health-approved-console > article:last-child { border-right: 0; }
+
+    .health-approved-kicker {
+      display: block;
+      color: #cfff00;
+      font-family: 'Bebas Neue', Impact, sans-serif;
+      font-size: 14px;
+      line-height: 1;
+      text-transform: uppercase;
+    }
+
+    .health-approved-task-heading {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .health-approved-task-heading h3 {
+      margin: 0;
+      color: #fff;
+      font-family: 'Bebas Neue', Impact, sans-serif;
+      font-size: 34px;
+      font-weight: 400;
+      line-height: .92;
+      text-transform: uppercase;
+    }
+
+    .health-approved-task-heading > span {
+      min-height: 27px;
+      display: inline-flex;
+      align-items: center;
+      padding: 0 9px;
+      border: 1px solid rgba(255,255,255,.22);
+      border-radius: 3px;
+      color: rgba(255,255,255,.74);
+      font-size: 10px;
+      text-transform: uppercase;
+    }
+
+    .health-approved-task > p {
+      min-height: 62px;
+      margin: 15px 0 0;
+      color: rgba(255,255,255,.55);
+      font-size: 11px;
+      line-height: 1.55;
+    }
+
+    .health-approved-task-actions { display: flex; gap: 12px; margin-top: 14px; }
+    .health-approved-primary,
+    .health-approved-more {
+      min-height: 42px;
+      border: 1px solid var(--accent);
+      border-radius: 3px;
+      background: var(--accent);
+      color: #050805;
+      font-family: 'Bebas Neue', Impact, sans-serif;
+      font-size: 17px;
+      text-transform: uppercase;
+    }
+    .health-approved-primary { flex: 1; padding: 0 16px; }
+    .health-approved-more { width: 44px; border-color: rgba(255,255,255,.2); background: transparent; color: #fff; }
+    .health-approved-primary.key { border-color: #2f89ff; background: #2f89ff; }
+    .health-approved-primary.year { border-color: #ffdc16; background: #ffdc16; }
+    .health-approved-primary.danger { border-color: #ff5a5a; background: transparent; color: #ff6f6f; }
+
+    .health-approved-trust {
+      display: grid;
+      grid-template-columns: 30px minmax(0, 1fr);
+      gap: 11px;
+      margin-top: 22px;
+      padding: 16px 0;
+      border-top: 1px solid rgba(255,255,255,.12);
+      border-bottom: 1px solid rgba(255,255,255,.12);
+    }
+    .health-approved-trust img { width: 28px; height: 28px; filter: brightness(0) saturate(100%) invert(93%) sepia(100%) saturate(1694%) hue-rotate(22deg) brightness(104%) contrast(104%); }
+    .health-approved-trust strong,
+    .health-approved-trust small { display: block; }
+    .health-approved-trust strong { color: rgba(255,255,255,.72); font-size: 11px; font-weight: 600; text-transform: uppercase; }
+    .health-approved-trust small { margin-top: 5px; color: rgba(255,255,255,.42); font-size: 9px; line-height: 1.45; }
+
+    .health-approved-checks-toggle {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      width: 100%;
+      margin-top: 14px;
+      border: 0;
+      background: transparent;
+      color: rgba(255,255,255,.55);
+      font-size: 10px;
+      text-align: left;
+    }
+    .health-approved-checks-toggle img { width: 14px; height: 14px; opacity: .64; }
+    .health-approved-checks { margin-top: 10px; color: rgba(255,255,255,.45); font-size: 9px; line-height: 1.5; }

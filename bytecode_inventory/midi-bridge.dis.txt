@@ -1,0 +1,1306 @@
+
+### __init__ args ('self', 'factory', 'clock', 'watchdog')
+ 21           0 RESUME                   0
+
+ 22           2 LOAD_FAST                1 (factory)
+              4 LOAD_FAST                2 (clock)
+              6 LOAD_FAST                3 (watchdog)
+              8 SWAP                     3
+             10 LOAD_FAST                0 (self)
+             12 STORE_ATTR               0 (factory)
+             22 LOAD_FAST                0 (self)
+             24 STORE_ATTR               1 (clock)
+             34 LOAD_FAST                0 (self)
+             36 STORE_ATTR               2 (watchdog)
+
+ 23          46 LOAD_GLOBAL              7 (NULL + threading)
+             56 LOAD_ATTR                8 (RLock)
+             76 CALL                     0
+             84 LOAD_GLOBAL              7 (NULL + threading)
+             94 LOAD_ATTR               10 (Lock)
+            114 CALL                     0
+            122 SWAP                     2
+            124 LOAD_FAST                0 (self)
+            126 STORE_ATTR               6 (lock)
+            136 LOAD_FAST                0 (self)
+            138 STORE_ATTR               7 (queue_lock)
+
+ 24         148 LOAD_CONST               0 (None)
+            150 LOAD_FAST                0 (self)
+            152 STORE_ATTR               8 (device)
+
+ 25         162 LOAD_CONST               0 (None)
+            164 LOAD_FAST                0 (self)
+            166 STORE_ATTR               9 (token)
+
+ 26         176 LOAD_GLOBAL             21 (NULL + deque)
+            186 CALL                     0
+            194 LOAD_FAST                0 (self)
+            196 STORE_ATTR              11 (events)
+
+ 27         206 LOAD_CONST               1 (False)
+            208 LOAD_FAST                0 (self)
+            210 STORE_ATTR              12 (receiving)
+
+ 28         220 LOAD_CONST               0 (None)
+            222 LOAD_FAST                0 (self)
+            224 STORE_ATTR              13 (failure)
+
+ 29         234 LOAD_CONST               2 (0)
+            236 LOAD_FAST                0 (self)
+            238 STORE_ATTR              14 (seq)
+
+ 30         248 LOAD_CONST               3 (())
+            250 LOAD_FAST                0 (self)
+            252 STORE_ATTR              15 (ports)
+
+ 31         262 BUILD_LIST               0
+            264 LOAD_FAST                0 (self)
+            266 STORE_ATTR              16 (catalog)
+
+ 32         276 BUILD_MAP                0
+            278 LOAD_FAST                0 (self)
+            280 STORE_ATTR              17 (port_indexes)
+
+ 33         290 LOAD_CONST               0 (None)
+            292 LOAD_FAST                0 (self)
+            294 STORE_ATTR              18 (selected)
+
+ 34         304 LOAD_CONST               2 (0)
+            306 LOAD_FAST                0 (self)
+            308 STORE_ATTR              19 (deadline)
+
+ 35         318 LOAD_CONST               2 (0)
+            320 LOAD_FAST                0 (self)
+            322 STORE_ATTR              20 (checked)
+            332 RETURN_CONST             0 (None)
+
+### _close_port args ('self',)
+ 37           0 RESUME                   0
+
+ 38           2 LOAD_FAST                0 (self)
+              4 LOAD_ATTR                0 (queue_lock)
+             24 BEFORE_WITH
+             26 POP_TOP
+
+ 39          28 LOAD_CONST               1 (False)
+             30 LOAD_FAST                0 (self)
+             32 STORE_ATTR               1 (receiving)
+
+ 38          42 LOAD_CONST               0 (None)
+             44 LOAD_CONST               0 (None)
+             46 LOAD_CONST               0 (None)
+             48 CALL                     2
+             56 POP_TOP
+
+ 40     >>   58 LOAD_FAST                0 (self)
+             60 LOAD_ATTR                4 (device)
+             80 POP_JUMP_IF_FALSE       58 (to 198)
+
+ 41          82 LOAD_GLOBAL              7 (NULL + suppress)
+             92 LOAD_GLOBAL              8 (Exception)
+            102 CALL                     1
+            110 BEFORE_WITH
+            112 POP_TOP
+
+ 42         114 LOAD_FAST                0 (self)
+            116 LOAD_ATTR                4 (device)
+            136 LOAD_ATTR               11 (NULL|self + close_port)
+            156 CALL                     0
+            164 POP_TOP
+
+ 41         166 LOAD_CONST               0 (None)
+            168 LOAD_CONST               0 (None)
+            170 LOAD_CONST               0 (None)
+            172 CALL                     2
+            180 POP_TOP
+
+ 43         182 LOAD_CONST               0 (None)
+            184 LOAD_FAST                0 (self)
+            186 STORE_ATTR               6 (selected)
+            196 RETURN_CONST             0 (None)
+        >>  198 LOAD_CONST               0 (None)
+            200 LOAD_FAST                0 (self)
+            202 STORE_ATTR               6 (selected)
+            212 RETURN_CONST             0 (None)
+
+ 38     >>  214 PUSH_EXC_INFO
+            216 WITH_EXCEPT_START
+            218 POP_JUMP_IF_TRUE         1 (to 222)
+            220 RERAISE                  2
+        >>  222 POP_TOP
+            224 POP_EXCEPT
+            226 POP_TOP
+            228 POP_TOP
+            230 JUMP_BACKWARD           87 (to 58)
+        >>  232 COPY                     3
+            234 POP_EXCEPT
+            236 RERAISE                  1
+
+ 41     >>  238 PUSH_EXC_INFO
+            240 WITH_EXCEPT_START
+            242 POP_JUMP_IF_TRUE         1 (to 246)
+            244 RERAISE                  2
+        >>  246 POP_TOP
+            248 POP_EXCEPT
+            250 POP_TOP
+            252 POP_TOP
+
+ 43         254 LOAD_CONST               0 (None)
+            256 LOAD_FAST                0 (self)
+            258 STORE_ATTR               6 (selected)
+            268 RETURN_CONST             0 (None)
+        >>  270 COPY                     3
+            272 POP_EXCEPT
+            274 RERAISE                  1
+ExceptionTable:
+  26 to 40 -> 214 [1] lasti
+  112 to 164 -> 238 [1] lasti
+  214 to 222 -> 232 [3] lasti
+  238 to 246 -> 270 [3] lasti
+
+### close args ('self',)
+ 45           0 RESUME                   0
+
+ 46           2 LOAD_FAST                0 (self)
+              4 LOAD_ATTR                0 (lock)
+             24 BEFORE_WITH
+             26 POP_TOP
+
+ 47          28 LOAD_FAST                0 (self)
+             30 LOAD_ATTR                3 (NULL|self + _close_port)
+             50 CALL                     0
+             58 POP_TOP
+
+ 48          60 LOAD_FAST                0 (self)
+             62 LOAD_ATTR                4 (device)
+             82 POP_JUMP_IF_FALSE       50 (to 184)
+
+ 49          84 LOAD_GLOBAL              7 (NULL + suppress)
+             94 LOAD_GLOBAL              8 (Exception)
+            104 CALL                     1
+            112 BEFORE_WITH
+            114 POP_TOP
+
+ 50         116 LOAD_FAST                0 (self)
+            118 LOAD_ATTR                4 (device)
+            138 LOAD_ATTR               11 (NULL|self + delete)
+            158 CALL                     0
+            166 POP_TOP
+
+ 49         168 LOAD_CONST               0 (None)
+            170 LOAD_CONST               0 (None)
+            172 LOAD_CONST               0 (None)
+            174 CALL                     2
+            182 POP_TOP
+
+ 51     >>  184 LOAD_CONST               0 (None)
+            186 LOAD_FAST                0 (self)
+            188 STORE_ATTR               2 (device)
+
+ 52         198 LOAD_CONST               0 (None)
+            200 LOAD_FAST                0 (self)
+            202 STORE_ATTR               6 (token)
+
+ 53         212 BUILD_LIST               0
+            214 LOAD_FAST                0 (self)
+            216 STORE_ATTR               7 (catalog)
+
+ 54         226 BUILD_MAP                0
+            228 LOAD_FAST                0 (self)
+            230 STORE_ATTR               8 (port_indexes)
+
+ 55         240 LOAD_FAST                0 (self)
+            242 LOAD_ATTR               18 (queue_lock)
+            262 BEFORE_WITH
+            264 POP_TOP
+
+ 56         266 LOAD_FAST                0 (self)
+            268 LOAD_ATTR               20 (events)
+            288 LOAD_ATTR               23 (NULL|self + clear)
+            308 CALL                     0
+            316 POP_TOP
+
+ 55         318 LOAD_CONST               0 (None)
+            320 LOAD_CONST               0 (None)
+            322 LOAD_CONST               0 (None)
+            324 CALL                     2
+            332 POP_TOP
+
+ 46     >>  334 LOAD_CONST               0 (None)
+            336 LOAD_CONST               0 (None)
+            338 LOAD_CONST               0 (None)
+            340 CALL                     2
+            348 POP_TOP
+            350 RETURN_CONST             0 (None)
+
+ 49     >>  352 PUSH_EXC_INFO
+            354 WITH_EXCEPT_START
+            356 POP_JUMP_IF_TRUE         1 (to 360)
+            358 RERAISE                  2
+        >>  360 POP_TOP
+            362 POP_EXCEPT
+            364 POP_TOP
+            366 POP_TOP
+            368 JUMP_BACKWARD           93 (to 184)
+        >>  370 COPY                     3
+            372 POP_EXCEPT
+            374 RERAISE                  1
+
+ 55     >>  376 PUSH_EXC_INFO
+            378 WITH_EXCEPT_START
+            380 POP_JUMP_IF_TRUE         1 (to 384)
+            382 RERAISE                  2
+        >>  384 POP_TOP
+            386 POP_EXCEPT
+            388 POP_TOP
+            390 POP_TOP
+            392 JUMP_BACKWARD           30 (to 334)
+        >>  394 COPY                     3
+            396 POP_EXCEPT
+            398 RERAISE                  1
+
+ 46     >>  400 PUSH_EXC_INFO
+            402 WITH_EXCEPT_START
+            404 POP_JUMP_IF_TRUE         1 (to 408)
+            406 RERAISE                  2
+        >>  408 POP_TOP
+            410 POP_EXCEPT
+            412 POP_TOP
+            414 POP_TOP
+            416 RETURN_CONST             0 (None)
+        >>  418 COPY                     3
+            420 POP_EXCEPT
+            422 RERAISE                  1
+ExceptionTable:
+  26 to 112 -> 400 [1] lasti
+  114 to 166 -> 352 [2] lasti
+  168 to 262 -> 400 [1] lasti
+  264 to 316 -> 376 [2] lasti
+  318 to 332 -> 400 [1] lasti
+  352 to 360 -> 370 [4] lasti
+  362 to 374 -> 400 [1] lasti
+  376 to 384 -> 394 [4] lasti
+  386 to 398 -> 400 [1] lasti
+  400 to 408 -> 418 [3] lasti
+
+### expire args ('self',)
+ 58           0 RESUME                   0
+
+ 59           2 LOAD_FAST                0 (self)
+              4 LOAD_ATTR                0 (lock)
+             24 BEFORE_WITH
+             26 POP_TOP
+
+ 60          28 LOAD_FAST                0 (self)
+             30 LOAD_ATTR                2 (token)
+             50 POP_JUMP_IF_FALSE       45 (to 142)
+             52 LOAD_FAST                0 (self)
+             54 LOAD_ATTR                5 (NULL|self + clock)
+             74 CALL                     0
+             82 LOAD_FAST                0 (self)
+             84 LOAD_ATTR                6 (deadline)
+            104 COMPARE_OP              92 (>=)
+            108 POP_JUMP_IF_FALSE       16 (to 142)
+
+ 61         110 LOAD_FAST                0 (self)
+            112 LOAD_ATTR                9 (NULL|self + close)
+            132 CALL                     0
+            140 POP_TOP
+
+ 59     >>  142 LOAD_CONST               0 (None)
+            144 LOAD_CONST               0 (None)
+            146 LOAD_CONST               0 (None)
+            148 CALL                     2
+            156 POP_TOP
+            158 RETURN_CONST             0 (None)
+        >>  160 PUSH_EXC_INFO
+            162 WITH_EXCEPT_START
+            164 POP_JUMP_IF_TRUE         1 (to 168)
+            166 RERAISE                  2
+        >>  168 POP_TOP
+            170 POP_EXCEPT
+            172 POP_TOP
+            174 POP_TOP
+            176 RETURN_CONST             0 (None)
+        >>  178 COPY                     3
+            180 POP_EXCEPT
+            182 RERAISE                  1
+ExceptionTable:
+  26 to 140 -> 160 [1] lasti
+  160 to 168 -> 178 [3] lasti
+
+### _watch args ('self', 'token')
+ 63           0 RESUME                   0
+
+ 64           2 NOP
+
+ 65     >>    4 LOAD_GLOBAL              1 (NULL + time)
+             14 LOAD_ATTR                2 (sleep)
+             34 LOAD_CONST               1 (1)
+             36 CALL                     1
+             44 POP_TOP
+
+ 66          46 LOAD_FAST                0 (self)
+             48 LOAD_ATTR                4 (lock)
+             68 BEFORE_WITH
+             70 POP_TOP
+
+ 67          72 LOAD_FAST                0 (self)
+             74 LOAD_ATTR                6 (token)
+             94 LOAD_FAST                1 (token)
+             96 COMPARE_OP              55 (!=)
+            100 POP_JUMP_IF_FALSE       10 (to 122)
+
+ 68         102 NOP
+
+ 66         104 LOAD_CONST               0 (None)
+            106 LOAD_CONST               0 (None)
+            108 LOAD_CONST               0 (None)
+            110 CALL                     2
+            118 POP_TOP
+            120 RETURN_CONST             0 (None)
+
+ 69     >>  122 LOAD_FAST                0 (self)
+            124 LOAD_ATTR                9 (NULL|self + expire)
+            144 CALL                     0
+            152 POP_TOP
+
+ 66         154 LOAD_CONST               0 (None)
+            156 LOAD_CONST               0 (None)
+            158 LOAD_CONST               0 (None)
+            160 CALL                     2
+            168 POP_TOP
+
+ 64     >>  170 JUMP_BACKWARD           84 (to 4)
+
+ 66     >>  172 PUSH_EXC_INFO
+            174 WITH_EXCEPT_START
+            176 POP_JUMP_IF_TRUE         1 (to 180)
+            178 RERAISE                  2
+        >>  180 POP_TOP
+            182 POP_EXCEPT
+            184 POP_TOP
+            186 POP_TOP
+            188 JUMP_BACKWARD           10 (to 170)
+        >>  190 COPY                     3
+            192 POP_EXCEPT
+            194 RERAISE                  1
+ExceptionTable:
+  70 to 102 -> 172 [1] lasti
+  122 to 152 -> 172 [1] lasti
+  172 to 180 -> 190 [3] lasti
+
+### _refresh args ('self',)
+ 71           0 RESUME                   0
+
+ 72           2 LOAD_GLOBAL              1 (NULL + tuple)
+             12 LOAD_FAST                0 (self)
+             14 LOAD_ATTR                2 (device)
+             34 LOAD_ATTR                5 (NULL|self + get_ports)
+             54 CALL                     0
+             62 CALL                     1
+             70 STORE_FAST               1 (names)
+
+ 73          72 LOAD_FAST                1 (names)
+             74 LOAD_FAST                0 (self)
+             76 LOAD_ATTR                6 (ports)
+             96 COMPARE_OP              55 (!=)
+            100 POP_JUMP_IF_FALSE      174 (to 450)
+
+ 74         102 LOAD_FAST                0 (self)
+            104 LOAD_ATTR                8 (selected)
+            124 POP_JUMP_IF_NONE        23 (to 172)
+
+ 75         126 LOAD_FAST                0 (self)
+            128 LOAD_ATTR               11 (NULL|self + _close_port)
+            148 CALL                     0
+            156 POP_TOP
+
+ 76         158 LOAD_CONST               1 ('MIDI devices changed. The take was stopped; reconnect the selected input.')
+            160 LOAD_FAST                0 (self)
+            162 STORE_ATTR               6 (failure)
+
+ 77     >>  172 LOAD_FAST                1 (names)
+            174 LOAD_FAST                0 (self)
+            176 STORE_ATTR               3 (ports)
+
+ 78         186 BUILD_LIST               0
+            188 LOAD_FAST                0 (self)
+            190 STORE_ATTR               7 (catalog)
+
+ 79         200 BUILD_MAP                0
+            202 LOAD_FAST                0 (self)
+            204 STORE_ATTR               8 (port_indexes)
+
+ 82         214 LOAD_GLOBAL             19 (NULL + enumerate)
+            224 LOAD_FAST                1 (names)
+            226 CALL                     1
+            234 GET_ITER
+        >>  236 FOR_ITER               104 (to 448)
+            240 UNPACK_SEQUENCE          2
+            244 STORE_FAST               2 (index)
+            246 STORE_FAST               3 (name)
+
+ 83         248 LOAD_GLOBAL             21 (NULL + isinstance)
+            258 LOAD_FAST                3 (name)
+            260 LOAD_GLOBAL             22 (str)
+            270 CALL                     2
+            278 POP_JUMP_IF_FALSE       16 (to 312)
+            280 LOAD_FAST                3 (name)
+            282 LOAD_ATTR               25 (NULL|self + strip)
+            302 CALL                     0
+            310 POP_JUMP_IF_TRUE         1 (to 314)
+
+ 84     >>  312 JUMP_BACKWARD           39 (to 236)
+
+ 85     >>  314 LOAD_GLOBAL             27 (NULL + secrets)
+            324 LOAD_ATTR               28 (token_hex)
+            344 LOAD_CONST               2 (12)
+            346 CALL                     1
+            354 STORE_FAST               4 (port_id)
+
+ 86         356 LOAD_FAST                0 (self)
+            358 LOAD_ATTR               14 (catalog)
+            378 LOAD_ATTR               31 (NULL|self + append)
+            398 LOAD_FAST                4 (port_id)
+            400 LOAD_FAST                3 (name)
+            402 LOAD_CONST               3 (('id', 'name'))
+            404 BUILD_CONST_KEY_MAP      2
+            406 CALL                     1
+            414 POP_TOP
+
+ 87         416 LOAD_FAST                2 (index)
+            418 LOAD_FAST                0 (self)
+            420 LOAD_ATTR               16 (port_indexes)
+            440 LOAD_FAST                4 (port_id)
+            442 STORE_SUBSCR
+            446 JUMP_BACKWARD          106 (to 236)
+
+ 82     >>  448 END_FOR
+
+ 88     >>  450 LOAD_FAST                0 (self)
+            452 LOAD_ATTR               33 (NULL|self + clock)
+            472 CALL                     0
+            480 LOAD_FAST                0 (self)
+            482 STORE_ATTR              17 (checked)
+            492 RETURN_CONST             0 (None)
+
+### connect args ('self',)
+ 90           0 RESUME                   0
+
+ 91           2 LOAD_FAST                0 (self)
+              4 LOAD_ATTR                0 (lock)
+             24 BEFORE_WITH
+             26 POP_TOP
+
+ 92          28 LOAD_FAST                0 (self)
+             30 LOAD_ATTR                3 (NULL|self + expire)
+             50 CALL                     0
+             58 POP_TOP
+
+ 93          60 LOAD_FAST                0 (self)
+             62 LOAD_ATTR                4 (token)
+             82 POP_JUMP_IF_FALSE       11 (to 106)
+
+ 94          84 LOAD_GLOBAL              7 (NULL + ValueError)
+             94 LOAD_CONST               1 ('Native MIDI is connected in another window. Close that recording dialog first.')
+             96 CALL                     1
+            104 RAISE_VARARGS            1
+
+ 95     >>  106 NOP
+
+ 96         108 LOAD_FAST                0 (self)
+            110 LOAD_ATTR                9 (NULL|self + factory)
+            130 CALL                     0
+            138 LOAD_FAST                0 (self)
+            140 STORE_ATTR               5 (device)
+
+ 97         150 LOAD_FAST                0 (self)
+            152 LOAD_ATTR               10 (device)
+            172 LOAD_ATTR               13 (NULL|self + ignore_types)
+            192 LOAD_CONST               2 (True)
+            194 LOAD_CONST               2 (True)
+            196 LOAD_CONST               2 (True)
+            198 KW_NAMES                 3 (('sysex', 'timing', 'active_sense'))
+            200 CALL                     3
+            208 POP_TOP
+
+ 98         210 LOAD_CONST               4 (())
+            212 LOAD_FAST                0 (self)
+            214 STORE_ATTR               7 (ports)
+
+ 99         224 BUILD_LIST               0
+            226 LOAD_FAST                0 (self)
+            228 STORE_ATTR               8 (catalog)
+
+100         238 BUILD_MAP                0
+            240 LOAD_FAST                0 (self)
+            242 STORE_ATTR               9 (port_indexes)
+
+101         252 LOAD_FAST                0 (self)
+            254 LOAD_ATTR               21 (NULL|self + _refresh)
+            274 CALL                     0
+            282 POP_TOP
+
+102         284 LOAD_CONST               0 (None)
+            286 LOAD_FAST                0 (self)
+            288 STORE_ATTR              11 (failure)
+
+103         298 LOAD_GLOBAL             25 (NULL + secrets)
+            308 LOAD_ATTR               26 (token_urlsafe)
+            328 LOAD_CONST               5 (32)
+            330 CALL                     1
+            338 LOAD_FAST                0 (self)
+            340 STORE_ATTR               2 (token)
+
+104         350 LOAD_FAST                0 (self)
+            352 LOAD_ATTR               29 (NULL|self + clock)
+            372 CALL                     0
+            380 LOAD_CONST               6 (15)
+            382 BINARY_OP                0 (+)
+            386 LOAD_FAST                0 (self)
+            388 STORE_ATTR              15 (deadline)
+
+105         398 LOAD_FAST                0 (self)
+            400 LOAD_ATTR               32 (watchdog)
+            420 POP_JUMP_IF_FALSE       59 (to 540)
+
+106         422 LOAD_GLOBAL             35 (NULL + threading)
+            432 LOAD_ATTR               36 (Thread)
+            452 LOAD_FAST                0 (self)
+            454 LOAD_ATTR               38 (_watch)
+            474 LOAD_FAST                0 (self)
+            476 LOAD_ATTR                4 (token)
+            496 BUILD_TUPLE              1
+            498 LOAD_CONST               2 (True)
+            500 KW_NAMES                 7 (('target', 'args', 'daemon'))
+            502 CALL                     3
+            510 LOAD_ATTR               41 (NULL|self + start)
+            530 CALL                     0
+            538 POP_TOP
+
+107     >>  540 LOAD_FAST                0 (self)
+            542 LOAD_ATTR                4 (token)
+            562 LOAD_FAST                0 (self)
+            564 LOAD_ATTR               16 (catalog)
+            584 LOAD_FAST                0 (self)
+            586 LOAD_ATTR               29 (NULL|self + clock)
+            606 CALL                     0
+
+108         614 LOAD_CONST               8 ('native-callback-estimate')
+
+107         616 LOAD_CONST               9 (('token', 'inputs', 'serverTime', 'clock'))
+            618 BUILD_CONST_KEY_MAP      4
+
+ 91         620 SWAP                     2
+            622 LOAD_CONST               0 (None)
+            624 LOAD_CONST               0 (None)
+            626 LOAD_CONST               0 (None)
+            628 CALL                     2
+            636 POP_TOP
+            638 RETURN_VALUE
+        >>  640 PUSH_EXC_INFO
+
+109         642 LOAD_GLOBAL             42 (Exception)
+            652 CHECK_EXC_MATCH
+            654 POP_JUMP_IF_FALSE       18 (to 692)
+            656 POP_TOP
+
+110         658 LOAD_FAST                0 (self)
+            660 LOAD_ATTR               45 (NULL|self + close)
+            680 CALL                     0
+            688 POP_TOP
+
+111         690 RAISE_VARARGS            0
+
+109     >>  692 RERAISE                  0
+        >>  694 COPY                     3
+            696 POP_EXCEPT
+            698 RERAISE                  1
+
+ 91     >>  700 PUSH_EXC_INFO
+            702 WITH_EXCEPT_START
+            704 POP_JUMP_IF_TRUE         1 (to 708)
+            706 RERAISE                  2
+        >>  708 POP_TOP
+            710 POP_EXCEPT
+            712 POP_TOP
+            714 POP_TOP
+            716 RETURN_CONST             0 (None)
+        >>  718 COPY                     3
+            720 POP_EXCEPT
+            722 RERAISE                  1
+ExceptionTable:
+  26 to 104 -> 700 [1] lasti
+  108 to 618 -> 640 [1]
+  640 to 692 -> 694 [2] lasti
+  694 to 698 -> 700 [1] lasti
+  700 to 708 -> 718 [3] lasti
+
+### _authorize args ('self', 'token')
+113           0 RESUME                   0
+
+114           2 LOAD_FAST                0 (self)
+              4 LOAD_ATTR                1 (NULL|self + expire)
+             24 CALL                     0
+             32 POP_TOP
+
+115          34 LOAD_FAST                0 (self)
+             36 LOAD_ATTR                2 (token)
+             56 POP_JUMP_IF_FALSE       48 (to 154)
+             58 LOAD_GLOBAL              5 (NULL + isinstance)
+             68 LOAD_FAST                1 (token)
+             70 LOAD_GLOBAL              6 (str)
+             80 CALL                     2
+             88 POP_JUMP_IF_FALSE       32 (to 154)
+             90 LOAD_GLOBAL              9 (NULL + secrets)
+            100 LOAD_ATTR               10 (compare_digest)
+            120 LOAD_FAST                1 (token)
+            122 LOAD_FAST                0 (self)
+            124 LOAD_ATTR                2 (token)
+            144 CALL                     2
+            152 POP_JUMP_IF_TRUE        11 (to 176)
+
+116     >>  154 LOAD_GLOBAL             13 (NULL + PermissionError)
+            164 LOAD_CONST               1 ('MIDI connection expired or belongs to another window. Connect again.')
+            166 CALL                     1
+            174 RAISE_VARARGS            1
+
+117     >>  176 LOAD_FAST                0 (self)
+            178 LOAD_ATTR               15 (NULL|self + clock)
+            198 CALL                     0
+            206 LOAD_CONST               2 (15)
+            208 BINARY_OP                0 (+)
+            212 LOAD_FAST                0 (self)
+            214 STORE_ATTR               8 (deadline)
+            224 RETURN_CONST             0 (None)
+
+### _receive args ('self', 'event', '_')
+119           0 RESUME                   0
+
+120           2 LOAD_FAST                1 (event)
+              4 UNPACK_SEQUENCE          2
+              8 STORE_FAST               3 (message)
+             10 STORE_FAST               4 (_delta)
+
+121          12 LOAD_FAST                0 (self)
+             14 LOAD_ATTR                1 (NULL|self + clock)
+             34 CALL                     0
+             42 STORE_FAST               5 (stamp)
+
+122          44 LOAD_FAST                3 (message)
+             46 POP_JUMP_IF_FALSE       35 (to 118)
+             48 LOAD_GLOBAL              3 (NULL + isinstance)
+             58 LOAD_FAST                3 (message)
+             60 LOAD_CONST               1 (0)
+             62 BINARY_SUBSCR
+             66 LOAD_GLOBAL              4 (int)
+             76 CALL                     2
+             84 POP_JUMP_IF_FALSE       16 (to 118)
+             86 LOAD_CONST               2 (128)
+             88 LOAD_FAST                3 (message)
+             90 LOAD_CONST               1 (0)
+             92 BINARY_SUBSCR
+             96 SWAP                     2
+             98 COPY                     2
+            100 COMPARE_OP              26 (<=)
+            104 POP_JUMP_IF_FALSE        5 (to 116)
+            106 LOAD_CONST               3 (240)
+            108 COMPARE_OP               2 (<)
+            112 POP_JUMP_IF_TRUE         3 (to 120)
+
+123         114 RETURN_CONST             0 (None)
+
+122     >>  116 POP_TOP
+
+123     >>  118 RETURN_CONST             0 (None)
+
+124     >>  120 LOAD_FAST                3 (message)
+            122 LOAD_CONST               1 (0)
+            124 BINARY_SUBSCR
+            128 LOAD_CONST               3 (240)
+            130 BINARY_OP                1 (&)
+            134 LOAD_CONST               4 ((192, 208))
+            136 CONTAINS_OP              0
+            138 POP_JUMP_IF_FALSE        2 (to 144)
+            140 LOAD_CONST               5 (2)
+            142 JUMP_FORWARD             1 (to 146)
+        >>  144 LOAD_CONST               6 (3)
+        >>  146 STORE_FAST               6 (size)
+
+125         148 LOAD_GLOBAL              7 (NULL + len)
+            158 LOAD_FAST                3 (message)
+            160 CALL                     1
+            168 LOAD_FAST                6 (size)
+            170 COMPARE_OP              55 (!=)
+            174 POP_JUMP_IF_TRUE        21 (to 218)
+            176 LOAD_GLOBAL              9 (NULL + any)
+            186 LOAD_CONST               7 (<code object <genexpr> at 0x00000289FE3810D0, file "studio_daw/midi.py", line 125>)
+            188 MAKE_FUNCTION            0
+            190 LOAD_FAST                3 (message)
+            192 LOAD_CONST               8 (1)
+            194 LOAD_CONST               0 (None)
+            196 BINARY_SLICE
+            198 GET_ITER
+            200 CALL                     0
+            208 CALL                     1
+            216 POP_JUMP_IF_FALSE        1 (to 220)
+
+126     >>  218 RETURN_CONST             0 (None)
+
+127     >>  220 LOAD_FAST                0 (self)
+            222 LOAD_ATTR               10 (queue_lock)
+            242 BEFORE_WITH
+            244 POP_TOP
+
+128         246 LOAD_FAST                0 (self)
+            248 LOAD_ATTR               12 (receiving)
+            268 POP_JUMP_IF_FALSE       12 (to 294)
+            270 LOAD_FAST                0 (self)
+            272 LOAD_ATTR               14 (failure)
+            292 POP_JUMP_IF_FALSE       10 (to 314)
+
+129     >>  294 NOP
+
+127         296 LOAD_CONST               0 (None)
+            298 LOAD_CONST               0 (None)
+            300 LOAD_CONST               0 (None)
+            302 CALL                     2
+            310 POP_TOP
+            312 RETURN_CONST             0 (None)
+
+130     >>  314 LOAD_GLOBAL              7 (NULL + len)
+            324 LOAD_FAST                0 (self)
+            326 LOAD_ATTR               16 (events)
+            346 CALL                     1
+            354 LOAD_CONST               9 (2048)
+            356 COMPARE_OP              92 (>=)
+            360 POP_JUMP_IF_FALSE       24 (to 410)
+
+131         362 LOAD_CONST              10 ('MIDI input overflow. The take was stopped instead of dropping notes silently.')
+            364 LOAD_FAST                0 (self)
+            366 STORE_ATTR               7 (failure)
+
+132         376 LOAD_CONST              11 (False)
+            378 LOAD_FAST                0 (self)
+            380 STORE_ATTR               6 (receiving)
+
+133         390 NOP
+
+127         392 LOAD_CONST               0 (None)
+            394 LOAD_CONST               0 (None)
+            396 LOAD_CONST               0 (None)
+            398 CALL                     2
+            406 POP_TOP
+            408 RETURN_CONST             0 (None)
+
+134     >>  410 LOAD_FAST                0 (self)
+            412 COPY                     1
+            414 LOAD_ATTR               18 (seq)
+            434 LOAD_CONST               8 (1)
+            436 BINARY_OP               13 (+=)
+            440 SWAP                     2
+            442 STORE_ATTR               9 (seq)
+
+135         452 LOAD_FAST                0 (self)
+            454 LOAD_ATTR               16 (events)
+            474 LOAD_ATTR               21 (NULL|self + append)
+            494 LOAD_FAST                0 (self)
+            496 LOAD_ATTR               18 (seq)
+            516 LOAD_FAST                5 (stamp)
+            518 LOAD_GLOBAL             23 (NULL + list)
+            528 LOAD_FAST                3 (message)
+            530 CALL                     1
+            538 LOAD_CONST              12 (('sequence', 'time', 'data'))
+            540 BUILD_CONST_KEY_MAP      3
+            542 CALL                     1
+            550 POP_TOP
+
+127         552 LOAD_CONST               0 (None)
+            554 LOAD_CONST               0 (None)
+            556 LOAD_CONST               0 (None)
+            558 CALL                     2
+            566 POP_TOP
+            568 RETURN_CONST             0 (None)
+        >>  570 PUSH_EXC_INFO
+            572 WITH_EXCEPT_START
+            574 POP_JUMP_IF_TRUE         1 (to 578)
+            576 RERAISE                  2
+        >>  578 POP_TOP
+            580 POP_EXCEPT
+            582 POP_TOP
+            584 POP_TOP
+            586 RETURN_CONST             0 (None)
+        >>  588 COPY                     3
+            590 POP_EXCEPT
+            592 RERAISE                  1
+ExceptionTable:
+  244 to 294 -> 570 [1] lasti
+  314 to 390 -> 570 [1] lasti
+  410 to 550 -> 570 [1] lasti
+  570 to 578 -> 588 [3] lasti
+
+Disassembly of <code object <genexpr> at 0x00000289FE3810D0, file "studio_daw/midi.py", line 125>:
+125           0 RETURN_GENERATOR
+              2 POP_TOP
+              4 RESUME                   0
+              6 LOAD_FAST                0 (.0)
+        >>    8 FOR_ITER                40 (to 92)
+             12 STORE_FAST               1 (v)
+             14 LOAD_GLOBAL              1 (NULL + type)
+             24 LOAD_FAST                1 (v)
+             26 CALL                     1
+             34 LOAD_GLOBAL              2 (int)
+             44 IS_OP                    1
+             46 COPY                     1
+             48 POP_JUMP_IF_TRUE        17 (to 84)
+             50 POP_TOP
+             52 LOAD_CONST               0 (0)
+             54 LOAD_FAST                1 (v)
+             56 SWAP                     2
+             58 COPY                     2
+             60 COMPARE_OP              26 (<=)
+             64 COPY                     1
+             66 POP_JUMP_IF_FALSE        5 (to 78)
+             68 POP_TOP
+             70 LOAD_CONST               1 (127)
+             72 COMPARE_OP              26 (<=)
+             76 JUMP_FORWARD             2 (to 82)
+        >>   78 SWAP                     2
+             80 POP_TOP
+        >>   82 UNARY_NOT
+        >>   84 YIELD_VALUE              1
+             86 RESUME                   1
+             88 POP_TOP
+             90 JUMP_BACKWARD           42 (to 8)
+        >>   92 END_FOR
+             94 RETURN_CONST             2 (None)
+        >>   96 CALL_INTRINSIC_1         3 (INTRINSIC_STOPITERATION_ERROR)
+             98 RERAISE                  1
+ExceptionTable:
+  4 to 94 -> 96 [0] lasti
+
+### open args ('self', 'token', 'port_id')
+137           0 RESUME                   0
+
+138           2 LOAD_FAST                0 (self)
+              4 LOAD_ATTR                0 (lock)
+             24 BEFORE_WITH
+             26 POP_TOP
+
+139          28 LOAD_FAST                0 (self)
+             30 LOAD_ATTR                3 (NULL|self + _authorize)
+             50 LOAD_FAST                1 (token)
+             52 CALL                     1
+             60 POP_TOP
+
+140          62 LOAD_FAST                0 (self)
+             64 LOAD_ATTR                5 (NULL|self + _refresh)
+             84 CALL                     0
+             92 POP_TOP
+
+141          94 LOAD_FAST                0 (self)
+             96 LOAD_ATTR                6 (selected)
+            116 POP_JUMP_IF_NONE        11 (to 140)
+
+142         118 LOAD_GLOBAL              9 (NULL + ValueError)
+            128 LOAD_CONST               1 ('A MIDI input is already recording.')
+            130 CALL                     1
+            138 RAISE_VARARGS            1
+
+143     >>  140 LOAD_GLOBAL             11 (NULL + isinstance)
+            150 LOAD_FAST                2 (port_id)
+            152 LOAD_GLOBAL             12 (str)
+            162 CALL                     2
+            170 POP_JUMP_IF_FALSE       27 (to 226)
+            172 LOAD_FAST                0 (self)
+            174 LOAD_ATTR               14 (port_indexes)
+            194 LOAD_ATTR               17 (NULL|self + get)
+            214 LOAD_FAST                2 (port_id)
+            216 CALL                     1
+            224 JUMP_FORWARD             1 (to 228)
+        >>  226 LOAD_CONST               0 (None)
+        >>  228 STORE_FAST               3 (index)
+
+144         230 LOAD_FAST                3 (index)
+            232 POP_JUMP_IF_NOT_NONE    11 (to 256)
+
+145         234 LOAD_GLOBAL              9 (NULL + ValueError)
+            244 LOAD_CONST               2 ('Selected MIDI input changed. Choose it again.')
+            246 CALL                     1
+            254 RAISE_VARARGS            1
+
+146     >>  256 LOAD_FAST                0 (self)
+            258 LOAD_ATTR               18 (ports)
+            278 LOAD_ATTR               21 (NULL|self + count)
+            298 LOAD_FAST                0 (self)
+            300 LOAD_ATTR               18 (ports)
+            320 LOAD_FAST                3 (index)
+            322 BINARY_SUBSCR
+            326 CALL                     1
+            334 LOAD_CONST               3 (1)
+            336 COMPARE_OP              55 (!=)
+            340 POP_JUMP_IF_FALSE       11 (to 364)
+
+147         342 LOAD_GLOBAL              9 (NULL + ValueError)
+            352 LOAD_CONST               4 ('MIDI input names are duplicated. Give this device a unique name before recording.')
+            354 CALL                     1
+            362 RAISE_VARARGS            1
+
+148     >>  364 NOP
+
+149         366 LOAD_FAST                0 (self)
+            368 LOAD_ATTR               22 (device)
+            388 LOAD_ATTR               25 (NULL|self + open_port)
+            408 LOAD_FAST                3 (index)
+            410 LOAD_CONST               5 ('AXIOM MIDI recording')
+            412 CALL                     2
+            420 POP_TOP
+
+150         422 LOAD_FAST                0 (self)
+            424 LOAD_ATTR               26 (queue_lock)
+            444 BEFORE_WITH
+            446 POP_TOP
+
+151         448 LOAD_FAST                0 (self)
+            450 LOAD_ATTR               28 (events)
+            470 LOAD_ATTR               31 (NULL|self + clear)
+            490 CALL                     0
+            498 POP_TOP
+
+152         500 LOAD_CONST               6 (0)
+            502 LOAD_FAST                0 (self)
+            504 STORE_ATTR              16 (seq)
+
+153         514 LOAD_CONST               0 (None)
+            516 LOAD_FAST                0 (self)
+            518 STORE_ATTR              17 (failure)
+
+154         528 LOAD_CONST               7 (True)
+            530 LOAD_FAST                0 (self)
+            532 STORE_ATTR              18 (receiving)
+
+150         542 LOAD_CONST               0 (None)
+            544 LOAD_CONST               0 (None)
+            546 LOAD_CONST               0 (None)
+            548 CALL                     2
+            556 POP_TOP
+
+155     >>  558 LOAD_FAST                2 (port_id)
+            560 LOAD_FAST                0 (self)
+            562 STORE_ATTR               3 (selected)
+
+156         572 LOAD_FAST                0 (self)
+            574 LOAD_ATTR               22 (device)
+            594 LOAD_ATTR               39 (NULL|self + set_callback)
+            614 LOAD_FAST                0 (self)
+            616 LOAD_ATTR               40 (_receive)
+            636 CALL                     1
+            644 POP_TOP
+
+158         646 LOAD_GLOBAL             43 (NULL + tuple)
+            656 LOAD_FAST                0 (self)
+            658 LOAD_ATTR               22 (device)
+            678 LOAD_ATTR               45 (NULL|self + get_ports)
+            698 CALL                     0
+            706 CALL                     1
+            714 LOAD_FAST                0 (self)
+            716 LOAD_ATTR               18 (ports)
+            736 COMPARE_OP              55 (!=)
+            740 POP_JUMP_IF_TRUE        26 (to 794)
+            742 LOAD_FAST                0 (self)
+            744 LOAD_ATTR               22 (device)
+            764 LOAD_ATTR               47 (NULL|self + is_port_open)
+            784 CALL                     0
+            792 POP_JUMP_IF_TRUE        11 (to 816)
+
+159     >>  794 LOAD_GLOBAL              9 (NULL + ValueError)
+            804 LOAD_CONST               8 ('MIDI input disconnected while opening. Choose it again.')
+            806 CALL                     1
+            814 RAISE_VARARGS            1
+
+160     >>  816 LOAD_FAST                2 (port_id)
+            818 LOAD_FAST                0 (self)
+            820 LOAD_ATTR               49 (NULL|self + clock)
+            840 CALL                     0
+            848 LOAD_CONST               9 (('opened', 'serverTime'))
+            850 BUILD_CONST_KEY_MAP      2
+
+138         852 SWAP                     2
+            854 LOAD_CONST               0 (None)
+            856 LOAD_CONST               0 (None)
+            858 LOAD_CONST               0 (None)
+            860 CALL                     2
+            868 POP_TOP
+            870 RETURN_VALUE
+
+150     >>  872 PUSH_EXC_INFO
+            874 WITH_EXCEPT_START
+            876 POP_JUMP_IF_TRUE         1 (to 880)
+            878 RERAISE                  2
+        >>  880 POP_TOP
+            882 POP_EXCEPT
+            884 POP_TOP
+            886 POP_TOP
+            888 JUMP_BACKWARD          166 (to 558)
+        >>  890 COPY                     3
+            892 POP_EXCEPT
+            894 RERAISE                  1
+        >>  896 PUSH_EXC_INFO
+
+161         898 LOAD_GLOBAL             50 (Exception)
+            908 CHECK_EXC_MATCH
+            910 POP_JUMP_IF_FALSE       18 (to 948)
+            912 POP_TOP
+
+162         914 LOAD_FAST                0 (self)
+            916 LOAD_ATTR               53 (NULL|self + _close_port)
+            936 CALL                     0
+            944 POP_TOP
+
+163         946 RAISE_VARARGS            0
+
+161     >>  948 RERAISE                  0
+        >>  950 COPY                     3
+            952 POP_EXCEPT
+            954 RERAISE                  1
+
+138     >>  956 PUSH_EXC_INFO
+            958 WITH_EXCEPT_START
+            960 POP_JUMP_IF_TRUE         1 (to 964)
+            962 RERAISE                  2
+        >>  964 POP_TOP
+            966 POP_EXCEPT
+            968 POP_TOP
+            970 POP_TOP
+            972 RETURN_CONST             0 (None)
+        >>  974 COPY                     3
+            976 POP_EXCEPT
+            978 RERAISE                  1
+ExceptionTable:
+  26 to 362 -> 956 [1] lasti
+  366 to 444 -> 896 [1]
+  446 to 540 -> 872 [2] lasti
+  542 to 850 -> 896 [1]
+  872 to 880 -> 890 [4] lasti
+  882 to 894 -> 896 [1]
+  896 to 948 -> 950 [2] lasti
+  950 to 954 -> 956 [1] lasti
+  956 to 964 -> 974 [3] lasti
+
+### poll args ('self', 'token')
+165           0 RESUME                   0
+
+166           2 LOAD_FAST                0 (self)
+              4 LOAD_ATTR                0 (lock)
+             24 BEFORE_WITH
+             26 POP_TOP
+
+167          28 LOAD_FAST                0 (self)
+             30 LOAD_ATTR                3 (NULL|self + _authorize)
+             50 LOAD_FAST                1 (token)
+             52 CALL                     1
+             60 POP_TOP
+
+168          62 LOAD_FAST                0 (self)
+             64 LOAD_ATTR                5 (NULL|self + clock)
+             84 CALL                     0
+             92 LOAD_FAST                0 (self)
+             94 LOAD_ATTR                6 (checked)
+            114 BINARY_OP               10 (-)
+            118 LOAD_CONST               1 (1)
+            120 COMPARE_OP              92 (>=)
+            124 POP_JUMP_IF_FALSE       16 (to 158)
+
+169         126 LOAD_FAST                0 (self)
+            128 LOAD_ATTR                9 (NULL|self + _refresh)
+            148 CALL                     0
+            156 POP_TOP
+
+170     >>  158 LOAD_FAST                0 (self)
+            160 LOAD_ATTR               10 (selected)
+            180 POP_JUMP_IF_FALSE       33 (to 248)
+            182 LOAD_FAST                0 (self)
+            184 LOAD_ATTR               12 (device)
+            204 LOAD_ATTR               15 (NULL|self + is_port_open)
+            224 CALL                     0
+            232 POP_JUMP_IF_TRUE         7 (to 248)
+
+171         234 LOAD_CONST               2 ('MIDI input disconnected.')
+            236 LOAD_FAST                0 (self)
+            238 STORE_ATTR               8 (failure)
+
+172     >>  248 LOAD_FAST                0 (self)
+            250 LOAD_ATTR               18 (queue_lock)
+            270 BEFORE_WITH
+            272 POP_TOP
+
+173         274 LOAD_GLOBAL             21 (NULL + list)
+            284 LOAD_FAST                0 (self)
+            286 LOAD_ATTR               22 (events)
+            306 CALL                     1
+            314 STORE_FAST               2 (batch)
+
+174         316 LOAD_FAST                0 (self)
+            318 LOAD_ATTR               22 (events)
+            338 LOAD_ATTR               25 (NULL|self + clear)
+            358 CALL                     0
+            366 POP_TOP
+
+175         368 LOAD_FAST                0 (self)
+            370 LOAD_ATTR               16 (failure)
+            390 STORE_FAST               3 (failure)
+
+172         392 LOAD_CONST               0 (None)
+            394 LOAD_CONST               0 (None)
+            396 LOAD_CONST               0 (None)
+            398 CALL                     2
+            406 POP_TOP
+
+176     >>  408 LOAD_FAST_CHECK          3 (failure)
+            410 POP_JUMP_IF_FALSE       16 (to 444)
+
+177         412 LOAD_FAST                0 (self)
+            414 LOAD_ATTR               27 (NULL|self + _close_port)
+            434 CALL                     0
+            442 POP_TOP
+
+178     >>  444 LOAD_FAST_CHECK          2 (batch)
+            446 LOAD_FAST                0 (self)
+            448 LOAD_ATTR               28 (catalog)
+            468 LOAD_FAST                3 (failure)
+
+179         470 LOAD_FAST                0 (self)
+            472 LOAD_ATTR               10 (selected)
+            492 LOAD_FAST                0 (self)
+            494 LOAD_ATTR                5 (NULL|self + clock)
+            514 CALL                     0
+
+178         522 LOAD_CONST               3 (('events', 'inputs', 'error', 'opened', 'serverTime'))
+            524 BUILD_CONST_KEY_MAP      5
+
+166         526 SWAP                     2
+            528 LOAD_CONST               0 (None)
+            530 LOAD_CONST               0 (None)
+            532 LOAD_CONST               0 (None)
+            534 CALL                     2
+            542 POP_TOP
+            544 RETURN_VALUE
+
+172     >>  546 PUSH_EXC_INFO
+            548 WITH_EXCEPT_START
+            550 POP_JUMP_IF_TRUE         1 (to 554)
+            552 RERAISE                  2
+        >>  554 POP_TOP
+            556 POP_EXCEPT
+            558 POP_TOP
+            560 POP_TOP
+            562 JUMP_BACKWARD           78 (to 408)
+        >>  564 COPY                     3
+            566 POP_EXCEPT
+            568 RERAISE                  1
+
+166     >>  570 PUSH_EXC_INFO
+            572 WITH_EXCEPT_START
+            574 POP_JUMP_IF_TRUE         1 (to 578)
+            576 RERAISE                  2
+        >>  578 POP_TOP
+            580 POP_EXCEPT
+            582 POP_TOP
+            584 POP_TOP
+            586 RETURN_CONST             0 (None)
+        >>  588 COPY                     3
+            590 POP_EXCEPT
+            592 RERAISE                  1
+ExceptionTable:
+  26 to 270 -> 570 [1] lasti
+  272 to 390 -> 546 [2] lasti
+  392 to 524 -> 570 [1] lasti
+  546 to 554 -> 564 [4] lasti
+  556 to 568 -> 570 [1] lasti
+  570 to 578 -> 588 [3] lasti
+
+### stop args ('self', 'token')
+181           0 RESUME                   0
+
+182           2 LOAD_FAST                0 (self)
+              4 LOAD_ATTR                0 (lock)
+             24 BEFORE_WITH
+             26 POP_TOP
+
+183          28 LOAD_FAST                0 (self)
+             30 LOAD_ATTR                3 (NULL|self + _authorize)
+             50 LOAD_FAST                1 (token)
+             52 CALL                     1
+             60 POP_TOP
+
+184          62 LOAD_FAST                0 (self)
+             64 LOAD_ATTR                5 (NULL|self + _close_port)
+             84 CALL                     0
+             92 POP_TOP
+
+185          94 LOAD_FAST                0 (self)
+             96 LOAD_ATTR                6 (queue_lock)
+            116 BEFORE_WITH
+            118 POP_TOP
+
+186         120 LOAD_FAST                0 (self)
+            122 LOAD_ATTR                8 (events)
+            142 LOAD_ATTR               11 (NULL|self + clear)
+            162 CALL                     0
+            170 POP_TOP
+
+185         172 LOAD_CONST               0 (None)
+            174 LOAD_CONST               0 (None)
+            176 LOAD_CONST               0 (None)
+            178 CALL                     2
+            186 POP_TOP
+
+187     >>  188 LOAD_CONST               1 (True)
+            190 LOAD_FAST                0 (self)
+            192 LOAD_ATTR               13 (NULL|self + clock)
+            212 CALL                     0
+            220 LOAD_CONST               2 (('closed', 'serverTime'))
+            222 BUILD_CONST_KEY_MAP      2
+
+182         224 SWAP                     2
+            226 LOAD_CONST               0 (None)
+            228 LOAD_CONST               0 (None)
+            230 LOAD_CONST               0 (None)
+            232 CALL                     2
+            240 POP_TOP
+            242 RETURN_VALUE
+
+185     >>  244 PUSH_EXC_INFO
+            246 WITH_EXCEPT_START
+            248 POP_JUMP_IF_TRUE         1 (to 252)
+            250 RERAISE                  2
+        >>  252 POP_TOP
+            254 POP_EXCEPT
+            256 POP_TOP
+            258 POP_TOP
+            260 JUMP_BACKWARD           37 (to 188)
+        >>  262 COPY                     3
+            264 POP_EXCEPT
+            266 RERAISE                  1
+
+182     >>  268 PUSH_EXC_INFO
+            270 WITH_EXCEPT_START
+            272 POP_JUMP_IF_TRUE         1 (to 276)
+            274 RERAISE                  2
+        >>  276 POP_TOP
+            278 POP_EXCEPT
+            280 POP_TOP
+            282 POP_TOP
+            284 RETURN_CONST             0 (None)
+        >>  286 COPY                     3
+            288 POP_EXCEPT
+            290 RERAISE                  1
+ExceptionTable:
+  26 to 116 -> 268 [1] lasti
+  118 to 170 -> 244 [2] lasti
+  172 to 222 -> 268 [1] lasti
+  244 to 252 -> 262 [4] lasti
+  254 to 266 -> 268 [1] lasti
+  268 to 276 -> 286 [3] lasti

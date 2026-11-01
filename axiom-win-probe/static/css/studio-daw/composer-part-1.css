@@ -1,0 +1,1472 @@
+/* Reference composer geometry. Keep these rules scoped to the DAW. */
+body.studio-daw-mode-active #tab-content-studio { padding: 0 0 var(--daw-player-clearance,130px) !important; }
+.studio-daw-shell { --daw-master-row: 100px; --daw-row: 64px; --daw-ruler-stack: 48px; --daw-green: #b2df29; --mix-width: clamp(164px,13.4vw,254px); --heads-width: clamp(154px,11.1vw,214px); border: 0; margin: 0; }
+body.studio-daw-mode-active #axiom-sidebar.axiom-sidebar { width: 64px !important; min-width: 64px !important; }
+body.studio-daw-mode-active #axiom-sidebar .axiom-sidebar-utilities { display: none; }
+body.studio-daw-mode-active #axiom-sidebar .axiom-sidebar-brand-row { min-height:48px; flex-basis:48px; padding:8px 2px !important; }
+body.studio-daw-mode-active #axiom-sidebar #axiom-start-button.axiom-start-wordmark { font-size:21px !important; }
+body.studio-daw-mode-active #axiom-sidebar #axiom-start-button.axiom-start-wordmark .axiom-start-wordmark-edition { display:none !important; }
+.studio-daw-shell, .studio-daw-shell button, .studio-daw-shell strong, .studio-daw-shell small { font-family: 'Barlow', sans-serif !important; letter-spacing: 0 !important; }
+.studio-daw-topbar { display: grid; grid-template-columns: 1fr auto 1fr; min-height: 48px; background: #090a09; }
+#daw-save-status {display:inline-block;min-width:74px;max-width:90px;font:11px Barlow,sans-serif;line-height:14px;white-space:normal;text-align:right;color:#bec6b7;}
+#daw-save-status[data-state="recovery"],#daw-save-status[data-state="unsaved"] {color:#e7c767;}
+#daw-save-status[data-state="error"] {color:#ff9b96;}
+#daw-save-status[data-state="saved"] {color:#b5da66;}
+.studio-daw-title-block { display: none; }
+.studio-daw-brand { grid-column: 1; grid-row: 1; justify-self: start; gap: 12px; }
+.studio-daw-brand span { font-family: 'Bebas Neue', sans-serif; font-size: 27px; }
+.studio-daw-brand strong { font-size: 12px; }
+.studio-daw-brand em { display: block; font-size: 10px; color: #b2df29; font-style: normal; }
+.studio-daw-master-controls { grid-column: 2; grid-row: 1; }
+.studio-daw-top-actions { grid-column: 3; grid-row: 1; justify-self: end; }
+.studio-daw-top-actions button { font-size: 11px; }
+.studio-daw-arrange-shell { grid-template-columns: var(--mix-width) var(--heads-width) minmax(0, 1fr); min-height: calc(100vh - 158px); }
+.studio-daw-master-side-panel { width: calc(var(--mix-width) + var(--heads-width)); padding: 0 18px; background: #121312; border-color: #292b29; }
+.studio-daw-master-side-panel div { gap: 9px; }
+.studio-daw-master-side-panel strong { flex-shrink: 0; font-size: 11px; }
+.studio-daw-master-side-panel button { flex-shrink: 0; }
+.studio-daw-master-side-panel span { font-size: 11px; }
+.studio-daw-master-side-panel small { font-size: 10px; }
+.studio-daw-left-mixer-bank { grid-template-rows: 48px 1fr; background: #202221; border-right: 3px solid #090a09; }
+.studio-daw-mixer-header { font-size: 11px; background: #151716; }
+.studio-daw-mixer-strips { min-height: 0; }
+.daw-range-selection { position:absolute; top:0; bottom:0; border:1px solid #76d5ee; background:#55c4ed30; z-index:1; cursor:grab; min-width:2px; }
+.daw-range-selection > span { position:absolute; top:2px; left:3px; padding:2px 4px; color:#eafcff; background:#0a2027; white-space:nowrap; font:11px Barlow,sans-serif; pointer-events:none; }
+.daw-range-tool { width:30px; height:30px; padding:6px; border:1px solid #53604d; border-radius:3px; background:#161c16; }
+.daw-range-tool img { width:16px; height:16px; }
+.daw-range-tool[aria-pressed="true"] { background:var(--accent); }
+.daw-range-tool[aria-pressed="true"] img { filter:brightness(0); }
+.studio-daw-mixer-strip { display: flex; flex-direction: column; align-items: center; justify-content: flex-start; gap: 13px; padding: 14px 5px; background: #242625; border-right: 2px solid #111; }
+.studio-daw-mixer-strip strong { font-size: 12px; margin-bottom: 4px; }
+.studio-daw-mixer-strip.active { box-shadow: none; }
+.studio-daw-mixer-strips.daw-master-mixer { grid-template-columns:minmax(0,1fr); }
+.studio-daw-mixer-strip[hidden] { display:none; }
+.studio-daw-mixer-strip > small { max-width:100%; text-align:center; overflow-wrap:anywhere; }
+.daw-knob-control { display: flex; align-items: center; flex-direction: column; gap: 7px; color: #b4b7b4; font-size: 10px; }
+.daw-knob { appearance: none; width: 35px; height: 35px; border: 2px solid #777c78; border-radius: 50%; background: #242725; box-shadow: 0 2px 2px #000, inset 0 0 0 3px #141614; position: relative; touch-action:none; cursor:ns-resize; }
+.daw-knob::after { content: ''; position: absolute; width: 2px; height: 12px; left: 50%; top: 2px; background: #d5d7d5; transform: translateX(-50%) rotate(var(--knob-angle,0deg)); transform-origin: 50% 15.5px; border-radius:2px; }
+.daw-knob:disabled { opacity: .8; cursor: not-allowed; }
+#daw-sweep-template { height:30px;padding:0 10px;background:#a3ff00;color:#071005;border:1px solid #a3ff00;border-radius:3px;font-size:12px;white-space:nowrap; }
+#daw-sweep-template:hover,
+#daw-sweep-template:focus-visible { box-shadow:0 0 0 2px rgba(163,255,0,.28); }
+.daw-channel-meter { display: flex; gap: 6px; height: 144px; margin: 5px 0 0; }
+.daw-channel-meter meter { appearance: none; width: 13px; height: 144px; writing-mode: vertical-lr; transform: rotate(180deg); background: #131713; }
+.daw-channel-meter meter::-webkit-meter-bar { background: #141a0e; border: 1px solid #080a08; border-radius: 0; }
+.daw-channel-meter meter::-webkit-meter-optimum-value { background: #b2df29; }
+.daw-meter-labels { display: flex; flex-direction: column; justify-content: space-between; color: #979b97; font-size: 10px; }
+.daw-fader { appearance: none; width: 5px; height: 70px; background: #111; writing-mode: vertical-lr; direction: rtl; }
+.daw-fader::-webkit-slider-thumb { appearance: none; width: 28px; height: 17px; border: 1px solid #555; border-radius: 3px; background: #a7aba8; box-shadow: 0 2px 3px #050505; }
+.daw-channel-buttons { display: flex; gap: 4px; }
+.daw-channel-buttons button { width: 28px; height: 24px; background: #292c2a; border: 1px solid #3b3e3b; border-radius: 3px; color: #ccc; font-size: 11px; }
+.daw-channel-buttons button[aria-pressed=true] { color: #071005; background: #b2df29; }
+.studio-daw-track-head { grid-template-columns: 24px minmax(0,1fr) 25px; gap: 8px; padding: 12px 10px; background: #202321; border-bottom: 2px solid #0a0b0a; }
+.studio-daw-track-head strong { font-size: 12px; font-weight: 600; line-height: 1.25; }
+.studio-daw-track-head small { font-size: 10px; font-weight: 500; line-height: 1.4; color: #9da09d; margin-top: 6px; }
+.studio-daw-track-head.active { background: #272b24; }
+.studio-daw-track-head[data-section-head$="deck"] { height: 100px; }
+.studio-daw-track-head[data-section-head$="deck"] strong { color: #b2df29; }
+.studio-daw-track-head > span:first-child { background: transparent; border: 1px solid #454a40; border-radius: 2px; width: 20px; height: 24px; color: #a7ab9f; }
+.studio-daw-track-head > button { width: 24px; height: 24px; background: #242725; border: 1px solid #414441; border-radius: 3px; padding: 4px; }
+.studio-daw-track-head > button img { width: 14px; height: 14px; filter: brightness(0) invert(.8); }
+.studio-daw-track-head.master { height: var(--daw-master-row); padding: 0; }
+.studio-daw-track-stack-spacer { text-align: right; padding-right: 12px; }
+.studio-daw-track-stack-spacer strong { font-size: 10px; color: #9da09d; }
+.studio-daw-timeline {
+  overflow-x: auto;
+  overflow-y: visible;
+  min-width: 0;
+  overscroll-behavior-x: contain;
+  scrollbar-color: #6f8f2a #111411;
+}
+.studio-daw-arrangement-overview { display: none; }
+.studio-daw-ruler { height: 48px; align-items: center; background: #121412; border-bottom: 2px solid #303430; }
+.studio-daw-ruler span { display: flex; flex-direction: column; gap: 9px; font-size: 10px; }
+.studio-daw-ruler span:not(:empty)::after { content: none; }
+.studio-daw-markers { display: block; position: absolute; top: 3px; left: 0; right: 0; height: 24px; background: none; z-index: 5; pointer-events: none; overflow:hidden; }
+.studio-daw-markers { pointer-events:auto; }
+.studio-daw-marker { position: absolute; top:0; max-width:120px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.studio-daw-marker, .studio-daw-marker.active { pointer-events: auto; margin: 0; padding: 0 4px; border: 0; border-radius: 0; background: transparent; color: #b2df29; font-size: 10px; font-weight: 600; }
+.studio-daw-marker.marker-intro, .studio-daw-marker.marker-start_hype { color: var(--accent); font-weight: 900; text-shadow: 0 0 8px color-mix(in srgb, var(--accent-glow-base) 35%, transparent); }
+.studio-daw-marker.marker-start_hype { transform: translateX(-2px); }
+.studio-daw-intro-marker-control { display:flex; align-items:center; gap:5px; color:var(--accent); font:900 9px Barlow,sans-serif; letter-spacing:.06em; white-space:nowrap; }
+.studio-daw-intro-marker-control select { min-height:24px; max-width:180px; padding:2px 5px; color:#ecefed; background:#232626; border:1px solid #414644; border-radius:3px; font:11px Barlow,sans-serif; }
+.studio-daw-lanes { min-height: 0; background: #101210; }
+.studio-daw-lane { border-bottom: 2px solid #292c29; background: #101210; }
+.studio-daw-lane.active { background: #12160e; }
+.studio-daw-lane[data-daw-section$="deck"], .studio-daw-lane[data-daw-section$="deck"] .studio-daw-lane-body { min-height: 100px; height: 100px; }
+.studio-daw-clip { padding: 7px 9px; border: 1px solid var(--section-color); border-radius: 3px; background: color-mix(in srgb,var(--section-color) 16%,#101210); box-shadow: inset 0 0 0 2px #131613; overflow: hidden; }
+.studio-daw-lane[data-daw-section$="deck"] .studio-daw-clip { height: 82px; }
+.studio-daw-clip strong { position: relative; top:auto; bottom:auto; left:auto; z-index: 2; display: block; font-size: 11px; font-weight: 600; color: #e0e3dc; }
+.studio-daw-clip small { position: relative; z-index: 2; color: var(--section-color); font-size: 10px; font-weight: 500; margin-top: 3px; }
+.studio-daw-lane[data-daw-section="left-deck"] .studio-daw-clip { --section-color: #b2cf36; }
+.studio-daw-lane[data-daw-section="right-deck"] .studio-daw-clip { --section-color: #d58b19; }
+.studio-daw-lane[data-daw-section="samples"] .studio-daw-clip { --section-color: #ac77cf; }
+.daw-sample-overview { position:absolute; inset:3px 0; background:#9279c330; border-top:1px solid #9279c3; border-bottom:1px solid #9279c3; }
+.daw-sample-overview > strong { display:block; height:20px; padding:2px 7px; color:#d9c8f0; font-size:11px; line-height:16px; pointer-events:none; }
+.daw-sample-overview > strong small { margin-left:8px; color:#b5a9c6; font:10px Barlow,sans-serif; }
+body.studio-daw-mode-active .daw-sample-overview .daw-sample-summary-block,
+body.studio-daw-mode-active .daw-layer-overview .daw-layer-summary-block { position:absolute; top:calc(21px + var(--summary-layer) * ((100% - 23px) / var(--sample-layer-count))); height:calc((100% - 23px) / var(--sample-layer-count) * .65); min-height:0; min-width:0; padding:0; margin:0; border:0; border-radius:0; background:#bc99df; box-shadow:none; cursor:pointer; }
+body.studio-daw-mode-active .daw-sample-overview .daw-sample-summary-block:hover,
+body.studio-daw-mode-active .daw-layer-overview .daw-layer-summary-block:hover { background:#e0c9f7; }
+.daw-sample-summary-block:focus-visible { outline:2px solid #fff; outline-offset:1px; }
+.studio-daw-lane[data-daw-section="fx"] .studio-daw-clip { --section-color: #5494ba; }
+.studio-daw-lane[data-daw-section="recordings"] .studio-daw-clip { --section-color: #389e98; }
+.studio-daw-lane[data-daw-section="instruments"] .studio-daw-clip { --section-color: #b2cf36; }
+.studio-daw-clip.selected { border: 2px solid #bdde4b; box-shadow: inset 0 0 0 1px #f4f7df; }
+.studio-daw-clip-waveform { display: block; position: absolute; inset: 36px 3px 3px; height: auto; opacity: 1; }
+.daw-audio-wave { display: block; width: 100%; height: 100%; color: var(--section-color,#70746e); }
+.studio-daw-master-clip,.studio-daw-master-clip.selected { display: block; top: 0; height: var(--daw-master-row); width: 100% !important; border: 0; border-radius: 0; padding: 0; box-shadow: none; background: #121312; }
+.studio-daw-master-clip.selected::before,.studio-daw-master-clip.selected::after { display:none; }
+.studio-daw-master-copy { display: none; }
+.studio-daw-master-editor { height: 100%; }
+.studio-daw-master-waveform { display: flex; top: 27px; left: 0; right: 4px; height: 34px; opacity: 1; gap: 0; }
+.studio-daw-master-waveform span { flex: 1; min-width: 0; height: 100%; }
+.studio-daw-master-waveform .daw-audio-wave { color: var(--accent); }
+.studio-daw-master-waveform .daw-rendered-master,.studio-daw-master-waveform .daw-live-master { position:absolute; inset:0; width:100%; height:100%; }
+.studio-daw-master-waveform.has-master-render > span { visibility:hidden; }
+body.studio-daw-mode-active #studio-daw-step-editor.daw-clip-editor { display:grid; grid-template-columns:minmax(0,1fr); grid-template-rows:30px auto minmax(126px,1fr); gap:8px; padding:8px; height:234px; min-height:234px; background:#050707; }
+.daw-clip-editor .daw-source-detail { grid-row:3; }
+.daw-clip-editor .daw-source-zoom { grid-row:2; }
+.daw-source-zoom select { max-width:100%; min-height:24px; padding:2px 6px; background:#232626; color:#ecefed; border:1px solid #414644; border-radius:3px; font:11px Barlow,sans-serif; }
+.daw-clip-editor header { display:flex; align-items:center; justify-content:space-between; gap:8px; min-width:0; }
+.daw-clip-editor header strong { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; color:#f2f5f0; font:900 16px "Bebas Neue", Barlow, sans-serif; letter-spacing:.035em; text-transform:uppercase; }
+.daw-clip-editor button { min-height:30px; background:#171b1b; color:#ecefed; border:1px solid #3b4240; border-radius:4px; padding:4px 10px; font:900 12px "Bebas Neue", Barlow, sans-serif; letter-spacing:.025em; text-transform:uppercase; }
+.daw-clip-editor button:hover,
+.daw-clip-editor button:focus-visible { border-color:rgba(163,255,0,.62); color:#f5ffe8; }
+.daw-source-detail { position:relative; background:#030505; border:1px solid rgba(255,255,255,.12); overflow:hidden; cursor:crosshair; touch-action:none; min-height:126px; outline-offset:-2px; }
+.daw-source-detail .daw-audio-wave { position:absolute; inset:26px 0 6px; width:100%; height:calc(100% - 32px); color:#a3ff00; pointer-events:none; }
+.daw-waveform-status { position:absolute; left:8px; right:8px; bottom:7px; z-index:5; color:#9da49e; font:10px Barlow,sans-serif; pointer-events:none; }
+.daw-waveform-status.is-error { color:#ffad8c; }
+.daw-source-detail i { position:absolute; top:0; bottom:0; width:1px; background:#ffffff16; pointer-events:none; }
+.daw-source-detail i.downbeat { background:#ffffff58; }
+.daw-source-detail i small { position:absolute; top:0; left:3px; color:#a5ada8; font:10px Barlow,sans-serif; font-style:normal; white-space:nowrap; }
+.daw-source-cursor { position:absolute; top:0; bottom:0; width:2px; background:#fff; pointer-events:none; z-index:4; }
+.daw-source-cursor::before { content:''; position:absolute; top:0; left:-5px; width:12px; height:12px; background:#fff; clip-path:polygon(0 0,100% 0,100% 50%,50% 100%,0 50%); }
+.daw-clip-editor button.daw-source-start { position:absolute; top:20px; bottom:0; width:2px; min-height:0; padding:0; border:0; border-radius:0; background:var(--accent); z-index:3; }
+.daw-source-start span { position:absolute; bottom:4px; left:3px; padding:3px 5px; background:var(--accent); color:#071005; font:600 10px Barlow,sans-serif; white-space:nowrap; cursor:ew-resize; touch-action:none; }
+.daw-clip-editor button.daw-source-start.offscreen { background:transparent; }
+.daw-source-zoom { display:flex; gap:7px; flex-wrap:wrap; align-items:center; }
+.daw-source-help { display:inline-grid; place-items:center; flex:0 0 28px; width:28px; height:28px; border:1px solid #414644; border-radius:3px; background:#232626; color:#ecefed; font:600 14px Barlow,sans-serif; letter-spacing:0; text-decoration:none; cursor:help; }
+.daw-source-help:focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
+
+.daw-source-zoom fieldset {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  min-width: 0;
+  margin: 0;
+  padding: 4px 6px 5px;
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 6px;
+  background: rgba(255,255,255,0.035);
+}
+
+.daw-source-zoom legend {
+  padding: 0 4px;
+  color: #9fa9a2;
+  font: 800 9px Barlow, sans-serif;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.daw-sample-layer-row { position:absolute; top:calc(var(--layer-index) * var(--layer-height)); width:100%; height:var(--layer-height); border-bottom:1px solid #454a45; pointer-events:none; }
+.daw-sample-layer-row button { position:absolute; right:4px; top:4px; width:24px; height:24px; padding:4px; border:1px solid #454a45; border-radius:3px; background:#161a17; pointer-events:auto; z-index:5; }
+.daw-sample-layer-row img { width:100%; height:100%; }
+.daw-source-tempo { min-width:96px; font:12px Barlow,sans-serif; font-variant-numeric:tabular-nums; color:inherit; padding:0 6px; }
+@media(max-width:700px) { body.studio-daw-mode-active #studio-daw-step-editor.daw-clip-editor { height:auto; min-height:220px; } }
+.studio-daw-master-automation { left: 0; right: 4px; bottom: 10px; height: 28px; border: 0; background: none; }
+.studio-daw-master-automation i { font-size: 10px; font-weight: 600; border-radius: 4px; min-width: 22px; height: 18px; background: #d3dfa6; }
+.daw-automation-curve { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+body.studio-daw-mode-active #studio-daw-step-editor { display: grid; position: relative; inset: auto; width: calc(100% + var(--heads-width)); margin: 16px 0 12px calc(-1 * var(--heads-width)); height: 170px; min-height: 170px; grid-template-columns: 145px minmax(0,1fr); box-shadow: none; border: 2px solid #303430; border-radius: 3px; background: #1c201d; z-index: 2; }
+.studio-daw-step-head { padding: 12px; background: #1c201d; }
+.studio-daw-step-head strong { font-size: 12px; }
+.studio-daw-step-head span { font-size: 10px; font-weight: 500; }
+.studio-daw-step-grid { grid-template-columns: 76px repeat(16,minmax(10px,1fr)); grid-auto-rows: 26px; padding: 12px 10px; background: #161a17; gap: 2px; }
+.studio-daw-step-cell { min-height: 0; height: 24px; color: transparent; background: #282d29; border: 1px solid #333a32; border-radius: 0; font-size: 0; }
+.studio-daw-step-cell.hit::after { width: calc(100% - 2px); height: calc(100% - 2px); border-radius: 0; box-shadow: none; background: #afcf2c; }
+.studio-daw-step-cell.oneshot.hit::after,.studio-daw-step-cell.vocal.hit::after { background: #ac77cf; }
+.studio-daw-step-cell.snare.hit::after,.studio-daw-step-cell.hat.hit::after { background:#afcf2c; }
+.studio-daw-step-cell.hit::after { color:transparent !important; }
+.studio-daw-track-head strong { font-size:11px; }
+.studio-daw-track-head { gap:5px; grid-template-columns:20px minmax(0,1fr) 22px; }
+.studio-daw-track-head[data-section-head="instruments"] { height:64px; min-height:64px; }
+.studio-daw-track-head[data-section-head="instruments"] strong { font-size:10px; }
+.studio-daw-track-head[data-section-head$="deck"] { position:relative; padding-bottom:30px; }
+.daw-lane-switches { position:absolute; bottom:12px; left:38px; display:flex; gap:6px; }
+.daw-lane-switches button { width:23px; height:22px; color:#c8ccc5; background:#262a25; border:1px solid #41453e; border-radius:3px; font-size:10px; }
+.daw-lane-switches button[aria-pressed="true"] { color:#071005; background:var(--accent); border-color:var(--accent); }
+.daw-lane-switches button:focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
+.studio-daw-shell[data-active-section="instruments"] #studio-daw-layer-panel { display:none !important; }
+.studio-daw-ruler { position:relative; display:block; overflow:hidden; }
+.studio-daw-ruler > span { top:8px; padding-left:4px; }
+.studio-daw-ruler > .daw-phrase-label { color:var(--daw-green); font-family:'Bebas Neue',sans-serif; font-size:15px; line-height:1; gap:6px; border-left:2px solid var(--daw-green); border-right:0; align-items:flex-start; }
+.studio-daw-ruler > .daw-phrase-label::after { font:10px Barlow,sans-serif; }
+.daw-phrase-grid { position:absolute; inset:0; z-index:3; pointer-events:none; overflow:hidden; }
+.daw-phrase-grid i { position:absolute; top:0; bottom:0; border-left:1px solid var(--daw-green); opacity:.38; }
+.daw-musical-grid { position:absolute; inset:0; z-index:1; pointer-events:none; overflow:hidden; }
+.daw-musical-grid i { position:absolute; top:0; bottom:0; border-left:1px solid #ffffff0b; }
+.daw-musical-grid .beat-line { border-color:#ffffff14; }
+.daw-musical-grid .half-bar-line { border-color:#ffffff26; }
+.daw-musical-grid .bar-line { border-color:#b3bba03d; }
+.studio-daw-timeline[data-guide-density="overview"] .daw-musical-grid i { opacity:0; }
+.studio-daw-timeline[data-guide-density="overview"] .daw-musical-grid .bar-line { opacity:.18; border-color:#d3ead51c; }
+.studio-daw-timeline[data-guide-density="overview"] .daw-phrase-grid i { opacity:.10; }
+.studio-daw-timeline[data-guide-density="edit"] .daw-musical-grid i { opacity:.55; }
+.studio-daw-timeline[data-guide-density="edit"] .daw-musical-grid .bar-line { opacity:.72; border-color:rgba(163,255,0,.22); }
+.studio-daw-timeline[data-guide-density="edit"] .daw-phrase-grid i { opacity:.30; }
+.studio-daw-lane-body .studio-daw-clip { z-index:2; }
+.daw-zoom-toolbar { display:none; }
+body.studio-daw-mode-active .daw-zoom-toolbar { display:flex; align-items:center; flex-shrink:0; margin:0 12px; gap:3px; }
+.daw-zoom-toolbar button { width:27px; height:30px; background:#22261f; border:1px solid #43483d; border-radius:3px; color:#c8d2ba; font:16px Barlow,sans-serif; }
+.daw-zoom-toolbar img { width:14px; height:14px; margin:auto; filter:brightness(0) invert(.8); }
+.daw-zoom-toolbar select { width:98px; height:30px; padding:0 7px; color:#b9dd49; background:#1e231c; border:1px solid #43483d; border-radius:3px; font:11px Barlow,sans-serif; }
+.studio-daw-clip { display:block; }
+.studio-daw-lane:not([data-daw-section$="deck"]):not(.studio-daw-master-lane) .studio-daw-clip small { display:none; }
+.studio-daw-lane:not([data-daw-section$="deck"]):not(.studio-daw-master-lane) .studio-daw-clip-waveform { top:21px; }
+.daw-clip-markers { position:absolute; left:9px; right:9px; top:24px; height:14px; color:var(--section-color); font-size:10px; text-transform:uppercase; }
+.daw-clip-markers span { position:absolute; white-space:nowrap; }
+.daw-source-detail .daw-grid-anchor { position:absolute;top:20px;z-index:8;min-width:20px;height:22px;padding:2px 4px;background:#227b94;color:#fff;border:1px solid #91dce4;cursor:ew-resize;transform:translateX(-50%);font-size:10px; }
+.daw-source-zoom button[aria-pressed="true"] { background:var(--accent);color:#071005; }
+.studio-daw-clip:has(.daw-clip-markers) > small { display:none; }
+.daw-fx-preview canvas { position:absolute; top:23px; left:3px; width:calc(100% - 6px); height:calc(100% - 26px); }
+.daw-pattern-preview { display:grid; grid-template-columns:repeat(48,1fr); gap:3px; height:17px; margin-top:6px; }
+.daw-pattern-preview i { background:#282e25; border:1px solid #3e4437; }
+.daw-pattern-preview i.hit { background:#accd25; border-color:#b9de36; }
+.daw-musical-grid { z-index:3; }
+body.studio-daw-mode-active #audio-player.library-player-upgrade { display:grid !important; grid-template-columns:136px minmax(100px,1fr) 238px 130px !important; gap:14px !important; padding:12px 20px !important; }
+body.studio-daw-mode-active #audio-player .player-main-zone { width:auto !important; min-width:0 !important; padding:0 !important; margin:0 !important; grid-column:2 !important; }
+body.studio-daw-mode-active #audio-player .player-volume-zone { width:130px !important; min-width:0; margin:0; grid-column:4; grid-row:1; }
+body.studio-daw-mode-active #audio-player .player-left-zone { grid-column:1; grid-row:1; width:136px !important; min-width:0 !important; }
+body.studio-daw-mode-active #audio-player .daw-zoom-toolbar { grid-column:3; grid-row:1; margin:0; width:238px !important; min-width:238px !important; }
+body.studio-daw-mode-active #audio-player .daw-zoom-toolbar button { flex:0 0 28px; min-width:28px; }
+@media(max-width:1050px) { body.studio-daw-mode-active #audio-player.library-player-upgrade { grid-template-columns:136px minmax(100px,1fr) 238px; } body.studio-daw-mode-active #audio-player .player-volume-zone { display:none; } }
+.studio-daw-track-head:not(.master):not([data-section-head$="deck"]) { height:var(--daw-row); min-height:var(--daw-row); padding-top:6px; padding-bottom:6px; overflow:hidden; }
+.studio-daw-track-head:not(.master) { grid-template-columns:18px minmax(0,1fr); position:relative; padding-right:12px; }
+.studio-daw-track-head > button { position:absolute; right:8px; bottom:12px; }
+.studio-daw-track-head small { font-size:9px; }
+.studio-daw-track-head:not([data-section-head$="deck"]) > span:first-child { font-size:0; border:0; background:url('/static/icons/grip-vertical.svg') center/14px 24px no-repeat; filter:brightness(0) invert(.6); }
+.studio-daw-track-head:not([data-section-head$="deck"]) > button { width:20px; height:20px; bottom:7px; }
+.studio-daw-track-head small { padding-right:16px; }
+.daw-zoom-toolbar select { flex:0 0 98px; }
+.daw-pause-button,#daw-selected-wave { display:none; }
+body.studio-daw-mode-active .daw-pause-button { display:grid; place-items:center; border:1px solid #464a42; background:#292c27; color:#ddd; }
+.daw-pause-button img { width:22px; height:22px; filter:brightness(0) invert(.85); }
+body.studio-daw-mode-active #audio-player.library-player-upgrade { grid-template-columns:204px minmax(100px,1fr) 238px 130px !important; }
+body.studio-daw-mode-active #audio-player .player-left-zone { width:204px !important; }
+body.studio-daw-mode-active #daw-selected-wave { display:block; width:100%; height:26px; color:#b4d23b; margin-top:5px; }
+body.studio-daw-mode-active #audio-player .player-track-copy { min-width:0; }
+body.studio-daw-mode-active #audio-player #ap-artist { display:none; }
+@media(max-width:1050px) { body.studio-daw-mode-active #audio-player.library-player-upgrade { grid-template-columns:204px minmax(100px,1fr) 238px !important; } }
+.studio-daw-master-side-panel { width:calc(var(--mix-width) + var(--heads-width) * .4); padding:0 12px; }
+.studio-daw-master-side-panel div { gap:6px; }
+.studio-daw-master-side-panel strong,.studio-daw-master-side-panel span { font-size:10px; }
+.studio-daw-master-strip { margin-left:calc(var(--heads-width) * -.6); width:calc(100% + var(--heads-width) * .6); }
+.studio-daw-markers { left:calc(var(--heads-width) * -.6); }
+.studio-daw-shell { --daw-master-row:clamp(100px,10.7vh,150px); --daw-row:clamp(64px,6.6vh,94px); --daw-deck-row:clamp(100px,10.5vh,150px); }
+.studio-daw-master-lane,.studio-daw-master-lane .studio-daw-lane-body { height:var(--daw-master-row); min-height:0; border:0; }
+.studio-daw-master-strip { height:var(--daw-master-row); min-height:0; border:0; }
+.studio-daw-lane:not(.studio-daw-master-lane),.studio-daw-lane:not(.studio-daw-master-lane) .studio-daw-lane-body { height:var(--daw-row); min-height:0; box-sizing:border-box; }
+.studio-daw-track-head[data-section-head$="deck"],.studio-daw-lane[data-daw-section$="deck"],.studio-daw-lane[data-daw-section$="deck"] .studio-daw-lane-body { height:var(--daw-deck-row); min-height:0; }
+.studio-daw-lane[data-daw-section$="deck"] .studio-daw-clip { height:calc(var(--daw-deck-row) - 18px); }
+.studio-daw-track-head.master { height:var(--daw-master-row); min-height:var(--daw-master-row); }
+.studio-daw-arrange-shell { align-items:stretch; }
+.studio-daw-ruler { box-sizing:border-box; }
+body.studio-daw-mode-active #audio-player.library-player-upgrade { height:clamp(104px,12vh,164px) !important; }
+body.studio-daw-mode-active #tab-content-studio { padding-bottom:clamp(104px,12vh,164px) !important; }
+.studio-daw-add-audio { margin-top:8px; height:26px; }
+@media(min-width:1600px) {
+  .studio-daw-track-head strong { font-size:14px; }
+  .studio-daw-track-head[data-section-head="instruments"] strong { font-size:12px; }
+  .studio-daw-track-head small,.studio-daw-master-side-panel small { font-size:11px; }
+  .studio-daw-clip strong { font-size:13px; }
+  .studio-daw-clip small,.daw-clip-markers { font-size:12px; }
+  .studio-daw-mixer-strip strong { font-size:14px; }
+  .studio-daw-master-side-panel strong,.studio-daw-master-side-panel span { font-size:12px; }
+}
+body.studio-daw-mode-active #studio-daw-step-editor { grid-template-columns:145px minmax(0,1fr) 115px; height:180px; min-height:180px; }
+.studio-daw-step-grid { grid-template-columns:76px repeat(64,minmax(3px,1fr)); grid-template-rows:16px repeat(6,19px); grid-auto-rows:19px; gap:2px; padding:12px 8px; }
+.studio-daw-step-cell { height:19px; min-width:0; padding:0; }
+.daw-step-tick { font-size:8px; color:#a4ad9c; white-space:nowrap; overflow:visible; }
+.studio-daw-step-cell.perc.hit::after { background:#389e98; }
+.daw-step-properties { display:flex; flex-direction:column; justify-content:center; padding:10px; gap:10px; color:#aeb5a8; font-size:10px; }
+.daw-step-properties > label { display:flex; flex-direction:row; justify-content:space-between; align-items:center; gap:5px; font-size:9px; }
+.daw-step-properties strong { color:#d6dfcc; font-size:10px; }
+.daw-step-properties .daw-knob { width:26px; height:26px; flex-shrink:0; }
+.daw-step-properties .daw-knob::after { left:50%; height:8px; transform-origin:50% 9px; }
+.studio-daw-step-head { display:flex; flex-direction:column; align-items:flex-start; gap:12px; padding:14px; }
+.studio-daw-step-head > strong { width:100%; padding:5px; border:1px solid #3d4438; color:#d1d8c8; font-size:11px; }
+.studio-daw-step-head .daw-pattern-length { color:#b4d23b; font-size:11px; }
+.studio-daw-step-head .daw-knob-control { flex-direction:row; font-size:9px; }
+.daw-pattern-preview { grid-template-columns:repeat(64,1fr); gap:3px; }
+.studio-daw-step-row-label { font-size: 10px; padding: 0; }
+.studio-daw-scaffold-clip small { display: none; }
+.studio-daw-context-menu { background: #252825; border: 1px solid #494d46; border-radius: 3px; box-shadow: 0 8px 20px #0008; }
+.studio-daw-context-menu button { font-family: Barlow,sans-serif !important; font-weight: 500; font-size: 12px; color: #e5e7e1 !important; }
+body.studio-daw-mode-active .studio-daw-context-menu button { font: 400 14px/1.2 "Bebas Neue", Barlow, sans-serif !important; }
+body.studio-daw-mode-active .studio-daw-context-menu > button {
+  box-sizing: border-box;
+  height: 48px;
+  min-height: 48px;
+  padding: 4px 10px;
+  letter-spacing: 0;
+  transition: background-color 100ms ease, box-shadow 100ms ease;
+}
+body.studio-daw-mode-active .studio-daw-context-menu > button:not(:disabled):is(:hover, :focus-visible) {
+  font-size: 20px !important;
+  line-height: 1 !important;
+  background: var(--accent, #a3ff00) !important;
+  color: #071005 !important;
+  -webkit-text-fill-color: #071005 !important;
+  box-shadow: inset 3px 0 0 #071005;
+}
+body.studio-daw-mode-active .studio-daw-context-menu > button:not(:disabled):is(:hover, :focus-visible) span {
+  color: #071005;
+  background: transparent;
+  border-color: #071005;
+}
+@media (prefers-reduced-motion: reduce) {
+  body.studio-daw-mode-active .studio-daw-context-menu > button { transition: none; }
+}
+.daw-lane-colour-palette:not([hidden]) { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; padding: 8px; }
+.studio-daw-context-menu .daw-lane-colour-palette button[data-lane-colour]:not(.daw-lane-colour-reset) { min-height: 30px; padding: 0; border: 2px solid transparent; border-radius: 4px; background: var(--swatch-colour); }
+.studio-daw-context-menu .daw-lane-colour-palette button::before { content: none; }
+.studio-daw-context-menu .daw-lane-colour-palette button[aria-pressed="true"] { border-color: #fff; box-shadow: 0 0 0 2px #071005 inset; }
+.studio-daw-context-menu .daw-lane-colour-palette button:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+.daw-lane-colour-reset { grid-column: 1 / -1; justify-content: center; }
+body.studio-daw-mode-active #audio-player { height: 104px; padding: 14px 24px; background: #121512; border-top: 2px solid #30362c; }
+body.studio-daw-mode-active #audio-player::before { display: none; }
+body.studio-daw-mode-active #audio-player .player-main-zone { padding-left: 20px; }
+body.studio-daw-mode-active #audio-player .player-left-zone { gap: 6px; }
+body.studio-daw-mode-active #audio-player .player-left-zone > button { width: 64px; height: 64px; border-radius: 3px; box-shadow: none; }
+.daw-stop-button { display: none; }
+body.studio-daw-mode-active .daw-stop-button { display: grid; place-items: center; border: 1px solid #464a42; background: #292c27; color: #ddd; }
+.daw-stop-button img { width: 22px; height: 22px; filter: brightness(0) invert(.85); }
+@media(min-height:1100px) { .studio-daw-shell { --daw-row: 90px; --daw-master-row: 140px; } .studio-daw-master-clip { height:140px; } .studio-daw-track-head[data-section-head$="deck"],.studio-daw-lane[data-daw-section$="deck"],.studio-daw-lane[data-daw-section$="deck"] .studio-daw-lane-body { height:140px; min-height:140px; } .studio-daw-lane[data-daw-section$="deck"] .studio-daw-clip { height:122px; } .daw-channel-meter,.daw-channel-meter meter { height:200px; } }
+@media(max-width:1100px) { .studio-daw-shell { --mix-width:140px; --heads-width:180px; } .studio-daw-brand em { display:none; } }
+@media(max-width:980px) { .studio-daw-arrange-shell { display:grid; grid-template-columns:var(--mix-width) var(--heads-width) minmax(430px,1fr); overflow-x:auto; } .studio-daw-mixer-bank,.studio-daw-track-stack { display:grid; } .studio-daw-brand { order:0; } }
+body.studio-daw-mode-active #axiom-sidebar #axiom-start-button { visibility: hidden; }
+body.studio-daw-mode-active #daw-arrangement-actions { position:relative; display:grid; grid-template-columns:minmax(0,1fr) 32px 32px; align-items:center; gap:4px; width:100%; box-sizing:border-box; margin:0; height:82px; padding:16px 20px 18px; background:#101310; z-index:3; }
+body.studio-daw-mode-active #daw-arrangement-actions button { position:static; width:100%; min-width:0; height:32px; margin:0; padding:0 6px; border:1px solid #42483f; border-radius:3px; color:#dce2d7; background:#252a24; }
+body.studio-daw-mode-active #daw-arrangement-actions .daw-snap-lock { display:grid; place-items:center; width:32px; padding:0; }
+.daw-snap-lock img { width:16px; height:16px; filter:brightness(0) invert(.8); }
+.daw-snap-lock[aria-pressed=true] img { filter:brightness(0) saturate(100%) invert(84%) sepia(70%) saturate(644%) hue-rotate(24deg); }
+body.studio-daw-mode-active #daw-arrangement-actions .studio-daw-add-audio {
+  background: var(--accent) !important;
+  border-color: var(--accent) !important;
+  color: #071005 !important;
+  -webkit-text-fill-color: #071005 !important;
+}
+body.studio-daw-mode-active #daw-arrangement-actions button[aria-pressed=true] { border-color:#b2df29; }
+body.studio-daw-mode-active #daw-arrangement-actions .daw-range-tool { display:grid; place-items:center; padding:0; }
+body.studio-daw-mode-active #daw-arrangement-actions .daw-range-tool img { filter:brightness(0) invert(.8); }
+body.studio-daw-mode-active #daw-arrangement-actions .daw-range-tool[aria-pressed=true] { background:#b2df29; }
+body.studio-daw-mode-active #daw-arrangement-actions .daw-range-tool[aria-pressed=true] img { filter:brightness(0); }
+body.studio-daw-mode-active #daw-arrangement-actions.has-record-input { grid-template-columns:minmax(0,1fr) repeat(3,28px); }
+body.studio-daw-mode-active #daw-arrangement-actions.has-record-input .daw-snap-lock { width:28px; }
+body.studio-daw-mode-active #daw-arrangement-actions.has-record-input .studio-daw-add-audio { padding:0 2px; font-size:14px; line-height:14px; }
+body.studio-daw-mode-active #studio-daw-step-editor { margin-top:0; }
+body.studio-daw-mode-active .studio-daw-track-head[data-section-head], body.studio-daw-mode-active .studio-daw-lane[data-daw-section]:not(.studio-daw-master-lane) { --layer-height:var(--daw-row); height:calc(var(--layer-height) * var(--layer-count,1)); min-height:calc(var(--layer-height) * var(--layer-count,1)); }
+body.studio-daw-mode-active .studio-daw-track-head[data-section-head$="deck"], body.studio-daw-mode-active .studio-daw-lane[data-daw-section$="deck"]:not(.studio-daw-master-lane) { --layer-height:var(--daw-deck-row); }
+body.studio-daw-mode-active .studio-daw-lane[data-daw-section]:not(.studio-daw-master-lane) .studio-daw-lane-body { height:100%; min-height:100%; background-image:repeating-linear-gradient(to bottom,transparent 0,transparent calc(var(--layer-height) - 1px),#343a32 calc(var(--layer-height) - 1px),#343a32 var(--layer-height)); }
+body.studio-daw-mode-active .studio-daw-lane .studio-daw-clip[data-daw-clip-id] { top:calc(var(--layer-index,0) * var(--layer-height) + 8px); height:calc(var(--layer-height) - 16px); }
+body.studio-daw-mode-active .studio-daw-shell.daw-mixer-collapsed { --mix-width:48px; }
+.daw-mixer-collapsed .studio-daw-mixer-strips { display:none; }
+.daw-mixer-collapsed .studio-daw-mixer-header { display:flex; flex-direction:column; align-items:center; justify-content:flex-start; padding:10px 2px; gap:12px; height:100%; }
+.daw-mixer-collapsed .studio-daw-mixer-header > span { display:none; }
+.daw-mixer-collapsed .studio-daw-mixer-header button { writing-mode:vertical-rl; min-height:72px; padding:8px; }
+.daw-mixer-collapsed .studio-daw-master-side-panel { width:calc(var(--mix-width) + var(--heads-width)); }
+.daw-mixer-collapsed .studio-daw-master-side-panel > div { flex-wrap:wrap; }
+.daw-mixer-collapsed .studio-daw-master-strip { margin-left:0; width:100%; }
+.daw-mixer-collapsed .studio-daw-markers { left:0; }
+.studio-daw-master-automation { height:42px; bottom:14px; overflow:visible; cursor:crosshair; }
+.studio-daw-master-automation > span { position:absolute; transform:translate(-50%,-50%); }
+.studio-daw-master-automation > span:first-of-type { transform:translate(0,-50%); }
+.studio-daw-master-automation button[aria-pressed="true"] { outline:2px solid #e7f0d0; outline-offset:2px; }
+.studio-daw-clip .daw-trim-handle { position:absolute;top:0;bottom:0;width:10px;min-width:10px;height:100%;padding:0;border:0;border-radius:0;background:transparent;cursor:ew-resize;z-index:12;touch-action:none; }
+.studio-daw-clip .daw-trim-handle.left { left:0;border-left:3px solid #dce6d3; }
+.studio-daw-clip .daw-trim-handle.right { right:0;border-right:3px solid #dce6d3; }
+.studio-daw-clip .daw-trim-handle:focus-visible,.studio-daw-clip .daw-trim-handle:hover { background:#dce6d344;outline:1px solid #dce6d3; }
+.studio-daw-clip .daw-fade-handle {position:absolute;bottom:5px;top:auto;width:12px;height:12px;min-width:12px;padding:0;border:1px solid #101410;border-radius:2px;background:#e5edda;transform:translateX(-50%);z-index:14;cursor:ew-resize;touch-action:none;opacity:.65;}
+.studio-daw-clip .daw-fade-handle:hover,.studio-daw-clip .daw-fade-handle:focus-visible {opacity:1;outline:2px solid var(--accent);}
+.studio-daw-clip .daw-fade-shade {position:absolute;top:40px;bottom:0;background:#03050388;pointer-events:none;z-index:3;clip-path:polygon(0 0,100% 0,0 100%);}
+.studio-daw-clip .daw-fade-shade.out {clip-path:polygon(0 0,100% 0,100% 100%);}
+.studio-daw-master-automation > span:last-of-type { max-width:54px; }
+.studio-daw-master-automation button { min-width:30px; height:20px; padding:0 4px; border:1px solid #70852b; border-radius:4px; background:#d3dfa6; color:#071005 !important; font:600 11px Barlow,sans-serif !important; touch-action:none; cursor:ns-resize; }
+.studio-daw-master-automation button::before { content:''; display:inline-block; width:6px; height:6px; margin-right:4px; border-radius:50%; background:#071005; vertical-align:1px; }
+body.studio-daw-mode-active #studio-daw-bpm-lane { min-height:58px; border-top:1px solid #303430; border-bottom:1px solid #303430; background:linear-gradient(180deg,rgba(0,229,255,.10),rgba(163,255,0,.045)),#080a08; }
+body.studio-daw-mode-active #studio-daw-bpm-lane[data-mode="mixtape"] { background:linear-gradient(90deg,rgba(0,229,255,.12),rgba(183,133,255,.10),rgba(163,255,0,.06)),#070a0a; }
+body.studio-daw-mode-active #studio-daw-bpm-lane .studio-daw-bpm-head { padding:10px 14px 0; color:#c9f7ff; letter-spacing:.06em; }
+body.studio-daw-mode-active #studio-daw-bpm-lane .studio-daw-bpm-head span:last-child { color:#d3dfa6; }
+body.studio-daw-mode-active #studio-daw-bpm-lane .studio-daw-bpm-points { height:28px; margin-top:5px; }
+body.studio-daw-mode-active #studio-daw-bpm-lane .studio-daw-bpm-points::before { top: 14px; }
+body.studio-daw-mode-active #studio-daw-bpm-lane[data-size="expanded"] { min-height:164px; }
+body.studio-daw-mode-active #studio-daw-bpm-lane[data-size="expanded"] .studio-daw-bpm-points { height:112px; margin-top:11px; }
+body.studio-daw-mode-active #studio-daw-bpm-lane[data-size="expanded"] .studio-daw-bpm-points::before { top: 56px; }
+.daw-source-cues { position:absolute; inset:18px 0 0; z-index:5; pointer-events:none; }
+.daw-source-cues > span { position:absolute; top:0; bottom:0; border-left:2px solid var(--cue-color); }
+.daw-source-cues b { display:block; max-width:100px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; padding:2px 4px; background:#0d100e; color:var(--cue-color); border-top:2px solid var(--cue-color); font:600 10px Barlow,sans-serif; }
+.daw-pattern-transport { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:3px; margin:8px 0; }
+.daw-pattern-transport button { width:100%; min-width:0; padding:0; height:28px; display:grid; place-items:center; background:#b2df29; color:#071005!important; border:1px solid #536329; border-radius:3px; }
+.daw-pattern-transport img { width:14px; height:14px; filter:brightness(0); }
+body.studio-daw-mode-active #studio-daw-step-editor.daw-note-editor { display:flex; flex-direction:column; height:176px; min-height:176px; padding:6px; gap:6px; }
+.daw-note-toolbar { display:flex; align-items:center; flex-wrap:wrap; gap:6px; flex:none; font-size:12px; }
+.daw-note-toolbar label { display:flex; align-items:center; gap:4px; }
+.daw-note-toolbar select,.daw-note-toolbar input { color:#eee; background:#171b19; border:1px solid #48534b; padding:3px; border-radius:2px; max-width:160px; }
+.daw-note-toolbar input { width:64px; }
+.daw-note-toolbar button { width:28px; height:28px; display:grid; place-items:center; background:var(--accent); border-radius:3px; }
+.daw-note-toolbar button:disabled { opacity:.35; }
+.daw-note-toolbar img { width:16px; height:16px; filter:brightness(0); }
+.daw-note-scroll { flex:1; min-height:100px; overflow:auto; background:#111512; }
+.daw-note-grid { position:relative; height:1792px; background-image:repeating-linear-gradient(to right,#819b87 0,#819b87 1px,transparent 1px,transparent calc(var(--beat-width)*4)),repeating-linear-gradient(to right,#48534b 0,#48534b 1px,transparent 1px,transparent var(--beat-width)),repeating-linear-gradient(to right,#ffffff08 0,#ffffff08 1px,transparent 1px,transparent calc(var(--beat-width)/4)); }
+.daw-note-ruler { position:sticky; top:0; z-index:2; height:16px; background:#111512; color:#c7d5cb; font-size:10px; }
+.daw-note-ruler span { position:absolute; }
+.daw-note-row { height:14px; box-sizing:border-box; border-bottom:1px solid #303830; color:#8d9d90; font-size:9px; line-height:13px; pointer-events:none; }
+.daw-note-row.black { background:#ffffff08; }
+.daw-note-grid .daw-note { position:absolute; height:13px; box-sizing:border-box; min-width:3px; background:#45bab0; color:#071005!important; border:1px solid #215f59; border-radius:2px; padding:0 3px; font-size:9px; line-height:11px; white-space:nowrap; overflow:hidden; text-align:left; cursor:move; touch-action:none; }
+.daw-note-grid .daw-note.selected { background:var(--accent); border-color:#d2ff87; }
+.daw-note-edge { position:absolute; right:0; top:0; width:5px; height:100%; background:#07100540; cursor:ew-resize; }
+.daw-load-sample { display:flex; align-items:center; justify-content:space-between; background:transparent; border:0; color:#cdd2c9; text-align:left; }
+.daw-load-sample img { width:12px; height:12px; filter:brightness(0) invert(.7); }
+.daw-load-sample[data-loaded=true] { color:#b2df29; }
+body.studio-daw-mode-active .studio-daw-master-side-panel { width:var(--mix-width); box-sizing:border-box; padding:12px; overflow:hidden; }
+body.studio-daw-mode-active .studio-daw-master-side-panel > div { flex-wrap:wrap; gap:6px; }
+body.studio-daw-mode-active .studio-daw-master-side-panel > div > span { flex-basis:100%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+body.studio-daw-mode-active .studio-daw-master-strip { margin-left:calc(-1 * var(--heads-width)); width:calc(100% + var(--heads-width)); }
+body.studio-daw-mode-active .studio-daw-master-automation { left:var(--heads-width); right:0; }
+body.studio-daw-mode-active .studio-daw-markers { left:calc(-1 * var(--heads-width)); }
+body.studio-daw-mode-active .daw-mixer-collapsed .studio-daw-master-side-panel { padding:8px 2px; }
+.daw-mixer-collapsed .studio-daw-master-side-panel strong,.daw-mixer-collapsed .studio-daw-master-side-panel span { display:none; }
+.daw-mixer-collapsed .studio-daw-master-side-panel > div { justify-content:center; }
+body.studio-daw-mode-active .studio-daw-master-side-panel.daw-stem-context { padding:8px 5px; display:flex; flex-direction:column; justify-content:center; gap:6px; }
+body.studio-daw-mode-active .daw-stem-context .daw-stem-caption { display:flex; flex-wrap:nowrap; align-items:center; gap:6px; }
+body.studio-daw-mode-active .daw-stem-context .daw-stem-caption span { flex:1; font:600 10px Barlow,sans-serif; min-width:0; }
+.daw-stem-caption button { width:22px; height:22px; padding:3px; background:#181b18; border:1px solid #40443c; }
+.daw-stem-caption img { width:14px; height:14px; filter:brightness(0) invert(.7); }
+body.studio-daw-mode-active .daw-stem-context .daw-stem-buttons { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)) 24px; gap:0; width:100%; height:44px; background:#090a09; border:1px solid #30342e; }
+.daw-stem-buttons button { min-width:0; width:100%; height:42px; padding:6px; border:0; border-right:1px solid #30342e; border-radius:0; background:transparent; }
+.daw-stem-buttons img { width:22px; height:22px; max-width:100%; filter:brightness(0) invert(.6); }
+.daw-stem-buttons .daw-stem-expand { background:#8754db; padding:3px; }
+.daw-stem-expand img { width:14px; filter:brightness(0) invert(1); }
+body.studio-daw-mode-active .daw-stem-context .daw-stem-levels { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:8px; width:100%; padding:4px; }
+.daw-stem-levels input { width:100%; accent-color:#a5ac9e; }
+.daw-mixer-collapsed .daw-stem-context .daw-stem-buttons,.daw-mixer-collapsed .daw-stem-context .daw-stem-levels { display:none !important; }
+.daw-separate-clip { height:22px; min-height:22px; padding:1px 6px; background:#b2df29; color:#071005; border:0; border-radius:3px; font:600 11px Barlow,sans-serif; }
+.daw-stem-buttons button[aria-pressed=true]:not(:disabled) img { filter:invert(46%) sepia(65%) saturate(2500%) hue-rotate(235deg); }
+body.studio-daw-mode-active .daw-stem-context .daw-stem-buttons { height:34px; }
+.daw-stem-context .daw-stem-buttons button { height:32px; padding:4px; }
+body.studio-daw-mode-active .studio-daw-clip[data-daw-clip-id] { min-width:0; }
+body.studio-daw-mode-active .daw-stem-context .daw-stem-levels { padding:0; height:16px; }
+.daw-grid-editor { width:520px;max-width:calc(100vw - 32px);max-height:80vh;background:#191c19;color:#edf0e9;border:1px solid #626a5e;border-radius:6px;padding:20px; }
+.daw-grid-editor::backdrop { background:#0009; }
+.daw-grid-editor h2 { font-size:20px;margin:0 0 8px; }
+.daw-grid-title { overflow-wrap:anywhere;margin-bottom:16px; }
+.daw-grid-columns { display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) 30px;gap:8px;margin:6px 0; }
+.daw-grid-rows { max-height:45vh;overflow:auto; }
+.daw-grid-editor input { min-width:0;width:100%;padding:6px;background:#090c09;color:#edf0e9;border:1px solid #626a5e; }
+.daw-grid-editor button { background:#292f27;color:#edf0e9;border:1px solid #626a5e;border-radius:3px;padding:6px; }
+.daw-grid-editor button[type=submit] { background:var(--accent);color:#071005; }
+.daw-grid-editor footer { display:flex;gap:8px;flex-wrap:wrap; }
+.daw-grid-editor [role=alert] { color:#ffaba2; }
+#daw-playback-mode { height:30px;max-width:124px;background:#20251f;color:#eef1e9;border:1px solid #5a6254;border-radius:3px;font-family:Barlow,sans-serif;font-size:12px;padding:0 5px; }
+#daw-project-mode { display:flex;flex-shrink:0;height:30px;border:1px solid #5a6254;border-radius:3px;overflow:hidden; }
+#daw-project-mode button { height:28px;padding:0 8px;border:0;border-radius:0;background:#20251f;color:#eef1e9;font-size:12px; }
+#daw-project-mode button[aria-pressed=true] { background:var(--accent);color:#071005; }
+#daw-key-sync { height:30px;padding:0 8px;background:#20251f;color:#eef1e9;border:1px solid #5a6254;border-radius:3px;font-size:12px; }
+#daw-key-sync[aria-pressed=true] { background:var(--accent);color:#071005; }
+#daw-key-sync:disabled { opacity:.4; }
+#daw-anchor-status { display:block;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11px;color:#c6cdbd; }
+.studio-daw-master-controls { flex-wrap:wrap;min-width:0; }
+@media (max-width:1100px) {
+  #studio-daw-shell .studio-daw-topbar { display:grid;grid-template-columns:minmax(0,1fr);gap:8px;padding:8px;box-sizing:border-box;max-width:calc(100vw - 64px); }
+  #studio-daw-shell .studio-daw-brand { grid-column:1;grid-row:1;min-width:0;flex-wrap:wrap; }
+  #studio-daw-shell .studio-daw-master-controls { grid-column:1;grid-row:2;display:flex;flex-wrap:wrap;justify-content:flex-start;min-width:0;max-width:100%; }
+  #studio-daw-shell .studio-daw-top-actions { grid-column:1;grid-row:3;display:flex;flex-wrap:wrap;justify-self:start;min-width:0;max-width:100%; }
+  #studio-daw-shell #daw-automation-mode { flex:0 0 70px;min-width:70px;max-width:70px; }
+}
+@media (max-width:768px) {
+  #studio-daw-shell .studio-daw-topbar { width:100%;max-width:100vw; }
+}
+
+/* The workspace owns scrolling; project controls never scroll under the window edge. */
+body.studio-daw-mode-active #studio-daw-shell {
+  position:absolute;
+  inset:0 0 clamp(104px,12vh,164px);
+  min-height:0;
+  min-width:0;
+  overflow:hidden;
+}
+body.studio-daw-mode-active #studio-daw-shell .studio-daw-topbar {
+  flex:none;
+  grid-template-columns:minmax(0,1fr) auto;
+  gap:8px 12px;
+  padding:8px 12px;
+  width:100%;
+  max-width:100%;
+}
+#studio-daw-shell .studio-daw-brand { min-width:0; flex-wrap:wrap; }
+#studio-daw-shell .studio-daw-master-controls { grid-column:1 / -1; grid-row:2; justify-content:flex-start; }
+#studio-daw-shell .studio-daw-top-actions { grid-column:2; grid-row:1; flex-wrap:wrap; min-width:0; }
+body.studio-daw-mode-active #studio-daw-shell .studio-daw-workbench {
+  flex:1;
+  min-height:0;
+  overflow-x:clip;
+  overflow-y:auto;
+  overscroll-behavior:contain;
+  overscroll-behavior-x:none;
+}
+body.studio-daw-mode-active .studio-daw-arrange-shell {
+  min-height:100%;
+  min-width:760px;
+  overflow:visible;
+}
+/* Zoom uses a bounded beat window. Negative-span master/editor panels must not
+   be clipped by an additional horizontal scroller inside the workspace. */
+body.studio-daw-mode-active .studio-daw-timeline { overflow:visible; display:flex; flex-direction:column; }
+body.studio-daw-mode-active .studio-daw-timeline > * { flex-shrink:0; }
+body.studio-daw-mode-active #daw-arrangement-actions { margin-top:auto; }
+body.studio-daw-mode-active #studio-daw-step-editor:not(.daw-clip-editor):not(.daw-note-editor):not(.daw-drum-editor) {
+  height:auto;
+  min-height:0;
+  margin-bottom:0;
+}
+@media (max-width:600px) {
+  body.studio-daw-mode-active #studio-daw-shell .studio-daw-topbar { grid-template-columns:minmax(0,1fr); }
+  #studio-daw-shell .studio-daw-top-actions { grid-column:1;grid-row:3;justify-self:start; }
+}
+@media (max-width:768px) {
+  body.studio-daw-mode-active #studio-daw-shell { top:56px; }
+}
+
+.daw-source-audition-status { font:11px Barlow,sans-serif; color:#b7c1bc; max-width:180px; }
+.daw-source-audition-status:empty { display:none; }
+.daw-source-audition[aria-pressed="true"] { background:var(--accent); color:#071005; }
+
+.daw-source-outside { position:absolute; top:20px; bottom:0; background:rgba(70,90,110,.2); border-right:1px dashed #8c9ba7; pointer-events:none; }
+
+#daw-preparation-status { display:none; }
+body.studio-daw-mode-active #daw-preparation-status:not([hidden]) { display:flex;align-items:center;gap:10px;max-width:100%;min-height:18px;background:transparent;color:#b7c1bc;font:12px Barlow,sans-serif; }
+body.studio-daw-mode-active #daw-preparation-status[data-tone="stem"]:not([hidden]) { color:#7ee7ff;text-shadow:0 0 14px rgba(126,231,255,.28); }
+body.studio-daw-mode-active #daw-preparation-status[data-tone="stem"]:not([hidden])::before { content:"";width:7px;height:7px;border-radius:999px;background:linear-gradient(135deg,#7ee7ff,#b785ff);box-shadow:0 0 14px rgba(126,231,255,.55);flex:0 0 auto; }
+#daw-preparation-message { min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:inherit; }
+#daw-preparation-status button { flex-shrink:0;background:transparent;color:inherit;border:0;padding:0;text-decoration:underline;font:inherit; }
+body.light-mode.studio-daw-mode-active #daw-preparation-status { color:#26312a; }
+body.light-mode.studio-daw-mode-active #daw-preparation-status[data-tone="stem"]:not([hidden]) { color:#115a78;text-shadow:none; }
+#studio-daw-top-bpm { width:72px;min-width:0;background:#0b0f0a;color:#eef1e9;border:1px solid #65705f;border-radius:3px;padding:3px 5px;font:inherit;font-weight:700; }
+body.studio-daw-mode-active:not(.daw-player-visible) #audio-player { display:none !important; }
+body.studio-daw-mode-active:not(.daw-player-visible) #studio-daw-shell { bottom:0; }
+body.studio-daw-mode-active:not(.daw-player-visible) #tab-content-studio { padding-bottom:0 !important; }
+body.studio-daw-mode-active #audio-player.library-player-upgrade { grid-template-columns:204px minmax(100px,1fr) 130px !important; }
+body.studio-daw-mode-active #audio-player .player-volume-zone { grid-column:3; }
+
+/* The audio editor keeps its dark waveform surfaces in Day Mode. Give its
+   controls the same local palette instead of inheriting dark day-page ink. */
+body.light-mode #studio-daw-shell {
+  --text-primary:#edf2e9;
+  --text-secondary:#bcc6b8;
+  --color-text-main:#edf2e9;
+  --color-text-muted:#bcc6b8;
+  color:#edf2e9;
+  background:#151815;
+}
+body.light-mode #studio-daw-shell :is(.studio-daw-brand, .studio-daw-mixer-header, .studio-daw-master-controls label, .studio-daw-clip-editor-header, #daw-preparation-status) {
+  color:#edf2e9 !important;
+}
+body.light-mode #studio-daw-shell :is(.studio-daw-topbar, .studio-daw-workbench, .studio-daw-timeline, .studio-daw-mixer-strips, .studio-daw-left-mixer-bank, .studio-daw-track-stack, #daw-arrangement-actions) {
+  background:#151815 !important;
+  color:#edf2e9 !important;
+  border-color:#303a32 !important;
+}
+body.light-mode #studio-daw-shell aside span { color:inherit !important; }
+body.light-mode #studio-daw-shell button:not(.daw-knob):not(.studio-daw-step):not(.studio-daw-marker):not(:where(.studio-daw-export-mix, [data-deck-param], [data-mixer-solo], [data-mixer-mute])) {
+  color:#edf2e9 !important;
+  background-color:#272e29 !important;
+  border-color:#5b685d !important;
+  box-shadow:none !important;
+}
+body.light-mode #studio-daw-shell button:not(.daw-knob):not(.studio-daw-step):not(.studio-daw-marker):is([aria-pressed="true"], .active, [data-enabled="true"], .studio-daw-add-audio):not(:where([data-deck-param], [data-mixer-solo], [data-mixer-mute])) {
+  color:#071005 !important;
+  background-color:#b2df29 !important;
+  border-color:#b2df29 !important;
+}
+body.light-mode #studio-daw-shell :is(input:not([type="range"]):not([type="checkbox"]), select) {
+  color:#edf2e9 !important;
+  background-color:#272e29 !important;
+  border-color:#5b685d !important;
+  color-scheme:dark;
+}
+body.light-mode #studio-daw-shell .daw-knob { border-color:#8b988d !important; }
+body.light-mode #studio-daw-shell .studio-daw-marker { color:#b2df29 !important; }
+body.light-mode #studio-daw-shell :is(.daw-snap-lock, .daw-range-tool, #daw-midi-controls-button) img { filter:brightness(0) invert(.9); }
+body.light-mode #studio-daw-shell button[aria-pressed="true"] img { filter:brightness(0) !important; }
+#daw-idle-transport-controls { display:flex;flex-wrap:wrap;align-items:center;gap:6px;max-width:100%; }
+#daw-idle-transport-controls .daw-zoom-toolbar { margin:0; }
+#daw-toolbar-play { min-width:46px; }
+
+/* Studio DAW toolbar cleanup: image-1 contract. Keep every control, but make the
+   header read as a compact DAW console with left project brain and purple DAW accents. */
+.studio-daw-topbar {
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas:
+    "brand actions"
+    "controls controls";
+  align-items: center;
+  row-gap: 8px;
+  min-height: 124px;
+  padding: 8px 12px 10px;
+  background:
+    radial-gradient(circle at 14% 0%, rgba(142,84,255,0.10), transparent 34%),
+    linear-gradient(180deg, rgba(17,20,19,0.99), rgba(5,7,7,0.99));
+  border-bottom: 1px solid rgba(142,84,255,0.36);
+  box-shadow:
+    inset 0 -1px 0 rgba(163,255,0,0.08),
+    0 10px 28px rgba(0,0,0,0.30);
+}
+
+.studio-daw-title-block {
+  grid-area: brand;
+  align-self: center;
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  z-index: 2;
+}
+
+.studio-daw-window-controls {
+  display: none;
+}
+
+.studio-daw-menu-toggle {
+  width: 34px;
+  height: 34px;
+  border: 1px solid rgba(142,84,255,0.32);
+  border-radius: 4px;
+  color: transparent;
+  background:
+    linear-gradient(#e8ece7, #e8ece7) center 10px / 16px 2px no-repeat,
+    linear-gradient(#e8ece7, #e8ece7) center 16px / 16px 2px no-repeat,
+    linear-gradient(#e8ece7, #e8ece7) center 22px / 16px 2px no-repeat,
+    linear-gradient(180deg, #101413, #050706);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.05);
+}
+
+.studio-daw-brand {
+  grid-area: brand;
+  align-self: center;
+  gap: 12px;
+  margin-left: 44px;
+  min-width: 0;
+  line-height: 1;
+}
+
+.studio-daw-top-actions {
+  grid-area: actions;
+  align-self: center;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 7px;
+}
+
+.studio-daw-master-controls {
+  grid-area: controls;
+  display: grid;
+  grid-template-columns: minmax(0, max-content) minmax(520px, 1fr);
+  grid-template-areas:
+    "transport creative"
+    "transport accessory";
+  align-items: stretch;
+  gap: 6px 10px;
+  min-width: 0;
+  padding: 7px 8px;
+  border: 1px solid rgba(142,84,255,0.18);
+  border-left-color: rgba(142,84,255,0.48);
+  background: linear-gradient(180deg, rgba(9,12,12,0.96), rgba(4,6,6,0.96));
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.04),
+    inset 0 -1px 0 rgba(163,255,0,0.08);
+}
+
+.daw-toolbar-transport-group,
+.daw-toolbar-metadata-group,
+.daw-toolbar-creative-group,
+.daw-toolbar-accessory-group {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  gap: 6px;
+}
+
+.daw-toolbar-transport-group {
+  grid-area: transport;
+  flex-wrap: nowrap;
+  align-self: center;
+  min-height: 54px;
+  padding-right: 10px;
+  border-right: 1px solid rgba(142,84,255,0.50);
+}
+
+.daw-toolbar-metadata-group {
+  flex: 0 0 auto;
+  gap: 7px;
+  padding-left: 10px;
+  border-left: 1px solid rgba(142,84,255,0.55);
+}
+
+.daw-toolbar-creative-group {
+  grid-area: creative;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  min-height: 42px;
+  padding-left: 10px;
+  border-left: 1px solid rgba(142,84,255,0.42);
+}
+
+.daw-toolbar-accessory-group {
+  grid-area: accessory;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  gap: 5px;
+  min-height: 36px;
+  padding-left: 10px;
+  border-left: 1px solid rgba(142,84,255,0.42);
+}
+
+.daw-toolbar-creative-group .studio-daw-intro-marker-control {
+  margin-left: 2px;
+}
+
+.studio-daw-brand span {
+  font-size: 30px;
+  letter-spacing: 0.01em;
+}
+
+.studio-daw-brand strong {
+  color: #f5f7f2;
+  font-size: 16px;
+  font-weight: 900;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.studio-daw-brand em {
+  padding-left: 14px;
+  border-left: 2px solid rgba(142,84,255,0.88);
+  color: var(--daw-green);
+  font-size: 10px;
+  font-style: normal;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.studio-daw-top-actions button,
+.studio-daw-master-controls button {
+  border: 1px solid rgba(255,255,255,0.14);
+  background: linear-gradient(180deg, #151918, #070909);
+  color: #e9eee9;
+  min-height: 34px;
+  border-radius: 4px;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.06),
+    0 1px 0 rgba(0,0,0,0.55);
+}
+
+.studio-daw-top-actions button:hover,
+.studio-daw-top-actions button:focus-visible,
+.studio-daw-master-controls button:hover,
+.studio-daw-master-controls button:focus-visible {
+  border-color: #8e54ff;
+  outline: none;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.08),
+    0 0 0 1px rgba(142,84,255,0.22);
+}
+
+.daw-toolbar-creative-group .daw-tool-primary {
+  min-width: 52px;
+}
+
+#daw-steady-timing-button {
+  min-width: 116px;
+  white-space: normal;
+  line-height: 1.02;
+}
+
+.studio-daw-intro-marker-control {
+  flex: 0 1 230px;
+  min-width: 196px;
+}
+
+.studio-daw-intro-marker-control select {
+  width: 100%;
+  max-width: none;
+}
+
+.daw-toolbar-accessory-group > :is(button, select) {
+  flex: 0 0 auto;
+}
+
+.studio-daw-master-controls #daw-toolbar-play,
+.studio-daw-master-controls #daw-midi-controls-button[aria-pressed="true"] {
+  background: linear-gradient(180deg, #8a55ff, #542bc8);
+  border-color: #9a68ff;
+  color: #ffffff;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.18),
+    0 0 18px rgba(142,84,255,0.32);
+}
+
+.studio-daw-master-controls #daw-toolbar-play:hover {
+  background: linear-gradient(180deg, #8f5bff, #5930cb);
+}
+
+.studio-daw-master-controls .daw-tool-primary,
+.studio-daw-top-actions button:last-child {
+  background: var(--daw-green);
+  border-color: rgba(163,255,0,0.82);
+  color: #071005;
+}
+
+.studio-daw-master-controls .daw-tool-primary:hover,
+.studio-daw-top-actions button:last-child:hover {
+  border-color: var(--daw-green);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.22),
+    0 0 14px rgba(163,255,0,0.22);
+}
+
+.studio-daw-master-controls #daw-project-mode button[aria-pressed="true"] {
+  color: #071005;
+  background: var(--daw-green);
+  border-color: var(--daw-green);
+}
+
+.studio-daw-master-controls label {
+  min-height: 34px;
+  padding: 0 8px;
+  gap: 8px;
+  border: 1px solid rgba(142,84,255,0.28);
+  border-radius: 4px;
+  background: linear-gradient(180deg, #111512, #070908);
+  color: #d6ded2;
+}
+
+.studio-daw-master-controls label span {
+  color: #f2f6ef;
+  font-size: 10px;
+}
+
+.studio-daw-master-controls label strong {
+  min-width: 34px;
+  color: var(--daw-green);
+  font-size: 18px;
+  line-height: 1;
+  text-align: center;
+}
+
+#studio-daw-top-bpm {
+  width: 60px;
+  border: 0;
+  background: transparent;
+  color: var(--daw-green);
+  font-family: 'Bebas Neue', Barlow, sans-serif !important;
+  font-size: 32px;
+  font-weight: 900;
+  line-height: 1;
+  padding: 0;
+}
+
+#studio-daw-top-bpm:focus {
+  outline: 1px solid #8e54ff;
+  outline-offset: 2px;
+}
+
+#daw-project-mode {
+  height: 44px;
+  gap: 4px;
+  padding: 2px;
+  border-color: rgba(142,84,255,0.48);
+  border-radius: 5px;
+  background: linear-gradient(180deg, #080b0b, #040605);
+  overflow: visible;
+}
+
+#daw-project-mode button {
+  height: 38px;
+  min-height: 38px;
+  min-width: 66px;
+  border: 1px solid transparent;
+  border-radius: 3px;
+  background: transparent;
+}
+
+#daw-project-mode button[aria-pressed="true"] {
+  box-shadow: 0 0 12px rgba(163,255,0,0.16);
+}
+
+#daw-playback-mode,
+#daw-automation-mode,
+.studio-daw-intro-marker-control select {
+  min-height: 34px;
+  border: 1px solid rgba(255,255,255,0.14);
+  border-radius: 4px;
+  background: #0c0f0d;
+  color: #eef1e9;
+}
+
+#daw-automation-mode {
+  border-color: #8e54ff;
+}
+
+.studio-daw-master-controls #daw-anchor-status {
+  order: 10;
+  margin-left: 2px;
+  margin-right: 0;
+  color: #aeb8ad;
+}
+
+.studio-daw-master-controls #daw-master-limiter {
+  border-color: rgba(233,199,103,0.42);
+}
+
+#daw-idle-transport-controls {
+  gap: 6px;
+}
+
+#daw-idle-transport-controls > button {
+  min-height: 38px;
+}
+
+#daw-zoom-resolution,
+.daw-menu-zoom-control select {
+  min-height: 38px;
+  min-width: 112px;
+  border-color: rgba(255,255,255,0.14);
+  border-radius: 4px;
+  background: #0c0f0d;
+}
+
+.daw-menu-zoom-control {
+  display: grid;
+  gap: 8px;
+  padding: 11px 14px 12px;
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 6px;
+  color: #b9c0bb;
+  font: 800 11px Barlow, sans-serif;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.daw-menu-zoom-control select {
+  width: 100%;
+  color: #f2f7f1;
+  font: 800 14px Barlow, sans-serif;
+  letter-spacing: .02em;
+}
+
+.studio-daw-marker {
+  max-width: 92px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.studio-daw-marker.marker-start_hype {
+  top: 12px;
+  transform: none;
+}
+
+@media (max-width: 1180px) {
+  .studio-daw-topbar {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      "brand"
+      "actions"
+      "controls";
+  }
+
+  .studio-daw-top-actions {
+    justify-content: flex-start;
+  }
+
+  .studio-daw-master-controls {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+        "transport"
+        "creative"
+        "accessory";
+  }
+
+  .daw-toolbar-metadata-group,
+  .daw-toolbar-creative-group,
+  .daw-toolbar-accessory-group {
+    padding-left: 0;
+    border-left: 0;
+  }
+
+  .daw-toolbar-transport-group,
+  .daw-toolbar-creative-group,
+  .daw-toolbar-accessory-group {
+    flex-wrap: wrap;
+  }
+}
+
+/* Studio DAW topbar contract v5: AXIOM DAW plus the console controls live in one
+   continuous row. Project file actions live in the hamburger menu, and Sync Key
+   belongs under the project Key readout instead of the accessory strip. */
+body.studio-daw-mode-active #studio-daw-shell .studio-daw-topbar,
+.studio-daw-topbar {
+  grid-template-columns: 182px minmax(0, 1fr);
+  grid-template-areas: "brand controls";
+  align-items: stretch;
+  column-gap: 8px;
+  min-height: 84px;
+  padding: 6px 8px;
+  overflow: visible;
+  position: relative;
+  z-index: 120;
+}
+
+#studio-daw-shell .studio-daw-topbar {
+  display: grid;
+  grid-template-columns: 182px minmax(0, 1fr);
+  grid-template-areas: "brand controls";
+  overflow: visible;
+}
+
+.studio-daw-title-block {
+  align-self: stretch;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  padding: 0;
+  position: relative;
+  z-index: 40;
+  overflow: visible;
+}
+
+.studio-daw-brand {
+  flex: 1 1 auto;
+  align-self: center;
+  margin-left: 0;
+  gap: 7px;
+  min-width: 0;
+  white-space: nowrap;
+}
+
+#studio-daw-shell .studio-daw-brand {
+  display: flex;
+  align-items: baseline;
+}
+
+.studio-daw-brand span {
+  font-size: 23px;
+}
+
+.studio-daw-brand strong {
+  font-size: 13px;
+}
+
+.studio-daw-brand em,
+.studio-daw-top-actions {
+  display: none !important;
+}
+
+.studio-daw-menu {
+  position: relative;
+  z-index: 80;
+  flex: 0 0 auto;
+}
+
+.studio-daw-menu > summary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  list-style: none;
+  cursor: pointer;
+}
+
+.studio-daw-menu > summary::-webkit-details-marker {
+  display: none;
+}
+
+.studio-daw-menu[open] .studio-daw-menu-toggle,
+.studio-daw-menu-toggle:hover,
+.studio-daw-menu-toggle:focus-visible {
+  border-color: rgba(142,84,255,0.88);
+  outline: none;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.08),
+    0 0 0 1px rgba(142,84,255,0.28),
+    0 0 18px rgba(142,84,255,0.28);
+}
+
+.studio-daw-menu-popover {
+  position: absolute;
+  top: calc(100% + 10px);
+  left: 0;
+  z-index: 1000;
+  width: 280px;
+  max-height: calc(100vh - 110px);
+  overflow-y: auto;
+  padding: 8px;
+  border: 1px solid rgba(142,84,255,0.48);
+  border-radius: 6px;
+  background: linear-gradient(180deg, rgba(14,16,18,0.98), rgba(4,5,6,0.98));
+  box-shadow:
+    0 18px 36px rgba(0,0,0,0.52),
+    0 0 0 1px rgba(0,0,0,0.75);
+}
+
+.studio-daw-menu-popover button {
+  width: 100%;
+  min-height: 34px;
+  margin: 0 0 6px;
+  padding: 0 11px;
+  justify-content: flex-start;
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 4px;
+  background: #080b0b;
+  color: #edf3ea;
+  font-family: Barlow, sans-serif;
+  font-size: 12px !important;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  line-height: 1;
+  text-align: left;
+  text-transform: uppercase;
+}
+
+.studio-daw-menu-popover button:last-child {
+  margin-bottom: 0;
+  background: var(--daw-green);
+  border-color: var(--daw-green);
+  color: #071005;
+}
+
+.studio-daw-menu-popover button:hover,
+.studio-daw-menu-popover button:focus-visible {
+  border-color: #8e54ff;
+  outline: none;
+  box-shadow: 0 0 0 1px rgba(142,84,255,0.24);
+}
+
+body.studio-daw-mode-active #studio-daw-shell .studio-daw-master-controls,
+.studio-daw-master-controls {
+  grid-area: controls;
+  position: relative;
+  z-index: 1;
+  grid-template-columns: minmax(472px, max-content) minmax(0, 1fr);
+  grid-template-areas:
+    "transport creative"
+    "transport accessory";
+  align-self: stretch;
+  gap: 6px 12px;
+  min-height: 0;
+  padding: 8px 10px;
+}
+
+body.studio-daw-mode-active #studio-daw-shell .studio-daw-workbench {
+  position: relative;
+  z-index: 1;
+}
+
+#studio-daw-shell .studio-daw-master-controls {
+  grid-area: controls;
+  grid-column: auto;
+  grid-row: auto;
+}
+
+.daw-toolbar-transport-group {
+  min-height: 72px;
+}
+
+.daw-toolbar-creative-group {
+  min-width: 0;
+}
+
+.daw-toolbar-accessory-group {
+  min-width: 0;
+}
+
+.daw-project-key-card {
+  display: grid;
+  grid-template-rows: 1fr auto;
+  align-items: stretch;
+  min-width: 74px;
+  min-height: 52px;
+  border: 1px solid rgba(142,84,255,0.28);
+  border-radius: 4px;
+  background: linear-gradient(180deg, #111512, #070908);
+  color: #d6ded2;
+  overflow: hidden;
+}
+
+.daw-project-key-readout {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 30px;
+  padding: 0 8px;
+}
+
+.daw-project-key-readout span {
+  color: #f2f6ef;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+}
+
+.daw-project-key-readout strong {
+  min-width: 28px;
+  color: var(--daw-green);
+  font-family: 'Bebas Neue', Barlow, sans-serif !important;
+  font-size: 18px;
+  line-height: 1;
+  text-align: center;
+}
+
+.daw-key-sync-slot {
+  display: flex;
+  border-top: 1px solid rgba(142,84,255,0.20);
+}
+
+#daw-key-sync {
+  width: 100%;
+  min-height: 19px;
+  height: 19px;
+  padding: 0 6px;
+  border: 0;
+  border-radius: 0;
+  background: rgba(255,255,255,0.04);
+  color: #d2d8d0;
+  font-size: 8px;
+  line-height: 1;
+}
+
+#daw-key-sync[aria-pressed="true"] {
+  background: var(--daw-green);
+  color: #071005;
+}
+
+#daw-key-sync:disabled {
+  opacity: .42;
+}
+
+@media (max-width: 1320px) {
+  .studio-daw-topbar {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      "brand"
+      "controls";
+  }
+
+  .studio-daw-master-controls {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      "transport"
+      "creative"
+      "accessory";
+  }
+
+  .daw-toolbar-transport-group,
+  .daw-toolbar-creative-group,
+  .daw-toolbar-accessory-group {
+    flex-wrap: wrap;
+    padding-left: 0;
+    border-left: 0;
+    border-right: 0;
+  }
+}
+
+/* Studio DAW console fit v8: compact the left brand block and normalize the
+   right-side control typography so the feature buttons do not wrap or crop. */
+body.studio-daw-mode-active #studio-daw-shell .studio-daw-topbar,
+#studio-daw-shell .studio-daw-topbar {
+  grid-template-columns: 162px minmax(0, 1fr);
+  column-gap: 7px;
+}
+
+body.studio-daw-mode-active #studio-daw-shell .studio-daw-title-block {
+  gap: 7px;
+}
+
+body.studio-daw-mode-active #studio-daw-shell .studio-daw-brand {
+  gap: 6px;
+}
+
+body.studio-daw-mode-active #studio-daw-shell .studio-daw-brand span {
+  font-size: 22px;
+  letter-spacing: 0;
+}
+
+body.studio-daw-mode-active #studio-daw-shell .studio-daw-brand strong {
+  font-size: 12px;
+  letter-spacing: 0.035em;
+}
+
+body.studio-daw-mode-active #studio-daw-shell .studio-daw-master-controls {
+  grid-template-columns: minmax(430px, max-content) minmax(0, 1fr);
+  gap: 5px 8px;
+  padding: 6px 8px;
+}
+
+body.studio-daw-mode-active #studio-daw-shell .daw-toolbar-transport-group {
+  min-height: 66px;
+  padding-right: 7px;
+}
+
+body.studio-daw-mode-active #studio-daw-shell .daw-toolbar-metadata-group,
+body.studio-daw-mode-active #studio-daw-shell .daw-toolbar-creative-group,
+body.studio-daw-mode-active #studio-daw-shell .daw-toolbar-accessory-group {
+  gap: 5px;
+  padding-left: 7px;
+}
+
+body.studio-daw-mode-active #studio-daw-shell .studio-daw-master-controls button,
+body.studio-daw-mode-active #studio-daw-shell .studio-daw-master-controls select,
+body.studio-daw-mode-active #studio-daw-shell .studio-daw-master-controls label {
+  font-family: Barlow, sans-serif !important;
+  font-size: 11px !important;
+  font-weight: 900 !important;
+  letter-spacing: 0.035em !important;
+  line-height: 1 !important;
+  text-transform: uppercase;
+}
+
+body.studio-daw-mode-active #studio-daw-shell .studio-daw-master-controls button {
+  min-height: 36px;
+  padding: 0 11px;
+  font-family: "Bebas Neue", Barlow, sans-serif !important;
+  font-size: 15px !important;
+  font-weight: 400 !important;
+  white-space: nowrap;
+}
+
+body.studio-daw-mode-active #studio-daw-shell .daw-toolbar-creative-group .daw-tool-primary {
+  min-width: 56px;
+  border-color: rgba(255,255,255,0.14);
+  background: #0b1010;
+  color: #eff4ef;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.06);
+}
+
+body.studio-daw-mode-active #studio-daw-shell .daw-toolbar-creative-group .daw-tool-primary:is([aria-pressed="true"], .active, [data-active="true"]) {
+  border-color: var(--accent) !important;
+  background: var(--accent) !important;
+  color: #071005 !important;
+  -webkit-text-fill-color: #071005 !important;
+}
+
+body.studio-daw-mode-active #studio-daw-shell .daw-toolbar-creative-group .daw-tool-primary[aria-pressed="false"] {
+  border-color: #424a45 !important;
+  background: #171b19 !important;
+  color: #e6ebe7 !important;
+  -webkit-text-fill-color: #e6ebe7 !important;
+  box-shadow: none;
+}
+
+body.light-mode.studio-daw-mode-active #studio-daw-shell .daw-toolbar-creative-group .daw-tool-primary[aria-pressed="false"] {
+  border-color: #9ba49d !important;
+  background: #e7ece7 !important;
+  color: #172018 !important;
+  -webkit-text-fill-color: #172018 !important;
+}
+
+body.studio-daw-mode-active #studio-daw-shell #daw-steady-timing-button {
+  min-width: 128px;
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-family: "Bebas Neue", Barlow, sans-serif !important;
+  font-size: 16px !important;
+  font-weight: 400 !important;
+  white-space: nowrap;
+}
+
+body.studio-daw-mode-active #studio-daw-shell .studio-daw-intro-marker-control {
+  flex: 0 1 210px;
+  min-width: 188px;
+  padding: 0 8px;
+}
+
+body.studio-daw-mode-active #studio-daw-shell .studio-daw-intro-marker-control span {
+  flex: 0 0 auto;
+  font-size: 10px !important;
+  white-space: nowrap;
+}
+
+body.studio-daw-mode-active #studio-daw-shell .studio-daw-intro-marker-control select {
+  min-width: 104px;
+  height: 36px;
+  min-height: 36px;
+  padding: 0 8px;
+  text-transform: none;
+}
+
+body.studio-daw-mode-active #studio-daw-shell .daw-toolbar-creative-group button:last-child {
+  min-width: 98px;
+}
+
+body.studio-daw-mode-active #studio-daw-shell .daw-toolbar-accessory-group > :is(button, select) {
+  min-height: 34px;
+}
+
+body.studio-daw-mode-active #studio-daw-shell #daw-automation-mode {
+  min-width: 94px;
+  text-transform: none;
+}
+
+body.studio-daw-mode-active #studio-daw-shell #daw-master-limiter {
+  min-width: 118px;
+}
+
+body.studio-daw-mode-active #studio-daw-shell #daw-playback-mode {
+  max-width: 112px;
+}
+
+/* Studio DAW timeline density v1: reduce the empty master shelf and give the
+   right-side arrangement header a waveform bed before the real render arrives. */
+body.studio-daw-mode-active .studio-daw-shell {
+  --daw-master-row: clamp(74px, 7vh, 96px);
+  --daw-ruler-stack: 38px;
+}
+
+body.studio-daw-mode-active .studio-daw-master-side-panel,
+body.studio-daw-mode-active .studio-daw-track-head.master,
+body.studio-daw-mode-active .studio-daw-master-strip,
+body.studio-daw-mode-active .studio-daw-master-lane,
+body.studio-daw-mode-active .studio-daw-master-lane .studio-daw-lane-body,
+body.studio-daw-mode-active .studio-daw-master-clip {
+  height: var(--daw-master-row);
+  min-height: var(--daw-master-row);
+}
+
+body.studio-daw-mode-active .studio-daw-master-side-panel {
+  padding-top: 7px;
+  padding-bottom: 7px;
+}
+
+body.studio-daw-mode-active .studio-daw-master-clip {
+  background:
+    linear-gradient(90deg, rgba(163,255,0,0.12), transparent 22%),
+    linear-gradient(180deg, #101310, #090b0a);
+}
+
+body.studio-daw-mode-active .studio-daw-master-waveform {
+  position: absolute;
+  top: 16px;
+  left: 4px;
+  right: 6px;
+  height: 28px;
+  display: block;
+  overflow: hidden;
+  opacity: 1;
+}
+
+body.studio-daw-mode-active .studio-daw-master-waveform::before,
+body.studio-daw-mode-active .studio-daw-master-waveform::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}

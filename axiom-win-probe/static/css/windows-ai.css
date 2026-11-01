@@ -1,0 +1,49 @@
+/* AI Assist window (windows-ai.js): connect, check, review. Fits laptop screens; the table scrolls inside. */
+#ph-ai { position: fixed; inset: 0; z-index: 13000; display: flex; align-items: center; justify-content: center; padding: 16px; background: rgba(0, 0, 0, .78); }
+#ph-ai[hidden] { display: none; }
+#ph-ai .ph-ai-card { width: min(1100px, 100%); max-height: calc(100vh - 32px); display: flex; flex-direction: column; overflow: hidden;
+  background: #121212; color: #e9eaec; border: 1px solid #3a3b3e; border-radius: 6px; box-shadow: 0 24px 80px #000; font: 14px/1.45 'Barlow', sans-serif; }
+#ph-ai header { display: flex; justify-content: space-between; align-items: center; padding: 16px 22px 8px; }
+#ph-ai header small { font-weight: 700; letter-spacing: 4px; color: var(--ph-red, #b3262f); font-size: 10px; }
+#ph-ai header h2 { margin: 0; font: 34px/1 'Bebas Neue', sans-serif; letter-spacing: 1px; color: #f4f5f2; }
+#ph-ai .ph-ai-close { background: none; border: 1px solid #55575b; color: #e9eaec; border-radius: 4px; width: 34px; height: 34px; font-size: 20px; cursor: pointer; }
+#ph-ai .ph-ai-tabs { display: flex; gap: 6px; padding: 0 22px; border-bottom: 1px solid #2c2d30; flex-wrap: wrap; }
+#ph-ai .ph-ai-tabs button { background: none; border: 0; border-bottom: 3px solid transparent; color: #b8bbc0; padding: 10px 12px; font: 600 13px 'Barlow', sans-serif; cursor: pointer; }
+#ph-ai .ph-ai-tabs button.active { color: #f4f5f2; border-bottom-color: var(--ph-red, #b3262f); }
+#ph-ai section { padding: 16px 22px 20px; overflow: auto; min-height: 0; }
+#ph-ai .ph-ai-note { color: #aeb2b8; font-size: 13px; margin: 0 0 12px; }
+#ph-ai .ph-ai-providers { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 14px; }
+#ph-ai article { border: 1px solid #333438; border-radius: 6px; padding: 14px; background: #18181a; }
+#ph-ai article h3 { margin: 0 0 10px; font: 600 17px 'Barlow', sans-serif; display: flex; justify-content: space-between; align-items: center; }
+#ph-ai article h3 span { font-size: 12px; color: #c9a227; font-weight: 600; }
+#ph-ai article h3 span.ok { color: #35c28a; }
+#ph-ai label { display: flex; flex-direction: column; gap: 4px; font-size: 12px; color: #aeb2b8; margin-bottom: 10px; }
+#ph-ai input[type=password], #ph-ai input[type=number], #ph-ai input[type=text], #ph-ai textarea, #ph-ai select { background: #0c0c0d; color: #f4f5f2; border: 1px solid #45474b; border-radius: 4px; padding: 8px 10px; font: 14px 'Barlow', sans-serif; }
+#ph-ai .ph-ai-actions { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-top: 4px; }
+#ph-ai .ph-ai-actions button { background: #1e1f22; color: #e9eaec; border: 1px solid #55575b; border-radius: 4px; padding: 8px 14px; font: 600 13px 'Barlow', sans-serif; cursor: pointer; }
+#ph-ai .ph-ai-actions button.primary { background: var(--ph-red, #b3262f); border-color: var(--ph-red, #b3262f); color: #fff; }
+#ph-ai .ph-ai-actions button:disabled { opacity: .45; cursor: default; }
+#ph-ai .ph-ai-default { flex-direction: row; align-items: center; gap: 6px; margin: 0 0 0 auto; font-size: 13px; }
+#ph-ai .ph-ai-result { min-height: 1.4em; margin: 8px 0 0; font-size: 13px; color: #d9dcdf; }
+#ph-ai .ph-ai-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; }
+#ph-ai .ph-ai-progress div { height: 8px; background: #2a2b2e; border-radius: 4px; overflow: hidden; margin-top: 14px; }
+#ph-ai .ph-ai-progress span { display: block; height: 100%; width: 0; background: var(--ph-red, #b3262f); transition: width .4s; }
+#ph-ai .ph-ai-progress p { margin: 8px 0 0; }
+#ph-ai .ph-ai-reviewbar { display: flex; justify-content: space-between; align-items: flex-end; gap: 12px; flex-wrap: wrap; }
+#ph-ai .ph-ai-reviewbar p { margin: 0 0 10px; }
+#ph-ai .ph-ai-tablewrap { max-height: calc(100vh - 330px); min-height: 120px; overflow: auto; border: 1px solid #2c2d30; border-radius: 4px; }
+#ph-ai table { width: 100%; border-collapse: collapse; font-size: 13px; }
+#ph-ai th { position: sticky; top: 0; background: #1b1b1d; text-align: left; padding: 8px; color: #b8bbc0; font-weight: 600; }
+#ph-ai td { padding: 8px; border-top: 1px solid #252628; vertical-align: top; overflow-wrap: anywhere; }
+#ph-ai tr.status-applied td { opacity: .55; }
+#ph-ai tr.status-failed td:first-child, #ph-ai .warn { color: #e0a43a; }
+#ph-ai .ok { color: #35c28a; }
+#ph-ai .conf-high { color: #35c28a; }
+#ph-ai .conf-medium { color: #c9a227; }
+#ph-ai .conf-low { color: #e07a5f; }
+body.ph-ai-open #audio-player { visibility: hidden !important; }
+#ph-ai textarea { resize: vertical; min-height: 64px; line-height: 1.4; }
+#ph-ai #ph-ai-pl-result { margin-top: 14px; }
+#ph-ai #ph-ai-message { margin: 0 22px 8px; padding: 8px 12px; border-radius: 4px; background: #16301f; color: #bfe9cf; font-size: 13px; }
+#ph-ai #ph-ai-message.bad { background: #3a1416; color: #f3c2c4; }
+#ph-ai #ph-ai-message[hidden] { display: none; }

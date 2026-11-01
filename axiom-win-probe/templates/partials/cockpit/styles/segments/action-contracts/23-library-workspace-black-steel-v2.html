@@ -1,0 +1,39 @@
+<style id="library-workspace-black-steel-v2">
+  /* Library is one working chassis, not a stack of unrelated black panels.
+     Carry Studio's approved brushed-steel language across the full Night Mode
+     workspace while leaving every Library control and result row interactive. */
+  html body:not(.light-mode) #tab-content-library.library-cockpit#tab-content-library {
+    border-top: 1px solid rgba(205, 211, 207, .24) !important;
+    border-bottom: 1px solid rgba(205, 211, 207, .28) !important;
+    background-color: #090b0a !important;
+    background-image: url('/static/textures/axiom-brushed-black-steel.png') !important;
+    background-position: center top !important;
+    background-repeat: repeat-y !important;
+    /* Preserve the texture's wide, shallow grain instead of stretching one
+       strip over the full Library height. */
+    background-size: 100% auto !important;
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, .10),
+      inset 0 -1px 0 rgba(0, 0, 0, .94),
+      0 7px 22px rgba(0, 0, 0, .30) !important;
+  }
+
+  /* Give the two Library command bays a restrained steel edge so the search,
+     source, Track Prep, and set-building controls read as mounted instruments. */
+  html body:not(.light-mode) #tab-content-library.library-cockpit#tab-content-library
+    :is(.library-topbar, #library-brief-lens.library-brief-lens) {
+    border-color: rgba(205, 211, 207, .20) !important;
+    background-color: rgba(7, 10, 8, .78) !important;
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, .065),
+      inset 0 -1px 0 rgba(0, 0, 0, .82),
+      0 12px 30px rgba(0, 0, 0, .22) !important;
+  }
+
+  /* Earlier Day Mode work deliberately uses white/blue Library surfaces.
+     Keep that contract intact instead of turning the entire daytime workspace
+     into a dark instrument panel. */
+  html body.light-mode #tab-content-library.library-cockpit#tab-content-library {
+    background-image: none !important;
+  }
+</style>

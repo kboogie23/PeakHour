@@ -1,0 +1,31 @@
+#connect-virtualdj-inspect[hidden]{display:none!important}
+.axiom-vdj-inspect{width:min(720px,92vw);max-height:85vh;border:1px solid #99db20;border-radius:12px;background:#101711;color:#f4f7ef;padding:18px}
+.axiom-vdj-inspect::backdrop{background:rgba(0,0,0,.78)}
+.axiom-vdj-inspect header{display:flex;align-items:center;justify-content:space-between;gap:16px}
+.axiom-vdj-inspect h2{font-size:1.15rem;margin:0}
+.axiom-vdj-inspect button{border:1px solid #a9da43;border-radius:6px;padding:8px 12px;background:#1d2c18;color:#fff;cursor:pointer;margin:4px}
+.axiom-vdj-inspect button:disabled{opacity:.5;cursor:not-allowed}
+.axiom-vdj-selection{display:inline-block;min-width:160px;margin:4px;overflow-wrap:anywhere}
+.axiom-vdj-actions{margin-top:12px}.axiom-vdj-results{max-height:38vh;overflow:auto;padding-left:26px}.axiom-vdj-results li{padding:4px}
+/* Beatgrid Doctor: VirtualDJ check (windows-virtualdj-grids.js) */
+.axiom-vdj-grids{display:grid;gap:12px;margin-top:12px}
+.axiom-vdj-grid-actions,.axiom-vdj-grid-tools{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.axiom-vdj-grid-table{width:100%;border-collapse:collapse;font-size:13px}
+.axiom-vdj-grid-table th,.axiom-vdj-grid-table td{text-align:left;padding:6px 8px;border-bottom:1px solid rgba(255,255,255,.08);vertical-align:top}
+.axiom-vdj-grid-table td small{display:block;opacity:.7}
+.axiom-vdj-grid-table tr[data-status="repair"] td:first-child{color:#ff8a65}
+.axiom-vdj-grid-table tr[data-status="review"] td:first-child{color:#ffd54f}
+.axiom-vdj-grid-table tr[data-status="clean"] td:first-child{color:#b7f34a}
+#health-doctor-vdj.axiom-vdj-grids button{border:1px solid #a9da43;border-radius:8px;padding:9px 14px;background:#1d2c18;color:#eef5e9;font-weight:700;cursor:pointer}
+#health-doctor-vdj.axiom-vdj-grids button.health-transfer-primary{background:#b7f34a;color:#0b0f0a;border-color:#b7f34a}
+#health-doctor-vdj.axiom-vdj-grids button:disabled{opacity:.5;cursor:not-allowed}
+#health-doctor-vdj.axiom-vdj-grids select{background:#0b0f0a;color:#eef5e9;border:1px solid #3c4b33;border-radius:8px;padding:8px 10px;margin-left:8px}
+/* Send to VirtualDJ (windows-virtualdj-write.js) */
+.axiom-vdj-write-card{display:grid;gap:12px;margin-top:16px;padding:16px;border:1px solid #3c4b33;border-radius:10px;background:rgba(11,15,10,.6)}
+.axiom-vdj-write-copy strong{display:block;font-size:1rem}.axiom-vdj-write-copy small{display:block;opacity:.75;margin-top:4px}
+.axiom-vdj-write-options{display:flex;flex-wrap:wrap;gap:16px}.axiom-vdj-write-options label{display:flex;gap:6px;align-items:center;cursor:pointer}
+.axiom-vdj-write-card button{border:1px solid #a9da43;border-radius:8px;padding:9px 14px;background:#1d2c18;color:#eef5e9;font-weight:700;cursor:pointer}
+.axiom-vdj-write-card button.health-transfer-primary{background:#b7f34a;color:#0b0f0a;border-color:#b7f34a}
+.axiom-vdj-write-card button:disabled{opacity:.5;cursor:not-allowed}
+.axiom-vdj-write{max-width:720px}.axiom-vdj-write-rows{max-height:36vh;overflow:auto;padding-left:20px}
+.axiom-vdj-write-rows li{padding:4px 0}.axiom-vdj-write-rows small{display:block;opacity:.75}

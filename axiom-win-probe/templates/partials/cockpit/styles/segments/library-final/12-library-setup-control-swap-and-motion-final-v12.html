@@ -1,0 +1,65 @@
+<style id="library-setup-control-swap-and-motion-final-v12">
+  /* Setup utility order: Options, View Tracks, Health, Fit, Hide Setup. */
+  html body.library-setup-open
+    #tab-content-library.library-cockpit#tab-content-library
+    #library-setup-utility-bar > #library-setup-view-tracks {
+    grid-column: 2 !important;
+    grid-row: 1 !important;
+    height: 42px !important;
+    min-height: 42px !important;
+    max-height: 42px !important;
+    font-family: 'Bebas Neue', Impact, sans-serif !important;
+    font-size: 13px !important;
+    font-weight: 700 !important;
+    letter-spacing: .06em !important;
+    line-height: 1 !important;
+    padding: 0 8px !important;
+    white-space: nowrap !important;
+  }
+
+  html body.library-setup-open
+    #tab-content-library.library-cockpit#tab-content-library
+    .library-results-column > #library-brief-lens.library-brief-lens#library-brief-lens[data-library-brief-panel="setup"]
+    #library-brief-topline > #library-setup-utility-bar.library-setup-utility-bar
+    > #library-brief-collapse.library-brief-collapse {
+    grid-column: 5 !important;
+    grid-row: 1 !important;
+    height: 42px !important;
+    min-height: 42px !important;
+    max-height: 42px !important;
+  }
+
+  /* The source SVG uses currentColor, which does not inherit through an img.
+     Give the closed Show Setup icon its own visible AXIOM-green treatment. */
+  html body:not(.library-setup-open)
+    #tab-content-library.library-cockpit#tab-content-library
+    #library-brief-collapse > img {
+    display: block !important;
+    flex: 0 0 13px !important;
+    width: 13px !important;
+    min-width: 13px !important;
+    max-width: 13px !important;
+    height: 13px !important;
+    min-height: 13px !important;
+    max-height: 13px !important;
+    margin: 0 7px 0 0 !important;
+    opacity: 1 !important;
+    filter: brightness(0) saturate(100%) invert(89%) sepia(91%) saturate(2780%) hue-rotate(35deg) brightness(105%) contrast(105%) !important;
+  }
+
+  /* Closing first fades the live setup controls while their steel chassis is
+     still present. JS removes the hidden controls before the compact Library
+     header is restored, preventing the old setup frame from flashing through. */
+  html body.library-setup-closing
+    #tab-content-library.library-cockpit#tab-content-library
+    #library-brief-lens[data-library-brief-panel="setup"] {
+    pointer-events: none !important;
+  }
+
+  html body.library-setup-closing
+    #tab-content-library.library-cockpit#tab-content-library
+    #library-brief-settings {
+    opacity: 0 !important;
+    transform: translateY(-8px) !important;
+  }
+</style>

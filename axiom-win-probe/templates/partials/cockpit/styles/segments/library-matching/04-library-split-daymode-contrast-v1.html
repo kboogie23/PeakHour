@@ -1,0 +1,52 @@
+
+<style id="library-split-daymode-contrast-v1">
+  /* The final split-layout contracts are intentionally last in the cascade.
+     Reapply Day Mode after them so Track Preparation never reveals dark
+     Library rows with night-mode text. */
+  body.light-mode #tab-content-library:has(#smart-links-panel:not(.hidden)) #search-results > .library-track-card {
+    border-color: rgba(0, 71, 171, .16) !important;
+    background: #ffffff !important;
+    color: #07111f !important;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.92) !important;
+  }
+
+  body.light-mode #tab-content-library:has(#smart-links-panel:not(.hidden)) #search-results > .library-track-card:is(.selected, .is-selected, [aria-selected="true"]) {
+    border-color: #0047ab !important;
+    background: linear-gradient(90deg, rgba(0,71,171,.12), #ffffff 34%) !important;
+  }
+
+  body.light-mode #tab-content-library:has(#smart-links-panel:not(.hidden)) #search-results :is(
+    .library-track-title,
+    .library-track-artist,
+    .library-row-year,
+    .library-track-year,
+    .library-track-identity .library-year,
+    .library-track-identity [data-year]
+  ) {
+    color: #07111f !important;
+    -webkit-text-fill-color: #07111f !important;
+    text-shadow: none !important;
+  }
+
+  body.light-mode #tab-content-library:has(#smart-links-panel:not(.hidden)) #search-results :is(
+    .library-row-meta-stack,
+    .library-track-identity .library-meta-line,
+    .library-bpm-cell small,
+    .library-bpm-cell .library-bpm-label,
+    .library-bpm-cell .bpm-label
+  ) {
+    color: #40516a !important;
+    -webkit-text-fill-color: #40516a !important;
+    text-shadow: none !important;
+  }
+
+  body.light-mode #tab-content-library:has(#smart-links-panel:not(.hidden)) #search-results :is(
+    .library-bpm-cell,
+    .library-key-cell,
+    .library-key-metric
+  ) {
+    background: #f7f9fc !important;
+    color: #0047ab !important;
+    -webkit-text-fill-color: #0047ab !important;
+  }
+</style>

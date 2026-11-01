@@ -1,0 +1,189 @@
+<style id="library-set-prep-options-visible-final-v1">
+  /* Set Prep Options is a floating menu. Compact Library header rules must not
+     crop it to the height of the command row in either Library width. */
+  html body #tab-content-library#tab-content-library#tab-content-library#tab-content-library.library-cockpit
+    #library-brief-lens#library-brief-lens#library-brief-lens:has(#library-brief-lane-dropdown[open]),
+  html body #tab-content-library#tab-content-library#tab-content-library#tab-content-library.library-cockpit
+    #library-brief-lens#library-brief-lens#library-brief-lens:has(#library-brief-lane-dropdown[open])
+    > #library-brief-topline {
+    overflow: visible !important;
+  }
+
+  html body #tab-content-library#tab-content-library#tab-content-library#tab-content-library.library-cockpit
+    #library-brief-lens#library-brief-lens#library-brief-lens:has(#library-brief-lane-dropdown[open]) {
+    z-index: 260 !important;
+  }
+
+  html body #tab-content-library#tab-content-library#tab-content-library#tab-content-library.library-cockpit
+    #library-brief-lens#library-brief-lens#library-brief-lens #library-brief-lane-dropdown#library-brief-lane-dropdown[open] {
+    position: relative !important;
+    z-index: 280 !important;
+  }
+
+  html body #tab-content-library#tab-content-library#tab-content-library#tab-content-library.library-cockpit
+    #library-brief-lens#library-brief-lens#library-brief-lens #library-brief-lane-dropdown#library-brief-lane-dropdown[open]
+    > #library-brief-chips {
+    position: absolute !important;
+    top: calc(100% + 6px) !important;
+    right: 0 !important;
+    left: auto !important;
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    width: min(310px, calc(100vw - 32px)) !important;
+    min-width: min(310px, calc(100vw - 32px)) !important;
+    max-width: min(310px, calc(100vw - 32px)) !important;
+    max-height: 330px !important;
+    padding: 7px !important;
+    box-sizing: border-box !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    border: 1px solid rgba(174,188,181,.38) !important;
+    border-top: 2px solid var(--accent) !important;
+    border-radius: 2px !important;
+    background:
+      linear-gradient(180deg, rgba(18,23,21,.995), rgba(4,8,7,.995)) !important;
+    box-shadow:
+      0 24px 48px rgba(0,0,0,.78),
+      inset 0 1px 0 rgba(255,255,255,.1),
+      inset 0 -1px 0 rgba(255,255,255,.035) !important;
+    z-index: 300 !important;
+  }
+
+  html body #tab-content-library#tab-content-library#tab-content-library#tab-content-library.library-cockpit
+    #library-brief-lens#library-brief-lens#library-brief-lens
+    #library-brief-lane-dropdown#library-brief-lane-dropdown[open]
+    > #library-brief-chips::before {
+    content: 'CHOOSE A SET LANE' !important;
+    display: block !important;
+    padding: 6px 10px 8px !important;
+    color: rgba(213,222,217,.58) !important;
+    font-family: 'Barlow', Arial, sans-serif !important;
+    font-size: 9px !important;
+    font-weight: 700 !important;
+    letter-spacing: .14em !important;
+    line-height: 1 !important;
+  }
+
+  html body #tab-content-library#tab-content-library#tab-content-library#tab-content-library.library-cockpit
+    #library-brief-lens#library-brief-lens#library-brief-lens
+    #library-brief-lane-dropdown#library-brief-lane-dropdown[open]
+    > #library-brief-chips .library-brief-chip {
+    display: grid !important;
+    grid-template-columns: 28px minmax(0, 1fr) auto !important;
+    align-items: center !important;
+    gap: 10px !important;
+    width: 100% !important;
+    min-height: 52px !important;
+    margin: 0 !important;
+    padding: 7px 10px !important;
+    color: #f2f7f1 !important;
+    -webkit-text-fill-color: #f2f7f1 !important;
+    background: transparent !important;
+    border: 0 !important;
+    border-bottom: 1px solid rgba(255,255,255,.075) !important;
+    border-radius: 0 !important;
+    text-align: left !important;
+    box-shadow: none !important;
+    transition: background-color 140ms ease, box-shadow 140ms ease !important;
+  }
+
+  html body #tab-content-library#tab-content-library#tab-content-library#tab-content-library.library-cockpit
+    #library-brief-lens#library-brief-lens#library-brief-lens
+    #library-brief-lane-dropdown#library-brief-lane-dropdown[open]
+    > #library-brief-chips .library-brief-chip:last-child {
+    border-bottom: 0 !important;
+  }
+
+  #library-brief-chips .library-brief-chip-index {
+    color: rgba(211,221,215,.46) !important;
+    -webkit-text-fill-color: rgba(211,221,215,.46) !important;
+    font-family: 'Bebas Neue', Impact, sans-serif !important;
+    font-size: 13px !important;
+    letter-spacing: .08em !important;
+  }
+
+  #library-brief-chips .library-brief-chip-copy {
+    display: flex !important;
+    min-width: 0 !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 2px !important;
+  }
+
+  #library-brief-chips .library-brief-chip-copy strong {
+    max-width: 100% !important;
+    overflow: hidden !important;
+    color: #f4f7f4 !important;
+    -webkit-text-fill-color: #f4f7f4 !important;
+    font-family: 'Bebas Neue', Impact, sans-serif !important;
+    font-size: 14px !important;
+    font-weight: 400 !important;
+    letter-spacing: .065em !important;
+    line-height: 1.05 !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+  }
+
+  #library-brief-chips .library-brief-chip-copy small {
+    max-width: 100% !important;
+    overflow: hidden !important;
+    color: rgba(216,225,220,.58) !important;
+    -webkit-text-fill-color: rgba(216,225,220,.58) !important;
+    font-family: 'Barlow', Arial, sans-serif !important;
+    font-size: 10px !important;
+    font-weight: 500 !important;
+    letter-spacing: 0 !important;
+    line-height: 1.15 !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+  }
+
+  #library-brief-chips .library-brief-chip-state {
+    min-width: 38px !important;
+    color: var(--accent) !important;
+    -webkit-text-fill-color: var(--accent) !important;
+    font-family: 'Barlow', Arial, sans-serif !important;
+    font-size: 9px !important;
+    font-weight: 800 !important;
+    letter-spacing: .08em !important;
+    line-height: 1 !important;
+    text-align: right !important;
+    text-transform: uppercase !important;
+  }
+
+  html body #tab-content-library#tab-content-library#tab-content-library#tab-content-library.library-cockpit
+    #library-brief-lens#library-brief-lens#library-brief-lens
+    #library-brief-lane-dropdown#library-brief-lane-dropdown[open]
+    > #library-brief-chips .library-brief-chip:is(:hover, :focus-visible) {
+    background: rgba(255,255,255,.045) !important;
+    box-shadow: inset 2px 0 rgba(163,255,0,.55) !important;
+    outline: none !important;
+  }
+
+  html body #tab-content-library#tab-content-library#tab-content-library#tab-content-library.library-cockpit
+    #library-brief-lens#library-brief-lens#library-brief-lens
+    #library-brief-lane-dropdown#library-brief-lane-dropdown[open]
+    > #library-brief-chips .library-brief-chip.active {
+    background: linear-gradient(90deg, rgba(163,255,0,.13), rgba(163,255,0,.02) 72%, transparent) !important;
+    box-shadow: inset 3px 0 var(--accent) !important;
+  }
+
+  #library-brief-chips .library-brief-chip.active .library-brief-chip-index,
+  #library-brief-chips .library-brief-chip.active .library-brief-chip-copy strong {
+    color: var(--accent) !important;
+    -webkit-text-fill-color: var(--accent) !important;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    html body #tab-content-library.library-cockpit
+      #library-brief-lane-dropdown[open] > #library-brief-chips {
+      animation: librarySetPrepMenuReveal 150ms cubic-bezier(.2,.8,.2,1) both !important;
+      transform-origin: top right !important;
+    }
+  }
+
+  @keyframes librarySetPrepMenuReveal {
+    from { opacity: 0; transform: translateY(-5px) scale(.985); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+</style>

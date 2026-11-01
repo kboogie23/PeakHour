@@ -1,0 +1,1742 @@
+/* Day mode final visual contract.
+   Loaded after color-laws.css so Studio, Library, and Anchor Selection cannot
+   fall back to night-mode green glows or black-on-black surfaces. */
+
+:root[data-theme="green"],
+html.light-mode {
+  --bg-primary: #ffffff !important;
+  --bg-primary-rgb: 255, 255, 255 !important;
+  --bg-secondary: #f5f7fb !important;
+  --bg-secondary-rgb: 245, 247, 251 !important;
+  --bg-surface: #ffffff !important;
+  --bg-surface-rgb: 255, 255, 255 !important;
+  --bg-surface-alt: #eef3fb !important;
+  --bg-surface-alt-rgb: 238, 243, 251 !important;
+  --text-primary: #07111f !important;
+  --text-primary-rgb: 7, 17, 31 !important;
+  --text-secondary: #40516a !important;
+  --text-secondary-rgb: 64, 81, 106 !important;
+  --text-muted: #6b7a90 !important;
+  --text-muted-rgb: 107, 122, 144 !important;
+  --accent: #0047ab !important;
+  --accent-primary: #0047ab !important;
+  --accent-primary-rgb: 0, 71, 171 !important;
+  --accent-secondary: #2563eb !important;
+  --accent-secondary-rgb: 37, 99, 235 !important;
+  --accent-success: #0047ab !important;
+  --accent-success-rgb: 0, 71, 171 !important;
+  --accent-warning: #0047ab !important;
+  --accent-warning-rgb: 0, 71, 171 !important;
+  --border-primary: rgba(0, 71, 171, 0.18) !important;
+  --border-secondary: rgba(0, 71, 171, 0.10) !important;
+}
+
+body.light-mode {
+  background: #f5f7fb !important;
+  color: #07111f !important;
+  --axiom-final-green: #0047ab;
+  --axiom-final-green-hot: #2563eb;
+  --focus-deck-lime: #0047ab;
+  --studio-reference-lime: #0047ab;
+  --axiom-help-accent: #0047ab;
+  --axiom-help-ink: #ffffff;
+}
+
+body.light-mode .bg-axiom-accent,
+body.light-mode .bg-axiom-accent\/5,
+body.light-mode .bg-axiom-accent\/10,
+body.light-mode .bg-axiom-accent\/15,
+body.light-mode .bg-axiom-accent\/20,
+body.light-mode .bg-axiom-accent\/30,
+body.light-mode .bg-axiom-accent\/40,
+body.light-mode .bg-\[\#a3ff00\],
+body.light-mode .bg-\[\#39FF14\] {
+  background-color: rgba(0, 71, 171, 0.18) !important;
+}
+
+body.light-mode .text-axiom-accent,
+body.light-mode .text-green-400,
+body.light-mode .text-green-500,
+body.light-mode .text-\[\#a3ff00\],
+body.light-mode .text-\[\#39FF14\] {
+  color: #0047ab !important;
+  text-shadow: none !important;
+}
+
+body.light-mode .border-axiom-accent,
+body.light-mode .border-axiom-accent\/10,
+body.light-mode .border-axiom-accent\/20,
+body.light-mode .border-axiom-accent\/30,
+body.light-mode .border-axiom-accent\/35,
+body.light-mode .border-axiom-accent\/40,
+body.light-mode .border-axiom-accent\/50,
+body.light-mode .border-\[\#a3ff00\],
+body.light-mode .border-\[\#39FF14\] {
+  border-color: rgba(0, 71, 171, 0.32) !important;
+}
+
+body.light-mode [class*="shadow"][style*="163,255,0"],
+body.light-mode [style*="rgba(163,255,0"],
+body.light-mode [style*="rgba(163, 255, 0"],
+body.light-mode [style*="#a3ff00"],
+body.light-mode [style*="#39FF14"] {
+  color: #0047ab !important;
+  border-color: rgba(0, 71, 171, 0.32) !important;
+  box-shadow: 0 0 24px rgba(0, 71, 171, 0.24) !important;
+}
+
+/* Studio: top glow, buttons, score, tabs, rows, and BPM spine. */
+body.light-mode #studio-active-view,
+body.light-mode #tab-content-studio {
+  background: #f5f7fb !important;
+  color: #07111f !important;
+}
+
+body.light-mode #studio-active-view::before {
+  background:
+    radial-gradient(circle at 54% 38%, rgba(0, 71, 171, 0.16), transparent 16%),
+    radial-gradient(circle at 74% 12%, rgba(37, 99, 235, 0.10), transparent 28%),
+    linear-gradient(rgba(0, 71, 171, 0.05), transparent 78%) !important;
+  opacity: 0.30 !important;
+}
+
+body.light-mode #studio-active-view::after {
+  background:
+    repeating-linear-gradient(90deg, rgba(0, 71, 171, 0.10) 0 1px, transparent 1px 72px),
+    repeating-linear-gradient(0deg, rgba(0, 71, 171, 0.06) 0 1px, transparent 1px 24px),
+    linear-gradient(178deg, transparent 0 34%, rgba(0, 71, 171, 0.10) 35%, transparent 36%),
+    linear-gradient(182deg, transparent 0 44%, rgba(0, 71, 171, 0.06) 45%, transparent 46%) !important;
+  opacity: 0.26 !important;
+}
+
+body.light-mode #studio-active-view .studio-header::before {
+  background:
+    radial-gradient(at 52% 100%, rgba(0, 71, 171, 0.14), transparent 58%),
+    linear-gradient(90deg, transparent, rgba(37, 99, 235, 0.12), transparent) !important;
+  opacity: 0.78 !important;
+}
+
+body.light-mode #studio-active-view .studio-header,
+body.light-mode #studio-active-view .studio-actions {
+  background: transparent !important;
+  color: #07111f !important;
+}
+
+body.light-mode #studio-active-view .studio-header h3,
+body.light-mode #studio-active-view .studio-header h3 span,
+body.light-mode #set-score-display,
+body.light-mode #set-score-display.text-axiom-accent,
+body.light-mode #set-score-display.text-green-400 {
+  color: #0047ab !important;
+  background: transparent !important;
+  border: none !important;
+  text-shadow: 0 0 20px rgba(0, 71, 171, 0.16) !important;
+}
+
+body.light-mode #set-score-display.text-red-500 {
+  color: #f43f5e !important;
+  text-shadow: none !important;
+}
+
+body.light-mode #studio-active-view .studio-action-btn,
+body.light-mode #studio-active-view .studio-save-draft-btn,
+body.light-mode #studio-active-view button[onclick="loadSetFromLocal()"],
+body.light-mode #studio-active-view button[onclick="clearSet()"],
+body.light-mode #studio-active-view button[onclick="cancelEditPlaylist()"] {
+  background: rgba(255, 255, 255, 0.94) !important;
+  color: #07111f !important;
+  border-color: rgba(0, 71, 171, 0.22) !important;
+  text-shadow: none !important;
+  box-shadow: 0 12px 26px rgba(7, 17, 31, 0.10), inset 0 1px 0 rgba(255, 255, 255, 0.84) !important;
+}
+
+body.light-mode #studio-active-view .studio-action-btn:hover,
+body.light-mode #studio-active-view .studio-action-btn:focus-visible,
+body.light-mode #studio-active-view .studio-action-btn:active {
+  background: rgba(238, 243, 251, 0.98) !important;
+  color: #0047ab !important;
+  border-color: rgba(0, 71, 171, 0.42) !important;
+  box-shadow: 0 0 0 1px rgba(0, 71, 171, 0.10), 0 0 26px rgba(0, 71, 171, 0.20), 0 16px 34px rgba(7, 17, 31, 0.12) !important;
+}
+
+body.light-mode #studio-active-view .studio-save-crate-btn,
+body.light-mode #studio-active-view #export-dropdown-btn,
+body.light-mode #studio-active-view #magic-studio-btn {
+  background: linear-gradient(135deg, #2563eb, #0047ab) !important;
+  color: #ffffff !important;
+  border-color: #0047ab !important;
+  text-shadow: none !important;
+  box-shadow: 0 0 30px rgba(0, 71, 171, 0.32), 0 16px 32px rgba(7, 17, 31, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.45) !important;
+}
+
+body.light-mode #studio-active-view .studio-save-crate-btn:hover,
+body.light-mode #studio-active-view #export-dropdown-btn:hover,
+body.light-mode #studio-active-view #magic-studio-btn:hover {
+  background: linear-gradient(135deg, #3b82f6, #0047ab) !important;
+  color: #ffffff !important;
+  box-shadow: 0 0 42px rgba(0, 71, 171, 0.40), 0 18px 38px rgba(7, 17, 31, 0.16) !important;
+}
+
+/* Compact Studio command bar */
+body.light-mode #studio-active-view .studio-header {
+  background-color: rgba(255, 255, 255, 0.96) !important;
+  border-bottom-color: rgba(0, 71, 171, 0.52) !important;
+}
+
+body.light-mode #studio-active-view .studio-score-lockup small {
+  color: #07111f !important;
+}
+
+body.light-mode #studio-active-view .studio-header .studio-actions .studio-save-crate-btn {
+  background: #0047ab !important;
+  color: #ffffff !important;
+  border-color: #0047ab !important;
+  box-shadow: 0 8px 18px rgba(0, 71, 171, 0.18) !important;
+}
+
+body.light-mode #studio-active-view .studio-header .studio-actions #export-dropdown-btn,
+body.light-mode #studio-active-view .studio-header .studio-actions .studio-more-menu-btn {
+  background: #ffffff !important;
+  color: #07111f !important;
+  border-color: rgba(0, 71, 171, 0.34) !important;
+  box-shadow: none !important;
+}
+
+body.light-mode #studio-active-view .studio-header .studio-actions #export-dropdown-btn:hover,
+body.light-mode #studio-active-view .studio-header .studio-actions #export-dropdown-btn[aria-expanded="true"],
+body.light-mode #studio-active-view .studio-header .studio-actions .studio-more-menu-btn:hover,
+body.light-mode #studio-active-view .studio-header .studio-actions .studio-more-menu-btn[aria-expanded="true"] {
+  background: #eef3fb !important;
+  color: #0047ab !important;
+  border-color: #0047ab !important;
+}
+
+body.light-mode #studio-active-view .studio-command-menu {
+  background: #ffffff !important;
+  color: #07111f !important;
+  border-color: rgba(0, 71, 171, 0.24) !important;
+  box-shadow: 0 18px 44px rgba(7, 17, 31, 0.16) !important;
+}
+
+body.light-mode #studio-active-view .studio-command-menu-label {
+  color: #0047ab !important;
+}
+
+body.light-mode #studio-active-view .studio-command-menu-divider {
+  border-top-color: rgba(7, 17, 31, 0.10) !important;
+}
+
+body.light-mode #studio-active-view .studio-command-menu button {
+  color: #07111f !important;
+}
+
+body.light-mode #studio-active-view .studio-command-menu button:hover,
+body.light-mode #studio-active-view .studio-command-menu button:focus-visible {
+  background: #eef3fb !important;
+  color: #0047ab !important;
+}
+
+body.light-mode #studio-active-view .studio-command-menu button.studio-command-danger {
+  color: #c2263d !important;
+}
+
+body.light-mode #studio-active-view .studio-tabbar {
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.86), rgba(238, 243, 251, 0.92), rgba(255, 255, 255, 0.86)) !important;
+  border-color: rgba(0, 71, 171, 0.18) !important;
+}
+
+body.light-mode #studio-active-view .studio-mode-tab,
+body.light-mode #studio-active-view #btn-studio-guide,
+body.light-mode #studio-active-view #btn-optimize {
+  background: rgba(255, 255, 255, 0.88) !important;
+  color: #07111f !important;
+  border-color: rgba(0, 71, 171, 0.20) !important;
+  text-shadow: none !important;
+  box-shadow: 0 10px 22px rgba(7, 17, 31, 0.08) !important;
+}
+
+body.light-mode #studio-active-view .studio-mode-tab:hover,
+body.light-mode #studio-active-view .studio-mode-tab.active,
+body.light-mode #studio-active-view #btn-studio-guide:hover,
+body.light-mode #studio-active-view #btn-optimize:hover {
+  background: rgba(0, 71, 171, 0.12) !important;
+  color: #0047ab !important;
+  border-color: rgba(0, 71, 171, 0.42) !important;
+  box-shadow: 0 0 22px rgba(0, 71, 171, 0.18) !important;
+}
+
+body.light-mode #energy-ladder {
+  background: rgba(255, 255, 255, 0.94) !important;
+  border-color: rgba(0, 71, 171, 0.18) !important;
+  box-shadow: 0 18px 40px rgba(7, 17, 31, 0.10), 0 0 22px rgba(0, 71, 171, 0.10), inset 0 1px 0 rgba(255, 255, 255, 0.84) !important;
+}
+
+body.light-mode #energy-ladder::before,
+body.light-mode #active-playlist-container.energy-spine-active::before,
+body.light-mode #active-playlist-container.energy-spine-active::after {
+  background: linear-gradient(180deg, rgba(0, 71, 171, 0), rgba(0, 71, 171, 0.58), rgba(0, 71, 171, 0)) !important;
+  box-shadow: 0 0 28px rgba(0, 71, 171, 0.24) !important;
+  opacity: 0.42 !important;
+}
+
+body.light-mode .energy-block,
+body.light-mode .energy-block::after,
+body.light-mode .energy-block.energy-Low,
+body.light-mode .energy-block.energy-Mid,
+body.light-mode .energy-block.energy-Peak,
+body.light-mode .energy-block.energy-High,
+body.light-mode .energy-block.energy-Unknown,
+body.light-mode .energy-block.energy-idle {
+  background: linear-gradient(135deg, #3b82f6, #0047ab) !important;
+  border-color: rgba(255, 255, 255, 0.70) !important;
+  box-shadow: 0 0 20px rgba(0, 71, 171, 0.30), inset 0 1px 0 rgba(255, 255, 255, 0.45) !important;
+}
+
+body.light-mode #active-playlist-container .playlist-row,
+body.light-mode #active-playlist-container .playlist-row.studio-transition-row {
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.98), rgba(242, 246, 252, 0.98) 50%, rgba(255, 255, 255, 0.98)) !important;
+  color: #07111f !important;
+  border-color: rgba(0, 71, 171, 0.18) !important;
+  text-shadow: none !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.88), 0 16px 34px rgba(7, 17, 31, 0.10), 0 0 24px rgba(0, 71, 171, 0.10) !important;
+}
+
+body.light-mode #active-playlist-container .studio-row-title,
+body.light-mode #active-playlist-container .studio-row-artist,
+body.light-mode #active-playlist-container .track-title-resize,
+body.light-mode #active-playlist-container .track-artist-resize,
+body.light-mode #active-playlist-container .studio-row-main,
+body.light-mode #active-playlist-container .studio-row-main span,
+body.light-mode #active-playlist-container .studio-row-main p {
+  color: #07111f !important;
+  text-shadow: none !important;
+}
+
+body.light-mode #active-playlist-container .studio-row-artist,
+body.light-mode #active-playlist-container .track-artist-resize,
+body.light-mode #active-playlist-container small,
+body.light-mode #active-playlist-container .text-white\/40,
+body.light-mode #active-playlist-container .text-white\/50,
+body.light-mode #active-playlist-container .text-white\/60 {
+  color: rgba(64, 81, 106, 0.86) !important;
+}
+
+body.light-mode #active-playlist-container .studio-dna-chip,
+body.light-mode #active-playlist-container .studio-key-pill,
+body.light-mode #active-playlist-container .studio-harmonic-indicator {
+  background: rgba(0, 71, 171, 0.10) !important;
+  color: #0047ab !important;
+  border-color: rgba(0, 71, 171, 0.30) !important;
+  text-shadow: none !important;
+  box-shadow: none !important;
+}
+
+body.light-mode .studio-smart-btn {
+  background: rgba(0, 71, 171, 0.08) !important;
+  color: #0047ab !important;
+  border-color: rgba(0, 71, 171, 0.32) !important;
+  text-shadow: none !important;
+  box-shadow: 0 8px 18px rgba(7, 17, 31, 0.08) !important;
+}
+
+body.light-mode .studio-smart-btn:hover,
+body.light-mode .studio-smart-btn:focus-visible,
+body.light-mode .studio-smart-btn:active {
+  background: linear-gradient(135deg, #3b82f6, #0047ab) !important;
+  color: #ffffff !important;
+  border-color: #0047ab !important;
+  box-shadow: 0 0 28px rgba(0, 71, 171, 0.34), 0 12px 26px rgba(7, 17, 31, 0.14) !important;
+}
+
+body.light-mode .transition-badge,
+body.light-mode .transition-badge.energy-spine-node,
+body.light-mode .transition-badge.energy-spine-node::before,
+body.light-mode .transition-badge.energy-spine-node::after,
+body.light-mode .energy-spine-node,
+body.light-mode .badge-green,
+body.light-mode .badge-yellow {
+  background: linear-gradient(135deg, #3b82f6, #0047ab) !important;
+  color: #ffffff !important;
+  border-color: rgba(255, 255, 255, 0.74) !important;
+  text-shadow: none !important;
+  box-shadow: 0 0 26px rgba(0, 71, 171, 0.34), 0 12px 24px rgba(7, 17, 31, 0.15) !important;
+}
+
+body.light-mode .studio-spine-orb {
+  background: radial-gradient(circle, #ffffff 0 12%, rgba(59, 130, 246, 0.42) 30%, rgba(0, 71, 171, 0.82) 100%) !important;
+  box-shadow: 0 0 28px rgba(0, 71, 171, 0.38) !important;
+}
+
+/* Library: currently playing track and bottom player in day mode. */
+body.light-mode #search-results .library-track-card.playing-track,
+body.light-mode #search-results .library-track-card.library-track-playing,
+body.light-mode #search-results .vampire-row.playing-track,
+body.light-mode #lib-suggestions-list .recommendation-card.playing-track {
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.98), rgba(232, 240, 255, 0.98) 52%, rgba(255, 255, 255, 0.98)) !important;
+  color: #07111f !important;
+  border-color: rgba(0, 71, 171, 0.42) !important;
+  border-left: 6px solid #0047ab !important;
+  text-shadow: none !important;
+  box-shadow: 0 0 0 1px rgba(0, 71, 171, 0.10), 0 18px 40px rgba(7, 17, 31, 0.12), 0 0 30px rgba(0, 71, 171, 0.16) !important;
+}
+
+body.light-mode #tab-content-library.library-cockpit #search-results .library-track-card.playing-track,
+body.light-mode #tab-content-library.library-cockpit #search-results .library-track-card.library-track-playing,
+body.light-mode #tab-content-library.library-cockpit #search-results .vampire-row.playing-track,
+body.light-mode #tab-content-library.library-cockpit #search-results .vampire-row.library-track-playing {
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.98), rgba(232, 240, 255, 0.98) 52%, rgba(255, 255, 255, 0.98)) !important;
+  color: #07111f !important;
+  border-color: rgba(0, 71, 171, 0.42) !important;
+  border-left: 6px solid #0047ab !important;
+  text-shadow: none !important;
+  box-shadow: 0 0 0 1px rgba(0, 71, 171, 0.10), 0 18px 40px rgba(7, 17, 31, 0.12), 0 0 30px rgba(0, 71, 171, 0.16) !important;
+}
+
+body.light-mode #tab-content-library.library-cockpit #search-results .library-track-card.playing-track::before,
+body.light-mode #tab-content-library.library-cockpit #search-results .library-track-card.library-track-playing::before,
+body.light-mode #tab-content-library.library-cockpit #search-results .vampire-row.playing-track::before,
+body.light-mode #tab-content-library.library-cockpit #search-results .vampire-row.library-track-playing::before {
+  background: linear-gradient(90deg, rgba(0, 71, 171, 0.12), transparent 52%) !important;
+  opacity: 1 !important;
+}
+
+body.light-mode #search-results .library-track-card.playing-track *,
+body.light-mode #search-results .library-track-card.library-track-playing *,
+body.light-mode #search-results .vampire-row.playing-track *,
+body.light-mode #lib-suggestions-list .recommendation-card.playing-track * {
+  text-shadow: none !important;
+}
+
+body.light-mode #search-results .library-track-card.playing-track .library-track-title,
+body.light-mode #search-results .library-track-card.library-track-playing .library-track-title,
+body.light-mode #search-results .library-track-card.playing-track .track-title-resize,
+body.light-mode #search-results .library-track-card.library-track-playing .track-title-resize,
+body.light-mode #search-results .vampire-row.playing-track .track-title-resize,
+body.light-mode #lib-suggestions-list .recommendation-card.playing-track .recommendation-title,
+body.light-mode #lib-suggestions-list .recommendation-card.playing-track .track-title-resize {
+  color: #07111f !important;
+}
+
+body.light-mode #search-results .library-track-card.playing-track .library-track-artist,
+body.light-mode #search-results .library-track-card.library-track-playing .library-track-artist,
+body.light-mode #search-results .library-track-card.playing-track .track-artist-resize,
+body.light-mode #search-results .library-track-card.library-track-playing .track-artist-resize,
+body.light-mode #search-results .vampire-row.playing-track .track-artist-resize,
+body.light-mode #lib-suggestions-list .recommendation-card.playing-track .recommendation-artist,
+body.light-mode #lib-suggestions-list .recommendation-card.playing-track .track-artist-resize {
+  color: rgba(64, 81, 106, 0.88) !important;
+}
+
+body.light-mode #search-results .library-track-card.playing-track .library-year-chip,
+body.light-mode #search-results .library-track-card.playing-track .library-dna-chip,
+body.light-mode #search-results .library-track-card.playing-track .library-bpm-value,
+body.light-mode #search-results .library-track-card.library-track-playing .library-year-chip,
+body.light-mode #search-results .library-track-card.library-track-playing .library-dna-chip,
+body.light-mode #search-results .library-track-card.library-track-playing .library-bpm-value,
+body.light-mode #search-results .vampire-row.playing-track .dna-badge,
+body.light-mode #search-results .vampire-row.playing-track .bpm-block {
+  background: #0047ab !important;
+  color: #ffffff !important;
+  border-color: #0047ab !important;
+  box-shadow: 0 0 18px rgba(0, 71, 171, 0.24) !important;
+}
+
+body.light-mode #search-results .library-track-card.playing-track .library-artwork,
+body.light-mode #search-results .library-track-card.library-track-playing .library-artwork,
+body.light-mode #search-results .vampire-row.playing-track .library-artwork {
+  border-color: rgba(0, 71, 171, 0.58) !important;
+  box-shadow: 0 0 26px rgba(0, 71, 171, 0.22), 0 14px 26px rgba(7, 17, 31, 0.14) !important;
+}
+
+body.light-mode #audio-player.library-player-upgrade,
+body.light-mode #audio-player {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(238, 243, 251, 0.98)) !important;
+  color: #07111f !important;
+  border-top-color: rgba(0, 71, 171, 0.18) !important;
+  box-shadow: 0 -18px 44px rgba(7, 17, 31, 0.10), inset 0 1px 0 rgba(255, 255, 255, 0.90) !important;
+}
+
+body.light-mode #audio-player.library-player-upgrade .player-track-copy,
+body.light-mode #audio-player.library-player-upgrade .player-track-copy *,
+body.light-mode #audio-player .player-track-copy,
+body.light-mode #audio-player .player-track-copy * {
+  color: #07111f !important;
+  text-shadow: none !important;
+}
+
+body.light-mode #audio-player .text-white\/40,
+body.light-mode #audio-player .text-white\/50,
+body.light-mode #audio-player .text-white\/60,
+body.light-mode #audio-player .text-axiom-muted {
+  color: rgba(64, 81, 106, 0.86) !important;
+}
+
+body.light-mode #audio-player .player-artwork {
+  background: linear-gradient(135deg, rgba(0, 71, 171, 0.16), rgba(255, 255, 255, 0.96)) !important;
+  border-color: rgba(0, 71, 171, 0.28) !important;
+  box-shadow: 0 12px 24px rgba(7, 17, 31, 0.12) !important;
+}
+
+/* Anchor Selection: full day-mode modal, panels, suggestions, and live mix card. */
+body.light-mode #replacement-modal.anchor-dj-modal {
+  background: radial-gradient(circle at 46% 12%, rgba(0, 71, 171, 0.12), transparent 32%), rgba(248, 251, 255, 0.94) !important;
+  color: #07111f !important;
+}
+
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-dj-shell,
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-hero-panel,
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-suggestions-panel,
+body.light-mode #replacement-modal.anchor-dj-modal .live-transition-panel,
+body.light-mode #replacement-modal.anchor-dj-modal .modal-action-panel,
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-insight-strip,
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-insight-bar,
+body.light-mode #replacement-modal.anchor-dj-modal .mix-advice-card,
+body.light-mode #replacement-modal.anchor-dj-modal .transition-stage-metric,
+body.light-mode #replacement-modal.anchor-dj-modal .transition-now-playing,
+body.light-mode #replacement-modal.anchor-dj-modal .transition-intel-stage {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(238, 243, 251, 0.96)) !important;
+  color: #07111f !important;
+  border-color: rgba(0, 71, 171, 0.20) !important;
+  text-shadow: none !important;
+  box-shadow: 0 18px 42px rgba(7, 17, 31, 0.12), 0 0 22px rgba(0, 71, 171, 0.10) !important;
+}
+
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-dj-shell::before,
+body.light-mode #replacement-modal.anchor-dj-modal .live-transition-panel::before,
+body.light-mode #replacement-modal.anchor-dj-modal .transition-now-playing::after {
+  background: radial-gradient(circle at 50% 20%, rgba(0, 71, 171, 0.14), transparent 42%) !important;
+  opacity: 0.58 !important;
+  box-shadow: none !important;
+}
+
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-cover-card,
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-suggestion-art,
+body.light-mode #replacement-modal.anchor-dj-modal .transition-focal-art {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(238, 243, 251, 0.96)) !important;
+  color: #07111f !important;
+  border-color: rgba(0, 71, 171, 0.28) !important;
+  box-shadow: 0 12px 28px rgba(7, 17, 31, 0.12), 0 0 22px rgba(0, 71, 171, 0.14) !important;
+}
+
+body.light-mode #replacement-modal.anchor-dj-modal .artwork-fallback {
+  background:
+    radial-gradient(circle at 50% 42%, rgba(0, 71, 171, 0.30), transparent 24%),
+    linear-gradient(135deg, rgba(0, 71, 171, 0.82), rgba(37, 99, 235, 0.64) 58%, rgba(238, 243, 251, 0.92)) !important;
+  color: #ffffff !important;
+  text-shadow: 0 1px 8px rgba(0, 24, 72, 0.32) !important;
+}
+
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-close-btn,
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-filter-btn,
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-filter-select,
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-search-wrap,
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-search-input,
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-sort-select,
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-wave-mode,
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-cue-select,
+body.light-mode #replacement-modal.anchor-dj-modal .transition-action {
+  background: rgba(255, 255, 255, 0.96) !important;
+  color: #07111f !important;
+  border-color: rgba(0, 71, 171, 0.24) !important;
+  text-shadow: none !important;
+  box-shadow: 0 8px 18px rgba(7, 17, 31, 0.08) !important;
+}
+
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-filter-btn:hover,
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-filter-btn.primary,
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-filter-select:hover,
+body.light-mode #replacement-modal.anchor-dj-modal .transition-action:hover,
+body.light-mode #replacement-modal.anchor-dj-modal .transition-action.primary,
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-suggestion-add {
+  background: linear-gradient(135deg, #3b82f6, #0047ab) !important;
+  color: #ffffff !important;
+  border-color: #0047ab !important;
+  text-shadow: none !important;
+  box-shadow: 0 0 28px rgba(0, 71, 171, 0.34), 0 12px 26px rgba(7, 17, 31, 0.14) !important;
+}
+
+body.light-mode .axiom-help-btn-compact,
+body.light-mode #studio-active-view #btn-studio-guide.axiom-help-btn-compact {
+  background: linear-gradient(145deg, #3b82f6, #0047ab) !important;
+  color: #ffffff !important;
+  border-color: #0047ab !important;
+  box-shadow:
+    0 0 0 1px rgba(0,71,171,0.18),
+    0 0 24px rgba(0,71,171,0.20),
+    0 14px 32px rgba(7,17,31,0.14),
+    inset 0 1px 0 rgba(255,255,255,0.62) !important;
+  text-shadow: none !important;
+}
+
+body.light-mode .axiom-help-btn-compact span,
+body.light-mode #studio-active-view #btn-studio-guide.axiom-help-btn-compact span {
+  color: #ffffff !important;
+  text-shadow: none !important;
+}
+
+body.light-mode .axiom-help-btn-compact:hover,
+body.light-mode #studio-active-view #btn-studio-guide.axiom-help-btn-compact:hover {
+  background: linear-gradient(145deg, #60a5fa, #0056ce) !important;
+  color: #ffffff !important;
+  border-color: #0047ab !important;
+  box-shadow:
+    0 0 0 1px rgba(0,71,171,0.36),
+    0 0 36px rgba(0,71,171,0.28),
+    0 20px 46px rgba(7,17,31,0.18),
+    inset 0 1px 0 rgba(255,255,255,0.82) !important;
+}
+
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-meta-pill,
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-tag-row span,
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-suggestion-tags span,
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-suggestion-metric,
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-suggestion-key,
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-suggestion-match,
+body.light-mode #replacement-modal.anchor-dj-modal .hot-cue-card {
+  background: rgba(0, 71, 171, 0.09) !important;
+  color: #0047ab !important;
+  border-color: rgba(0, 71, 171, 0.24) !important;
+  text-shadow: none !important;
+  box-shadow: none !important;
+}
+
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-suggestion-row,
+body.light-mode #replacement-modal.anchor-dj-modal .vampire-row.anchor-suggestion-row {
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.98), rgba(242, 246, 252, 0.98)) !important;
+  color: #07111f !important;
+  border-color: rgba(0, 71, 171, 0.16) !important;
+  text-shadow: none !important;
+  box-shadow: 0 10px 22px rgba(7, 17, 31, 0.08) !important;
+}
+
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-suggestion-row:hover,
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-suggestion-row.selected,
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-suggestion-row.active-suggestion {
+  background: linear-gradient(90deg, rgba(238, 243, 251, 0.98), rgba(255, 255, 255, 0.98)) !important;
+  border-color: rgba(0, 71, 171, 0.42) !important;
+  box-shadow: 0 0 0 1px rgba(0, 71, 171, 0.10), 0 14px 28px rgba(7, 17, 31, 0.10), 0 0 26px rgba(0, 71, 171, 0.14) !important;
+}
+
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-suggestion-play {
+  background: linear-gradient(135deg, #3b82f6, #0047ab) !important;
+  color: #ffffff !important;
+  border-color: rgba(255, 255, 255, 0.70) !important;
+  box-shadow: 0 0 24px rgba(0, 71, 171, 0.30) !important;
+}
+
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-title,
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-subtitle,
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-section-title,
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-detail-title,
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-suggestion-title,
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-suggestion-artist,
+body.light-mode #replacement-modal.anchor-dj-modal .transition-now-title,
+body.light-mode #replacement-modal.anchor-dj-modal .transition-now-artist,
+body.light-mode #replacement-modal.anchor-dj-modal .mix-advice-card strong,
+body.light-mode #replacement-modal.anchor-dj-modal .transition-stage-metric strong,
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-suggestion-row strong,
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-suggestion-row span,
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-suggestion-row small,
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-suggestion-row p {
+  color: #07111f !important;
+  text-shadow: none !important;
+}
+
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-suggestion-artist,
+body.light-mode #replacement-modal.anchor-dj-modal .transition-stage-metric span,
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-suggestion-metric span,
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-suggestion-key span,
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-suggestion-match span,
+body.light-mode #replacement-modal.anchor-dj-modal .text-white\/40,
+body.light-mode #replacement-modal.anchor-dj-modal .text-white\/50,
+body.light-mode #replacement-modal.anchor-dj-modal .text-white\/60 {
+  color: rgba(64, 81, 106, 0.86) !important;
+}
+
+body.light-mode #replacement-modal.anchor-dj-modal .transition-stage-score,
+body.light-mode #replacement-modal.anchor-dj-modal .confidence-ring,
+body.light-mode #replacement-modal.anchor-dj-modal .transition-now-kicker,
+body.light-mode #replacement-modal.anchor-dj-modal .text-axiom-accent,
+body.light-mode #replacement-modal.anchor-dj-modal .compatibility-score,
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-meta-pill.accent,
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-suggestion-match strong {
+  color: #0047ab !important;
+  text-shadow: none !important;
+}
+
+body.light-mode #replacement-modal.anchor-dj-modal .transition-stage-score,
+body.light-mode #replacement-modal.anchor-dj-modal .confidence-ring {
+  background: radial-gradient(circle, rgba(0, 71, 171, 0.12), transparent 58%) !important;
+  border-color: rgba(0, 71, 171, 0.24) !important;
+  box-shadow: 0 0 24px rgba(0, 71, 171, 0.16) !important;
+}
+
+/* Final leak plugs: pseudo glows and cue UI discovered in browser verification. */
+body.light-mode .energy-timeline-track::before {
+  background: linear-gradient(90deg, transparent, rgba(0, 71, 171, 0.28), transparent) !important;
+  box-shadow: 0 0 18px rgba(0, 71, 171, 0.16) !important;
+  opacity: 0.34 !important;
+}
+
+body.light-mode .energy-timeline-track::after {
+  background: radial-gradient(rgba(255, 255, 255, 0.95), rgba(0, 71, 171, 0.36) 28%, transparent 74%) !important;
+  box-shadow: 0 0 30px rgba(0, 71, 171, 0.20) !important;
+}
+
+body.light-mode #studio-start-view.command-launch-shell::before,
+body.light-mode .command-launch-shell::before {
+  background:
+    radial-gradient(at 72% 38%, rgba(37, 99, 235, 0.12), transparent 18%),
+    radial-gradient(at 67% 33%, rgba(0, 71, 171, 0.18), transparent 20%),
+    radial-gradient(at 34% 46%, rgba(0, 71, 171, 0.10), transparent 28%),
+    radial-gradient(at 50% 78%, rgba(255, 255, 255, 0.08), transparent 30%),
+    linear-gradient(rgba(0, 71, 171, 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 71, 171, 0.038) 1px, transparent 1px) !important;
+  background-size: auto, auto, auto, 62px 62px, 62px 62px, 62px 62px !important;
+  opacity: 0.66 !important;
+}
+
+body.light-mode #studio-start-view.command-launch-shell::after,
+body.light-mode .command-launch-shell::after {
+  background:
+    repeating-linear-gradient(0deg, rgba(0, 71, 171, 0.035) 0 1px, transparent 1px 5px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.78), transparent 14%, transparent 82%, rgba(255, 255, 255, 0.80)),
+    radial-gradient(at 50% 46%, transparent 0 42%, rgba(0, 71, 171, 0.06) 68%, rgba(255, 255, 255, 0.82) 100%) !important;
+  opacity: 0.46 !important;
+}
+
+body.light-mode .command-action-card,
+body.light-mode #btn-upload-csv.command-action-card {
+  background: radial-gradient(at 82% 56%, rgba(13, 148, 136, 0.10), transparent 30%), linear-gradient(145deg, rgba(255, 255, 255, 0.96), rgba(242, 246, 252, 0.94)) !important;
+  color: #07111f !important;
+  border-color: rgba(13, 148, 136, 0.22) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.92), 0 22px 58px rgba(7, 17, 31, 0.12), 0 0 28px rgba(13, 148, 136, 0.08) !important;
+}
+
+body.light-mode .command-action-card::before,
+body.light-mode #btn-upload-csv.command-action-card::before {
+  background:
+    radial-gradient(circle at 74% 50%, rgba(13, 148, 136, 0.16), transparent 24%),
+    radial-gradient(at 50% 115%, rgba(255, 255, 255, 0.88), transparent 42%),
+    linear-gradient(145deg, rgba(255, 255, 255, 0.42), transparent 36%),
+    linear-gradient(to top, rgba(15, 23, 42, 0.08), transparent 60%) !important;
+  opacity: 0.70 !important;
+}
+
+body.light-mode .command-card-guidance span {
+  color: rgba(64, 81, 106, 0.86) !important;
+}
+
+body.light-mode .command-card-guidance span::before {
+  background: #0f766e !important;
+  box-shadow: 0 0 10px rgba(15, 118, 110, 0.22) !important;
+}
+
+body.light-mode .command-action-card::after,
+body.light-mode #btn-upload-csv.command-action-card::after,
+body.light-mode .command-card-visual,
+body.light-mode .command-card-visual::before {
+  border-color: rgba(0, 71, 171, 0.14) !important;
+  background-color: transparent !important;
+  box-shadow: none !important;
+}
+
+body.light-mode #replacement-modal.anchor-dj-modal .dj-waveform {
+  --wave-active: #0047ab !important;
+  --wave-base: rgba(64, 81, 106, 0.42) !important;
+  background: rgba(255, 255, 255, 0.72) !important;
+  border-color: rgba(0, 71, 171, 0.20) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.80), 0 10px 22px rgba(7, 17, 31, 0.08) !important;
+}
+
+body.light-mode #replacement-modal.anchor-dj-modal .dj-wave-bars span,
+body.light-mode #replacement-modal.anchor-dj-modal .dj-wave-bars span:nth-child(5n),
+body.light-mode #replacement-modal.anchor-dj-modal .dj-wave-bars span:nth-child(13n),
+body.light-mode #replacement-modal.anchor-dj-modal .dj-waveform.is-active .dj-wave-bars span:nth-child(4n) {
+  background: rgba(0, 71, 171, 0.72) !important;
+  box-shadow: 0 0 8px rgba(0, 71, 171, 0.20) !important;
+}
+
+body.light-mode #replacement-modal.anchor-dj-modal .cue-marker,
+body.light-mode #replacement-modal.anchor-dj-modal .cue-marker::before,
+body.light-mode #replacement-modal.anchor-dj-modal .cue-marker::after,
+body.light-mode #replacement-modal.anchor-dj-modal .cue-dot {
+  background: #0047ab !important;
+  border-color: rgba(255, 255, 255, 0.70) !important;
+  box-shadow: 0 0 12px rgba(0, 71, 171, 0.34) !important;
+}
+
+body.light-mode #replacement-modal.anchor-dj-modal .hot-cue-card strong,
+body.light-mode #replacement-modal.anchor-dj-modal .hot-cue-card span,
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-insight-strip span {
+  color: #0047ab !important;
+  text-shadow: none !important;
+}
+
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-insight-strip p,
+body.light-mode #replacement-modal.anchor-dj-modal #modal-insight-copy {
+  color: #07111f !important;
+  text-shadow: none !important;
+}
+
+body.light-mode #replacement-modal.anchor-dj-modal .transition-stage-focal,
+body.light-mode #replacement-modal.anchor-dj-modal .transition-overlap-wave,
+body.light-mode #replacement-modal.anchor-dj-modal .transition-wave-card,
+body.light-mode #replacement-modal.anchor-dj-modal .cue-table-card {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(238, 243, 251, 0.96)) !important;
+  color: #07111f !important;
+  border-color: rgba(0, 71, 171, 0.20) !important;
+  text-shadow: none !important;
+  box-shadow: 0 18px 42px rgba(7, 17, 31, 0.12), 0 0 22px rgba(0, 71, 171, 0.10) !important;
+}
+
+body.light-mode #replacement-modal.anchor-dj-modal .transition-perspective-grid {
+  background-image:
+    linear-gradient(rgba(0, 71, 171, 0.12) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 71, 171, 0.12) 1px, transparent 1px) !important;
+  box-shadow: inset 0 0 24px rgba(0, 71, 171, 0.08) !important;
+}
+
+body.light-mode #replacement-modal.anchor-dj-modal .transition-intel-stage {
+  background:
+    radial-gradient(circle at 28% 28%, rgba(0, 71, 171, 0.12), transparent 34%),
+    radial-gradient(circle at 92% 12%, rgba(37, 99, 235, 0.10), transparent 30%),
+    linear-gradient(150deg, rgba(255, 255, 255, 0.99), rgba(238, 243, 251, 0.97) 58%, rgba(229, 237, 249, 0.94)) !important;
+  color: #07111f !important;
+  border-color: rgba(0, 71, 171, 0.32) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.90),
+    0 16px 36px rgba(7, 17, 31, 0.12),
+    0 0 24px rgba(0, 71, 171, 0.12) !important;
+}
+
+body.light-mode #replacement-modal.anchor-dj-modal .transition-intel-stage::before {
+  background:
+    radial-gradient(circle at 22% 42%, rgba(0, 71, 171, 0.14), transparent 38%),
+    radial-gradient(circle at 68% 66%, rgba(255, 255, 255, 0.42), transparent 34%),
+    linear-gradient(110deg, transparent 0 42%, rgba(0, 71, 171, 0.08) 43% 44%, transparent 45% 100%) !important;
+  filter: blur(16px) saturate(1) !important;
+  opacity: 0.50 !important;
+}
+
+body.light-mode #replacement-modal.anchor-dj-modal .transition-intel-stage::after {
+  background:
+    linear-gradient(to top, rgba(255, 255, 255, 0.38), transparent 38%),
+    radial-gradient(circle at 50% 50%, transparent 0 36%, rgba(0, 71, 171, 0.08) 74%),
+    repeating-linear-gradient(0deg, rgba(0, 71, 171, 0.045) 0 1px, transparent 1px 7px) !important;
+  box-shadow: none !important;
+}
+
+body.light-mode #replacement-modal.anchor-dj-modal .transition-sync-line {
+  background: linear-gradient(to right, transparent, rgba(0, 71, 171, 0.34), rgba(255, 255, 255, 0.58), transparent) !important;
+  box-shadow: 0 0 16px rgba(0, 71, 171, 0.18) !important;
+  opacity: 0.36 !important;
+}
+
+body.light-mode #replacement-modal.anchor-dj-modal .transition-now-playing,
+body.light-mode #replacement-modal.anchor-dj-modal .transition-stage-metric,
+body.light-mode #replacement-modal.anchor-dj-modal .transition-stage-score {
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.96), rgba(226, 237, 252, 0.90)) !important;
+  color: #07111f !important;
+  border-color: rgba(0, 71, 171, 0.20) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.78),
+    0 10px 22px rgba(7, 17, 31, 0.08) !important;
+}
+
+body.light-mode #replacement-modal.anchor-dj-modal .transition-stage-score {
+  color: #0047ab !important;
+  text-shadow: 0 0 16px rgba(0, 71, 171, 0.12) !important;
+}
+
+body.light-mode #replacement-modal.anchor-dj-modal .transition-now-kicker,
+body.light-mode #replacement-modal.anchor-dj-modal .transition-stage-score span,
+body.light-mode #replacement-modal.anchor-dj-modal .transition-stage-metric span {
+  color: #0047ab !important;
+  text-shadow: none !important;
+}
+
+body.light-mode #replacement-modal.anchor-dj-modal .transition-now-title,
+body.light-mode #replacement-modal.anchor-dj-modal .transition-now-artist,
+body.light-mode #replacement-modal.anchor-dj-modal .transition-stage-metric strong {
+  color: #07111f !important;
+  text-shadow: none !important;
+}
+
+body.light-mode #replacement-modal.anchor-dj-modal .transition-metric-card,
+body.light-mode #replacement-modal.anchor-dj-modal .transition-metric-card.is-confidence {
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.96), rgba(226, 237, 252, 0.90)) !important;
+  color: #07111f !important;
+  border-color: rgba(0, 71, 171, 0.20) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.78),
+    0 10px 22px rgba(7, 17, 31, 0.08) !important;
+}
+
+body.light-mode #replacement-modal.anchor-dj-modal .transition-metric-card span,
+body.light-mode #replacement-modal.anchor-dj-modal .transition-metric-card.is-confidence span,
+body.light-mode #replacement-modal.anchor-dj-modal .transition-metric-card.is-confidence strong {
+  color: #0047ab !important;
+  text-shadow: none !important;
+}
+
+body.light-mode #replacement-modal.anchor-dj-modal .transition-metric-card strong {
+  color: #07111f !important;
+  text-shadow: none !important;
+}
+
+/* Health: top-level day-mode workspace with readable cards, rows, and progress panels. */
+body.light-mode.studio-health-mode #tab-content-studio,
+body.light-mode.studio-health-mode #studio-active-view,
+body.light-mode #health-view {
+  background: #f5f7fb !important;
+  color: #07111f !important;
+}
+
+body.light-mode #health-view .health-command-header {
+  border-bottom-color: rgba(0, 71, 171, 0.18) !important;
+}
+
+body.light-mode #health-view .health-command-kicker,
+body.light-mode #health-view .health-repair-kicker,
+body.light-mode #health-view .health-repair-result,
+body.light-mode #health-view .text-axiom-accent,
+body.light-mode #health-view .text-green-400,
+body.light-mode #health-view .text-green-500 {
+  color: #0047ab !important;
+  text-shadow: none !important;
+}
+
+body.light-mode #health-view .health-command-title,
+body.light-mode #health-view .health-repair-title,
+body.light-mode #health-view .health-summary-card strong,
+body.light-mode #health-view .health-repair-row strong,
+body.light-mode #health-view .text-white,
+body.light-mode #health-view .text-white\/80,
+body.light-mode #health-view .text-white\/70,
+body.light-mode #health-view .text-white\/60,
+body.light-mode #health-view .text-white\/50,
+body.light-mode #health-view .text-white\/40,
+body.light-mode #health-view .text-white\/30 {
+  color: #07111f !important;
+  text-shadow: none !important;
+}
+
+body.light-mode #health-view .health-command-copy,
+body.light-mode #health-view .health-summary-card small,
+body.light-mode #health-view .health-repair-subtitle,
+body.light-mode #health-view .health-repair-row span,
+body.light-mode #health-view .text-axiom-muted {
+  color: rgba(64, 81, 106, 0.86) !important;
+  text-shadow: none !important;
+}
+
+body.light-mode #health-view .health-summary-card,
+body.light-mode #health-view .health-tools-row,
+body.light-mode #health-view #health-progress-container,
+body.light-mode #health-view .health-repair-review,
+body.light-mode #health-view .health-repair-row,
+body.light-mode #health-view .glass,
+body.light-mode #health-view .health-item {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(238, 243, 251, 0.96)) !important;
+  color: #07111f !important;
+  border-color: rgba(0, 71, 171, 0.18) !important;
+  text-shadow: none !important;
+  box-shadow: 0 12px 28px rgba(7, 17, 31, 0.08) !important;
+}
+
+body.light-mode #health-view .acc-header,
+body.light-mode #health-view .acc-body {
+  background: rgba(255, 255, 255, 0.72) !important;
+  color: #07111f !important;
+  border-color: rgba(0, 71, 171, 0.14) !important;
+}
+
+body.light-mode #health-view button,
+body.light-mode #health-view select {
+  text-shadow: none !important;
+}
+
+body.light-mode #health-view button.bg-white\/5,
+body.light-mode #health-view button.bg-white\/10,
+body.light-mode #health-view .health-repair-actions button,
+body.light-mode #health-view .health-back-studio-btn {
+  background: rgba(255, 255, 255, 0.94) !important;
+  color: #07111f !important;
+  border-color: rgba(0, 71, 171, 0.24) !important;
+  box-shadow: 0 8px 18px rgba(7, 17, 31, 0.08) !important;
+}
+
+body.light-mode #health-view .health-back-studio-btn,
+body.light-mode #health-view button.bg-axiom-accent,
+body.light-mode #health-view .health-repair-actions button.primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 36px;
+  border-radius: 12px;
+  padding: 0 16px;
+  background: linear-gradient(135deg, #3b82f6, #0047ab) !important;
+  color: #ffffff !important;
+  border: 1px solid #0047ab !important;
+  font-size: 10px;
+  font-weight: 950;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  box-shadow: 0 0 24px rgba(0, 71, 171, 0.24), 0 12px 24px rgba(7, 17, 31, 0.12) !important;
+}
+
+body.light-mode #health-view #processor-mode,
+body.light-mode #health-view .bg-black\/40,
+body.light-mode #health-view .bg-black\/50 {
+  background: rgba(255, 255, 255, 0.88) !important;
+  color: #07111f !important;
+  border-color: rgba(0, 71, 171, 0.16) !important;
+}
+
+body.light-mode #health-view #health-progress-bar {
+  background: linear-gradient(90deg, #3b82f6, #0047ab) !important;
+  box-shadow: 0 0 14px rgba(0, 71, 171, 0.24) !important;
+}
+
+body.light-mode #health-view .health-summary-card.bpm .health-stat,
+body.light-mode #health-view .health-summary-card.key .health-stat {
+  color: #0047ab !important;
+}
+
+body.light-mode #health-view .health-show-all-btn,
+body.light-mode #health-view .health-summary-card.file .health-card-action,
+body.light-mode #health-view .health-summary-card.bpm .health-card-action,
+body.light-mode #health-view .health-summary-card.key .health-card-action,
+body.light-mode #health-view button[onclick*="purgeMissingFiles"] {
+  background: linear-gradient(135deg, #3b82f6, #0047ab) !important;
+  color: #ffffff !important;
+  border-color: #0047ab !important;
+  text-shadow: none !important;
+  box-shadow: 0 0 22px rgba(0, 71, 171, 0.22), 0 12px 24px rgba(7, 17, 31, 0.12) !important;
+}
+
+body.light-mode #health-view .health-summary-card.year .health-card-action,
+body.light-mode #health-view button[onclick*="startUnifiedHealthScan('missing_year')"],
+body.light-mode #health-view button[onclick*="toggleAccordion('year-rescan'"],
+body.light-mode #health-view button[onclick*="resetAxiomLibraryIndex"] {
+  background: linear-gradient(135deg, #f59e0b, #b45309) !important;
+  color: #ffffff !important;
+  border-color: #b45309 !important;
+  text-shadow: none !important;
+  box-shadow: 0 0 20px rgba(180, 83, 9, 0.18), 0 12px 24px rgba(7, 17, 31, 0.10) !important;
+}
+
+body.light-mode #health-view .health-summary-card.year .health-stat,
+body.light-mode #health-view .text-amber-400,
+body.light-mode #health-view .text-amber-300 {
+  color: #92400e !important;
+  text-shadow: none !important;
+}
+
+/* --------------------------------------------------------------------------
+   Day mode system finish
+   This block intentionally sits at true EOF. The redesign stylesheet owns
+   geometry; Day Mode only inverts surfaces, text, state colour, and glow.
+   -------------------------------------------------------------------------- */
+
+/* Shared shell and sidebar */
+body.light-mode #axiom-sidebar.axiom-sidebar {
+  background: #ffffff !important;
+  color: #07111f !important;
+  border-right: 1px solid rgba(0, 71, 171, 0.16) !important;
+  box-shadow: 14px 0 34px rgba(7, 17, 31, 0.08) !important;
+}
+
+body.light-mode #axiom-sidebar :is(
+  .axiom-start-wordmark,
+  .axiom-sidebar-nav-item,
+  .axiom-sidebar-nav-label,
+  .axiom-sidebar-track-unit
+) {
+  color: #07111f !important;
+  text-shadow: none !important;
+}
+
+body.light-mode #axiom-sidebar :is(.axiom-sidebar-nav-item, .axiom-sidebar-utility-btn) svg {
+  color: #40516a !important;
+  filter: none !important;
+}
+
+body.light-mode #axiom-sidebar .axiom-sidebar-nav-item:hover {
+  background: #eef3fb !important;
+  color: #0047ab !important;
+}
+
+body.light-mode #axiom-sidebar .axiom-sidebar-nav-item[data-nav-state="active"] {
+  background: linear-gradient(90deg, rgba(0, 71, 171, 0.14), rgba(37, 99, 235, 0.05)) !important;
+  color: #07111f !important;
+  box-shadow:
+    inset 5px 0 0 #0047ab,
+    inset 0 1px 0 rgba(0, 71, 171, 0.30),
+    inset 0 -1px 0 rgba(0, 71, 171, 0.30) !important;
+}
+
+body.light-mode #axiom-sidebar .axiom-sidebar-nav-item[data-nav-state="active"] svg,
+body.light-mode #axiom-sidebar .axiom-sidebar-nav-item[data-nav-state="active"] .axiom-sidebar-nav-icon {
+  color: #0047ab !important;
+  filter: drop-shadow(0 0 6px rgba(0, 71, 171, 0.20)) !important;
+}
+
+body.light-mode #axiom-sidebar :is(.axiom-sidebar-submenu, .axiom-sidebar-counter-menu) {
+  background: #f8fbff !important;
+  color: #07111f !important;
+  border-color: rgba(0, 71, 171, 0.16) !important;
+}
+
+body.light-mode #axiom-sidebar :is(.axiom-sidebar-submenu-item, .axiom-sidebar-submenu-item span) {
+  color: #40516a !important;
+}
+
+body.light-mode #axiom-sidebar .axiom-sidebar-submenu-item:hover {
+  background: rgba(0, 71, 171, 0.08) !important;
+  color: #0047ab !important;
+}
+
+body.light-mode #axiom-sidebar #tracks-drop-zone {
+  background: linear-gradient(180deg, #f8fbff, #eef3fb) !important;
+  border-top: 2px solid #0047ab !important;
+  box-shadow: inset 0 14px 30px rgba(0, 71, 171, 0.06) !important;
+}
+
+body.light-mode #axiom-sidebar #tracks-drop-zone #lib-track-count-val {
+  color: #0047ab !important;
+  text-shadow: none !important;
+}
+
+body.light-mode #axiom-sidebar #tracks-drop-zone .axiom-sidebar-track-unit {
+  color: #07111f !important;
+}
+
+body.light-mode #axiom-sidebar #lib-status,
+body.light-mode #axiom-sidebar #lib-status span {
+  background: #ffffff !important;
+  color: #40516a !important;
+}
+
+body.light-mode #axiom-sidebar #lib-status::before {
+  background: #0047ab !important;
+  box-shadow: 0 0 8px rgba(0, 71, 171, 0.24) !important;
+}
+
+/* Shared controls: every Night lime action becomes Day blue. */
+body.light-mode :is(.button--primary, .player-add-btn, .library-add-btn, .anchor-suggestion-add) {
+  background: #0047ab !important;
+  color: #ffffff !important;
+  border-color: #0047ab !important;
+  text-shadow: none !important;
+  box-shadow: 0 0 16px rgba(0, 71, 171, 0.18) !important;
+}
+
+body.light-mode :is(.button--green-outline, .studio-smart-btn, .anchor-header-action.primary) {
+  background: #ffffff !important;
+  color: #0047ab !important;
+  border-color: rgba(0, 71, 171, 0.58) !important;
+  text-shadow: none !important;
+  box-shadow: none !important;
+}
+
+body.light-mode :is(.axiom-help-btn, .axiom-help-btn--compact, .axiom-help-btn--feature),
+body.light-mode #studio-active-view #btn-studio-guide.axiom-help-btn,
+body.light-mode #tab-content-library.library-cockpit .library-guide-btn.axiom-help-btn {
+  background: #0047ab !important;
+  color: #ffffff !important;
+  border-color: #0047ab !important;
+  text-shadow: none !important;
+  box-shadow: 0 0 18px rgba(0, 71, 171, 0.18) !important;
+}
+
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-close-btn:not(.axiom-help-btn) {
+  background: #ffffff !important;
+  color: #07111f !important;
+  border-color: rgba(7, 17, 31, 0.24) !important;
+  box-shadow: none !important;
+}
+
+body.light-mode :is(.axiom-help-btn, .axiom-help-btn--compact, .axiom-help-btn--feature) span {
+  color: #ffffff !important;
+}
+
+body.light-mode :is(.axiom-help-btn, .axiom-help-btn--compact, .axiom-help-btn--feature):hover {
+  background: #2563eb !important;
+  color: #ffffff !important;
+  border-color: #2563eb !important;
+}
+
+/* Library and live recommendations: one readable hierarchy in every state. */
+body.light-mode #tab-content-library.library-cockpit {
+  background: #f5f7fb !important;
+  color: #07111f !important;
+}
+
+body.light-mode #tab-content-library.library-cockpit :is(
+  .library-topbar,
+  .library-set-prep,
+  .recommendations-panel,
+  .smart-links-container
+) {
+  background-color: #ffffff !important;
+  color: #07111f !important;
+  border-color: rgba(0, 71, 171, 0.16) !important;
+}
+
+body.light-mode #tab-content-library.library-cockpit #search-results .library-track-card,
+body.light-mode #tab-content-library.library-cockpit #lib-suggestions-list .recommendation-card {
+  background: #ffffff !important;
+  color: #07111f !important;
+  border-color: rgba(7, 17, 31, 0.12) !important;
+  box-shadow: 0 8px 18px rgba(7, 17, 31, 0.06) !important;
+}
+
+body.light-mode #tab-content-library.library-cockpit :is(
+  .library-track-title,
+  .recommendation-title,
+  .recommendations-title,
+  .track-title-resize
+) {
+  color: #07111f !important;
+  text-shadow: none !important;
+}
+
+body.light-mode #tab-content-library.library-cockpit :is(
+  .library-track-artist,
+  .recommendation-artist,
+  .track-artist-resize,
+  .library-meta-line,
+  .library-meta-line span,
+  .recommendation-meta,
+  .recommendation-meta span
+) {
+  color: #40516a !important;
+  text-shadow: none !important;
+}
+
+body.light-mode #tab-content-library.library-cockpit #search-results .library-track-card.axiom-focus-deck-row.selected,
+body.light-mode #tab-content-library.library-cockpit #lib-suggestions-list .recommendation-card:is(.selected, .active-suggestion),
+body.light-mode #replacement-modal #modal-suggestions-list .anchor-suggestion-row.axiom-focus-deck-row:is(.selected, .active-suggestion) {
+  background: linear-gradient(90deg, #ffffff, #e8f0ff 54%, #ffffff) !important;
+  color: #07111f !important;
+  border-top-color: #0047ab !important;
+  border-right-color: rgba(0, 71, 171, 0.44) !important;
+  border-bottom-color: #0047ab !important;
+  box-shadow: 0 0 0 1px rgba(0, 71, 171, 0.10), 0 14px 28px rgba(7, 17, 31, 0.10), 0 0 22px rgba(0, 71, 171, 0.12) !important;
+}
+
+body.light-mode .axiom-focus-deck-row:is(.selected, .active-suggestion) .axiom-focus-marker {
+  background: #0047ab !important;
+  color: #ffffff !important;
+  box-shadow: inset 5px 0 0 #00357f, inset -1px 0 0 rgba(255, 255, 255, 0.30) !important;
+}
+
+body.light-mode .axiom-focus-deck-row:is(.selected, .active-suggestion) .axiom-focus-marker > span {
+  color: #ffffff !important;
+}
+
+body.light-mode .axiom-focus-deck-row:is(.selected, .active-suggestion) :is(
+  .library-track-title,
+  .studio-row-title,
+  .anchor-suggestion-title
+) {
+  color: #07111f !important;
+  border-bottom-color: #0047ab !important;
+  text-decoration-color: #0047ab !important;
+}
+
+body.light-mode .axiom-focus-deck-row:is(.selected, .active-suggestion) :is(
+  .library-track-artist,
+  .studio-row-artist,
+  .anchor-suggestion-artist,
+  .library-meta-line,
+  .library-meta-line span
+) {
+  color: #40516a !important;
+}
+
+body.light-mode .axiom-focus-deck-row:is(.selected, .active-suggestion) :is(
+  .library-add-btn,
+  .studio-smart-btn,
+  .anchor-suggestion-add
+) {
+  background: #0047ab !important;
+  color: #ffffff !important;
+  border-color: #0047ab !important;
+  box-shadow: 0 0 16px rgba(0, 71, 171, 0.18) !important;
+}
+
+/* Studio: preserve geometry and turn the entire musical-data system blue. */
+body.light-mode #studio-active-view :is(#studio-save-set-btn, #btn-manual-mode) {
+  background: #0047ab !important;
+  color: #ffffff !important;
+  border-color: #0047ab !important;
+  box-shadow: 0 0 16px rgba(0, 71, 171, 0.18) !important;
+}
+
+body.light-mode #studio-active-view :is(.studio-set-brief, .studio-brief-strip) {
+  background: #ffffff !important;
+  color: #07111f !important;
+  border-color: rgba(0, 71, 171, 0.16) !important;
+}
+
+body.light-mode #studio-active-view #btn-optimize.button--harmonic {
+  background: #ffffff !important;
+  color: #07111f !important;
+  border-color: rgba(0, 71, 171, 0.54) !important;
+  box-shadow: inset 0 0 12px rgba(0, 71, 171, 0.04) !important;
+}
+
+body.light-mode #studio-active-view #btn-optimize.button--harmonic:is(.active, [aria-pressed="true"]) {
+  background: #2563eb !important;
+  color: #ffffff !important;
+  border-color: #2563eb !important;
+}
+
+body.light-mode #active-playlist-container .playlist-row.studio-transition-row.axiom-focus-deck-row.selected {
+  background: linear-gradient(90deg, #ffffff, #e8f0ff 56%, #ffffff) !important;
+  color: #07111f !important;
+  border-top-color: #0047ab !important;
+  border-right-color: rgba(0, 71, 171, 0.44) !important;
+  border-bottom-color: #0047ab !important;
+  box-shadow: 0 0 0 1px rgba(0, 71, 171, 0.10), 0 14px 28px rgba(7, 17, 31, 0.10), 0 0 22px rgba(0, 71, 171, 0.12) !important;
+}
+
+body.light-mode #active-playlist-container .playlist-row.studio-transition-row.axiom-focus-deck-row.selected .transition-badge.energy-spine-node {
+  background: #ffffff !important;
+  color: #0047ab !important;
+  border-color: #0047ab !important;
+  box-shadow: 0 0 0 4px rgba(0, 71, 171, 0.08), 0 0 22px rgba(0, 71, 171, 0.30), inset 0 0 12px rgba(0, 71, 171, 0.06) !important;
+}
+
+/* Matching Songs: invert the complete shell, including first-visit guidance. */
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-dj-topline {
+  background: #ffffff !important;
+  border-bottom-color: rgba(0, 71, 171, 0.16) !important;
+}
+
+body.light-mode #replacement-modal.anchor-dj-modal :is(
+  .anchor-logo-word,
+  .anchor-kicker,
+  .anchor-section-label,
+  .anchor-board-mode,
+  .anchor-context-copy,
+  .anchor-title,
+  .anchor-subtitle,
+  .anchor-remaining,
+  .anchor-result-count,
+  .anchor-decision-summary,
+  .anchor-sort-pill > span,
+  .transition-title
+) {
+  color: #07111f !important;
+  text-shadow: none !important;
+}
+
+body.light-mode #replacement-modal.anchor-dj-modal :is(.anchor-context-copy, .anchor-subtitle, .anchor-result-count, .anchor-decision-summary) {
+  color: #40516a !important;
+}
+
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-section-chip {
+  background: color-mix(in srgb, var(--cue, #0047ab) 7%, #ffffff) !important;
+  color: #07111f !important;
+  box-shadow: none !important;
+}
+
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-section-chip span {
+  color: #40516a !important;
+}
+
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-results-placeholder {
+  background: rgba(0, 71, 171, 0.06) !important;
+  color: #07111f !important;
+  border-color: rgba(0, 71, 171, 0.34) !important;
+}
+
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-results-placeholder span {
+  color: #0047ab !important;
+}
+
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-results-placeholder small {
+  color: #40516a !important;
+}
+
+body.light-mode #replacement-modal.anchor-dj-modal :is(.anchor-panel-header, .anchor-filter-bar) {
+  background: #ffffff !important;
+  color: #07111f !important;
+  border-color: rgba(0, 71, 171, 0.16) !important;
+}
+
+body.light-mode #replacement-modal.anchor-dj-modal :is(.anchor-header-action, .anchor-sort-pill, .transition-settings-btn) {
+  background: #ffffff !important;
+  color: #07111f !important;
+  border-color: rgba(0, 71, 171, 0.24) !important;
+  box-shadow: none !important;
+}
+
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-header-action.primary {
+  background: #0047ab !important;
+  color: #ffffff !important;
+  border-color: #0047ab !important;
+}
+
+body.light-mode #replacement-modal.anchor-dj-modal .transition-play-btn {
+  background: #0047ab !important;
+  color: #ffffff !important;
+  border-color: #0047ab !important;
+  box-shadow: 0 0 24px rgba(0, 71, 171, 0.24) !important;
+}
+
+body.light-mode #replacement-modal.anchor-dj-modal .transition-preview-controls > button:not(.transition-play-btn) {
+  color: #07111f !important;
+}
+
+body.light-mode #replacement-modal.anchor-dj-modal .transition-preview-controls .skip-preview-icon {
+  filter: brightness(0) saturate(100%) invert(20%) sepia(97%) saturate(2662%) hue-rotate(206deg) brightness(78%) contrast(111%) !important;
+}
+
+body.light-mode #replacement-modal.anchor-dj-modal .transition-action.primary {
+  background: #0047ab !important;
+  color: #ffffff !important;
+  border-color: #0047ab !important;
+  box-shadow: 0 0 20px rgba(0, 71, 171, 0.20) !important;
+}
+
+body.light-mode #smart-list-guide-popover {
+  background: #ffffff !important;
+  color: #07111f !important;
+  border-color: rgba(0, 71, 171, 0.22) !important;
+  box-shadow: 0 18px 42px rgba(7, 17, 31, 0.16) !important;
+}
+
+body.light-mode #smart-list-guide-popover .workflow-item.workflow-item-attention {
+  border-color: rgba(0, 71, 171, 0.72) !important;
+  box-shadow: inset 4px 0 0 #0047ab, 0 0 22px rgba(0, 71, 171, 0.18) !important;
+}
+
+body.light-mode #smart-list-guide-popover .workflow-close {
+  background: #ffffff !important;
+  color: #07111f !important;
+  border-color: rgba(7, 17, 31, 0.24) !important;
+}
+
+body.light-mode #smart-list-guide-popover .workflow-close:hover,
+body.light-mode #smart-list-guide-popover .workflow-close:focus-visible {
+  background: #0047ab !important;
+  color: #ffffff !important;
+  border-color: #0047ab !important;
+  outline-color: rgba(0, 71, 171, 0.56) !important;
+}
+
+/* Specificity locks for legacy selectors that still carry explicit night ink. */
+html body.light-mode #axiom-sidebar .axiom-sidebar-nav-item :is(span, svg),
+html body.light-mode #axiom-sidebar .axiom-sidebar-nav-item[data-nav-state="active"] :is(span, svg) {
+  color: #07111f !important;
+  filter: none !important;
+}
+
+html body.light-mode #axiom-sidebar .axiom-sidebar-nav-item[data-nav-state="active"] svg {
+  color: #0047ab !important;
+}
+
+html body.light-mode #axiom-sidebar .axiom-sidebar-engine {
+  background: #ffffff !important;
+  color: #40516a !important;
+  border-top-color: rgba(0, 71, 171, 0.14) !important;
+}
+
+html body.light-mode #tab-content-library.library-cockpit .library-guide-btn.axiom-help-btn.button--secondary,
+html body.light-mode #studio-active-view #btn-studio-guide.axiom-help-btn.button--secondary {
+  background: #0047ab !important;
+  color: #ffffff !important;
+  border-color: #0047ab !important;
+  box-shadow: 0 0 18px rgba(0, 71, 171, 0.18) !important;
+}
+
+html body.light-mode #tab-content-library.library-cockpit #search-results .library-track-card.axiom-focus-deck-row :is(
+  .library-track-title,
+  .track-title-resize
+),
+html body.light-mode #tab-content-library.library-cockpit #lib-suggestions-list .recommendation-card :is(
+  .recommendation-title,
+  .track-title-resize
+) {
+  color: #07111f !important;
+  text-shadow: none !important;
+}
+
+html body.light-mode #tab-content-library.library-cockpit #search-results .library-track-card.axiom-focus-deck-row :is(
+  .library-track-artist,
+  .track-artist-resize,
+  .library-meta-line,
+  .library-meta-line span
+),
+html body.light-mode #tab-content-library.library-cockpit #lib-suggestions-list .recommendation-card :is(
+  .recommendation-artist,
+  .track-artist-resize
+) {
+  color: #40516a !important;
+  text-shadow: none !important;
+}
+
+html body.light-mode #tab-content-library.library-cockpit #search-results .library-track-card.axiom-focus-deck-row.selected .library-track-title {
+  color: #07111f !important;
+  border-bottom-color: #0047ab !important;
+}
+
+html body.light-mode #tab-content-studio,
+html body.light-mode #studio-active-view {
+  background: #f5f7fb !important;
+  color: #07111f !important;
+}
+
+html body.light-mode #studio-active-view #studio-set-brief-bar,
+html body.light-mode #studio-active-view #studio-mode-controls {
+  background: #ffffff !important;
+  color: #07111f !important;
+  border-color: rgba(0, 71, 171, 0.16) !important;
+}
+
+html body.light-mode #studio-active-view #studio-save-set-btn.button--primary,
+html body.light-mode #studio-active-view #studio-tab-manual.button--primary {
+  background: #0047ab !important;
+  color: #ffffff !important;
+  border-color: #0047ab !important;
+  box-shadow: 0 0 16px rgba(0, 71, 171, 0.18) !important;
+}
+
+html body.light-mode #studio-active-view #btn-optimize.button--harmonic {
+  background: #ffffff !important;
+  color: #07111f !important;
+  border-color: rgba(0, 71, 171, 0.58) !important;
+  box-shadow: inset 0 0 12px rgba(0, 71, 171, 0.04) !important;
+}
+
+html body.light-mode #studio-active-view #studio-tab-magic.button--secondary {
+  background: #ffffff !important;
+  color: #07111f !important;
+  border-color: rgba(0, 71, 171, 0.58) !important;
+  box-shadow: none !important;
+}
+
+html body.light-mode.studio-magic-mode #studio-active-view #studio-tab-magic.button--secondary {
+  background: #0047ab !important;
+  color: #ffffff !important;
+  border-color: #0047ab !important;
+  box-shadow: 0 0 16px rgba(0, 71, 171, 0.18) !important;
+}
+
+html body.light-mode.studio-magic-mode #studio-active-view #studio-tab-manual.button--primary {
+  background: #ffffff !important;
+  color: #07111f !important;
+  border-color: rgba(0, 71, 171, 0.58) !important;
+  box-shadow: none !important;
+}
+
+/* Keep official white DJ-software lockups on their intended dark export panel
+   in both AXIOM themes. */
+html body.light-mode #studio-active-view #export-dropdown-menu {
+  border-color: #303631 !important;
+  background: #080b09 !important;
+  color: #f5f7f4 !important;
+  box-shadow: 0 26px 64px rgba(7, 17, 31, 0.28) !important;
+}
+
+html body.light-mode #studio-active-view #export-dropdown-menu > .studio-command-menu-label {
+  color: #a3ff00 !important;
+}
+
+html body.light-mode #studio-active-view #export-dropdown-menu .studio-export-destination {
+  background: #090c0a !important;
+  color: #f5f7f4 !important;
+}
+
+html body.light-mode #studio-active-view #export-dropdown-menu .studio-export-destination:is(:hover, :focus-visible) {
+  background: #111612 !important;
+}
+
+html body.light-mode #studio-active-view #export-dropdown-menu .studio-export-destination small {
+  color: rgba(229, 233, 225, 0.55) !important;
+}
+
+html body.light-mode #studio-active-view #export-dropdown-menu .studio-export-file-grid button {
+  border-color: #303631 !important;
+  background: #0c100d !important;
+  color: #a3ff00 !important;
+}
+
+html body.light-mode #studio-active-view #export-dropdown-menu .studio-export-file-grid button:is(:hover, :focus-visible) {
+  border-color: #a3ff00 !important;
+  background: rgba(163, 255, 0, 0.08) !important;
+  color: #a3ff00 !important;
+}
+
+html body.light-mode #active-playlist-container .playlist-row.studio-transition-row .transition-badge.energy-spine-node,
+html body.light-mode #active-playlist-container .playlist-row.studio-transition-row .transition-badge.energy-spine-node::before,
+html body.light-mode #active-playlist-container .playlist-row.studio-transition-row .transition-badge.energy-spine-node::after {
+  background: linear-gradient(145deg, #60a5fa, #0047ab 58%, #00357f) !important;
+  color: #ffffff !important;
+  border-color: rgba(255, 255, 255, 0.82) !important;
+  text-shadow: none !important;
+  box-shadow:
+    0 0 0 2px rgba(0, 71, 171, 0.08),
+    0 0 12px rgba(0, 71, 171, 0.28),
+    0 0 24px rgba(0, 71, 171, 0.14),
+    inset 0 0 8px rgba(255, 255, 255, 0.16) !important;
+}
+
+html body.light-mode #active-playlist-container .playlist-row.studio-transition-row .studio-smart-btn.button--green-outline {
+  background: #ffffff !important;
+  color: #0047ab !important;
+  border-color: rgba(0, 71, 171, 0.58) !important;
+  box-shadow: none !important;
+}
+
+html body.light-mode #active-playlist-container .playlist-row.studio-transition-row .studio-smart-btn.button--green-outline:hover,
+html body.light-mode #active-playlist-container .playlist-row.studio-transition-row.selected .studio-smart-btn.button--green-outline {
+  background: #0047ab !important;
+  color: #ffffff !important;
+  border-color: #0047ab !important;
+}
+
+html body.light-mode #replacement-modal.anchor-dj-modal #anchor-transition-panel > .anchor-panel-header .anchor-section-label {
+  color: #07111f !important;
+  text-shadow: none !important;
+}
+
+html body.light-mode #replacement-modal.anchor-dj-modal .anchor-intent-btn.active {
+  background: #0047ab !important;
+  color: #ffffff !important;
+  border-color: #0047ab !important;
+  box-shadow: 0 0 20px rgba(0, 71, 171, 0.16) !important;
+}
+
+html body.light-mode #replacement-modal.anchor-dj-modal .anchor-section-chip:first-child,
+html body.light-mode #replacement-modal.anchor-dj-modal .anchor-section-chip:first-child strong {
+  --cue: #0047ab !important;
+  color: #0047ab !important;
+  border-color: rgba(0, 71, 171, 0.42) !important;
+}
+
+html body.light-mode #replacement-modal.anchor-dj-modal .transition-action.primary,
+html body.light-mode #replacement-modal.anchor-dj-modal .transition-action.primary :is(span, small) {
+  background: #0047ab !important;
+  color: #ffffff !important;
+  border-color: #0047ab !important;
+  text-shadow: none !important;
+}
+
+/* Day mode completion locks. These selectors deliberately mirror the most
+   specific night-mode component rules so the inverse system stays coherent. */
+html body.light-mode aside#axiom-sidebar .axiom-sidebar-nav-item > div > span.text-primary-contrast,
+html body.light-mode aside#axiom-sidebar .axiom-sidebar-nav-item > div > span:not(#fav-sidebar-badge) {
+  color: #07111f !important;
+  text-shadow: none !important;
+}
+
+html body.light-mode aside#axiom-sidebar .axiom-sidebar-nav-item svg,
+html body.light-mode aside#axiom-sidebar .axiom-sidebar-nav-item .axiom-sidebar-nav-icon {
+  color: #40516a !important;
+  filter: none !important;
+}
+
+html body.light-mode aside#axiom-sidebar .axiom-sidebar-nav-item[data-nav-state="active"] > div > span:not(#fav-sidebar-badge),
+html body.light-mode aside#axiom-sidebar .axiom-sidebar-nav-item[data-nav-state="active"] svg,
+html body.light-mode aside#axiom-sidebar .axiom-sidebar-nav-item[data-nav-state="active"] .axiom-sidebar-nav-icon {
+  color: #0047ab !important;
+  filter: none !important;
+}
+
+html body.light-mode #tab-content-library.library-cockpit .library-brief-chip.button--small:not(.library-fresh-rotate) {
+  background: #ffffff !important;
+  color: #07111f !important;
+  border-color: rgba(0, 71, 171, 0.34) !important;
+  box-shadow: none !important;
+}
+
+html body.light-mode #tab-content-library.library-cockpit .library-brief-chip.button--small.active {
+  background: #0047ab !important;
+  color: #ffffff !important;
+  border-color: #0047ab !important;
+  box-shadow: 0 0 16px rgba(0, 71, 171, 0.16) !important;
+}
+
+html body.light-mode #tab-content-library.library-cockpit #search-results .library-track-card.selected .library-add-btn.button--primary,
+html body.light-mode #tab-content-library.library-cockpit #lib-suggestions-list .recommendation-add-btn.button--primary {
+  background: #0047ab !important;
+  color: #ffffff !important;
+  border-color: #0047ab !important;
+  box-shadow: 0 0 14px rgba(0, 71, 171, 0.16) !important;
+}
+
+html body.light-mode #studio-active-view .studio-header .studio-actions #studio-save-set-btn.studio-save-crate-btn.button--primary,
+html body.light-mode #studio-active-view .studio-header .studio-actions #btn-studio-guide.axiom-help-btn.button--secondary {
+  background: #0047ab !important;
+  color: #ffffff !important;
+  border-color: #0047ab !important;
+  box-shadow: 0 0 16px rgba(0, 71, 171, 0.18) !important;
+}
+
+html body.light-mode #studio-active-view .studio-header .studio-actions #studio-save-set-btn.studio-save-crate-btn.button--primary :is(span, svg),
+html body.light-mode #studio-active-view .studio-header .studio-actions #btn-studio-guide.axiom-help-btn.button--secondary :is(span, svg) {
+  color: #ffffff !important;
+}
+
+html body.light-mode #studio-active-view .studio-header .studio-actions #export-dropdown-btn.button--secondary,
+html body.light-mode #studio-active-view .studio-header .studio-actions #studio-more-menu-btn.button--icon {
+  background: #ffffff !important;
+  color: #07111f !important;
+  border-color: rgba(0, 71, 171, 0.34) !important;
+  box-shadow: none !important;
+}
+
+html body.light-mode #studio-active-view .studio-header .studio-actions #export-dropdown-btn.button--secondary :is(span, svg),
+html body.light-mode #studio-active-view .studio-header .studio-actions #studio-more-menu-btn.button--icon :is(span, svg) {
+  color: #07111f !important;
+}
+
+html body.light-mode #active-playlist-container .playlist-row.studio-transition-row.axiom-focus-deck-row .transition-badge.energy-spine-node {
+  background: linear-gradient(145deg, #60a5fa, #0047ab 58%, #00357f) !important;
+  color: #ffffff !important;
+  border-color: rgba(255, 255, 255, 0.84) !important;
+  text-shadow: none !important;
+  box-shadow:
+    0 0 0 2px rgba(0, 71, 171, 0.08),
+    0 0 12px rgba(0, 71, 171, 0.28),
+    0 0 24px rgba(0, 71, 171, 0.14),
+    inset 0 0 8px rgba(255, 255, 255, 0.16) !important;
+}
+
+html body.light-mode #active-playlist-container .playlist-row.studio-transition-row.axiom-focus-deck-row .transition-badge.energy-spine-node::before,
+html body.light-mode #active-playlist-container .playlist-row.studio-transition-row.axiom-focus-deck-row .transition-badge.energy-spine-node::after {
+  background: linear-gradient(180deg, rgba(37, 99, 235, 0.18), #0047ab 26%, #0047ab 74%, rgba(37, 99, 235, 0.18)) !important;
+  box-shadow: 0 0 8px rgba(0, 71, 171, 0.32) !important;
+}
+
+html body.light-mode #active-playlist-container .playlist-row.studio-transition-row.axiom-focus-deck-row :is(
+  .studio-harmonic-value,
+  .studio-harmonic-anchor,
+  .studio-harmonic-percent
+) {
+  color: #0047ab !important;
+  text-shadow: none !important;
+}
+
+html body.light-mode #active-playlist-container .playlist-row.studio-transition-row.axiom-focus-deck-row :is(
+  .studio-harmonic-label,
+  .studio-harmonic-caption
+) {
+  color: #40516a !important;
+  text-shadow: none !important;
+}
+
+html body.light-mode #replacement-modal.anchor-dj-modal .anchor-intent-btn:not(.active) {
+  background: #ffffff !important;
+  color: #07111f !important;
+  border-color: rgba(0, 71, 171, 0.30) !important;
+  box-shadow: none !important;
+}

@@ -1,0 +1,26 @@
+<style id="library-steel-source-cta-shadow-final-v14">
+  /* Setup Mode places this lime CTA on brushed steel. Give it enough physical
+     separation to read as a control without carrying the effect into the
+     normal black-and-green Library state. */
+  html body:not(.light-mode).library-steel-mode
+    #tab-content-library.library-cockpit#tab-content-library[data-library-steel="active"]
+    .library-control-row > .library-add-folder.button--primary {
+    box-shadow:
+      0 2px 0 rgba(0,0,0,.62),
+      0 9px 20px rgba(0,0,0,.38),
+      0 0 0 1px rgba(7,16,5,.30),
+      0 0 18px rgba(163,255,0,.18),
+      inset 0 1px 0 rgba(255,255,255,.52) !important;
+  }
+
+  html body:not(.light-mode).library-steel-mode
+    #tab-content-library.library-cockpit#tab-content-library[data-library-steel="active"]
+    .library-control-row > .library-add-folder.button--primary:is(:hover, :focus-visible) {
+    box-shadow:
+      0 3px 0 rgba(0,0,0,.66),
+      0 12px 26px rgba(0,0,0,.42),
+      0 0 0 1px rgba(7,16,5,.34),
+      0 0 24px rgba(163,255,0,.26),
+      inset 0 1px 0 rgba(255,255,255,.62) !important;
+  }
+</style>

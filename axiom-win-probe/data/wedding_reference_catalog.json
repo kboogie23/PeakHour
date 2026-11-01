@@ -1,0 +1,44 @@
+{
+  "version": 1,
+  "updated_at": "2026-07-14",
+  "usage": "Public playlist metadata only. AXIOM matches title and artist against tracks already owned or connected by the user; it does not download or copy Spotify audio.",
+  "source": {
+    "name": "Public Spotify wedding playlist reference set",
+    "urls": [
+      "https://open.spotify.com/playlist/37i9dQZF1DX3Z99viCDp7Q",
+      "https://open.spotify.com/playlist/3ugCSpXQ2Oj2ZMJLMtD7mu"
+    ]
+  },
+  "tracks": [
+    { "title": "Ordinary", "artist": "Alex Warren" },
+    { "title": "BIRDS OF A FEATHER", "artist": "Billie Eilish" },
+    { "title": "Yellow", "artist": "Coldplay" },
+    { "title": "Perfect", "artist": "Ed Sheeran" },
+    { "title": "Sure Thing", "artist": "Miguel" },
+    { "title": "All of Me", "artist": "John Legend" },
+    { "title": "Dandelions", "artist": "Ruth B." },
+    { "title": "Without You", "artist": "Kodaline" },
+    { "title": "Everywhere", "artist": "Fleetwood Mac" },
+    { "title": "Kiss Me", "artist": "Sixpence None The Richer" },
+    { "title": "A Thousand Years", "artist": "Christina Perri" },
+    { "title": "Lover", "artist": "Taylor Swift" },
+    { "title": "Thinking Out Loud", "artist": "Ed Sheeran" },
+    { "title": "You Make My Dreams (Come True)", "artist": "Daryl Hall & John Oates" },
+    { "title": "Can't Help Falling in Love", "artist": "Elvis Presley" },
+    { "title": "Here Comes The Sun", "artist": "The Beatles" },
+    { "title": "Marry Me", "artist": "Train" },
+    { "title": "Signed, Sealed, Delivered (I'm Yours)", "artist": "Stevie Wonder" },
+    { "title": "This Will Be (An Everlasting Love)", "artist": "Natalie Cole" },
+    { "title": "Bring Em Out", "artist": "T.I." },
+    { "title": "Forever", "artist": "Chris Brown" },
+    { "title": "Come and Get Your Love", "artist": "Redbone" },
+    { "title": "Dancing in the Moonlight", "artist": "King Harvest" },
+    { "title": "What's Up?", "artist": "4 Non Blondes" },
+    { "title": "Can We Talk", "artist": "Tevin Campbell" },
+    { "title": "I Want It That Way", "artist": "Backstreet Boys" },
+    { "title": "Lovely Day", "artist": "Bill Withers" },
+    { "title": "You Are the Best Thing", "artist": "Ray LaMontagne" },
+    { "title": "How Sweet It Is (To Be Loved by You)", "artist": "James Taylor" },
+    { "title": "At Last", "artist": "Etta James" }
+  ]
+}

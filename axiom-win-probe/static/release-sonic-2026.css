@@ -1,0 +1,326 @@
+/* Owner-selected Sonic Canvas. Scoped to returning-user release/update dialogs. */
+.release-sonic-hero, .release-sonic-intro, .release-sonic-build { display: none; }
+
+html body #release-splash.release-splash-overlay.release-sonic,
+html body #update-modal.update-sonic {
+  background: rgba(6, 9, 11, .9) !important;
+  backdrop-filter: blur(12px) !important;
+  padding: 28px !important;
+  font-family: 'Barlow', sans-serif !important;
+}
+html body #release-splash.release-splash-overlay.release-sonic.active .release-splash-shell {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) !important;
+  grid-template-rows: 280px minmax(0, 1fr) !important;
+  width: min(100%, 980px) !important;
+  height: 690px !important;
+  max-height: calc(100vh - 56px) !important;
+  padding: 0 !important;
+  border: 1px solid #353e43 !important;
+  border-radius: 18px !important;
+  background: #101416 !important;
+  box-shadow: 0 24px 70px rgba(0, 0, 0, .35) !important;
+  overflow: hidden !important;
+}
+html body #release-splash.release-splash-overlay.release-sonic.active.release-splash-two-rows .release-splash-shell {
+  height: 820px !important;
+}
+html body #release-splash.release-splash-overlay.release-sonic .release-splash-brand { display: none !important; }
+html body #release-splash.release-splash-overlay.release-sonic .release-splash-title { display: none !important; }
+html body #release-splash.release-splash-overlay.release-sonic .release-sonic-hero,
+html body #update-modal.update-sonic .update-sonic-hero {
+  display: block;
+  position: relative;
+  min-height: 0;
+  overflow: hidden;
+  background: #111718;
+}
+html body #release-splash.release-splash-overlay.release-sonic .release-sonic-art,
+html body #update-modal.update-sonic .release-sonic-art {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+html body #release-splash.release-splash-overlay.release-sonic .release-sonic-topbar,
+html body #update-modal.update-sonic .release-sonic-topbar {
+  position: absolute;
+  inset: 26px 36px auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  color: #f3f5f6 !important;
+  -webkit-text-fill-color: #f3f5f6 !important;
+  font: 600 14px/1.3 'Barlow', sans-serif !important;
+  text-transform: none !important;
+}
+html body #release-splash.release-splash-overlay.release-sonic .release-sonic-wordmark,
+html body #update-modal.update-sonic .release-sonic-wordmark {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font: 600 21px/1 'Barlow', sans-serif !important;
+  letter-spacing: .03em;
+}
+html body #release-splash.release-splash-overlay.release-sonic .release-sonic-wordmark img,
+html body #update-modal.update-sonic .release-sonic-wordmark img {
+  width: 42px;
+  height: 42px;
+  object-fit: contain;
+  filter: none !important;
+  mix-blend-mode: normal !important;
+}
+html body #release-splash.release-splash-overlay.release-sonic.active.update-build .release-splash-content {
+  display: grid !important;
+  grid-template-rows: auto 34px minmax(0, 1fr) auto !important;
+  padding: 30px 36px 24px !important;
+  gap: 20px !important;
+  min-height: 0 !important;
+  overflow: hidden !important;
+  background: #101416 !important;
+}
+html body #release-splash.release-splash-overlay.release-sonic .release-sonic-intro { display: block; }
+html body #release-splash.release-splash-overlay.release-sonic #release-sonic-title {
+  margin: 0 0 9px !important;
+  color: #f3f5f6 !important;
+  -webkit-text-fill-color: #f3f5f6 !important;
+  font: 600 46px/1.08 'Barlow', sans-serif !important;
+  text-transform: none !important;
+  letter-spacing: -.025em !important;
+}
+html body #release-splash.release-splash-overlay.release-sonic #release-sonic-summary {
+  margin: 0 !important;
+  color: #aab4bd !important;
+  -webkit-text-fill-color: #aab4bd !important;
+  font: 400 17px/1.45 'Barlow', sans-serif !important;
+  text-transform: none !important;
+}
+html body #release-splash.release-splash-overlay.release-sonic .release-splash-headline {
+  min-height: 34px !important;
+  height: 34px !important;
+  padding-bottom: 0 !important;
+  margin: 0 !important;
+  padding-top: 18px !important;
+  border-top: 1px solid #30393e;
+  color: #aab4bd !important;
+  -webkit-text-fill-color: #aab4bd !important;
+  font: 600 11px/1.3 'Barlow', sans-serif !important;
+  text-transform: uppercase !important;
+  letter-spacing: .2em !important;
+}
+html body #release-splash.release-splash-overlay.release-sonic.active #release-splash-features,
+html body #release-splash.release-splash-overlay.release-sonic.active.update-build #release-splash-features {
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  grid-auto-rows: max-content !important;
+  gap: 22px 28px !important;
+  margin: 0 !important;
+  padding: 0 8px 4px 0 !important;
+  scrollbar-width: thin;
+  scrollbar-color: #56636b #101416;
+}
+html body #release-splash.release-splash-overlay.release-sonic.active .release-splash-feature,
+html body #release-splash.release-splash-overlay.release-sonic.active.update-build .release-splash-feature {
+  display: block !important;
+  min-height: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+html body #release-splash.release-splash-overlay.release-sonic.active .release-splash-feature::before { display: none !important; }
+html body #release-splash.release-splash-overlay.release-sonic .release-splash-disclosure summary strong {
+  display: block !important;
+  margin: 0 0 9px !important;
+  color: #f3f5f6 !important;
+  -webkit-text-fill-color: #f3f5f6 !important;
+  font: 600 21px/1.2 'Barlow', sans-serif !important;
+  text-transform: none !important;
+  letter-spacing: 0 !important;
+}
+html body #release-splash.release-splash-overlay.release-sonic .release-splash-brief {
+  display: block !important;
+  color: #aab4bd !important;
+  -webkit-text-fill-color: #aab4bd !important;
+  font: 400 15px/1.5 'Barlow', sans-serif !important;
+  text-transform: none !important;
+  letter-spacing: 0 !important;
+}
+html body #release-splash.release-splash-overlay.release-sonic .release-sonic-more {
+  display: flex !important;
+  align-items: center;
+  gap: 8px;
+  margin-top: 16px;
+  color: #edf1f4 !important;
+  -webkit-text-fill-color: #edf1f4 !important;
+  font: 400 14px/1.3 'Barlow', sans-serif !important;
+  text-transform: none !important;
+}
+html body #release-splash.release-splash-overlay.release-sonic .release-sonic-more img {
+  width: 14px;
+  height: 14px;
+  filter: brightness(0) invert(1);
+}
+html body #release-splash.release-splash-overlay.release-sonic details[open] .release-sonic-more img { transform: rotate(90deg); }
+html body #release-splash.release-splash-overlay.release-sonic .release-splash-detail {
+  margin-top: 14px;
+  max-height: none;
+  overflow: visible;
+  padding-top: 12px;
+  border-top-color: #30393e;
+  color: #b7c0c7 !important;
+  -webkit-text-fill-color: #b7c0c7 !important;
+  font: 400 14px/1.5 'Barlow', sans-serif !important;
+}
+html body #release-splash.release-splash-overlay.release-sonic.active .release-splash-actions {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  gap: 20px;
+  padding-top: 18px !important;
+  margin: 0 !important;
+  border-top: 1px solid #30393e;
+  background: #101416 !important;
+}
+html body #release-splash.release-splash-overlay.release-sonic .release-sonic-build { display: block; position: relative; }
+html body #release-splash.release-splash-overlay.release-sonic .release-sonic-build summary {
+  color: #aab4bd !important;
+  -webkit-text-fill-color: #aab4bd !important;
+  cursor: pointer;
+  font: 400 13px/1.5 'Barlow', sans-serif !important;
+}
+html body #release-splash.release-splash-overlay.release-sonic #release-sonic-build-copy {
+  position: absolute;
+  bottom: 32px;
+  left: 0;
+  width: 260px;
+  padding: 14px;
+  margin: 0;
+  border: 1px solid #45525a;
+  border-radius: 8px;
+  background: #192025;
+  color: #dce2e7;
+  -webkit-text-fill-color: #dce2e7;
+  font: 400 13px/1.5 'Barlow', sans-serif;
+  overflow-wrap: anywhere;
+}
+html body #release-splash.release-splash-overlay.release-sonic .release-splash-btn.primary,
+html body #update-modal.update-sonic .update-modal-btn.primary {
+  width: auto !important;
+  min-width: 220px !important;
+  min-height: 48px !important;
+  padding: 12px 24px !important;
+  border: 1px solid #a3ff00 !important;
+  border-radius: 9px !important;
+  background: #a3ff00 !important;
+  color: #071005 !important;
+  -webkit-text-fill-color: #071005 !important;
+  box-shadow: none !important;
+  font: 600 16px/1.3 'Barlow', sans-serif !important;
+  text-transform: none !important;
+  letter-spacing: 0 !important;
+  transform: none !important;
+}
+html body #release-splash.release-splash-overlay.release-sonic .release-splash-btn.primary:hover,
+html body #release-splash.release-splash-overlay.release-sonic .release-splash-btn.primary:focus,
+html body #release-splash.release-splash-overlay.release-sonic .release-splash-btn.primary:active,
+html body #release-splash.release-splash-overlay.release-sonic .release-splash-btn.primary:disabled,
+html body #update-modal.update-sonic .update-modal-btn.primary:hover,
+html body #update-modal.update-sonic .update-modal-btn.primary:focus,
+html body #update-modal.update-sonic .update-modal-btn.primary:active,
+html body #update-modal.update-sonic .update-modal-btn.primary:disabled {
+  background: #b4ff32 !important;
+  color: #071005 !important;
+  -webkit-text-fill-color: #071005 !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+html body #release-splash.release-splash-overlay.release-sonic button:focus-visible,
+html body #release-splash.release-splash-overlay.release-sonic summary:focus-visible,
+html body #update-modal.update-sonic button:focus-visible {
+  outline: 2px solid #d0edb5 !important;
+  outline-offset: 4px !important;
+}
+html body #release-splash.release-splash-overlay.release-sonic.active #release-splash-features::-webkit-scrollbar-thumb { background: #56636b; }
+html body #update-modal.update-sonic .update-modal-card {
+  width: min(100%, 700px) !important;
+  max-height: calc(100vh - 56px) !important;
+  display: flex;
+  flex-direction: column;
+  padding: 0 !important;
+  border: 1px solid #353e43 !important;
+  border-radius: 18px !important;
+  background: #101416 !important;
+  box-shadow: 0 24px 70px rgba(0, 0, 0, .35) !important;
+  overflow: hidden;
+}
+html body #update-modal.update-sonic .update-sonic-hero { height: 178px; flex-shrink: 0; }
+html body #update-modal.update-sonic .update-sonic-content { padding: 28px 32px; min-height: 0; overflow-y: auto; }
+html body #update-modal.update-sonic .update-modal-kicker {
+  color: #aab4bd !important;
+  -webkit-text-fill-color: #aab4bd !important;
+  font: 600 11px/1.3 'Barlow', sans-serif !important;
+  letter-spacing: .16em !important;
+  margin: 0 0 12px !important;
+}
+html body #update-modal.update-sonic .update-modal-title {
+  margin: 0 0 16px !important;
+  color: #f3f5f6 !important;
+  -webkit-text-fill-color: #f3f5f6 !important;
+  font: 600 32px/1.15 'Barlow', sans-serif !important;
+  letter-spacing: -.02em !important;
+  text-transform: none !important;
+}
+html body #update-modal.update-sonic .update-modal-copy {
+  margin: 0 !important;
+  color: #aab4bd !important;
+  -webkit-text-fill-color: #aab4bd !important;
+  font: 400 16px/1.5 'Barlow', sans-serif !important;
+  text-transform: none !important;
+}
+html body #update-modal.update-sonic .update-modal-actions {
+  display: flex !important;
+  flex-wrap: wrap;
+  gap: 10px !important;
+  align-items: center;
+  margin-top: 24px !important;
+  padding-top: 20px;
+  border-top: 1px solid #30393e;
+}
+html body #update-modal.update-sonic .update-modal-btn.secondary {
+  min-height: 46px !important;
+  padding: 10px 16px !important;
+  border: 1px solid #3c464e !important;
+  border-radius: 9px !important;
+  background: #1b2227 !important;
+  color: #e0e6eb !important;
+  -webkit-text-fill-color: #e0e6eb !important;
+  font: 600 14px/1.3 'Barlow', sans-serif !important;
+  text-transform: none !important;
+  letter-spacing: 0 !important;
+  box-shadow: none !important;
+}
+html body #update-modal.update-sonic .update-modal-btn.secondary:hover { background: #283139 !important; }
+html body #update-modal.update-sonic .update-modal-btn.primary { margin-left: auto; min-width: 0 !important; }
+@media (max-width: 700px) {
+  html body #release-splash.release-splash-overlay.release-sonic, html body #update-modal.update-sonic { padding: 14px !important; }
+  html body #release-splash.release-splash-overlay.release-sonic.active .release-splash-shell { max-height: calc(100vh - 28px) !important; grid-template-rows: 170px minmax(0, 1fr) !important; }
+  html body #release-splash.release-splash-overlay.release-sonic.active.update-build .release-splash-content { padding: 22px !important; gap: 16px !important; }
+  html body #release-splash.release-splash-overlay.release-sonic #release-sonic-title { font-size: 34px !important; }
+  html body #release-splash.release-splash-overlay.release-sonic.active.update-build #release-splash-features { grid-template-columns: 1fr !important; }
+  html body #release-splash.release-splash-overlay.release-sonic .release-sonic-topbar, html body #update-modal.update-sonic .release-sonic-topbar { inset: 20px 22px auto; }
+  html body #release-splash.release-splash-overlay.release-sonic .release-splash-btn.primary { min-width: 160px !important; }
+  html body #update-modal.update-sonic .update-modal-card { max-height: calc(100vh - 28px) !important; }
+  html body #update-modal.update-sonic .update-sonic-content { padding: 22px; }
+  html body #update-modal.update-sonic .update-modal-title { font-size: 28px !important; }
+}
+@media (max-height: 700px) {
+  html body #release-splash.release-splash-overlay.release-sonic.active .release-splash-shell { grid-template-rows: 140px minmax(0, 1fr) !important; }
+  html body #release-splash.release-splash-overlay.release-sonic.active.update-build .release-splash-content { padding-top: 20px !important; gap: 14px !important; }
+  html body #release-splash.release-splash-overlay.release-sonic #release-sonic-title { font-size: 34px !important; }
+  html body #update-modal.update-sonic .update-sonic-hero { height: 120px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html body #release-splash.release-splash-overlay.release-sonic *, html body #update-modal.update-sonic * { transition: none !important; animation: none !important; }
+}

@@ -1,0 +1,47 @@
+
+<style id="library-daymode-blue-action-completion-v1">
+  /* Day Mode owns a blue action language. Keep the same Set Prep hierarchy,
+     but do not let high-specificity Night Mode lime leak into its controls. */
+  html body.light-mode #tab-content-library.library-cockpit#tab-content-library
+    #library-brief-lens#library-brief-lens[data-library-brief-panel="closed"] :is(
+      #library-fresh-rotate,
+      #library-brief-collapse,
+      .library-gap-launch
+    ) {
+    border-color: rgba(0, 71, 171, .52) !important;
+    background: rgba(0, 71, 171, .075) !important;
+    color: #0047ab !important;
+    -webkit-text-fill-color: #0047ab !important;
+    box-shadow: 0 0 14px rgba(0, 71, 171, .14) !important;
+    text-shadow: none !important;
+  }
+
+  html body.light-mode #tab-content-library.library-cockpit#tab-content-library
+    #library-brief-lens#library-brief-lens[data-library-brief-panel="closed"] :is(
+      #library-fresh-rotate,
+      #library-brief-collapse,
+      .library-gap-launch
+    ):is(:hover, :focus-visible, :active) {
+    border-color: #0047ab !important;
+    background: #0047ab !important;
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+    box-shadow: 0 0 20px rgba(0, 71, 171, .26) !important;
+    outline: 2px solid rgba(0, 71, 171, .28) !important;
+    outline-offset: 2px !important;
+  }
+
+  html body.light-mode #tab-content-library.library-cockpit#tab-content-library
+    #library-brief-lens#library-brief-lens[data-library-brief-panel="closed"] .library-gap-launch::after {
+    background: linear-gradient(100deg, transparent, rgba(96, 165, 250, .82), transparent) !important;
+  }
+
+  html body.light-mode #tab-content-library.library-cockpit#tab-content-library
+    #library-brief-lens#library-brief-lens
+    #library-brief-lane-dropdown#library-brief-lane-dropdown
+    #library-brief-chips#library-brief-chips {
+    border-color: rgba(0, 71, 171, .46) !important;
+    background: #ffffff !important;
+    box-shadow: 0 18px 42px rgba(28, 64, 120, .18), 0 0 22px rgba(0, 71, 171, .12) !important;
+  }
+</style>

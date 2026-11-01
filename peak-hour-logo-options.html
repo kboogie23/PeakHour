@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PEAK HOUR logo options</title>
+<style>
+  :root { --red:#e3001b; --plat:#e5e4e2; --asphalt:#0d0c0c; --steel:#9fa3a8; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:#0b0a0a; color:var(--plat); font:15px/1.45 system-ui,-apple-system,"Segoe UI",sans-serif; }
+  header { padding:28px 20px 6px; max-width:1100px; margin:0 auto; }
+  h1 { margin:0; font:800 26px/1.1 Impact,"Arial Narrow",system-ui,sans-serif; letter-spacing:.14em; }
+  header p { color:#b8b6b3; margin:8px 0 0; }
+  main { max-width:1100px; margin:0 auto; padding:16px 20px 40px; display:grid; gap:18px; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); }
+  .card { background:#141212; border:1px solid #2a2626; border-radius:16px; padding:20px; display:flex; flex-direction:column; gap:14px; }
+  .card .num { color:var(--red); font-weight:800; letter-spacing:.12em; font-size:12px; }
+  .card h2 { margin:0; font:800 20px/1.1 Impact,"Arial Narrow",system-ui,sans-serif; letter-spacing:.08em; }
+  .icon { width:100%; max-width:220px; aspect-ratio:1; margin:0 auto; display:block; }
+  .lockup { display:flex; align-items:center; gap:12px; padding:12px; background:var(--asphalt); border-radius:10px; }
+  .lockup svg { width:44px; height:44px; flex:none; }
+  .lockup span { font:800 22px/0.95 Impact,"Arial Narrow",system-ui,sans-serif; letter-spacing:.1em; }
+  .card p { margin:0; color:#c9c7c4; }
+</style>
+</head>
+<body>
+<header>
+  <h1>PEAK HOUR — LOGO OPTIONS</h1>
+  <p>Four directions in the Windows edition's red, platinum and asphalt. Each is shown as the app icon and at sidebar size next to the name.</p>
+</header>
+<main>
+
+<!-- Shared gradients -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <linearGradient id="plat" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ffffff"/><stop offset=".35" stop-color="#d9d8d6"/><stop offset=".55" stop-color="#8f9398"/><stop offset=".8" stop-color="#e5e4e2"/><stop offset="1" stop-color="#a9adb2"/>
+    </linearGradient>
+    <linearGradient id="red" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ff3346"/><stop offset="1" stop-color="#a80016"/>
+    </linearGradient>
+    <radialGradient id="vinyl" cx=".5" cy=".5" r=".5">
+      <stop offset="0" stop-color="#1c1a1a"/><stop offset="1" stop-color="#050505"/>
+    </radialGradient>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <!-- 1. Peak Meter -->
+    <symbol id="logo-meter" viewBox="0 0 256 256">
+      <rect x="8" y="8" width="240" height="240" rx="56" fill="url(#plat)"/>
+      <rect x="22" y="22" width="212" height="212" rx="44" fill="#0d0c0c"/>
+      <g fill="url(#plat)">
+        <rect x="46"  y="152" width="18" height="48" rx="4"/>
+        <rect x="72"  y="122" width="18" height="78" rx="4"/>
+        <rect x="98"  y="90"  width="18" height="110" rx="4"/>
+        <rect x="140" y="90"  width="18" height="110" rx="4"/>
+        <rect x="166" y="122" width="18" height="78" rx="4"/>
+        <rect x="192" y="152" width="18" height="48" rx="4"/>
+      </g>
+      <rect x="119" y="46" width="18" height="154" rx="4" fill="url(#red)" filter="url(#glow)"/>
+      <g fill="#0d0c0c">
+        <rect x="40" y="110" width="176" height="3"/><rect x="40" y="140" width="176" height="3"/><rect x="40" y="170" width="176" height="3"/><rect x="40" y="80" width="176" height="3"/>
+      </g>
+    </symbol>
+    <!-- 2. Vinyl Peak -->
+    <symbol id="logo-vinyl" viewBox="0 0 256 256">
+      <circle cx="128" cy="128" r="118" fill="url(#plat)"/>
+      <circle cx="128" cy="128" r="108" fill="url(#vinyl)"/>
+      <g fill="none" stroke="#2a2727" stroke-width="1.5">
+        <circle cx="128" cy="128" r="98"/><circle cx="128" cy="128" r="88"/><circle cx="128" cy="128" r="78"/><circle cx="128" cy="128" r="68"/><circle cx="128" cy="128" r="58"/>
+      </g>
+      <circle cx="128" cy="128" r="36" fill="url(#red)"/>
+      <circle cx="128" cy="128" r="5" fill="#0d0c0c"/>
+      <polyline points="26,150 52,150 62,138 72,160 84,132 96,150 106,150 128,40 150,150 160,150 172,132 184,160 194,138 204,150 230,150"
+                fill="none" stroke="#ffffff" stroke-width="8" stroke-linejoin="round" stroke-linecap="round"/>
+      <polyline points="106,150 128,40 150,150" fill="none" stroke="#ff3346" stroke-width="8" stroke-linejoin="round" stroke-linecap="round" filter="url(#glow)"/>
+    </symbol>
+    <!-- 3. Peak Dial -->
+    <symbol id="logo-dial" viewBox="0 0 256 256">
+      <rect x="8" y="8" width="240" height="240" rx="56" fill="#0d0c0c"/>
+      <g stroke="#6d6f73" stroke-width="5" stroke-linecap="round">
+        <line x1="128" y1="30" x2="128" y2="44" stroke="#ff3346"/>
+        <line x1="62.9" y1="57.1" x2="72.8" y2="67.0"/><line x1="193.1" y1="57.1" x2="183.2" y2="67.0"/>
+        <line x1="34" y1="128" x2="48" y2="128"/><line x1="222" y1="128" x2="208" y2="128"/>
+        <line x1="62.9" y1="198.9" x2="72.8" y2="189.0"/><line x1="193.1" y1="198.9" x2="183.2" y2="189.0"/>
+      </g>
+      <path d="M 72.8 183.2 A 78 78 0 0 1 128 50" fill="none" stroke="url(#red)" stroke-width="12" stroke-linecap="round" filter="url(#glow)"/>
+      <circle cx="128" cy="128" r="62" fill="url(#plat)"/>
+      <circle cx="128" cy="128" r="50" fill="#1a1818"/>
+      <line x1="128" y1="128" x2="128" y2="84" stroke="#ff3346" stroke-width="10" stroke-linecap="round"/>
+      <circle cx="128" cy="128" r="9" fill="url(#plat)"/>
+    </symbol>
+    <!-- 4. Stencil PH -->
+    <symbol id="logo-stencil" viewBox="0 0 256 256">
+      <rect x="8" y="8" width="240" height="240" rx="56" fill="url(#plat)"/>
+      <rect x="20" y="20" width="216" height="216" rx="46" fill="#0d0c0c"/>
+      <g fill="url(#plat)">
+        <!-- P -->
+        <rect x="42" y="58" width="28" height="140" rx="3"/>
+        <path d="M70 58 h34 a40 40 0 0 1 0 80 h-34 v-26 h32 a14 14 0 0 0 0 -28 h-32 z"/>
+        <!-- H -->
+        <rect x="150" y="58" width="28" height="140" rx="3"/>
+        <rect x="190" y="58" width="28" height="140" rx="3"/>
+        <rect x="150" y="114" width="68" height="26"/>
+      </g>
+      <g fill="#0d0c0c"><rect x="38" y="92" width="38" height="5"/><rect x="146" y="160" width="76" height="5"/><rect x="186" y="80" width="36" height="5"/></g>
+      <polyline points="34,214 100,214 114,196 126,224 138,170 150,214 222,214" fill="none" stroke="#ff3346" stroke-width="7" stroke-linejoin="round" stroke-linecap="round" filter="url(#glow)"/>
+    </symbol>
+  </defs>
+</svg>
+
+<section class="card">
+  <div class="num">OPTION 1</div><h2>PEAK METER</h2>
+  <svg class="icon" role="img" aria-label="Peak Meter logo"><use href="#logo-meter"/></svg>
+  <div class="lockup"><svg aria-hidden="true"><use href="#logo-meter"/></svg><span>PEAK<br>HOUR</span></div>
+  <p>A level meter shaped like a skyline. The middle bar hits red — the loudest, busiest moment of the night. Clean, readable at tiny sizes.</p>
+</section>
+
+<section class="card">
+  <div class="num">OPTION 2</div><h2>VINYL PEAK</h2>
+  <svg class="icon" role="img" aria-label="Vinyl Peak logo"><use href="#logo-vinyl"/></svg>
+  <div class="lockup"><svg aria-hidden="true"><use href="#logo-vinyl"/></svg><span>PEAK<br>HOUR</span></div>
+  <p>A record with a red label, and a waveform whose one big spike glows red. Says "DJ" instantly; most classic of the four.</p>
+</section>
+
+<section class="card">
+  <div class="num">OPTION 3</div><h2>PEAK DIAL</h2>
+  <svg class="icon" role="img" aria-label="Peak Dial logo"><use href="#logo-dial"/></svg>
+  <div class="lockup"><svg aria-hidden="true"><use href="#logo-dial"/></svg><span>PEAK<br>HOUR</span></div>
+  <p>A mixer knob turned all the way up to 12 o'clock: the knob is at its peak and the clock is on the hour. A double meaning in one shape.</p>
+</section>
+
+<section class="card">
+  <div class="num">OPTION 4</div><h2>STENCIL PH</h2>
+  <svg class="icon" role="img" aria-label="Stencil PH logo"><use href="#logo-stencil"/></svg>
+  <div class="lockup"><svg aria-hidden="true"><use href="#logo-stencil"/></svg><span>PEAK<br>HOUR</span></div>
+  <p>Spray-stencil "PH" initials on asphalt with a red waveform underline. The most street/urban, like a flyer or a wall tag.</p>
+</section>
+
+</main>
+</body>
+</html>

@@ -1,0 +1,1433 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" href="/favicon.ico">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script>
+    // A raw source preview cannot use AXIOM's API-backed cockpit. Correct the
+    // launch immediately so local review never stops at an activation screen.
+    (function () {
+      if (window.location.protocol === 'file:') {
+        window.location.replace('http://127.0.0.1:8080/?review=library&opened_from=file-preview');
+      }
+    }());
+  </script>
+  <title>PEAK HOUR</title>
+  <script src="/static/js/shared/windows-rename.js?v=7"></script>
+  <script src="/static/js/shared/windows-hide-mac.js?v=3"></script>
+  <meta name="axiom-launch" content="{{ axiom_launch_id }}">
+<link rel="stylesheet" href="/static/css/entrance.css?v=20260930-door-buttons-v1">
+<link rel="stylesheet" href="/static/css/first-login-preview.css?v=20260930-account-v2">
+  <meta name="axiom-build" content="{{ axiom_build }}">
+  <meta name="axiom-packaged" content="{{ axiom_packaged }}">
+  <meta name="axiom-distribution" content="{{ axiom_distribution_channel }}">
+  <meta name="axiom-edition" content="{{ 'lite' if axiom_lite else 'pro' }}">
+  <script src="/static/js/shared/first-login-boot.js?v=1"></script>
+  <script src="/static/js/shared/entrance-boot.js?v=1"></script>
+  <!-- AXIOM web cache contract: 20260719-mobile-library-scroll-4 -->
+  <script>
+    // This tiny ES5 bootstrap runs before the cockpit script so native WebKit
+    // failures are visible in launch.log instead of leaving a silent shell.
+    (function () {
+      window.__AXIOM_BOOT_STAGE__ = 'head-ready';
+
+      function reportNativeClientEvent(level, message, source, line, column) {
+        try {
+          var handlers = window.webkit && window.webkit.messageHandlers;
+          var bridge = handlers && handlers.axiomNative;
+          if (!bridge || !bridge.postMessage) return;
+          bridge.postMessage({
+            action: 'clientLog',
+            level: String(level || 'error'),
+            message: String(message || 'Unknown WebKit error').slice(0, 1600),
+            source: String(source || '').slice(0, 600),
+            line: Number(line || 0),
+            column: Number(column || 0),
+            stage: String(window.__AXIOM_BOOT_STAGE__ || 'unknown')
+          });
+        } catch (_) {}
+      }
+
+      window.addEventListener('error', function (event) {
+        var target = event && event.target;
+        var resource = target && (target.src || target.href);
+        reportNativeClientEvent(
+          'error',
+          resource ? 'Resource failed to load' : (event && event.message),
+          resource || (event && event.filename),
+          event && event.lineno,
+          event && event.colno
+        );
+      }, true);
+
+      window.addEventListener('unhandledrejection', function (event) {
+        var reason = event && event.reason;
+        reportNativeClientEvent(
+          'error',
+          reason && (reason.stack || reason.message) ? (reason.stack || reason.message) : reason,
+          'unhandledrejection',
+          0,
+          0
+        );
+      });
+    }());
+  </script>
+  <link href="/static/tailwind-3.4.17.css" rel="stylesheet">
+{% if not axiom_lite %}  <link href="/static/performance-session-ledger-v1.css?v=20260830-compact-live-recovery-v3" rel="stylesheet">{% endif %}
+  <link href="/static/windows-fonts.css?v=1" rel="stylesheet">
+  <script src="/static/vendor/chart-4.5.1/chart.umd.min.js"></script>
+  <script src="/static/vendor/sortable-1.15.7/Sortable.min.js"></script>
+  <link href="/static/css/cockpit-foundation.css?v=20260904-modal-stability-v1" rel="stylesheet">
+  <link href="/static/css/surfaces/playlists/foundation.css?v=20260904-playlists-css-split-v1" rel="stylesheet">
+
+  <!-- COLOUR LAWS IMPLEMENTATION -->
+  <link rel="stylesheet" href="/static/color-laws.css?v=20260702-daymode-active-12">
+  <link rel="stylesheet" href="/static/css/surfaces/playlists/redesign.css?v=20260904-playlists-css-split-v1">
+  <link rel="stylesheet" href="/static/daymode-final.css?v=magic-steel-rail-20260826-v1">
+  <!-- Shared release rules own the final cascade after day-mode overrides. -->
+  <link rel="stylesheet" href="/static/axiom-redesign-final.css?v=20260904-library-edit-dedupe-v1">
+  <link rel="stylesheet" href="/static/css/surfaces/playlists/daymode.css?v=20260904-playlists-css-split-v1">
+  <link rel="stylesheet" href="/static/daymode-integrity-final.css?v=20261006-dialog-contrast-v1">
+  <script src="/static/color-laws.js?v=20260702-daymode-active-12"></script>
+  <link rel="stylesheet" href="/static/library-matching-row-contract-v7.css?v=20260818f" />
+  <link rel="stylesheet" href="/static/library-gap-checker.css?v=20260908-paste-playlist-visual-v3" />
+  <link rel="stylesheet" href="/static/release-splash-scroll-contract-v1.css?v=20260930-black-steel-actions" />
+  <link rel="stylesheet" href="/static/release-sonic-2026.css?v=20261009-sonic-v1" />
+  <link rel="stylesheet" href="/static/music-connection-layer-contract-v1.css?v=20260831a" />
+{% if not axiom_lite %}  <link rel="stylesheet" href="/static/performance-command-deck-option1.css?v=20260921-performance-live-buttons-v1" />{% endif %}
+  <link rel="stylesheet" href="/static/css/cta-typography.css?v=20260905-studio-daw-stop-menu-v1" />
+  <link rel="stylesheet" href="/static/css/features/dj-handoff.css?v=20260903-v2" />
+  <link rel="stylesheet" href="/static/css/features/universal-help.css?v=20260922-search-spacing-v2" />
+  <link rel="stylesheet" href="/static/css/surfaces/health/foundation-stage-14.css?v=20261008-era-actions-v2" />
+  <link rel="stylesheet" href="/static/css/surfaces/health/recordings.css?v=20260910" />
+  <link rel="stylesheet" href="/static/css/surfaces/health/scan-activity.css?v=20260910" />
+  <link rel="stylesheet" href="/static/css/audio-readiness.css?v=1" />
+{% if not axiom_lite %}  <link rel="stylesheet" href="/static/css/studio-daw/shell.css?v=20260914-remix-contrast" />{% endif %}
+{% if not axiom_lite %}  <link rel="stylesheet" href="/static/css/studio-daw/composer.css?v=20261015-creative-tools-v1" />{% endif %}
+{% if not axiom_lite %}  <link rel="stylesheet" href="/static/css/studio-daw/fx.css?v=20261015-dialog-contrast-v2" />{% endif %}
+  <link rel="stylesheet" href="/static/css/compat/native-overlay-opaque.css?v=20260930-monterey-v1" />
+  <link rel="stylesheet" href="/static/css/surfaces/record-vault.css?v=20261006-approved-v1" />
+</head>
+
+<body class="h-screen flex flex-row relative library-matching-songs-disabled">
+            <div id="health-progress-container" class="hidden mb-6 glass p-4 border border-axiom-accent/20" aria-hidden="true" data-retired-health-progress-layer="true" style="display:none !important; visibility:hidden !important; pointer-events:none !important;">
+                <div class="health-live-headline" aria-live="polite">
+                    <span class="health-live-headline-dot"></span>
+                    <div>
+                        <strong id="health-live-headline-title">Health Scan Live</strong>
+                        <small id="health-live-headline-copy">AXIOM is working through the selected Health lane. Source audio stays untouched.</small>
+                    </div>
+                    <span id="health-live-headline-status">Working</span>
+                </div>
+                <div class="flex justify-between items-center mb-2">
+                    <div id="health-progress-label" class="text-[9px] font-black uppercase text-axiom-accent">Repairing Tracks...</div>
+                    <div id="health-progress-percent" class="text-[9px] font-black uppercase text-white">0%</div>
+                </div>
+                <div class="health-progress-track w-full rounded-full overflow-hidden">
+                    <div id="health-progress-bar" class="bg-axiom-accent h-full transition-all duration-300" style="width: 0%"></div>
+                </div>
+                <div id="health-working-banner" class="health-working-banner hidden" aria-live="polite">
+                    <span class="health-working-pulse"></span>
+                    <div>
+                        <strong id="health-working-title">AXIOM IS REPAIRING</strong>
+                        <small id="health-working-copy">Keep this open. The moving timer means Health is still working.</small>
+                    </div>
+                    <span id="health-working-status">WORKING</span>
+                </div>
+                <div id="health-progress-stageboard" class="health-progress-stageboard hidden" aria-live="polite">
+                    <div class="health-progress-stage-top">
+                        <strong id="health-progress-stage-mode">Health Repair Active</strong>
+                        <span id="health-progress-live-time">Starting</span>
+                    </div>
+                    <div class="health-progress-stages">
+                        <div class="health-progress-stage" data-health-stage="connect">
+                            <span class="health-progress-stage-dot"></span>
+                            <strong>Library</strong>
+                            <small>Read AXIOM cache</small>
+                        </div>
+                        <div class="health-progress-stage" data-health-stage="bpm">
+                            <span class="health-progress-stage-dot"></span>
+                            <strong>BPM</strong>
+                            <small>Tempo values</small>
+                        </div>
+                        <div class="health-progress-stage" data-health-stage="key">
+                            <span class="health-progress-stage-dot"></span>
+                            <strong>Key</strong>
+                            <small>Harmonic data</small>
+                        </div>
+                        <div class="health-progress-stage" data-health-stage="year">
+                            <span class="health-progress-stage-dot"></span>
+                            <strong>Year</strong>
+                            <small>Era details</small>
+                        </div>
+                        <div class="health-progress-stage" data-health-stage="refresh">
+                            <span class="health-progress-stage-dot"></span>
+                            <strong>Refresh</strong>
+                            <small>Update totals</small>
+                        </div>
+                    </div>
+                </div>
+                <div id="health-progress-metrics" class="health-progress-metrics hidden" aria-label="Live Health repair counts">
+                    <div class="health-progress-metric"><span id="health-progress-matched-label">Checked</span><strong id="health-progress-matched">0</strong></div>
+                    <div class="health-progress-metric"><span id="health-progress-ready-label">Found</span><strong id="health-progress-ready">0</strong></div>
+                    <div class="health-progress-metric"><span id="health-progress-fixed-label">Fixed</span><strong id="health-progress-fixed">0</strong></div>
+                    <div class="health-progress-metric"><span id="health-progress-remaining-label">Still Missing</span><strong id="health-progress-remaining">0</strong></div>
+                </div>
+                <div id="health-progress-detail" class="serato-progress-detail hidden" aria-live="polite"></div>
+                <div id="health-repair-review" class="health-repair-review hidden"></div>
+            </div>
+
+  <!-- Premium Axiom Modal -->
+  <div id="axiom-modal-overlay">
+    <div id="axiom-modal-card">
+      <div id="axiom-modal-icon" class="mb-4 text-red-500 flex justify-center">
+        <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+      </div>
+      <div id="axiom-modal-kicker">AXIOM Action</div>
+      <h2 id="axiom-modal-title" class="text-white text-xl font-heading mb-2 uppercase tracking-tighter">Confirm Action</h2>
+      <p id="axiom-modal-body" class="text-gray-400 text-xs leading-relaxed mb-8">Are you sure you want to proceed?</p>
+      <div id="axiom-modal-safety" class="hidden">AXIOM cache only · Source audio stays untouched</div>
+      <div class="flex gap-3 justify-center">
+        <button id="axiom-modal-cancel" class="modal-btn modal-btn-secondary flex-1">Cancel</button>
+        <button id="axiom-modal-confirm" class="modal-btn modal-btn-primary flex-1">Proceed</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="studio-version-overlay" class="studio-version-overlay hidden" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="studio-version-title" onclick="handleStudioVersionBackdrop(event)">
+    <section class="studio-version-card">
+      <button type="button" class="studio-version-close" onclick="closeStudioVersionChooser()" aria-label="Close version chooser">Close</button>
+      <header class="studio-version-head">
+        <small>AXIOM Studio · Selected Track</small>
+        <h2 id="studio-version-title">Update Version</h2>
+        <p id="studio-version-copy">Choose which edit should sit in this position.</p>
+      </header>
+      <div id="studio-version-preview-deck" class="studio-version-preview-deck is-empty" aria-live="polite"></div>
+      <div id="studio-version-list" class="studio-version-list" role="list"></div>
+    </section>
+  </div>
+
+  <div id="toast-container" class="fixed top-10 right-10 z-[100] flex flex-col gap-2"></div>
+  <div id="health-top-scan-banner" class="health-top-scan-banner hidden" aria-live="polite">
+    <span class="health-top-scan-pulse"></span>
+    <div class="health-top-scan-main">
+      <strong id="health-top-scan-title">AXIOM IS SCANNING HEALTH</strong>
+      <small id="health-top-scan-copy">AXIOM is actively checking Health data. Source audio stays untouched.</small>
+    </div>
+    <div class="health-top-scan-side">
+      <span id="health-top-scan-percent" class="health-top-scan-percent">0%</span>
+      <span id="health-top-scan-checks" class="health-top-scan-checks">0 checks</span>
+      <button id="health-top-scan-status" class="health-top-scan-status" type="button" onclick="stopUnifiedHealthScan()">STOP SAFELY</button>
+      <div class="health-top-scan-meter">
+        <span id="health-top-scan-bar"></span>
+      </div>
+    </div>
+  </div>
+  <div id="release-splash" class="release-splash-overlay" role="dialog" aria-modal="true" aria-labelledby="release-splash-headline">
+    <div class="release-splash-shell">
+      <div class="release-sonic-hero">
+        <img class="release-sonic-art" src="/static/release-sonic-hero-20261009.png" alt="" decoding="async">
+        <div class="release-sonic-topbar">
+          <div class="release-sonic-wordmark"><img src="/static/axiom-pro-mark.png" alt=""><span>PEAK HOUR</span></div>
+          <span id="release-sonic-version"></span>
+        </div>
+      </div>
+      <div class="release-splash-brand">
+        {% if axiom_lite %}<img class="release-splash-mark" src="/static/axiom-release-mark-transparent-v1.png?v=20260818b" alt="AXIOM Lite">{% else %}<img class="release-splash-mark" src="/static/axiom-pro-mark.png?v=20260920-pro-logo-hd" alt="PEAK HOUR">{% endif %}
+        <span class="release-splash-latest">Latest Update</span>
+        <div class="release-splash-version"><strong id="release-splash-version">1.0.2</strong></div>
+        <span class="release-splash-cyan-rule" aria-hidden="true"></span>
+        <h1 class="release-splash-statement">Faster.<br>Cleaner.<br>Ready.</h1>
+        <p class="release-splash-identity-copy">A focused update for a faster, more accurate library.</p>
+        <div id="release-splash-build" class="release-splash-build">Build dev</div>
+      </div>
+      <div class="release-splash-content">
+        <div class="release-sonic-intro"><h1 id="release-sonic-title">Ready for your next set.</h1><p id="release-sonic-summary"></p></div>
+        <h2 id="release-splash-headline" class="release-splash-headline">What Changed</h2>
+        <p id="release-splash-title" class="release-splash-title">Your real-time music assistant for the booth.</p>
+        <div id="release-splash-features" class="release-splash-features" role="region" aria-label="Release changes" tabindex="0" onkeydown="handleAxiomReleaseScrollKey(event)">
+          <div class="release-splash-feature"><span><strong>Real-Time Assistance</strong><span>AXIOM intelligence now works with you live in the booth.</span></span></div>
+          <div class="release-splash-feature"><span><strong>Build The Full Set</strong><span>Shape complete sets around BPM, energy and flow.</span></span></div>
+          <div class="release-splash-feature"><span><strong>Smarter Magic Sets</strong><span>Go beyond obvious bangers and predictable floor fillers.</span></span></div>
+          <div class="release-splash-feature"><span><strong>Rediscover Your Music</strong><span>Bring forgotten tracks from your own library back into play.</span></span></div>
+          <div class="release-splash-feature"><span><strong>Drag Straight To Deck</strong><span>Connect Serato DJ Pro or djay Pro and move tracks instantly.</span></span></div>
+          <div class="release-splash-feature"><span><strong>Library Tools</strong><span>Music Health, exports, playlists, no-cue crates and more.</span></span></div>
+        </div>
+        <div class="release-splash-actions">
+          <details class="release-sonic-build"><summary>Build details</summary><p id="release-sonic-build-copy"></p></details>
+          <button type="button" class="release-splash-btn primary" onclick="closeAxiomReleaseSplash('start')">Enter AXIOM</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="export-upgrade-overlay" class="export-upgrade-overlay" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="export-upgrade-title" aria-describedby="export-upgrade-copy">
+    <div class="export-upgrade-shell">
+      <section class="export-upgrade-visual" aria-hidden="true">
+        <div class="export-upgrade-brand">
+          <img class="export-upgrade-mark" src="/static/axiom-mark.png" alt="">
+          <div><strong>PEAK HOUR</strong><span>Installed App Export</span></div>
+        </div>
+        <div class="export-upgrade-visual-copy">
+          <span id="export-upgrade-visual-kicker">Set Ready</span>
+          <strong id="export-upgrade-visual-title">Export To Serato</strong>
+          <small>Your set order is built. Move it into the software you DJ with.</small>
+        </div>
+      </section>
+      <section class="export-upgrade-content">
+        <button id="export-upgrade-close" class="export-upgrade-close" type="button" onclick="closeAxiomExportUpgradeSplash()" aria-label="Close export upgrade">x</button>
+        <p class="export-upgrade-kicker">Your Set Is Ready</p>
+        <h2 id="export-upgrade-title" class="export-upgrade-title">Export To Serato In The AXIOM App</h2>
+        <p id="export-upgrade-copy" class="export-upgrade-copy">This Serato handoff is available in the installed AXIOM app. Your prepared set remains saved here.</p>
+        <div class="export-upgrade-benefits" aria-label="AXIOM export benefits">
+          <div class="export-upgrade-benefit"><img src="/static/icons/file-up.svg" alt=""><strong>Keep the set order AXIOM built</strong></div>
+          <div class="export-upgrade-benefit"><img src="/static/icons/database.svg" alt=""><strong id="export-upgrade-benefit-target">Hand the playlist into Serato</strong></div>
+          <div class="export-upgrade-benefit"><img src="/static/icons/zap.svg" alt=""><strong>Keep the export workflow with your prepared set</strong></div>
+        </div>
+        <div id="export-upgrade-plan-group" class="export-upgrade-plan-group" hidden>
+          <span class="export-upgrade-label">Installed App</span>
+          <div class="export-upgrade-plans">
+            <button id="export-upgrade-plan-monthly" class="export-upgrade-plan selected" type="button" role="radio" aria-checked="true" onclick="selectAxiomExportUpgradePlan('monthly')">
+              <strong>Installed</strong><span>AXIOM app</span>
+            </button>
+            <button id="export-upgrade-plan-yearly" class="export-upgrade-plan" type="button" role="radio" aria-checked="false" onclick="selectAxiomExportUpgradePlan('yearly')">
+              <strong>Prepared</strong><span>Set remains saved</span>
+            </button>
+          </div>
+        </div>
+        <div class="export-upgrade-email-wrap" hidden>
+          <label class="export-upgrade-label" for="export-upgrade-email">Account</label>
+          <input id="export-upgrade-email" class="export-upgrade-email" type="text">
+        </div>
+        <div class="export-upgrade-actions">
+          <button id="export-upgrade-checkout" class="export-upgrade-action primary" type="button" onclick="closeAxiomExportUpgradeSplash()">Got It</button>
+          <button id="export-upgrade-lead" class="export-upgrade-action secondary" type="button" hidden>More Information</button>
+        </div>
+        <p id="export-upgrade-status" class="export-upgrade-status" role="status" aria-live="polite"></p>
+        <p class="export-upgrade-note">This information screen does not start a purchase or change your access.</p>
+      </section>
+    </div>
+  </div>
+  <div id="update-modal" class="update-modal-overlay update-sonic" role="dialog" aria-modal="true" aria-labelledby="update-modal-title" aria-describedby="update-modal-copy">
+    <div class="update-modal-card">
+      <div class="update-sonic-hero">
+        <img class="release-sonic-art" src="/static/release-sonic-hero-20261009.png" alt="" decoding="async">
+        <div class="release-sonic-topbar"><div class="release-sonic-wordmark"><img src="/static/axiom-pro-mark.png" alt=""><span>PEAK HOUR</span></div><span id="update-sonic-version"></span></div>
+      </div>
+      <div class="update-sonic-content">
+      <p class="update-modal-kicker" id="update-modal-kicker">Software Update</p>
+      <h2 class="update-modal-title" id="update-modal-title">AXIOM Update</h2>
+      <p class="update-modal-copy" id="update-modal-copy">Checking for the newest AXIOM build.</p>
+      <div class="update-modal-actions">
+        <button type="button" data-axiom-cta-skip="true" class="update-modal-btn secondary" id="update-release-notes-btn" onclick="openUpdateReleaseNotes()">Release Notes</button>
+        <button type="button" data-axiom-cta-skip="true" class="update-modal-btn secondary" onclick="closeUpdateModal()">Not Now</button>
+        <button type="button" data-axiom-cta-skip="true" class="update-modal-btn primary" id="update-download-btn" onclick="downloadAxiomUpdate()">Download Update</button>
+      </div>
+      </div>
+    </div>
+  </div>
+  {% if not axiom_lite %}
+  <div id="license-modal" class="update-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="license-modal-title">
+    <section class="license-access-dock" data-license-view="activate">
+      <header class="license-access-header">
+        <img class="license-access-wordmark" src="/static/axiom-access-wordmark.png" alt="AXIOM">
+        <button type="button" class="license-access-close" id="license-close-btn" onclick="closeLicenseModal()" aria-label="Close AXIOM access">×</button>
+      </header>
+
+      <div class="license-access-body">
+        <p class="license-access-kicker" id="license-modal-kicker">Mac App Access</p>
+        <h2 class="license-access-title" id="license-modal-title">Ready To Unlock AXIOM?</h2>
+        <p class="license-access-copy" id="license-modal-copy">Your activation details are in your DJ OWE email. Enter them below to unlock your full library and features.</p>
+
+        <div class="license-access-tabs" id="license-access-tabs" role="tablist" aria-label="AXIOM access options">
+          <button type="button" class="license-access-tab" id="license-activate-tab" role="tab" aria-selected="true" aria-controls="license-activate-panel" onclick="setLicenseAccessView('activate')">I Have A Key</button>
+          <button type="button" class="license-access-tab" id="license-checkout-tab" role="tab" aria-selected="false" aria-controls="license-checkout-panel" onclick="setLicenseAccessView('checkout')">Get Access</button>
+        </div>
+
+        <div class="license-access-field-group" id="license-account-group">
+          <label class="license-access-label" for="license-email">Account Email</label>
+          <input id="license-email" class="license-access-field" type="email" inputmode="email" autocomplete="email" placeholder="you@email.com">
+        </div>
+
+        <div class="license-access-panel" id="license-activate-panel" role="tabpanel" aria-labelledby="license-activate-tab">
+          <div class="license-access-field-group" id="license-key-group">
+            <label class="license-access-label" for="license-key">Activation Key</label>
+            <div class="license-key-shell">
+              <input id="license-key" class="license-access-field" type="password" autocomplete="off" spellcheck="false" placeholder="AX-••••-••••-••••">
+              <button type="button" class="license-key-reveal" id="license-key-reveal" onclick="toggleAxiomLicenseKeyVisibility()" aria-pressed="false">Reveal</button>
+            </div>
+            <p class="license-access-helper">Enter the activation key from your email.</p>
+          </div>
+          <button type="button" class="license-access-primary" id="license-activate-btn" onclick="activateAxiomLicense()">Unlock AXIOM</button>
+        </div>
+
+        <div class="license-access-panel" id="license-checkout-panel" role="tabpanel" aria-labelledby="license-checkout-tab" hidden>
+          <label class="license-plan-heading" id="license-plan-label">Choose Your Plan</label>
+          <select id="license-plan" aria-hidden="true" tabindex="-1" hidden>
+            <option value="monthly">Monthly · USD $20 / month</option>
+            <option value="yearly" selected>Yearly · USD $200 / year</option>
+            <option value="lifetime">Lifetime · USD $300 one-time</option>
+          </select>
+          <div class="license-plan-list" role="radiogroup" aria-labelledby="license-plan-label">
+            <button type="button" class="license-plan-row" data-license-plan="monthly" role="radio" aria-checked="false" onclick="selectAxiomPlan('monthly')">
+              <span class="license-plan-radio" aria-hidden="true"></span>
+              <span class="license-plan-copy"><strong>AXIOM Monthly</strong><small>Month-to-month access until cancelled.</small></span>
+              <span class="license-plan-price">USD $20 / month</span>
+            </button>
+            <button type="button" class="license-plan-row" data-license-plan="yearly" role="radio" aria-checked="true" onclick="selectAxiomPlan('yearly')">
+              <span class="license-plan-radio" aria-hidden="true"></span>
+              <span class="license-plan-copy"><strong>AXIOM Yearly <span class="license-plan-badge">Most Popular</span></strong><small>Two months saved.</small></span>
+              <span class="license-plan-price">USD $200 / year</span>
+            </button>
+            <button type="button" class="license-plan-row" data-license-plan="lifetime" role="radio" aria-checked="false" onclick="selectAxiomPlan('lifetime')">
+              <span class="license-plan-radio" aria-hidden="true"></span>
+              <span class="license-plan-copy"><strong>AXIOM Lifetime</strong><small>One payment for ongoing AXIOM access.</small></span>
+              <span class="license-plan-price">USD $300 one-time</span>
+            </button>
+          </div>
+          <button type="button" class="license-access-primary" id="license-checkout-btn" onclick="startAxiomCheckout()">Continue To Secure Checkout</button>
+        </div>
+
+        <input id="license-device-label" type="hidden" autocomplete="off">
+        <div class="license-access-separator" aria-hidden="true">or</div>
+        <button type="button" class="license-guest-action" id="license-guest-btn" onclick="showAxiomGuestPreview()">Back to Guest Preview</button>
+        <p class="license-access-status" id="license-access-status" role="status" aria-live="polite"></p>
+      </div>
+
+      <footer class="license-access-benefits" aria-label="AXIOM access includes">
+        <span>Full library</span>
+        <span>Save and export</span>
+        <span>Performance Mode</span>
+      </footer>
+    </section>
+  </div>
+  {% endif %}
+  {% if not axiom_lite %}
+  <div id="first-login-preview" class="first-login-preview" role="dialog" aria-modal="true" aria-labelledby="first-login-title" hidden>
+    <main class="first-login-form" aria-label="AXIOM account access">
+      <img class="first-login-brand" src="/static/axiom-pro-mark.png" alt="PEAK HOUR">
+      <h1 id="first-login-title">Welcome</h1>
+      <p id="first-login-copy">Sign in to Axiom Pro</p>
+      <div class="first-login-form-body">
+        <div class="first-login-fields">
+          <label for="first-login-email">Email</label>
+          <input id="first-login-email" type="email" inputmode="email" autocomplete="email" placeholder="your@email.com" required>
+          <label for="first-login-password">Password</label>
+          <input id="first-login-password" type="password" autocomplete="current-password" placeholder="Password" required>
+        </div>
+        <button type="button" class="first-login-submit" id="first-login-submit" data-axiom-cta-skip="true" onclick="submitFirstLogin()">Sign In</button>
+        <button type="button" class="first-login-recovery" id="first-login-recovery" data-axiom-cta-skip="true" onclick="recoverFirstLogin()">Forgot password?</button>
+        <p class="first-login-switch"><span id="first-login-switch-prompt">New here?</span> <button type="button" id="first-login-switch-button" data-axiom-cta-skip="true" onclick="setFirstLoginPreviewMode('signup')">Create an account</button></p>
+        <p class="first-login-feedback" id="first-login-feedback" role="status" aria-live="polite"></p>
+      </div>
+      <footer class="first-login-footer">AXIOM PRO <span aria-hidden="true">|</span> AXIOM LITE</footer>
+    </main>
+  </div>
+  {% endif %}
+  <div id="library-guide-modal" class="library-guide-overlay" role="dialog" aria-modal="false" aria-labelledby="library-guide-title">
+    <div class="library-guide-card">
+      <div class="library-guide-head">
+        <div>
+          <p class="library-guide-kicker">Quick Help</p>
+          <h2 id="library-guide-title" class="library-guide-title">Library</h2>
+        </div>
+        <button type="button" class="library-guide-close" onclick="closeLibraryGuide()" aria-label="Close Library guide">x</button>
+      </div>
+      <p class="library-guide-copy">
+        "Find The Vibe Of Your Set"
+      </p>
+      <div class="library-guide-step" aria-live="polite">
+        <span id="library-guide-step-number">1</span>
+        <strong id="library-guide-step-label">Set Starter</strong>
+        <small id="library-guide-step-progress">Step 1 of 4</small>
+      </div>
+      <div class="library-guide-detail" id="library-guide-detail">
+        <strong id="library-guide-detail-title">Pick The First Song</strong>
+        <p id="library-guide-detail-body">Choose the song that starts your set and establishes the direction. This becomes your anchor track—the reference AXIOM uses to find matching songs and build the rest of the set.</p>
+      </div>
+      <div class="library-guide-actions">
+        <button type="button" class="library-guide-secondary" id="library-guide-back-btn" onclick="moveLibraryGuideStep(-1)">Back</button>
+        <button type="button" class="library-guide-secondary" onclick="closeLibraryGuide()">Close</button>
+        <button type="button" class="library-guide-primary" id="library-guide-next-btn" onclick="moveLibraryGuideStep(1)">Next</button>
+      </div>
+    </div>
+  </div>
+  <div id="playlist-undo-snackbar">
+    <span class="undo-label" id="undo-snackbar-label">Deleted</span>
+    <button class="undo-btn" onclick="undoDeletePlaylist()">Undo</button>
+    <div class="undo-progress" id="undo-progress-bar"></div>
+  </div>
+
+  <aside id="axiom-sidebar" class="axiom-sidebar w-72 border-r border-white/5 flex flex-col glass z-50 shrink-0">
+    <div class="axiom-sidebar-brand-row p-10 flex items-center justify-between">
+      <button id="axiom-start-button" type="button" class="axiom-start-wordmark" onclick="showAxiomStart()" aria-label="Open Peak Hour Start" title="Peak Hour Start">
+        <span class="axiom-start-wordmark-main">PEAK HOUR</span>
+
+      </button>
+      <div class="axiom-sidebar-utilities flex gap-2">
+        <button onclick="toggleTheme()" class="refresh-icon-btn" title="Toggle Light/Dark Mode" id="theme-toggle">
+          <svg id="sun-icon" class="w-4 h-4 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
+          <svg id="moon-icon" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" /></svg>
+        </button>
+        <button onclick="toggleMasterHud()" class="refresh-icon-btn" title="System Settings" id="settings-toggle">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <nav class="axiom-sidebar-nav flex-1 px-0 space-y-1 mt-4 flex flex-col" aria-label="Primary">
+      <button onclick="showTab('library')" id="tab-btn-library" data-nav-state="inactive"
+        class="axiom-sidebar-nav-item w-full flex items-center justify-between px-10 py-5 bg-transparent border-l-4 border-transparent text-white/40 hover:text-white hover:bg-white/5 font-black uppercase text-xs tracking-[0.2em] transition-all group">
+        <div class="flex items-center gap-5">
+          <svg id="icon-library" class="w-5 h-5 opacity-50 group-hover:opacity-100 transition-all" fill="none"
+            stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4">
+            </path>
+          </svg>
+          <span>Library</span>
+        </div>
+        <span class="text-[9px] opacity-0 group-hover:opacity-50 transition-opacity font-heading">01</span>
+      </button>
+
+      <div id="studio-sidebar-tools-container" class="axiom-sidebar-nav-group relative">
+        <button onclick="showStudioWorkspace()" id="tab-btn-studio"
+          data-nav-state="active" class="axiom-sidebar-nav-item w-full flex items-center justify-between px-10 py-5 pr-24 bg-gradient-to-r from-axiom-accent/20 to-transparent border-l-4 border-axiom-accent text-axiom-accent font-black uppercase text-xs tracking-[0.2em] transition-all group">
+          <div class="flex items-center gap-5">
+            <svg id="icon-studio" class="w-5 h-5 drop-shadow-[0_0_8px_rgba(163,255,0,0.8)] transition-all" fill="none"
+              stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z">
+              </path>
+            </svg>
+            <span>Studio</span>
+          </div>
+        </button>
+        {% if not axiom_lite %}
+        <button onclick="toggleStudioToolsDropdown(event)" id="studio-tools-dropdown-btn"
+          class="axiom-sidebar-counter-menu-btn absolute right-10 top-1/2 -translate-y-1/2 inline-flex items-center gap-1 rounded-md border border-axiom-accent/20 bg-black/20 px-2 py-1 text-[9px] opacity-70 font-heading text-axiom-accent hover:opacity-100 hover:bg-axiom-accent/10 transition-all z-10"
+          title="Studio Tools" type="button" aria-haspopup="true" aria-expanded="false" aria-disabled="false">
+          01
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-2.5 w-2.5 transition-transform duration-200" id="studio-tools-dropdown-arrow" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
+        <div id="studio-tools-dropdown-menu" class="axiom-sidebar-submenu hidden" role="menu" aria-label="Studio tools">
+          <button onclick="closeStudioToolsDropdown(); AxiomDawDrafts.open()" type="button" role="menuitem" class="sidebar-studio-destination" aria-label="Open saved DAW project">Open DAW Project</button>
+          <button onclick="AxiomStudioDaw?.openCurrentSet?.(); closeStudioToolsDropdown()" id="btn-studio-daw-mode" type="button" role="menuitem" aria-label="Open DAW" class="sidebar-studio-destination" title="Open DAW with your Studio set, or start with an empty project">
+            <span class="axiom-tool-logo axiom-tool-logo-daw" aria-hidden="true"><img src="/static/brands/axiom-studio-tools.png" alt=""></span>
+          </button>
+        </div>
+        {% endif %}
+      </div>
+
+      <div id="sidebar-export-group" class="axiom-sidebar-nav-group relative">
+        <button onclick="toggleSidebarDropdown(event, 'export')" id="tab-btn-export" type="button" aria-haspopup="menu" aria-expanded="false"
+          data-nav-state="inactive" class="axiom-sidebar-nav-item w-full flex items-center justify-between px-10 py-5 pr-24 bg-transparent border-l-4 border-transparent text-white/40 hover:text-white hover:bg-white/5 font-black uppercase text-xs tracking-[0.2em] transition-all group">
+          <span class="axiom-sidebar-nav-label">
+            <svg id="icon-export" class="axiom-sidebar-nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 2v5a1 1 0 0 0 1 1h5M12 12v6m3-3-3-3-3 3" />
+            </svg>
+            <span>Export</span>
+          </span>
+        </button>
+        <button onclick="toggleSidebarDropdown(event, 'export')" id="sidebar-export-dropdown-btn"
+          class="axiom-sidebar-counter-menu-btn absolute right-10 top-1/2 -translate-y-1/2 inline-flex items-center gap-1 rounded-md border border-axiom-accent/20 bg-black/20 px-2 py-1 text-[9px] opacity-70 font-heading text-axiom-accent hover:opacity-100 hover:bg-axiom-accent/10 transition-all z-10"
+          title="Export Options" type="button" aria-haspopup="menu" aria-expanded="false">
+          02
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-2.5 w-2.5 transition-transform duration-200" id="sidebar-export-arrow" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
+        <div id="sidebar-export-menu" class="axiom-sidebar-submenu hidden" role="menu" aria-label="Export">
+          <button class="sidebar-export-destination is-featured" type="button" role="menuitem" aria-label="Export to Serato DJ Pro" onclick="openSidebarExport('serato')">
+            <span class="sidebar-export-brand sidebar-export-brand-serato"><img src="/static/brands/serato-dj-pro.svg" alt="Serato DJ Pro"></span>
+            <small>Handoff to Serato</small>
+            <img class="sidebar-export-chevron" src="/static/icons/chevron-down.svg" alt="" aria-hidden="true">
+          </button>
+          <button class="sidebar-export-destination{% if axiom_lite %} is-pro-locked{% endif %}" type="button" role="menuitem" aria-label="{% if axiom_lite %}djay Pro export, Axiom Pro feature{% else %}Export to djay Pro{% endif %}" onclick="openSidebarExport('djay')">
+            <span class="sidebar-export-brand sidebar-export-brand-djay"><img src="/static/brands/djay-wordmark.png" alt="djay"><span aria-hidden="true">Pro</span></span>
+            <small>{% if axiom_lite %}Axiom Pro feature{% else %}Handoff to djay{% endif %}</small>
+            <img class="sidebar-export-chevron" src="/static/icons/chevron-down.svg" alt="" aria-hidden="true">
+          </button>
+        </div>
+      </div>
+
+      {% if not axiom_lite %}
+      <button onclick="showTab('performance')" id="tab-btn-performance" data-native-only="performance"
+        data-nav-state="inactive" class="axiom-sidebar-nav-item w-full flex items-center justify-between px-10 py-5 bg-transparent border-l-4 border-transparent text-white/40 hover:text-white hover:bg-white/5 font-black uppercase text-xs tracking-[0.2em] transition-all group">
+        <div class="flex items-center gap-5">
+          <svg id="icon-performance" class="w-5 h-5 opacity-50 group-hover:opacity-100 transition-all" fill="none"
+            stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M13 10V3L4 14h7v7l9-11h-7z">
+            </path>
+          </svg>
+          <span>Performance</span>
+        </div>
+        <span class="text-[9px] opacity-0 group-hover:opacity-50 transition-opacity font-heading">04</span>
+      </button>
+
+      {% endif %}
+      <div id="sidebar-playlists-group" class="axiom-sidebar-nav-group">
+        <button onclick="openSidebarPlaylists(event)" id="tab-btn-playlists" type="button" aria-haspopup="menu" aria-expanded="false"
+          data-nav-state="inactive" class="axiom-sidebar-nav-item w-full flex items-center justify-between px-10 py-5 bg-transparent border-l-4 border-transparent text-white/40 hover:text-white hover:bg-white/5 font-black uppercase text-xs tracking-[0.2em] transition-all group">
+          <span class="axiom-sidebar-nav-label">
+            <svg id="icon-playlists" class="w-5 h-5 opacity-50 group-hover:opacity-100 transition-all" fill="none"
+              stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M9 19V6l12-2v13M9 19c0 1.105-1.79 2-4 2s-4-.895-4-2 1.79-2 4-2 4 .895 4 2zm12-2c0 1.105-1.79 2-4 2s-4-.895-4-2 1.79-2 4-2 4 .895 4 2zM9 10l12-2">
+              </path>
+            </svg>
+            <span>Playlists</span>
+          </span>
+          <img id="sidebar-playlists-arrow" class="axiom-sidebar-menu-arrow" src="/static/icons/chevron-down.svg" alt="" aria-hidden="true">
+        </button>
+        <div id="sidebar-playlists-menu" class="axiom-sidebar-submenu hidden" role="menu" aria-label="Playlists tools">
+          <button onclick="openSidebarCsvBuild()" id="tab-btn-build-csv" type="button" role="menuitem" class="requires-library hidden">
+            <img id="icon-build-csv" src="/static/icons/file-up.svg" alt="" aria-hidden="true"><span>Build Set From CSV</span>
+          </button>
+          <button onclick="openSidebarFavorites()" id="tab-btn-favorites" type="button" role="menuitem">
+            <img id="icon-favorites" src="/static/icons/heart-pulse.svg" alt="" aria-hidden="true"><span>Favourites</span>
+            <span id="fav-sidebar-badge" class="hidden">0</span>
+          </button>
+        </div>
+      </div>
+
+      <button onclick="showTab('health')" id="tab-btn-health"
+        data-nav-state="inactive" class="axiom-sidebar-nav-item w-full flex items-center justify-between px-10 py-5 bg-transparent border-l-4 border-transparent text-white/40 hover:text-white hover:bg-white/5 font-black uppercase text-xs tracking-[0.2em] transition-all group">
+        <div class="flex items-center gap-5">
+          <svg id="icon-health" class="w-5 h-5 opacity-50 group-hover:opacity-100 transition-all" fill="none"
+            stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M9 12l2 2 4-4m5 2a8 8 0 11-16 0 8 8 0 0116 0z">
+            </path>
+          </svg>
+          <span>Health</span>
+        </div>
+        <span class="text-[9px] opacity-0 group-hover:opacity-50 transition-opacity font-heading">06</span>
+      </button>
+
+    </nav>
+
+    <div id="tracks-drop-zone" class="sidebar-stat axiom-sidebar-track-dock" title="Drop folder here to add new music"
+      ondragover="handleFolderDragOver(event)" ondragleave="handleFolderDragLeave(event)" ondrop="handleFolderDrop(event)">
+      <span id="lib-track-count-val" class="axiom-sidebar-track-count">—</span>
+      <span class="axiom-sidebar-track-unit">TRACKS</span>
+      <span id="tracks-drop-hint" class="axiom-sidebar-track-hint">ADD MUSIC</span>
+      <button id="entrance-add-music" class="entrance-add-music" type="button" aria-haspopup="dialog" data-axiom-cta-skip="true">
+        <img src="/static/icons/folder-open.svg" alt="" width="32" height="32">
+        <span><strong>ADD YOUR MUSIC</strong><small>Choose a music folder</small></span>
+        <img class="entrance-add-arrow" src="/static/icons/arrow-right.svg" alt="" width="16" height="16">
+      </button>
+    </div>
+
+    <div class="axiom-sidebar-engine p-8 border-t border-white/5 mt-auto">
+      <p id="lib-status" class="text-[9px] font-bold text-axiom-muted uppercase tracking-tighter">Engine Status:
+        <span class="text-axiom-accent">Online</span>
+      </p>
+    </div>
+  </aside>
+
+  <header class="mobile-cockpit-nav" aria-label="AXIOM navigation">
+    <span class="mobile-cockpit-brand">PEAK HOUR</span>
+    <nav class="mobile-cockpit-actions" aria-label="Primary navigation">
+      <button type="button" onclick="showStudioWorkspace()" aria-label="Studio" title="Studio">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/></svg>
+      </button>
+      <button type="button" onclick="showTab('library')" aria-label="Library" title="Library">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"/></svg>
+      </button>
+      {% if not axiom_lite %}
+      <button type="button" onclick="showTab('performance')" data-native-only="performance" aria-label="Performance" title="Performance">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+      </button>
+      {% endif %}
+      <button type="button" onclick="openFavoritesPanel()" aria-label="Favourites" title="Favourites">
+        <svg fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+      </button>
+      <button type="button" onclick="showTab('playlists')" aria-label="Playlists" title="Playlists">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-2v13M9 19c0 1.105-1.79 2-4 2s-4-.895-4-2 1.79-2 4-2 4 .895 4 2zm12-2c0 1.105-1.79 2-4 2s-4-.895-4-2 1.79-2 4-2 4 .895 4 2zM9 10l12-2"/></svg>
+      </button>
+      <button type="button" onclick="showTab('health')" aria-label="Health" title="Health">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5 2a8 8 0 11-16 0 8 8 0 0116 0z"/></svg>
+      </button>
+      <button type="button" onclick="openUniversalHelp()" class="axiom-global-help-trigger" aria-label="Open AXIOM Help" title="Help">
+        <span aria-hidden="true">?</span>
+      </button>
+      <button type="button" onclick="toggleMasterHud()" aria-label="Settings" title="Settings">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+      </button>
+    </nav>
+  </header>
+
+  <main id="main-content-wrapper" class="flex-1 flex flex-col overflow-hidden relative">
+    {% include "partials/cockpit/surfaces/entrance.html" %}
+    <div class="command-center-hud" id="master-hud" data-settings-category="all" role="dialog" aria-modal="true" aria-labelledby="settings-title">
+      <div class="settings-shell">
+        <div class="settings-head">
+          <div>
+            <p class="settings-kicker">AXIOM Settings</p>
+            <h2 id="settings-title" class="settings-title">Control Room</h2>
+            <p class="settings-copy">Set up how AXIOM looks, works, and connects to your music.</p>
+            <p class="settings-copy" aria-label="Installed AXIOM version and build"><span id="settings-installed-version">{{ axiom_release_label }}</span> &middot; Build <strong id="settings-installed-build">{{ axiom_build }}</strong></p>
+          </div>
+          <button type="button" class="settings-close" onclick="closeMasterHud()" aria-label="Close settings">x</button>
+        </div>
+
+        <div class="settings-tabs">
+          <div class="settings-tab-list" role="tablist" aria-label="Settings sections">
+            <button type="button" class="settings-tab active" data-settings-category="all" onclick="setSettingsCategory('all', this)" role="tab" aria-selected="true">All Settings</button>
+            <button type="button" class="settings-tab" data-settings-category="library" onclick="setSettingsCategory('library', this)" role="tab" aria-selected="false">Library</button>
+            <button type="button" class="settings-tab" data-settings-category="workflow" onclick="setSettingsCategory('workflow', this)" role="tab" aria-selected="false">Workflow</button>
+            <button type="button" class="settings-tab" data-settings-category="interface" onclick="setSettingsCategory('interface', this)" role="tab" aria-selected="false">Interface</button>
+            <button type="button" class="settings-tab" data-settings-category="system" onclick="setSettingsCategory('system', this)" role="tab" aria-selected="false">System</button>
+          </div>
+          <label class="settings-search" for="settings-search-input">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg>
+            <input id="settings-search-input" type="search" placeholder="SEARCH SETTINGS..." aria-label="Search settings" oninput="filterSettingsRows(this.value)">
+          </label>
+        </div>
+
+        <div class="settings-content" id="settings-content">
+          <section class="settings-column" data-settings-panel="library">
+            <h3>Library &amp; Data</h3>
+            <article class="settings-item" data-settings-sections="all library" data-settings-search="add music library connect folder dj software">
+              <div><strong>Add Music Library</strong><span>Connect a music folder or DJ library so AXIOM can see your tracks.</span></div>
+              <button type="button" id="btn-settings-library-add" class="settings-item-action primary" onclick="closeMasterHud(); openLibrarySourcePicker();">Add Music</button>
+            </article>
+            <article class="settings-item" data-settings-sections="all library" data-settings-search="library health bpm key year disconnected">
+              <div><strong>Library Health</strong><span>Fix missing BPM, key and year, and spot disconnected tracks. Your music files stay untouched.</span></div>
+              <button type="button" class="settings-item-action" onclick="openSettingsLibraryHealth()">Run Library Health</button>
+            </article>
+            <article class="settings-item" data-settings-sections="all library" data-settings-search="rescan library refresh music folders">
+              <div><strong id="rescan-btn-text">Rescan Library</strong><span>Refresh AXIOM after adding, moving, or reconnecting music folders.</span></div>
+              <button type="button" id="btn-rescan" class="settings-item-action" onclick="rescanLibrary()">Rescan Library <span id="rescan-spinner" class="spinner hidden"></span></button>
+            </article>
+            <article class="settings-item" id="settings-stress-report" data-settings-sections="all library" data-settings-search="stress test report diagnostics another pc computer big library file types errors slow logs">
+              <div><strong id="settings-stress-report-title">Stress-Test Report</strong><span id="settings-stress-report-copy">Checks how PEAK HOUR handles this PC's library: every file type, files that fail to open, slow screens and errors. Saves one zip to the Desktop to bring back. Nothing in your music or DJ software is changed.</span></div>
+              <div class="settings-stress-report-actions">
+                <button type="button" class="settings-item-action" id="settings-stress-report-show" hidden>Show in File Explorer</button>
+                <button type="button" class="settings-item-action primary" id="settings-stress-report-start">Make Report</button>
+              </div>
+            </article>
+            <article class="settings-item" id="settings-video-audio-only" data-settings-sections="all library" data-settings-search="video mp4 preview audio only play sound music video">
+              <div><strong>Play Video Tracks As Audio Only</strong><span>When on, video tracks play their sound in the normal player instead of opening the video window. Each video window also has a Play audio only button.</span></div>
+              <button type="button" class="settings-toggle" id="settings-video-audio-only-toggle" aria-label="Toggle audio only for video tracks" aria-pressed="false"><span></span></button>
+            </article>
+            <article class="settings-item" id="settings-ai-assist" data-settings-sections="all library" data-settings-search="ai assist claude chatgpt openai anthropic year release title artist tidy genre energy suggestions api key playlist set build">
+              <div><strong>AI Assist (Claude or ChatGPT)</strong><span>Let Claude or ChatGPT suggest release years, tidy titles and artists, fill in genres and energy, and build playlists from your own library. You review everything; nothing changes until you apply or save it. Uses your own API key.</span></div>
+              <button type="button" class="settings-item-action primary" id="settings-ai-assist-open">Open AI Assist</button>
+            </article>
+            <article class="settings-item" data-settings-sections="all library" data-settings-search="library matching songs panel recommendations show hide on off">
+              <div><strong id="settings-library-matching-status">Library Matching Songs Off</strong><span>Show or hide the Matching Songs panel on the right side of Library.</span></div>
+              <button type="button" class="settings-toggle" onclick="toggleLibraryMatchingSongs()" id="tab-library-matching-songs" aria-label="Toggle Library Matching Songs" aria-pressed="false"><span></span></button>
+            </article>
+            <article class="settings-item" data-settings-sections="all library" data-settings-search="record pools music sources bpm supreme djcity heavy hits mymp3pool dms missing tracks downloads">
+              <div><strong>Music Sources</strong><span>Choose your own record pools for Missing Tracks. AXIOM opens the provider in your browser and never stores your login.</span></div>
+              <button type="button" class="settings-item-action" onclick="openRecordPoolSettings()">Manage Sources</button>
+            </article>
+            <article class="settings-item" data-settings-sections="all library system" data-settings-search="dropbox cloud backup sync restore playlists">
+              <div><strong>Dropbox Backup &amp; Restore</strong><span>Keep versioned copies of your AXIOM library information, playlists and unfinished sets in Dropbox.</span></div>
+              <button type="button" class="settings-item-action" onclick="AxiomDropbox.open()">Manage Dropbox</button>
+            </article>
+            <article class="settings-item" data-settings-sections="library" data-settings-search="backups restore saved">
+              <div><strong>Backups</strong><span>Open saved AXIOM backups and restore tools.</span></div>
+              <button type="button" class="settings-item-action" onclick="openBackupsModal()" id="tab-backups">Open Backups</button>
+            </article>
+            <article class="settings-item" data-settings-sections="library" data-settings-search="reset clear cache empty library first launch daily health stream start again">
+              <div><strong>Reset AXIOM Library</strong><span>Return AXIOM to an empty first-run Library before reconnecting your music and repairing Health again. Source audio and DJ libraries stay untouched.</span></div>
+              <button type="button" id="btn-settings-library-reset" class="settings-item-action danger" onclick="resetAxiomLibraryIndex(this)">Reset Library</button>
+              <div id="settings-library-reset-status" role="alert" hidden style="grid-column:1/-1;margin-top:10px;padding:12px;border:1px solid rgba(239,68,68,.58);background:rgba(127,29,29,.22);color:#fecaca;font-size:12px;line-height:1.45;">
+                <strong id="settings-library-reset-status-title" style="color:#fff;display:block;margin-bottom:4px;">Library reset needs attention</strong>
+                <span id="settings-library-reset-status-copy"></span>
+                <button type="button" id="btn-settings-library-reset-cancel" class="settings-item-action" style="margin-top:10px;" onclick="cancelAxiomLibraryResetBlock()">Keep Current Library</button>
+              </div>
+            </article>
+          </section>
+
+          <section class="settings-column experience" data-settings-panel="account">
+            {% if axiom_lite %}
+            <h3 data-settings-sections="all">AXIOM Lite</h3>
+            <article class="settings-item" data-settings-sections="all" data-settings-search="lite free access account">
+              <div><strong>Free Access</strong><span>Library, Studio, Health, saved sets and exports. No subscription or activation key required.</span></div>
+              <span id="license-status-pill" class="settings-item-status">Free Lite</span>
+            </article>
+            <article id="lite-pro-info-settings-item" class="settings-item" tabindex="-1" data-settings-sections="all" data-settings-search="pro compare full workflow daw performance unlimited exports playlist pasting djay">
+              <div><strong>Learn About AXIOM Pro</strong><span>AXIOM Pro is the full DJ OWE workflow with unlimited exports, unlimited playlist pasting, DAW tools, Performance Mode, and direct djay Pro export.</span></div>
+              <span class="settings-item-status">Pro Features</span>
+            </article>
+            <article id="lite-privacy-policy-settings-item" class="settings-item" data-settings-sections="all system" data-settings-search="privacy policy data collection legal">
+              <div><strong>Privacy Policy</strong><span>Read how AXIOM Lite handles your library and personal data.</span></div>
+              <button type="button" class="settings-item-action" onclick="openAxiomPrivacyPolicy()">View Privacy Policy</button>
+            </article>
+            {% else %}
+            <h3 data-settings-sections="all">Account &amp; License</h3>
+            <article class="settings-item" data-settings-sections="all" data-settings-search="user account login signed in">
+              <div><strong>User Account</strong><span>Your AXIOM access and activation live here.</span></div>
+              <button type="button" class="settings-item-action primary" onclick="openLicenseModal()">View Account</button>
+            </article>
+            <article class="settings-item" data-settings-sections="all" data-settings-search="login status connected">
+              <div><strong>Login Status</strong><span id="settings-account-email">Checking this Mac...</span></div>
+              <button type="button" class="settings-item-action" id="settings-account-logout" onclick="logoutAxiomAccount()" hidden>Sign Out</button>
+            </article>
+            <article class="settings-item" data-settings-sections="all" data-settings-search="license lifetime trial activation">
+              <div><strong>License Type</strong><span>See the access level active on this Mac.</span></div>
+              <button type="button" class="settings-item-action status" onclick="openLicenseModal()"><span id="license-status-pill" class="license-status-pill">Trial</span></button>
+            </article>
+            <article id="lite-migration-settings-item" class="settings-item hidden" data-settings-sections="all library" data-settings-search="lite migration bring over import library bpm key year health cues playlists">
+              <div><strong>Bring Over Lite Library</strong><span id="lite-migration-settings-copy">Copy your AXIOM Lite library work into Pro. Your music files, Lite credits, and licenses stay untouched.</span></div>
+              <button type="button" id="lite-migration-import-btn" class="settings-item-action primary" onclick="importAxiomLiteLibrary(this)">Import Lite Work</button>
+            </article>
+
+            {% endif %}
+            <div class="settings-section-group" data-settings-sections="workflow">
+              <h3>Workflow</h3>
+              {% if not axiom_lite %}
+              <article class="settings-item" data-settings-search="performance live assist dj software automatic popup minimize playing now">
+                <div><strong id="settings-auto-live-assist-status">Automatic Live Assist On</strong><span>On a fresh Playing Now track, open one Live Assist window and minimise AXIOM.</span></div>
+                <button type="button" class="settings-toggle" onclick="togglePerformanceAutoLiveAssist()" id="tab-auto-live-assist" aria-label="Toggle automatic Live Assist" aria-pressed="true"><span></span></button>
+              </article>
+              <article class="settings-item" id="settings-live-assist-hotkey" data-settings-search="ctrl f control f search hotkey shortcut live assist serato virtualdj djay">
+                <div><strong id="settings-live-assist-hotkey-title">Ctrl+F Shows Live Assist On</strong><span id="settings-live-assist-hotkey-copy">Press Ctrl+F to search in Serato, VirtualDJ or djay and PEAK HOUR brings Live Assist up beside it. Your search keeps typing into the DJ software.</span></div>
+                <button type="button" class="settings-toggle" id="settings-live-assist-hotkey-toggle" aria-label="Toggle Ctrl+F Live Assist" aria-pressed="true"><span></span></button>
+              </article>
+              <article class="settings-item recording-settings-item" data-settings-search="performance record recording set dj software internal audio controller interface input wav mp3 desktop">
+                <div>
+                  <strong>Set Recording</strong>
+                  <span>Record the sound your DJ software plays (Serato, VirtualDJ, djay, rekordbox or Traktor) straight from Windows, or record a controller or audio interface output. Choose WAV or MP3; recordings save to the folder shown below.</span>
+                </div>
+                <div class="recording-settings-controls">
+                  <select id="recording-provider-select" aria-label="DJ software for set recording" onchange="loadSetRecordingSettings()">
+                    <option value="auto">Auto / Other DJ App</option>
+                    <option value="serato">Serato DJ Pro</option>
+                    <option value="djay">djay Pro</option>
+                  </select>
+                  <select id="recording-source-mode-select" aria-label="Set recording source type" onchange="this.dataset.touched='true'; loadSetRecordingSettings()">
+                    <option value="application">DJ Software Audio</option>
+                    <option value="device">Controller / Interface</option>
+                  </select>
+                  <select id="recording-device-select" aria-label="Set recording input" onchange="handleRecordingSourceChange()">
+                    <option value="">Finding audio inputs...</option>
+                  </select>
+                  <select id="recording-channel-pair-select" class="hidden" aria-label="Controller stereo channel pair" onchange="markRecordingPairUnconfirmed()">
+                    <option value="0:1">Channels 1/2</option>
+                  </select>
+                  <select id="recording-format-select" aria-label="Set recording format" onchange="saveSetRecordingSettings()">
+                    <option value="wav">WAV - full quality</option>
+                    <option value="mp3">MP3 - 320 kbps</option>
+                  </select>
+                  <select id="recording-broadcast-select" aria-label="Share clean recording feed with streaming apps" onchange="saveSetRecordingSettings()">
+                    <option value="off">Streaming Feed Off</option>
+                    <option value="on">Share To AXIOM Broadcast</option>
+                  </select>
+                  <button id="recording-test-button" type="button" class="settings-item-action" onclick="testSetRecordingInput()">Test Signal</button>
+                  <button id="recording-confirm-pair-button" type="button" class="settings-item-action hidden" onclick="confirmSetRecordingPair()">Confirm Pair</button>
+                  <span id="recording-test-result" class="recording-test-result" data-signal="idle">Not Tested</span>
+                  <div class="recording-save-destination" aria-label="Set recording save destination">
+                    <span>Saves To</span>
+                    <strong id="recording-save-directory">~/Desktop</strong>
+                  </div>
+                </div>
+              </article>
+              <article id="settings-performance-accessibility" class="settings-item hidden" data-settings-search="performance live assist mac accessibility search permission access">
+                <div>
+                  <strong id="settings-performance-accessibility-status">One-time Mac access needed</strong>
+                  <span id="settings-performance-accessibility-copy">Performance Mode is already on. Allow macOS access for Command-F. Keep AXIOM open; it connects automatically when macOS grants access.</span>
+                </div>
+                <div id="settings-performance-accessibility-diagnostics" class="text-axiom-muted text-[11px] leading-relaxed mt-2"></div>
+                <button type="button" class="settings-item-action" onclick="openPerformanceAccessibilitySettings()">Open Mac Settings</button>
+              </article>
+              <article class="settings-item" data-settings-search="performance live assist quit app quit axiom">
+                <div><strong>Quit AXIOM</strong><span>Stop live keyboard monitoring and end background Performance Mode integration.</span></div>
+                <button type="button" class="settings-item-action" onclick="quitAxiomApp()">Quit AXIOM</button>
+              </article>
+              <label class="settings-item" for="performance-now-playing-colour-select" data-settings-search="performance now playing colour color auto axiom green serato blue djay pro orange">
+                <div><strong>Now Playing Colour</strong><span>Match the active DJ software automatically, or keep one preferred AXIOM colour.</span></div>
+                <select id="performance-now-playing-colour-select" onchange="setPerformanceNowPlayingColour(this.value)">
+                  <option value="auto">Match DJ Software</option>
+                  <option value="axiom">AXIOM Green</option>
+                  <option value="serato">Serato Blue</option>
+                  <option value="djay">djay Pro Orange</option>
+                </select>
+              </label>
+              {% endif %}
+              <label class="settings-item" for="startup-workflow-select" data-settings-search="startup workflow library studio">
+                <div><strong>Startup Workflow</strong><span>Choose where AXIOM opens after your music is ready.</span></div>
+                <select id="startup-workflow-select" onchange="setStartupWorkflowMode(this.value)">
+                  <option value="build">Studio After Library</option>
+                  <option value="library">Direct To Library</option>
+                </select>
+              </label>
+            </div>
+
+            <div class="settings-section-group" data-settings-sections="interface">
+              <h3>Interface</h3>
+              <label class="settings-item" for="matching-songs-position-select" data-settings-search="matching songs button position left right">
+                <div><strong>Matching Songs Button Position</strong><span>Place Matching Songs beside the title or on the right.</span></div>
+                <select id="matching-songs-position-select" onchange="setMatchingSongsButtonPosition(this.value)">
+                  <option value="right">Right</option>
+                  <option value="left">Left</option>
+                </select>
+              </label>
+              <article class="settings-item" data-settings-search="font size text">
+                <div><strong>Font Size</strong><span>Make AXIOM text easier to read.</span></div>
+                <div class="settings-stepper">
+                  <button type="button" onclick="decreaseFontSize()" aria-label="Decrease font size">-</button>
+                  <span id="font-size-display">100%</span>
+                  <button type="button" onclick="increaseFontSize()" aria-label="Increase font size">+</button>
+                </div>
+              </article>
+            </div>
+
+            <div class="settings-section-group" data-settings-sections="system">
+              <h3>System</h3>
+              <article class="settings-item" data-settings-search="artwork album art">
+                <div><strong id="settings-artwork-status">Artwork On</strong><span>Show or hide album artwork while browsing.</span></div>
+                <button type="button" class="settings-toggle" onclick="toggleLibraryArtwork()" id="tab-artwork" aria-label="Toggle artwork"><span></span></button>
+              </article>
+              <label class="settings-item" for="working-set-animation-select" data-settings-search="working set add animation">
+                <div><strong>Working Set Add Animation</strong><span>Show the album-art confirmation when adding tracks to Studio.</span></div>
+                <select id="working-set-animation-select" onchange="setWorkingSetAddAnimation(this.value)">
+                  <option value="on">On</option>
+                  <option value="off">Off</option>
+                </select>
+              </label>
+              <article class="settings-item" data-settings-search="check updates newer build">
+                <div><strong>Check For Updates</strong><span>See if a newer AXIOM build is ready.</span></div>
+                <button type="button" class="settings-item-action" onclick="checkForAxiomUpdate(true)" id="settings-check-updates-btn">Check For Updates</button>
+              </article>
+              <article class="settings-item" data-settings-search="browser compatibility test parity folders playback saving serato">
+                <div><strong>Check Browser Compatibility</strong><span>Check folder access, playback, saving, and Serato handoff in your browser.</span></div>
+                <button type="button" class="settings-item-action cyan" onclick="runBrowserParityCheck()">Run Browser Test</button>
+              </article>
+              <article class="settings-item" data-settings-search="app walkthrough tour">
+                <div><strong>App Walkthrough</strong><span>Replay the AXIOM tour.</span></div>
+                <button type="button" class="settings-item-action" onclick="showAxiomArrival(true); closeMasterHud();">Launch Walkthrough</button>
+              </article>
+              <article class="settings-item" data-settings-search="browser edge chrome google window open">
+                <div><strong>Open PEAK HOUR In</strong><span id="settings-window-browser-copy">The browser that shows PEAK HOUR's window. It opens as its own window, apart from your everyday tabs. Takes effect the next time PEAK HOUR starts.</span></div>
+                <div class="recording-settings-controls">
+                  <select id="settings-window-browser" aria-label="Browser for the PEAK HOUR window">
+                    <option value="edge">Microsoft Edge</option>
+                    <option value="chrome">Google Chrome</option>
+                  </select>
+                </div>
+              </article>
+              <article class="settings-item" data-settings-search="user manual help guide how to instructions">
+                <div><strong>User Manual</strong><span>Step-by-step help with pictures for every part of PEAK HOUR.</span></div>
+                <button type="button" class="settings-item-action" id="settings-user-manual" onclick="window.open('/static/manual/index.html', '_blank')">Open Manual</button>
+              </article>
+              <article class="settings-item" data-settings-search="app version release beta">
+                <div><strong>Installed Version</strong><span>The AXIOM build installed on this Mac.</span></div>
+                <span id="app-version-pill" class="settings-item-status">{{ axiom_release_label }}</span>
+              </article>
+              <article class="settings-item" data-settings-search="app build number installed identity">
+                <div><strong>Installed Build Number</strong><span>Identifies this exact AXIOM build.</span></div>
+                <span id="app-build-pill" class="settings-item-status">{{ axiom_build }}</span>
+              </article>
+            </div>
+          </section>
+        </div>
+        <div class="settings-footer" id="settings-footer-status">Settings are applied automatically.</div>
+      </div>
+    </div>
+    {% include "partials/cockpit/surfaces/health-review-surfaces.html" %}
+    {% include "partials/cockpit/surfaces/studio.html" %}
+    {% include "partials/cockpit/surfaces/playlists.html" %}
+    {% if not axiom_lite %}{% include "partials/cockpit/surfaces/performance.html" %}{% endif %}
+    {% include "partials/cockpit/surfaces/library.html" %}
+    <div id="audio-player"
+      class="absolute bottom-0 left-0 right-0 h-24 glass border-t border-white/5 flex items-center justify-between px-12 z-50 library-player-upgrade">
+      <div class="flex items-center gap-8 player-left-zone">
+        <div class="player-primary-controls">
+          <button onclick="togglePlay()" aria-label="Play or pause current track" title="Play or pause current track"
+            class="w-14 h-14 rounded-full bg-axiom-accent text-black flex items-center justify-center hover:scale-110 transition-transform">
+            <svg id="play-icon" class="w-6 h-6 ml-1" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M8 5v14l11-7z" />
+            </svg>
+            <svg id="pause-icon" class="w-6 h-6 hidden" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
+            </svg>
+          </button>
+          <button onclick="refreshLibrary()" class="refresh-icon-btn player-refresh-btn" title="Refresh filtered library">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+              </svg>
+          </button>
+          <button onclick="addCurrentToPlaylist()"
+            style="font-family:'Bebas Neue',Impact,sans-serif!important;"
+            class="player-add-btn bg-axiom-accent text-black rounded-full px-4 py-2 text-xs font-black uppercase tracking-widest hover:scale-105 transition-transform whitespace-nowrap shrink-0 button--primary">
+            + Add to Set
+          </button>
+        </div>
+        <div class="player-seek-stack">
+          <div class="player-skip-controls" role="group" aria-label="Preview seek controls">
+            <button type="button" class="player-skip-btn" onclick="skipAudioRelative(-15)" title="Skip back 15 seconds" aria-label="Skip back 15 seconds">
+              <span class="player-skip-icon player-skip-icon-back" aria-hidden="true"></span>
+              <span>15s</span>
+            </button>
+            <button type="button" class="player-skip-btn" onclick="skipAudioRelative(30)" title="Skip forward 30 seconds" aria-label="Skip forward 30 seconds">
+              <span>30s</span>
+              <span class="player-skip-icon player-skip-icon-forward" aria-hidden="true"></span>
+            </button>
+          </div>
+          <label class="player-autoplay-toggle flex items-center gap-2 text-xs font-black uppercase tracking-widest text-white/40 hover:text-white cursor-pointer transition-colors">
+            <input type="checkbox" id="studio-autoplay-toggle" class="accent-axiom-accent w-3.5 h-3.5 cursor-pointer" />
+            Autoplay
+          </label>
+        </div>
+      </div>
+      <div class="player-main-zone">
+        <div class="overflow-hidden player-track-copy">
+          <p id="ap-context" class="text-axiom-accent text-[9px] font-black uppercase tracking-[0.18em]">Library / Studio Preview</p>
+          <h4 id="ap-title" class="text-white text-sm font-black uppercase tracking-widest">No Track Selected</h4>
+          <div id="daw-preparation-status" role="status" aria-live="polite" hidden>
+            <span id="daw-preparation-message"></span>
+            <button type="button" onclick="AxiomArrangement.stop(false, 'preparation-stop')">Cancel</button>
+          </div>
+          <p id="ap-artist" class="text-axiom-muted text-[10px] font-bold uppercase tracking-[0.2em]">Add music, then choose a song to preview</p>
+        </div>
+        <div class="player-progress-zone flex items-center">
+          <span id="ap-time" class="text-[10px] font-bold text-axiom-muted w-10 text-right">0:00</span>
+          <div class="flex-1 h-1.5 bg-white/5 rounded-full cursor-pointer relative group" onclick="seekAudio(event)"
+            id="progress-container">
+            <div id="ap-progress"
+              class="absolute top-0 left-0 h-full bg-axiom-accent rounded-full w-0 group-hover:shadow-[0_0_15px_var(--accent)]">
+            </div>
+          </div>
+          <span id="ap-duration" class="text-[10px] font-bold text-axiom-muted w-10">0:00</span>
+        </div>
+      </div>
+      <div class="player-volume-zone w-32 ml-8 flex items-center gap-2">
+        <svg class="w-4 h-4 text-axiom-muted" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z" />
+        </svg>
+        <input type="range" id="ap-volume" min="0" max="1" step="0.01" value="1" class="w-full accent-axiom-accent"
+          oninput="setNativeVolume(this.value)">
+      </div>
+      <audio id="main-player" class="hidden"></audio>
+    </div>
+
+
+  </main>
+
+  <div id="replacement-modal"
+    class="anchor-dj-modal fixed inset-0 bg-black/90 z-[12000] hidden flex items-center justify-center opacity-0 transition-opacity duration-300">
+    <div class="anchor-dj-shell">
+      <div class="anchor-dj-topline">
+        <div class="anchor-brand-lockup">
+          <span class="anchor-logo-word">PEAK HOUR</span>
+          <span class="anchor-kicker">Matching Songs</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <button onclick="openSmartListGuide(true)" id="btn-matching-guide" class="anchor-close-btn axiom-help-btn-compact axiom-help-btn axiom-help-btn--compact" type="button" aria-label="Matching Songs Help" title="Matching Songs Help">
+            <span class="matching-help-compact-mark" aria-hidden="true">?</span>
+            <span class="matching-help-expanded-label" aria-hidden="true">Help</span>
+          </button>
+        </div>
+      </div>
+
+      <section class="anchor-hero-panel">
+        <div id="modal-anchor-artwork" class="anchor-cover-card">
+          <div class="artwork-fallback" style="--art-a:#163b22;--art-b:#061006;">PH</div>
+        </div>
+        <div class="anchor-hero-copy">
+          <div id="modal-anchor-details" class="anchor-reference-details">
+            <p class="anchor-section-label">Current Song</p>
+            <p class="anchor-context-copy">This is the song AXIOM uses as the reference for tracks that can work before or after it.</p>
+            <h3 id="modal-anchor-title" class="anchor-title">Track Title</h3>
+            <p id="modal-anchor-artist" class="anchor-subtitle">Artist</p>
+            <div class="anchor-meta-stack">
+              <span id="modal-anchor-bpm" class="anchor-meta-pill">-- BPM</span>
+              <span id="modal-anchor-key" class="anchor-meta-pill">--</span>
+              <span id="modal-anchor-energy" class="anchor-meta-pill accent">Energy --</span>
+            </div>
+            <div id="modal-anchor-tags" class="anchor-tag-row"></div>
+          </div>
+        </div>
+        <div class="anchor-transition-zone">
+	          <div class="anchor-board-head">
+	            <span id="modal-journey-name" class="anchor-board-mode">Set Prep Journey</span>
+	            <div class="anchor-board-status">
+	              <span id="modal-cue-source" class="anchor-cue-source">Suggested Cues</span>
+	              <button id="modal-cue-copy" class="anchor-cue-copy" type="button" onclick="copyDisplayedCuesToAxiom()">Save In AXIOM</button>
+	              <button id="modal-cue-publish" class="anchor-cue-copy hidden" type="button" onclick="previewSeratoCuePublish(this)">Publish To Serato</button>
+	              <div id="modal-anchor-time" class="anchor-remaining">0:00 / 0:00</div>
+	            </div>
+	          </div>
+	          <div id="modal-anchor-transition-board" class="anchor-transition-board"></div>
+        </div>
+      </section>
+
+      <div class="anchor-filter-bar">
+        <button onclick="resetAndFetchSuggestions()" class="anchor-filter-btn primary" type="button">Matching Songs</button>
+        <select id="mod-action-menu" onchange="handleModifierMenu(this.value)" class="anchor-filter-select" aria-label="Mix Tools">
+          <option value="">Mix Tools</option>
+          <option value="clear_modifiers" disabled>Clear Mix Tools</option>
+          <option value="mood_lift">Lift</option>
+          <option value="mood_drop">Drop</option>
+          <option value="bpm_half">1/2 BPM</option>
+          <option value="bpm_double">2x BPM</option>
+          <option value="key_shift">Key Shift</option>
+        </select>
+        <button onclick="toggleModifier('mood_lift')" id="mod-mood_lift" class="anchor-filter-btn" type="button">Lift</button>
+        <button onclick="toggleModifier('mood_drop')" id="mod-mood_drop" class="anchor-filter-btn" type="button">Drop</button>
+        <button onclick="toggleModifier('bpm_half')" id="mod-bpm_half" class="anchor-filter-btn" type="button">1/2 Half BPM</button>
+        <button onclick="toggleModifier('bpm_double')" id="mod-bpm_double" class="anchor-filter-btn" type="button">2× Double BPM</button>
+        <button onclick="toggleModifier('key_shift')" id="mod-key_shift" class="anchor-filter-btn" type="button">Key Shift</button>
+        <select id="mod-bpm-window" onchange="resetAndFetchSuggestions()" class="anchor-filter-select compact" aria-label="Matching Songs BPM range">
+          <option value="3" selected>±3 BPM</option>
+          <option value="5">±5 BPM</option>
+          <option value="10">±10 BPM</option>
+        </select>
+        <select id="mod-era" onchange="resetAndFetchSuggestions()" class="anchor-filter-select">
+          <option value="All">All Eras</option>
+          <option value="Retro One">Retro 1</option>
+          <option value="Retro 2">Retro 2</option>
+          <option value="The 90s">The 90s</option>
+          <option value="2k Era">2k Era</option>
+          <option value="2010s">2010s</option>
+          <option value="Pre-Covid">Pre-Covid</option>
+          <option value="Post-Covid">Post-Covid</option>
+          <option value="Old">Old</option>
+          <option value="Recent">Recent</option>
+          <option value="New">New</option>
+          <option value="Unknown">Unknown</option>
+        </select>
+        <select id="mod-root" onchange="modalRootFilter = this.value; resetAndFetchSuggestions()" class="anchor-filter-select">
+          <option value="">All Roots</option>
+          <option value="Urban">Urban</option>
+          <option value="Global">Global</option>
+          <option value="Electronic">Electronic</option>
+          <option value="Pop">Pop</option>
+          <option value="Utility">Utility</option>
+        </select>
+        <select id="mod-count" onchange="resetAndFetchSuggestions()" class="anchor-filter-select compact">
+          <option value="10">10 Matches</option>
+          <option value="20">20 Matches</option>
+          <option value="50" selected>50 Matches</option>
+          <option value="100">100 Matches</option>
+        </select>
+        <span class="root-help" title="Urban: Hip-hop, R&B, trap, funk, gospel&#10;Global: Afro, moombahton, reggae, world&#10;Electronic: House, techno, D&B, synth&#10;Pop: Mainstream, Top 40, dance pop, ballads&#10;Utility: Openers, transitions, FX, tools">i</span>
+        <div class="anchor-search-wrap">
+          <input type="text" id="modal-search" placeholder="Quick search" oninput="scheduleModalSearch()" aria-keyshortcuts="Meta+F Control+F" class="anchor-search-input">
+          <svg class="anchor-search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+        </div>
+      </div>
+
+      <div class="anchor-modal-body">
+        <section class="anchor-suggestions-panel">
+          <div class="anchor-panel-header">
+            <div>
+              <p class="anchor-section-label">Matching Songs</p>
+              <span id="modal-results-count" class="anchor-result-count">Finding matches...</span>
+            </div>
+            <div class="anchor-panel-tools">
+              <span id="modal-decision-summary" class="anchor-decision-summary">0 Kept · 0 Hidden</span>
+              <button id="modal-show-used-toggle" type="button" class="anchor-header-action" onclick="toggleModalShowUsedTracks()">Show Used</button>
+              <button type="button" class="anchor-header-action primary" onclick="rotateModalSuggestions()">Rotate</button>
+              <button id="modal-clear-decisions" type="button" class="anchor-header-action hidden" onclick="clearModalSuggestionDecisions()">Clear</button>
+              <label class="anchor-sort-pill" for="modal-suggestion-sort">
+                <span>Sort:</span>
+                <select id="modal-suggestion-sort" class="anchor-sort-select" onchange="setModalSuggestionSort(this.value)">
+                  <option value="transition">Best Transition</option>
+                  <option value="compatibility">Best Compatibility</option>
+                  <option value="match">Match Strength</option>
+                  <option value="bpm">Closest BPM</option>
+                  <option value="key">Best Key Route</option>
+                  <option value="title">Title A-Z</option>
+                  <option value="artist">Artist A-Z</option>
+                </select>
+              </label>
+            </div>
+          </div>
+          <div class="modal-results-pane relative">
+            <div id="modal-spinner" class="absolute inset-0 flex items-center justify-center hidden">
+              <div class="spinner border-axiom-accent w-10 h-10"></div>
+            </div>
+            <div id="modal-suggestions-list" class="anchor-suggestions-list"></div>
+          </div>
+        </section>
+
+        <aside id="anchor-transition-panel" class="live-transition-panel">
+          <div class="anchor-panel-header">
+            <div>
+              <p class="anchor-section-label">Transition</p>
+              <span id="modal-transition-title" class="transition-title" hidden aria-live="polite"></span>
+            </div>
+            <button type="button" class="transition-settings-btn" title="Transition settings">⚙</button>
+          </div>
+          <div id="modal-transition-content" class="transition-content"></div>
+          <div class="transition-preview-controls">
+            <audio id="modal-player" class="hidden"></audio>
+            <button onclick="skipModalAudio(-15)" type="button" aria-label="Skip back 15 seconds">
+              <img class="skip-preview-icon" src="/static/icons/skip-back.svg" alt="">
+              <span>15 Seconds</span>
+            </button>
+            <button onclick="toggleModalPlay()" id="modal-play-btn" class="transition-play-btn" type="button">
+              <svg id="modal-play-icon" class="w-4 h-4 ml-0.5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+              <svg id="modal-pause-icon" class="w-4 h-4 hidden" fill="currentColor" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+            </button>
+            <button onclick="skipModalAudio(30)" type="button" aria-label="Skip forward 30 seconds">
+              <span>30 Seconds</span>
+              <img class="skip-preview-icon" src="/static/icons/skip-forward.svg" alt="">
+            </button>
+          </div>
+          <div class="modal-action-panel">
+            <button onclick="executeModalAction('add_after_anchor')" id="btn-action-add" class="transition-action primary" type="button">
+              <span>+ Add Song</span>
+              <small>Stay here and keep building</small>
+            </button>
+            <button onclick="closeModal()" id="btn-matching-close" class="transition-action matching-close-action" type="button">Close</button>
+            <button onclick="executeModalAction('replace')" id="btn-action-replace" class="transition-action" type="button">Replace Current Song</button>
+            <button onclick="saveSelectedSuggestionForLater()" id="modal-save-for-later-btn" class="transition-action" type="button">Save For Later</button>
+            <button onclick="executeModalAction('insert_before')" id="btn-action-before" class="transition-action small" type="button">Add Before Current Song</button>
+            <button onclick="executeModalAction('insert_after')" id="btn-action-after" class="transition-action small" type="button">Add Song &amp; Return To Set</button>
+          </div>
+          <div id="modal-cues" class="hidden">
+            <input id="modal-new-cue-label" type="text" placeholder="Label (optional)" />
+            <button id="modal-add-cue-btn" onclick="addModalCue()" type="button">Add Cue</button>
+          </div>
+        </aside>
+      </div>
+
+      <div class="anchor-insight-strip">
+        <span>AXIOM Insight</span>
+        <p id="modal-insight-copy">Choose a matching song to inspect cue timing and transition feel.</p>
+      </div>
+    </div>
+  </div>
+
+  <dialog id="backups-modal" class="fixed inset-0 bg-black/90 z-[12100] hidden flex items-center justify-center p-20 opacity-0 transition-opacity duration-300">
+    <form method="dialog" class="w-full max-w-3xl rounded-[20px] border border-white/20 p-8 bg-[#111]">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-2xl font-heading text-white">Backups & Restore</h3>
+        <button type="submit" value="close" class="text-white/40 hover:text-white">Close</button>
+      </div>
+      <div class="mb-5 rounded-xl border border-axiom-accent/25 bg-axiom-accent/5 p-4">
+        <p class="text-[10px] font-black uppercase tracking-[0.22em] text-axiom-accent mb-2">Move AXIOM To Another Mac</p>
+        <p class="text-xs font-bold text-white/55 leading-relaxed mb-4">Export or import BPM, key, year, folder bans, and library intelligence. Music files are not included or changed.</p>
+        <div class="flex flex-wrap gap-2">
+          <button type="button" onclick="exportIntelligencePack()" class="px-4 py-2 bg-axiom-accent text-black rounded font-black uppercase text-[10px]">Export Intelligence Pack</button>
+          <button type="button" onclick="document.getElementById('intelligence-import-file')?.click()" class="px-4 py-2 bg-black border border-axiom-accent/40 text-axiom-accent rounded font-black uppercase text-[10px]">Import Intelligence Pack</button>
+          <input id="intelligence-import-file" type="file" accept=".zip,application/zip" class="hidden" onchange="importIntelligencePack(this)">
+        </div>
+      </div>
+      <div class="mb-4">
+        <label class="text-sm text-white/60 mb-2 block">Select data file</label>
+        <div class="flex gap-2">
+          <select id="backup-target-file" class="bg-black/40 border border-white/10 text-white p-2 rounded">
+            <option value="library_cache.json">library_cache.json</option>
+            <option value="banned_folders.json">banned_folders.json</option>
+            <option value="transcode_cache">transcode_cache (not listable)</option>
+          </select>
+          <button type="button" onclick="loadBackupsForSelected()" class="px-4 py-2 bg-axiom-accent text-black rounded">List Backups</button>
+        </div>
+      </div>
+      <div id="backups-list" style="max-height:300px;overflow:auto;border-top:1px solid #222;padding-top:12px;">
+        <p class="text-white/40">No backups listed.</p>
+      </div>
+      <div class="mt-4 text-right">
+        <button type="submit" value="done" class="px-4 py-2 bg-black border border-white/10 text-white rounded">Done</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script src="/static/js/cockpit-core.js?v=20260904-core-state-v1"></script>
+<script src="/static/js/shared/ui-foundation.js?v=20260909-daw-edit-v2"></script>
+<script src="/static/js/surfaces/export-delivery.js?v=20261006-browser-proof-v1"></script>
+<script src="/static/js/shared/navigation.js?v=20260920-studio-start-review-tracks-v1"></script>
+{% include 'partials/cockpit/dropbox-backup.html' %}
+<link rel="stylesheet" href="/static/css/dropbox-backup.css?v=20261016-backup-v2">
+<script src="/static/js/shared/dropbox-backup.js?v=20261016-backup-v2"></script>
+<script src="/static/js/shared/settings.js?v=20260904-segmentation-v1"></script>
+<script src="/static/js/shared/track-presentation.js?v=20261015-shared-year-prep-v1-ph1"></script>
+<script src="/static/js/shared/metadata-editor.js?v=20260904-segmentation-v1"></script>
+<script src="/static/js/shared/audio-player.js?v=20260910-preview-handoff-v3"></script>
+{% if not axiom_lite %}<script src="/static/js/shared/live-assist-similarity.js?v=20261008-axiom-era-v1"></script>{% endif %}
+{% if not axiom_lite %}<script src="/static/js/surfaces/performance-analysis.js?v=20261008-axiom-era-v1"></script>{% endif %}
+<script src="/static/js/shared/dj-track-colors.js?v=20260914"></script>
+{% if not axiom_lite %}<script src="/static/js/surfaces/performance-live.js?v=20261008-axiom-era-v1"></script>{% endif %}
+{% if not axiom_lite %}<script src="/static/js/surfaces/performance-session.js?v=20261008-axiom-era-v1-ph1"></script>{% endif %}
+<script src="/static/js/surfaces/studio-brief.js?v=20260922-clear-set-prep-v1"></script>
+<script src="/static/js/surfaces/studio-workspace.js?v=20261006-browser-proof-v7"></script>
+<script src="/static/js/surfaces/studio-start-hero.js?v=20260921-feature-audit-v1"></script>
+<script src="/static/js/surfaces/studio-render.js?v=20260921-lite-studio-shared-v1"></script>
+<script src="/static/js/surfaces/studio-folders.js?v=20260904-segmentation-v1"></script>
+<script src="/static/js/surfaces/studio-matching.js?v=20260904-segmentation-v1"></script>
+<script src="/static/js/surfaces/studio-cues.js?v=20260904-segmentation-v1"></script>
+{% if not axiom_lite %}<script src="/static/js/studio-daw/core.js?v=20260905-studio-daw-region-edit-v1"></script>{% endif %}
+{% if not axiom_lite %}<script src="/static/js/studio-daw/browser-audio.js?v=1"></script>{% endif %}
+{% if not axiom_lite %}<script src="/static/js/studio-daw/browser-bundle.js?v=1"></script>{% endif %}
+{% if not axiom_lite %}<script src="/static/js/studio-daw/browser-stretch.js?v=1"></script>{% endif %}
+{% if not axiom_lite %}<script src="/static/js/studio-daw/grid.js?v=20260905-studio-daw-region-edit-v1"></script>{% endif %}
+{% if not axiom_lite %}<script src="/static/js/studio-daw/creative-fx.js?v=20261015-1"></script>{% endif %}
+{% if not axiom_lite %}<script src="/static/js/studio-daw/automation.js?v=20261015-creative-tools-v1"></script>{% endif %}
+{% if not axiom_lite %}<script src="/static/js/studio-daw/plugin-adapter.js?v=20260905-studio-daw-region-edit-v1"></script>{% endif %}
+{% if not axiom_lite %}<script src="/static/js/studio-daw/starter-kit.js?v=20260920-drum-presets-v1"></script>{% endif %}
+{% if not axiom_lite %}<script src="/static/js/studio-daw/drum-presets.js?v=20260920-preset-switch-v1"></script>{% endif %}
+{% if not axiom_lite %}<link rel="stylesheet" href="/static/css/studio-daw/drum-extract.css?v=20260921-v1"><script src="/static/js/studio-daw/drum-extract.js?v=20260921-v1"></script>{% endif %}
+{% if not axiom_lite %}<script src="/static/js/studio-daw/pattern-monitor.js?v=20260920-drum-draw-v1"></script>{% endif %}
+{% if not axiom_lite %}<script src="/static/js/studio-daw/drum-draw.js?v=20260920-drum-draw-v1"></script>{% endif %}
+{% if not axiom_lite %}<script src="/static/js/studio-daw/shell.js?v=20261015-creative-tools-v1"></script>{% endif %}
+{% if not axiom_lite %}<script src="/static/js/studio-daw/library-finder.js?v=20260920-back-to-daw-v1"></script>{% endif %}
+{% if not axiom_lite %}<script src="/static/js/studio-daw/source-bounds.js?v=5"></script>{% endif %}
+{% if not axiom_lite %}<script src="/static/js/studio-daw/source-audition.js?v=20260914-remix-contrast"></script>{% endif %}
+<script src="/static/js/shared/audio-readiness.js?v=20260920-review-ready-v1"></script>
+{% if not axiom_lite %}<script src="/static/js/studio-daw/native-effects.js?v=1-win1"></script>{% endif %}
+{% if not axiom_lite %}<script src="/static/js/studio-daw/mixer-history.js?v=20260914-master-limiter"></script>{% endif %}
+{% if not axiom_lite %}<script src="/static/js/studio-daw/producer-tips.js?v=20260920-producer-tips-v1"></script>{% endif %}
+{% if not axiom_lite %}<script src="/static/js/studio-daw/composer.js?v=20261015-creative-tools-v1"></script>{% endif %}
+{% if not axiom_lite %}<script src="/static/js/studio-daw/stems.js?v=20260914-full-source"></script>{% endif %}
+{% if not axiom_lite %}<script src="/static/js/studio-daw/draft-storage.js?v=1"></script>{% endif %}
+{% if not axiom_lite %}<script src="/static/js/studio-daw/drafts.js?v=20261015-creative-tools-v1"></script>{% endif %}
+{% if not axiom_lite %}<script src="/static/js/studio-daw/assets.js?v=20261015-creative-tools-v1"></script>{% endif %}
+{% if not axiom_lite %}<script src="/static/js/studio-daw/patterns.js?v=20260920-pattern-monitor-v1"></script>{% endif %}
+{% if not axiom_lite %}<script src="/static/vendor/tone-15.1.22/Tone.js"></script>{% endif %}
+{% if not axiom_lite %}<script src="/static/js/studio-daw/layer-synth.js?v=1"></script>{% endif %}
+{% if not axiom_lite %}<script src="/static/js/studio-daw/instruments.js?v=20260920-preset-switch-v1"></script>{% endif %}
+{% if not axiom_lite %}<script src="/static/js/studio-daw/midi-import.js?v=1"></script>{% endif %}
+{% if not axiom_lite %}<script src="/static/js/studio-daw/native-midi.js?v=1"></script>{% endif %}
+{% if not axiom_lite %}<script src="/static/js/studio-daw/midi-input.js?v=4"></script>{% endif %}
+{% if not axiom_lite %}<script src="/static/js/studio-daw/midi-controls.js?v=1"></script>{% endif %}
+{% if not axiom_lite %}<script src="/static/js/studio-daw/automation-recorder.js?v=1"></script>{% endif %}
+{% if not axiom_lite %}<script src="/static/js/studio-daw/pcm.js?v=20261014-ready-stem-pcm-v3"></script>{% endif %}
+{% if not axiom_lite %}<script src="/static/js/studio-daw/pcm-source.js?v=2"></script>{% endif %}
+{% if not axiom_lite %}<script src="/static/js/studio-daw/prepared-cache.js?v=1"></script>{% endif %}
+{% if not axiom_lite %}<script src="/static/js/studio-daw/stem-cache.js?v=20261014-linked-stem-timing-v3"></script>{% endif %}
+{% if not axiom_lite %}<script src="/static/js/studio-daw/stream-export.js?v=4"></script>{% endif %}
+{% if not axiom_lite %}<script src="/static/js/studio-daw/enhance-match.js?v=1"></script>{% endif %}
+{% if not axiom_lite %}<script src="/static/js/studio-daw/transport.js?v=20261015-creative-tools-v1"></script>{% endif %}
+{% if not axiom_lite %}<script src="/static/js/studio-daw/fx-dj.js?v=20261015-creative-tools-v1"></script>{% endif %}
+{% if not axiom_lite %}<script src="/static/js/studio-daw/tape-stop.js?v=20261015-creative-tools-v1"></script>{% endif %}
+{% if not axiom_lite %}<script src="/static/js/studio-daw/master-limiter.js?v=1"></script>{% endif %}
+{% if not axiom_lite %}<script src="/static/js/studio-daw/sweeps.js?v=1"></script>{% endif %}
+{% if not axiom_lite %}<script src="/static/js/studio-daw/sweep-audio.js?v=1"></script>{% endif %}
+{% if not axiom_lite %}<script src="/static/js/studio-daw/fx.js?v=20261015-creative-tools-v1"></script>{% endif %}
+{% if not axiom_lite %}<script src="/static/js/studio-daw/fx-follow.js?v=1"></script>{% endif %}
+{% if not axiom_lite %}<script src="/static/js/studio-daw/remix-workflow.js?v=20260914-remix-contrast"></script>{% endif %}
+{% if not axiom_lite %}<script src="/static/js/studio-daw/steady-timing.js?v=20260920-fx-snap-state-v1"></script>{% endif %}
+{% if not axiom_lite %}<script src="/static/js/studio-daw/wav-metadata.js?v=20261001-musical-metadata-v1"></script>{% endif %}
+{% if not axiom_lite %}<script src="/static/js/studio-daw/export.js?v=20261001-musical-metadata-v1-win1"></script>{% endif %}
+{% if not axiom_lite %}<script src="/static/js/studio-daw/recording-storage.js?v=2"></script>{% endif %}
+{% if not axiom_lite %}<script src="/static/js/studio-daw/recording.js?v=20260920-timeline-takes-v1"></script>{% endif %}
+{% if not axiom_lite %}<script src="/static/js/studio-daw/recording-timeline.js?v=20260920-timeline-takes-v1"></script>{% endif %}
+{% if not axiom_lite %}<script src="/static/js/studio-daw/fx-tail.js?v=1"></script>{% endif %}
+{% if not axiom_lite %}<script src="/static/js/studio-daw/creative-tools.js?v=20261015-1"></script>{% endif %}
+<script src="/static/js/surfaces/health-foundation.js?v=20260904-segmentation-v1"></script>
+<script src="/static/js/surfaces/health-maintenance.js?v=20260910-idle-job-v2"></script>
+<script src="/static/js/surfaces/health-library-care.js?v=20260904-segmentation-v1"></script>
+<script src="/static/js/surfaces/health-scans.js?v=20261015-shared-year-prep-v1"></script>
+<script src="/static/js/surfaces/health-year.js?v=20261008-years-fix-first-v2"></script>
+<script src="/static/js/surfaces/health-repairs.js?v=20260904-segmentation-v1"></script>
+<script src="/static/js/surfaces/health-serato.js?v=20260928-beatgrid-doctor-v10-start-cue"></script>
+<script src="/static/js/surfaces/health-dj-transfer.js?v=20261015-direct-playlist-transfer"></script>
+<script src="/static/js/surfaces/health-beatgrid-workflow.js?v=20261009-doctor-health-batch"></script>
+{% if not axiom_lite %}<script src="/static/js/surfaces/health-cockpit.js?v=20260925-publish-lock-preview-ph1"></script>{% endif %}
+<script src="/static/js/surfaces/library-intake.js?v=20260904-segmentation-v1"></script>
+<script src="/static/js/surfaces/library-gap.js?v=20260921-full-request-handoff-v3"></script>
+<script src="/static/js/surfaces/library-purchase-list.js?v=20260913-v1"></script>
+<script src="/static/js/surfaces/library-guidance.js?v=20260920-studio-start-review-tracks-v1"></script>
+<script src="/static/js/surfaces/library-preparation.js?v=20261015-shared-year-prep-v1"></script>
+{% if not axiom_lite %}<script src="/static/js/surfaces/library-query.js?v=20260922-v1"></script>{% endif %}
+<script src="/static/js/surfaces/library-sort.js?v=20261006-list-album-v1"></script>
+<script src="/static/js/surfaces/library.js?v=20261015-shared-year-prep-v1"></script>
+{% if not axiom_lite %}<script src="/static/js/surfaces/library-design.js?v=20261006-list-album-v1"></script>{% endif %}
+<script src="/static/js/surfaces/playlists.js?v=20260903-segmentation-v1"></script>
+<script src="/static/js/surfaces/studio-autosave.js?v=20261010-working-set-recovery-v1"></script>
+<script src="/static/js/shared/entrance-library.js?v=20260914-small-chooser"></script>
+<script src="/static/js/shared/entrance-sound.js?v=3"></script>
+<script src="/static/js/shared/entrance.js?v=4-remix"></script>
+<script src="/static/js/shared/startup-navigation.js?v=20260910-entrance-v2"></script>
+<script src="/static/js/surfaces/export.js?v=20261006-browser-proof-v1"></script>
+<script src="/static/js/shared/runtime-foundation.js?v=20261009-sonic-release"></script>
+<script src="/static/js/shared/first-login.js?v=20260930-account-v1"></script>
+<script src="/static/js/surfaces/library-connections.js?v=20260914-picker-cancel"></script>
+<script src="/static/js/cockpit-runtime-shell.js?v=20260904-sidebar-state-v2"></script>
+<script src="/static/js/features/universal-help.js?v=20260904-v1"></script>
+<script src="/static/js/features/review-fixtures.js?v=20260930-first-login-v2"></script>
+<script src="/static/js/features/health-review-tools.js?v=20261015-era-receipt-v3"></script>
+
+  <!-- Rescan Report Modal -->
+  <div id="rescan-report-modal" class="fixed inset-0 bg-black/90 z-[200] hidden flex items-center justify-center p-20 opacity-0 transition-opacity duration-300">
+    <div style="background:#0a0a0a; border:1px solid var(--accent); border-radius:0; width:100%; max-width:700px; max-height:80vh; display:flex; flex-direction:column; box-shadow:0 0 30px rgba(57,255,20,0.15);">
+      <div style="padding:30px 40px; border-bottom:1px solid #1a1a1a; display:flex; justify-content:space-between; align-items:center;">
+        <div>
+          <p style="font-family:'Barlow'; font-size:9px; color:var(--accent); letter-spacing:3px; text-transform:uppercase; margin-bottom:6px;">SYSTEM REPORT</p>
+          <h3 id="rescan-report-title" style="font-family:'Bebas Neue'; font-size:36px; color:#fff; letter-spacing:2px;">RESCAN COMPLETE</h3>
+        </div>
+        <button onclick="closeRescanModal()" style="color:rgba(255,255,255,0.3); font-family:'Barlow'; font-size:11px; font-weight:900; letter-spacing:2px; text-transform:uppercase; background:none; border:none; cursor:pointer;">CLOSE [X]</button>
+      </div>
+      <div id="rescan-report-list" style="flex:1; overflow-y:auto; padding:20px 40px; font-family:'Barlow';"></div>
+    </div>
+  </div>
+
+  <!-- ── FAVORITES PANEL ─────────────────────────────────────────────── -->
+  <div id="favorites-panel" role="dialog" aria-label="Favorites" aria-modal="true">
+    <div id="favorites-panel-backdrop" onclick="closeFavoritesPanel()"></div>
+    <div id="favorites-panel-drawer">
+      <div id="fav-panel-head">
+        <span id="fav-panel-title">Favorites</span>
+        <span id="fav-panel-count-badge">0 tracks</span>
+        <button onclick="closeFavoritesPanel()" style="background:none;border:none;color:rgba(255,255,255,0.4);font-size:1.1rem;cursor:pointer;padding:0.25rem;" title="Close">&times;</button>
+      </div>
+      <div id="fav-panel-actions">
+        <button id="btn-export-favorites-serato" onclick="exportFavoritesToSerato()" class="px-4 py-2 bg-axiom-accent text-black text-[10px] font-black uppercase rounded-xl tracking-widest hover:brightness-110 transition-all flex-1">Export to Serato</button>
+        <button onclick="clearFavorites()" class="px-4 py-2 bg-red-600/20 text-red-400 border border-red-500/30 text-[10px] font-black uppercase rounded-xl tracking-widest hover:bg-red-600/30 transition-all">Clear All</button>
+      </div>
+      <div id="fav-panel-tracks">
+        <div id="fav-panel-empty">Star tracks to collect<br>them here</div>
+      </div>
+    </div>
+  </div>
+
+<script>
+(function(){
+  try {
+    if (new URLSearchParams(window.location.search).get('comparison_preview') === '1') {
+      document.body.classList.add('axiom-comparison-preview');
+    }
+  } catch (err) {}
+})();
+</script>
+    {% include "partials/cockpit/styles/health-year.html" %}
+{% include "partials/cockpit/styles/library-setup.html" %}
+<script src="/static/library-gap-recovery.js?v=20260831-recovery-copy-v4"></script>
+{% include "partials/cockpit/styles/library-matching.html" %}
+{% include "partials/cockpit/styles/health-daymode.html" %}
+{% include "partials/cockpit/styles/library-final.html" %}
+{% include "partials/cockpit/styles/action-contracts.html" %}
+{% if not axiom_lite %}<link rel="stylesheet" href="/static/css/surfaces/library-commands.css?v=20260922-library-year-v6" />{% endif %}
+{% if not axiom_lite %}<link rel="stylesheet" href="/static/css/surfaces/library-design.css?v=20261015-receipt-actions" />{% endif %}
+<script src="/static/js/features/cta-typography.js?v=20260905-studio-daw-stop-menu-v1"></script>
+<link rel="stylesheet" href="/static/css/windows-video-preview.css?v=2">
+<script src="/static/js/shared/windows-video-preview.js?v=2"></script>
+<link rel="stylesheet" href="/static/css/windows-virtualdj.css?v=3">
+<script src="/static/js/shared/windows-virtualdj.js"></script>
+<script src="/static/js/shared/windows-virtualdj-grids.js"></script>
+<script src="/static/js/shared/windows-virtualdj-health.js"></script>
+<script src="/static/js/shared/windows-virtualdj-exports.js"></script>
+<script src="/static/js/shared/windows-virtualdj-write.js?v=1"></script>
+<script src="/static/js/shared/windows-remote.js"></script>
+<link rel="stylesheet" href="/static/css/windows-theme-urban.css?v=13">
+<link rel="stylesheet" href="/static/css/windows-activity.css?v=4">
+<script src="/static/js/shared/windows-font-scale.js?v=1"></script>
+<script src="/static/js/shared/windows-hotkey.js?v=1"></script>
+<script src="/static/js/shared/windows-stress-report.js?v=2"></script>
+<link rel="stylesheet" href="/static/css/windows-intake.css?v=3">
+<script src="/static/js/shared/windows-intake.js?v=3"></script>
+<script src="/static/js/shared/windows-performance.js?v=1"></script>
+<link rel="stylesheet" href="/static/css/windows-ai.css?v=3">
+<script src="/static/js/shared/windows-ai.js?v=5"></script>
+<script src="/static/js/shared/windows-filetypes.js?v=2"></script>
+<script src="/static/js/shared/windows-regions.js?v=4"></script>
+<script src="/static/js/shared/windows-mix-export.js"></script>
+<script src="/static/js/shared/windows-browser.js?v=1"></script>
+</body>
+</html>

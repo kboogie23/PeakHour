@@ -1,0 +1,13 @@
+
+/* Shared full-song verification, mounted outside scrolling mode panels. */
+dialog.axiom-audio-check { width: min(640px, calc(100vw - 40px)); max-height: calc(100vh - 100px); overflow: auto; padding: 28px; border: 1px solid #627044; border-radius: 14px; background: #10140e; color: #eef3e8; font-family: Barlow, sans-serif; }
+dialog.axiom-audio-check::backdrop { background: #000b; }
+.axiom-audio-check h2 { font: 32px 'Bebas Neue', sans-serif; margin: 0 0 14px; }
+.axiom-audio-check p { margin: 14px 0; line-height: 1.5; }
+.axiom-audio-check progress { width: 100%; height: 10px; accent-color: var(--accent); }
+.axiom-audio-check li { margin: 12px 0; overflow-wrap: anywhere; }
+.axiom-audio-check button { background: var(--accent); color: #071005; border: 0; border-radius: 6px; padding: 10px 18px; font-weight: 700; }
+body.light-mode dialog.axiom-audio-check { background: #f6f8f3; color: #071005; }
+.axiom-audio-check progress::-webkit-progress-bar { background: #26311f; border-radius: 8px; }
+.axiom-audio-check progress::-webkit-progress-value { background: var(--accent); border-radius: 8px; transition: width .2s ease; }
+@media (prefers-reduced-motion: reduce) { .axiom-audio-check progress::-webkit-progress-value { transition: none; } }

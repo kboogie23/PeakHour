@@ -1,0 +1,1727 @@
+
+
+/* GUI overhaul pass: Axiom Start mission description hover signal. */
+body:not(.light-mode) #studio-start-view .build-night-card:hover .build-night-card-copy > span:not(.build-night-settings):not(.build-night-start),
+body:not(.light-mode) #studio-start-view .build-night-card:focus-visible .build-night-card-copy > span:not(.build-night-settings):not(.build-night-start) {
+  color: var(--axiom-final-cyan) !important;
+  text-shadow: 0 0 16px rgba(0, 229, 255, 0.24) !important;
+}
+
+/* ==========================================================================
+   GUI overhaul pass: Library inherits Matching Songs modal language.
+   Source language: anchor-dj-modal panels, rows, filter controls and selected rows.
+   ========================================================================== */
+body:not(.light-mode) #tab-content-library.library-cockpit {
+  background: #030605 !important;
+  color: #f4f5f2 !important;
+}
+
+body:not(.light-mode) #tab-content-library.library-cockpit :is(
+  .library-topbar,
+  .library-control-row,
+  .library-set-prep,
+  .recommendations-panel,
+  .smart-links-container,
+  .library-results-column
+) {
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+body:not(.light-mode) #tab-content-library .library-topbar {
+  min-height: 48px !important;
+  margin-bottom: 12px !important;
+  padding: 0 !important;
+  border: 1px solid rgba(255, 255, 255, 0.14) !important;
+  background: rgba(2, 6, 3, 0.78) !important;
+}
+
+body:not(.light-mode) #tab-content-library .library-search-shell {
+  min-height: 48px !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+body:not(.light-mode) #tab-content-library .library-search-input {
+  min-height: 48px !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  color: #f4f5f2 !important;
+  font-family: "Bebas Neue", sans-serif !important;
+  font-size: 18px !important;
+  font-weight: 400 !important;
+  letter-spacing: 0.065em !important;
+  text-transform: uppercase !important;
+}
+
+body:not(.light-mode) #tab-content-library .library-search-input::placeholder {
+  color: rgba(244, 245, 242, 0.5) !important;
+}
+
+body:not(.light-mode) #tab-content-library .library-guide-btn,
+body:not(.light-mode) #tab-content-library .library-control-row button,
+body:not(.light-mode) #tab-content-library :is(.library-brief-chip, .library-fresh-rotate, .library-health-chip, .library-dna-chip, .library-year-chip) {
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  font-family: "Bebas Neue", sans-serif !important;
+  font-weight: 400 !important;
+  letter-spacing: 0.075em !important;
+  text-transform: uppercase !important;
+}
+
+body:not(.light-mode) #tab-content-library .library-guide-btn,
+body:not(.light-mode) #tab-content-library .library-control-row button {
+  min-height: 40px !important;
+  border: 1px solid rgba(163, 255, 0, 0.46) !important;
+  background: rgba(4, 8, 5, 0.62) !important;
+  color: var(--axiom-final-green) !important;
+}
+
+body:not(.light-mode) #tab-content-library .library-guide-btn:hover,
+body:not(.light-mode) #tab-content-library .library-control-row button:hover,
+body:not(.light-mode) #tab-content-library .library-control-row button.active {
+  background: rgba(163, 255, 0, 0.09) !important;
+  border-color: rgba(163, 255, 0, 0.72) !important;
+  color: #f4f5f2 !important;
+}
+
+body:not(.light-mode) #tab-content-library .library-main-grid {
+  gap: 18px !important;
+  border-top: 1px solid rgba(163, 255, 0, 0.16) !important;
+}
+
+body:not(.light-mode) #tab-content-library .library-results-column {
+  padding-right: 18px !important;
+  border-right: 1px solid rgba(255, 255, 255, 0.12) !important;
+}
+
+body:not(.light-mode) #tab-content-library #search-results {
+  gap: 0 !important;
+  padding-bottom: 18px !important;
+}
+
+body:not(.light-mode) #tab-content-library #search-results .library-track-card,
+body:not(.light-mode) #tab-content-library #search-results .library-track-card.axiom-focus-deck-row {
+  min-height: 92px !important;
+  margin: 0 !important;
+  border: 0 !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12) !important;
+  border-radius: 0 !important;
+  background: rgba(4, 8, 5, 0.45) !important;
+  box-shadow: none !important;
+}
+
+body:not(.light-mode) #tab-content-library #search-results .library-track-card:hover,
+body:not(.light-mode) #tab-content-library #search-results .library-track-card.axiom-focus-deck-row:hover {
+  background: rgba(163, 255, 0, 0.055) !important;
+}
+
+body:not(.light-mode) #tab-content-library #search-results .library-track-card::before {
+  display: none !important;
+}
+
+body:not(.light-mode) #tab-content-library .library-artwork {
+  border-radius: 0 !important;
+  border: 1px solid rgba(163, 255, 0, 0.16) !important;
+  box-shadow: none !important;
+}
+
+body:not(.light-mode) #tab-content-library .library-track-title {
+  color: #f4f5f2 !important;
+  font-family: "Bebas Neue", sans-serif !important;
+  font-size: 22px !important;
+  font-weight: 400 !important;
+  letter-spacing: 0.035em !important;
+  text-transform: uppercase !important;
+}
+
+body:not(.light-mode) #tab-content-library .library-track-artist,
+body:not(.light-mode) #tab-content-library .library-meta-line,
+body:not(.light-mode) #tab-content-library .library-meta-line span,
+body:not(.light-mode) #tab-content-library .library-bpm-tools,
+body:not(.light-mode) #tab-content-library .library-bpm-tools button {
+  color: rgba(244, 245, 242, 0.68) !important;
+  font-family: "Barlow", sans-serif !important;
+  text-shadow: none !important;
+}
+
+body:not(.light-mode) #tab-content-library .library-bpm-value,
+body:not(.light-mode) #tab-content-library .library-key-cell {
+  border-radius: 0 !important;
+  border-color: rgba(255, 255, 255, 0.16) !important;
+  background: rgba(2, 6, 3, 0.58) !important;
+  box-shadow: none !important;
+}
+
+body:not(.light-mode) #tab-content-library .library-add-btn {
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  font-family: "Bebas Neue", sans-serif !important;
+  font-size: 18px !important;
+  font-weight: 400 !important;
+  letter-spacing: 0.07em !important;
+}
+
+body:not(.light-mode) #tab-content-library.library-cockpit #search-results .library-track-card.axiom-focus-deck-row.selected,
+body:not(.light-mode) #tab-content-library.library-cockpit #search-results .library-track-card:is(.selected, .playing-track, .library-track-playing) {
+  border: 0 !important;
+  border-top: 2px solid var(--axiom-final-green) !important;
+  border-right: 1px solid rgba(163, 255, 0, 0.52) !important;
+  border-bottom: 2px solid var(--axiom-final-green) !important;
+  border-radius: 0 !important;
+  background: linear-gradient(90deg, rgba(13, 20, 13, 0.995), rgba(7, 10, 8, 0.995) 62%, rgba(12, 16, 11, 0.99)) !important;
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.32), 0 0 24px rgba(163, 255, 0, 0.08) !important;
+}
+
+/* ==========================================================================
+   GUI overhaul pass: Library Set Prep lens redesign.
+   Bring this strip into the Matching Songs modal language: flatter shell,
+   clearer selected/off states, tighter typography, and cleaner action hierarchy.
+   ========================================================================== */
+body:not(.light-mode) #library-brief-lens.library-brief-lens {
+  position: relative !important;
+  min-height: 86px !important;
+  padding: 16px 16px 14px !important;
+  border: 1px solid rgba(163, 255, 0, 0.22) !important;
+  border-radius: 0 !important;
+  background:
+    linear-gradient(90deg, rgba(163, 255, 0, 0.055), rgba(5, 10, 6, 0.92) 28%, rgba(3, 6, 4, 0.96)) !important;
+  box-shadow: none !important;
+}
+
+body:not(.light-mode) #library-brief-lens.library-brief-lens::before {
+  content: "" !important;
+  position: absolute !important;
+  inset: 0 auto 0 0 !important;
+  width: 3px !important;
+  background: var(--axiom-final-green) !important;
+  box-shadow: 0 0 18px rgba(163, 255, 0, 0.32) !important;
+}
+
+body:not(.light-mode) #library-brief-lens :is(#library-brief-kicker, #library-brief-title) {
+  font-family: "Bebas Neue", sans-serif !important;
+  font-weight: 400 !important;
+  line-height: 1 !important;
+  letter-spacing: 0.075em !important;
+  text-transform: uppercase !important;
+}
+
+body:not(.light-mode) #library-brief-kicker {
+  color: var(--axiom-final-green) !important;
+  font-size: 15px !important;
+  text-shadow: 0 0 16px rgba(163, 255, 0, 0.24) !important;
+}
+
+body:not(.light-mode) #library-brief-title {
+  color: #f4f5f2 !important;
+  font-size: 17px !important;
+}
+
+body:not(.light-mode) #library-brief-copy {
+  max-width: 720px !important;
+  color: rgba(244, 245, 242, 0.64) !important;
+  font-family: "Barlow", sans-serif !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.055em !important;
+  line-height: 1.25 !important;
+  text-transform: uppercase !important;
+}
+
+body:not(.light-mode) #library-brief-lens .library-brief-chip-row {
+  gap: 8px !important;
+  margin-top: 12px !important;
+}
+
+body:not(.light-mode) #library-brief-lens .library-brief-chips {
+  gap: 8px !important;
+}
+
+body:not(.light-mode) #library-brief-lens .library-brief-chip.button--small,
+body:not(.light-mode) #library-brief-lens .library-fresh-rotate.button--small,
+body:not(.light-mode) #library-brief-lens :is(#library-brief-setup-btn, #library-fresh-rotate) {
+  min-height: 34px !important;
+  padding: 0 15px !important;
+  border-radius: 0 !important;
+  border: 1px solid rgba(244, 245, 242, 0.18) !important;
+  background: rgba(2, 6, 3, 0.58) !important;
+  color: rgba(244, 245, 242, 0.78) !important;
+  box-shadow: none !important;
+  font-family: "Bebas Neue", sans-serif !important;
+  font-size: 16px !important;
+  font-weight: 400 !important;
+  letter-spacing: 0.07em !important;
+  line-height: 1 !important;
+  text-transform: uppercase !important;
+}
+
+body:not(.light-mode) #library-brief-lens .library-brief-chip.button--small:not(.active):hover {
+  border-color: rgba(0, 229, 255, 0.45) !important;
+  background: rgba(0, 229, 255, 0.055) !important;
+  color: var(--axiom-final-cyan) !important;
+}
+
+body:not(.light-mode) #library-brief-lens .library-brief-chip.button--small.active {
+  border-color: var(--axiom-final-green) !important;
+  background: var(--axiom-final-green) !important;
+  color: #061000 !important;
+  text-shadow: none !important;
+}
+
+body:not(.light-mode) #library-brief-lens :is(#library-brief-setup-btn, .library-brief-setup-btn) {
+  border-color: rgba(163, 255, 0, 0.62) !important;
+  background: rgba(163, 255, 0, 0.055) !important;
+  color: var(--axiom-final-green) !important;
+}
+
+body:not(.light-mode) #library-brief-lens :is(#library-brief-setup-btn, .library-brief-setup-btn):hover {
+  background: var(--axiom-final-green) !important;
+  color: #061000 !important;
+}
+
+body:not(.light-mode) #library-brief-lens #library-fresh-rotate.library-fresh-rotate {
+  border-color: rgba(0, 229, 255, 0.62) !important;
+  background: rgba(0, 229, 255, 0.055) !important;
+  color: var(--axiom-final-cyan) !important;
+}
+
+body:not(.light-mode) #library-brief-lens #library-fresh-rotate.library-fresh-rotate:hover {
+  background: var(--axiom-final-cyan) !important;
+  color: #031014 !important;
+}
+
+/* GUI overhaul pass: Library no-black-on-black control guard. */
+body:not(.light-mode) #tab-content-library.library-cockpit #btn-library-guide.library-guide-btn,
+body:not(.light-mode) #tab-content-library.library-cockpit .library-add-folder.button--primary,
+body:not(.light-mode) #library-brief-lens #library-brief-collapse,
+body:not(.light-mode) #library-brief-lens .library-brief-chip.button--small,
+body:not(.light-mode) #library-brief-lens #library-fresh-rotate.library-fresh-rotate {
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
+}
+
+body:not(.light-mode) #tab-content-library.library-cockpit #btn-library-guide.library-guide-btn {
+  border-color: rgba(163, 255, 0, 0.72) !important;
+  background: linear-gradient(180deg, rgba(163, 255, 0, 0.18), rgba(163, 255, 0, 0.08)) !important;
+  color: #f4f5f2 !important;
+}
+
+body:not(.light-mode) #tab-content-library.library-cockpit #btn-library-guide.library-guide-btn:hover {
+  background: var(--axiom-final-green) !important;
+  color: #061000 !important;
+}
+
+body:not(.light-mode) #tab-content-library.library-cockpit .library-add-folder.button--primary {
+  border: 1px solid var(--axiom-final-green) !important;
+  background: var(--axiom-final-green) !important;
+  color: #061000 !important;
+  font-family: "Bebas Neue", sans-serif !important;
+  font-size: 16px !important;
+  font-weight: 400 !important;
+  letter-spacing: 0.075em !important;
+  text-transform: uppercase !important;
+}
+
+body:not(.light-mode) #library-brief-lens .library-brief-chip.button--small:not(.active):not(.library-fresh-rotate) {
+  border-color: rgba(244, 245, 242, 0.24) !important;
+  background: rgba(244, 245, 242, 0.075) !important;
+  color: rgba(244, 245, 242, 0.88) !important;
+}
+
+body:not(.light-mode) #library-brief-lens #library-brief-collapse {
+  border-color: rgba(163, 255, 0, 0.68) !important;
+  background: rgba(163, 255, 0, 0.11) !important;
+  color: var(--axiom-final-green) !important;
+  border-radius: 0 !important;
+  font-family: "Bebas Neue", sans-serif !important;
+  font-size: 16px !important;
+  font-weight: 400 !important;
+  letter-spacing: 0.075em !important;
+  text-transform: uppercase !important;
+}
+
+body:not(.light-mode) #library-brief-lens #library-brief-collapse:hover {
+  background: var(--axiom-final-green) !important;
+  color: #061000 !important;
+}
+
+body:not(.light-mode) #library-brief-lens #library-fresh-rotate.library-fresh-rotate {
+  border-color: rgba(0, 229, 255, 0.68) !important;
+  background: rgba(0, 229, 255, 0.11) !important;
+  color: var(--axiom-final-cyan) !important;
+}
+
+body:not(.light-mode) #library-brief-lens .library-brief-chip.button--small.active {
+  border-color: var(--axiom-final-green) !important;
+  background: var(--axiom-final-green) !important;
+  color: #061000 !important;
+}
+
+/* GUI overhaul pass: Library top controls overlap repair.
+   The larger modal-style controls need real grid slots instead of floating over rows. */
+#tab-content-library.library-cockpit .library-topbar {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) 96px !important;
+  grid-template-rows: 48px 42px !important;
+  column-gap: 14px !important;
+  row-gap: 12px !important;
+  width: 100% !important;
+  max-width: none !important;
+  min-height: 116px !important;
+  margin-bottom: 14px !important;
+  padding: 14px 16px !important;
+  overflow: visible !important;
+}
+
+#tab-content-library.library-cockpit .library-search-shell {
+  grid-column: 1 !important;
+  grid-row: 1 !important;
+  min-width: 0 !important;
+}
+
+#tab-content-library.library-cockpit #btn-library-guide.library-guide-btn {
+  position: static !important;
+  grid-column: 2 !important;
+  grid-row: 1 !important;
+  align-self: stretch !important;
+  justify-self: stretch !important;
+  width: auto !important;
+  min-width: 0 !important;
+  height: auto !important;
+  min-height: 48px !important;
+  margin: 0 !important;
+  transform: none !important;
+}
+
+#tab-content-library.library-cockpit .library-control-row {
+  grid-column: 1 / -1 !important;
+  grid-row: 2 !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 16px !important;
+  min-height: 42px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+  overflow: visible !important;
+}
+
+#tab-content-library.library-cockpit .library-control-row .library-add-folder {
+  flex: 0 0 auto !important;
+  min-height: 40px !important;
+}
+
+#tab-content-library.library-cockpit .library-recent-toggle {
+  flex: 0 0 auto !important;
+  min-height: 40px !important;
+  padding-inline: 18px !important;
+  font-size: 16px !important;
+  white-space: nowrap !important;
+}
+
+body:not(.light-mode) #tab-content-library.library-cockpit .library-recent-toggle.active,
+body:not(.light-mode) #tab-content-library.library-cockpit .library-recent-toggle[aria-pressed="true"] {
+  border-color: var(--accent) !important;
+  background: var(--accent) !important;
+  color: #071005 !important;
+  -webkit-text-fill-color: #071005 !important;
+  box-shadow: 0 0 20px rgba(163, 255, 0, 0.20) !important;
+}
+
+body.light-mode #tab-content-library.library-cockpit .library-recent-toggle.active,
+body.light-mode #tab-content-library.library-cockpit .library-recent-toggle[aria-pressed="true"] {
+  border-color: #0047ab !important;
+  background: #0047ab !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+
+#tab-content-library.library-cockpit .library-control-row p {
+  min-width: 0 !important;
+  margin: 0 !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+#library-brief-lens.library-brief-lens {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  grid-template-rows: auto auto !important;
+  column-gap: 16px !important;
+  row-gap: 14px !important;
+  min-height: 116px !important;
+  margin-bottom: 12px !important;
+  overflow: visible !important;
+}
+
+#library-brief-lens .library-brief-copy {
+  grid-column: 1 !important;
+  grid-row: 1 !important;
+  min-width: 0 !important;
+}
+
+#library-brief-lens #library-brief-collapse {
+  position: static !important;
+  grid-column: 2 !important;
+  grid-row: 1 !important;
+  align-self: start !important;
+  justify-self: end !important;
+  min-height: 34px !important;
+  margin: 0 !important;
+  transform: none !important;
+}
+
+#library-brief-lens .library-brief-panel {
+  grid-column: 1 / -1 !important;
+  grid-row: 2 !important;
+  min-width: 0 !important;
+  overflow: visible !important;
+}
+
+#library-brief-lens .library-brief-chip-row {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  align-items: center !important;
+  gap: 12px !important;
+  margin: 0 !important;
+  overflow: visible !important;
+}
+
+#library-brief-lens .library-brief-chips {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  align-items: center !important;
+  gap: 8px !important;
+  min-width: 0 !important;
+}
+
+#library-brief-lens #library-fresh-rotate.library-fresh-rotate {
+  position: static !important;
+  align-self: center !important;
+  justify-self: end !important;
+  margin: 0 !important;
+  transform: none !important;
+}
+
+/* GUI overhaul pass: Library search field separation. */
+body:not(.light-mode) #tab-content-library.library-cockpit .library-search-shell {
+  border: 1px solid rgba(163, 255, 0, 0.22) !important;
+  background:
+    linear-gradient(90deg, rgba(163, 255, 0, 0.04), rgba(255, 255, 255, 0.018)),
+    rgba(8, 13, 9, 0.92) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.055) !important;
+}
+
+body:not(.light-mode) #tab-content-library.library-cockpit .library-search-shell:focus-within {
+  border-color: rgba(0, 229, 255, 0.72) !important;
+  background:
+    linear-gradient(90deg, rgba(0, 229, 255, 0.055), rgba(163, 255, 0, 0.026)),
+    rgba(8, 13, 9, 0.96) !important;
+  box-shadow: 0 0 0 1px rgba(0, 229, 255, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.065) !important;
+}
+
+body:not(.light-mode) #tab-content-library.library-cockpit .library-search-icon {
+  color: rgba(244, 245, 242, 0.58) !important;
+}
+
+body:not(.light-mode) #tab-content-library.library-cockpit .library-search-shell:focus-within .library-search-icon {
+  color: var(--axiom-final-cyan) !important;
+}
+
+/* GUI overhaul pass: Library topbar outer-frame cleanup. */
+body:not(.light-mode) #tab-content-library.library-cockpit .library-topbar {
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+body:not(.light-mode) #tab-content-library.library-cockpit .library-search-shell {
+  border-color: rgba(163, 255, 0, 0.14) !important;
+}
+
+/* GUI overhaul pass: Library Set Prep chip overlap repair. */
+#library-brief-lens.library-brief-lens {
+  min-height: 132px !important;
+  padding-bottom: 18px !important;
+  margin-bottom: 18px !important;
+  align-content: start !important;
+}
+
+#library-brief-lens .library-brief-panel {
+  min-height: 42px !important;
+  padding-top: 2px !important;
+}
+
+#library-brief-lens .library-brief-chip-row {
+  min-height: 38px !important;
+  align-items: start !important;
+}
+
+#library-brief-lens .library-brief-chips {
+  row-gap: 7px !important;
+}
+
+#library-brief-lens .library-brief-chip.button--small,
+#library-brief-lens #library-fresh-rotate.library-fresh-rotate {
+  min-height: 32px !important;
+}
+
+/* GUI overhaul pass: Library Set Prep lens full containment repair.
+   Fixes chip/action overlap by giving every control a real lane inside the panel. */
+#tab-content-library.library-cockpit #library-brief-lens.library-brief-lens {
+  box-sizing: border-box !important;
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  grid-template-rows: 42px 40px !important;
+  column-gap: 22px !important;
+  row-gap: 20px !important;
+  min-height: 166px !important;
+  height: auto !important;
+  padding: 28px 28px 28px 34px !important;
+  margin-bottom: 18px !important;
+  overflow: hidden !important;
+  align-content: start !important;
+}
+
+#tab-content-library.library-cockpit #library-brief-lens.library-brief-lens::before {
+  inset: 0 auto 0 0 !important;
+  height: auto !important;
+}
+
+#tab-content-library.library-cockpit #library-brief-lens .library-brief-copy {
+  grid-column: 1 !important;
+  grid-row: 1 !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 16px !important;
+  min-height: 42px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+#tab-content-library.library-cockpit #library-brief-lens #library-brief-collapse {
+  grid-column: 2 !important;
+  grid-row: 1 !important;
+  align-self: center !important;
+  justify-self: end !important;
+  min-height: 38px !important;
+  height: 38px !important;
+  margin: 0 !important;
+  padding: 0 18px !important;
+}
+
+#tab-content-library.library-cockpit #library-brief-lens .library-brief-panel {
+  grid-column: 1 / -1 !important;
+  grid-row: 2 !important;
+  display: block !important;
+  min-height: 40px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: visible !important;
+}
+
+#tab-content-library.library-cockpit #library-brief-lens .library-brief-chip-row {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  align-items: center !important;
+  gap: 16px !important;
+  min-height: 40px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: visible !important;
+}
+
+#tab-content-library.library-cockpit #library-brief-lens .library-brief-chips {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  align-items: center !important;
+  align-content: center !important;
+  gap: 8px !important;
+  min-height: 40px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: visible !important;
+}
+
+#tab-content-library.library-cockpit #library-brief-lens .library-brief-chip.button--small,
+#tab-content-library.library-cockpit #library-brief-lens #library-fresh-rotate.library-fresh-rotate {
+  position: static !important;
+  box-sizing: border-box !important;
+  min-height: 36px !important;
+  height: 36px !important;
+  margin: 0 !important;
+  padding: 0 16px !important;
+  transform: none !important;
+  line-height: 1 !important;
+}
+
+#tab-content-library.library-cockpit #library-brief-lens #library-fresh-rotate.library-fresh-rotate {
+  grid-column: 2 !important;
+  align-self: center !important;
+  justify-self: end !important;
+  white-space: nowrap !important;
+}
+
+/* ==========================================================================
+   GUI overhaul pass: Library Set Prep expanded control-room redesign.
+   Serious expanded-state repair: chips, Fresh Picks, Hide Setup, and filters
+   all receive proper lanes instead of colliding in one flat strip.
+   ========================================================================== */
+#tab-content-library.library-cockpit #library-brief-lens.library-brief-lens:has(#library-brief-settings:not(.hidden)) {
+  grid-template-columns: minmax(0, 1fr) 132px !important;
+  grid-template-rows: 38px 42px auto !important;
+  row-gap: 16px !important;
+  column-gap: 20px !important;
+  min-height: 332px !important;
+  padding: 26px 28px 28px 34px !important;
+  overflow: hidden !important;
+  background:
+    linear-gradient(90deg, rgba(163, 255, 0, 0.09), rgba(5, 10, 6, 0.92) 24%, rgba(3, 6, 4, 0.98) 76%),
+    #030604 !important;
+}
+
+#tab-content-library.library-cockpit #library-brief-lens:has(#library-brief-settings:not(.hidden)) .library-brief-copy {
+  grid-column: 1 !important;
+  grid-row: 1 !important;
+  align-self: center !important;
+}
+
+#tab-content-library.library-cockpit #library-brief-lens[data-library-brief-panel="setup"] #library-brief-collapse {
+  grid-column: 2 !important;
+  grid-row: 1 !important;
+  width: 132px !important;
+  min-width: 132px !important;
+  height: 38px !important;
+  min-height: 38px !important;
+  align-self: center !important;
+}
+
+#tab-content-library.library-cockpit #library-brief-lens:has(#library-brief-settings:not(.hidden)) .library-brief-panel {
+  display: grid !important;
+  grid-column: 1 / -1 !important;
+  grid-row: 2 / 4 !important;
+  grid-template-columns: minmax(0, 1fr) 132px !important;
+  grid-template-rows: 42px auto !important;
+  gap: 16px 20px !important;
+  min-height: 0 !important;
+}
+
+#tab-content-library.library-cockpit #library-brief-lens:has(#library-brief-settings:not(.hidden)) .library-brief-chip-row {
+  display: contents !important;
+}
+
+#tab-content-library.library-cockpit #library-brief-lens:has(#library-brief-settings:not(.hidden)) .library-brief-chips {
+  grid-column: 1 !important;
+  grid-row: 1 !important;
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  gap: 8px !important;
+  min-height: 38px !important;
+  overflow: hidden !important;
+}
+
+#tab-content-library.library-cockpit #library-brief-lens:has(#library-brief-settings:not(.hidden)) .library-brief-chip.button--small {
+  height: 38px !important;
+  min-height: 38px !important;
+  padding: 0 15px !important;
+  white-space: nowrap !important;
+}
+
+#tab-content-library.library-cockpit #library-brief-lens:has(#library-brief-settings:not(.hidden)) #library-fresh-rotate.library-fresh-rotate {
+  grid-column: 2 !important;
+  grid-row: 1 !important;
+  width: 132px !important;
+  min-width: 132px !important;
+  height: 38px !important;
+  min-height: 38px !important;
+  align-self: center !important;
+  justify-self: end !important;
+}
+
+#tab-content-library.library-cockpit #library-brief-settings.library-brief-settings:not(.hidden) {
+  display: block !important;
+  grid-column: 1 / -1 !important;
+  grid-row: 2 !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+  padding: 18px !important;
+  border: 1px solid rgba(163, 255, 0, 0.18) !important;
+  border-radius: 0 !important;
+  background:
+    linear-gradient(135deg, rgba(163, 255, 0, 0.045), rgba(255, 255, 255, 0.018)),
+    rgba(2, 6, 3, 0.72) !important;
+  box-shadow: none !important;
+  overflow: hidden !important;
+}
+
+#tab-content-library.library-cockpit #library-brief-settings .library-brief-control-grid {
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(150px, 1fr)) !important;
+  gap: 12px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+#tab-content-library.library-cockpit #library-brief-settings .library-bpm-filter-wrap {
+  display: grid !important;
+  grid-template-rows: auto 40px !important;
+  gap: 8px !important;
+  min-height: 86px !important;
+  margin: 0 !important;
+  padding: 12px 13px !important;
+  border: 1px solid rgba(163, 255, 0, 0.22) !important;
+  border-radius: 0 !important;
+  background: rgba(11, 18, 10, 0.74) !important;
+  box-shadow: none !important;
+}
+
+#tab-content-library.library-cockpit #library-brief-settings .library-bpm-filter-wrap > span {
+  color: var(--axiom-final-green) !important;
+  font-family: "Bebas Neue", sans-serif !important;
+  font-size: 16px !important;
+  font-weight: 400 !important;
+  letter-spacing: 0.08em !important;
+  line-height: 1 !important;
+  text-transform: uppercase !important;
+}
+
+#tab-content-library.library-cockpit #library-brief-settings .library-brief-select {
+  width: 100% !important;
+  height: 40px !important;
+  min-height: 40px !important;
+  padding: 0 34px 0 12px !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background-color: #050805 !important;
+  color: #f4f5f2 !important;
+  font-family: "Bebas Neue", sans-serif !important;
+  font-size: 15px !important;
+  font-weight: 400 !important;
+  letter-spacing: 0.055em !important;
+  line-height: 1 !important;
+  text-transform: uppercase !important;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08) !important;
+}
+
+#tab-content-library.library-cockpit #library-brief-settings .library-bpm-filter-wrap:hover,
+#tab-content-library.library-cockpit #library-brief-settings .library-bpm-filter-wrap:focus-within {
+  border-color: rgba(0, 229, 255, 0.48) !important;
+  background: rgba(0, 229, 255, 0.055) !important;
+}
+
+#tab-content-library.library-cockpit #library-brief-settings .library-bpm-filter-wrap:focus-within > span {
+  color: var(--axiom-final-cyan) !important;
+}
+
+@media (max-width: 1180px) {
+  #tab-content-library.library-cockpit #library-brief-settings .library-brief-control-grid {
+    grid-template-columns: repeat(2, minmax(150px, 1fr)) !important;
+  }
+}
+
+/* ==========================================================================
+   GUI overhaul pass: Library Set Prep expanded drawer rebuild.
+   When setup is open, hide the lane chips/Fresh Picks and give filters a clean,
+   self-contained control drawer. This supersedes the earlier expanded attempts.
+   ========================================================================== */
+#tab-content-library.library-cockpit #library-brief-lens.library-brief-lens:has(#library-brief-settings:not(.hidden)) {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) 140px !important;
+  grid-template-rows: 48px auto !important;
+  gap: 20px 24px !important;
+  min-height: 430px !important;
+  height: auto !important;
+  padding: 28px 30px 30px 36px !important;
+  margin-bottom: 20px !important;
+  overflow: hidden !important;
+  border: 1px solid rgba(163, 255, 0, 0.28) !important;
+  border-radius: 0 !important;
+  background:
+    linear-gradient(90deg, rgba(163, 255, 0, 0.08), rgba(5, 10, 6, 0.94) 22%, rgba(3, 6, 4, 0.99) 100%),
+    #030604 !important;
+  box-shadow: none !important;
+}
+
+#tab-content-library.library-cockpit #library-brief-lens.library-brief-lens:has(#library-brief-settings:not(.hidden))::after {
+  content: "" !important;
+  position: absolute !important;
+  left: 36px !important;
+  right: 30px !important;
+  top: 84px !important;
+  height: 1px !important;
+  background: rgba(163, 255, 0, 0.20) !important;
+  pointer-events: none !important;
+}
+
+#tab-content-library.library-cockpit #library-brief-lens:has(#library-brief-settings:not(.hidden)) .library-brief-copy {
+  grid-column: 1 !important;
+  grid-row: 1 !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 18px !important;
+  min-height: 48px !important;
+  opacity: 1 !important;
+}
+
+#tab-content-library.library-cockpit #library-brief-lens:has(#library-brief-settings:not(.hidden)) #library-brief-kicker,
+#tab-content-library.library-cockpit #library-brief-lens:has(#library-brief-settings:not(.hidden)) #library-brief-title {
+  opacity: 1 !important;
+  color: #f4f5f2 !important;
+  text-shadow: none !important;
+}
+
+#tab-content-library.library-cockpit #library-brief-lens:has(#library-brief-settings:not(.hidden)) #library-brief-kicker {
+  color: var(--axiom-final-green) !important;
+  font-size: 22px !important;
+}
+
+#tab-content-library.library-cockpit #library-brief-lens:has(#library-brief-settings:not(.hidden)) #library-brief-title {
+  font-size: 22px !important;
+}
+
+#tab-content-library.library-cockpit #library-brief-lens:has(#library-brief-settings:not(.hidden)) #library-brief-collapse {
+  grid-column: 2 !important;
+  grid-row: 1 !important;
+  align-self: center !important;
+  justify-self: end !important;
+  width: 140px !important;
+  min-width: 140px !important;
+  height: 42px !important;
+  min-height: 42px !important;
+  margin: 0 !important;
+  padding: 0 18px !important;
+  position: static !important;
+  transform: none !important;
+  z-index: 2 !important;
+}
+
+#tab-content-library.library-cockpit #library-brief-lens:has(#library-brief-settings:not(.hidden)) .library-brief-panel {
+  display: block !important;
+  grid-column: 1 / -1 !important;
+  grid-row: 2 !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: visible !important;
+}
+
+#tab-content-library.library-cockpit #library-brief-lens:has(#library-brief-settings:not(.hidden)) .library-brief-chip-row,
+#tab-content-library.library-cockpit #library-brief-lens:has(#library-brief-settings:not(.hidden)) .library-brief-chips,
+#tab-content-library.library-cockpit #library-brief-lens:has(#library-brief-settings:not(.hidden)) #library-fresh-rotate.library-fresh-rotate {
+  display: none !important;
+}
+
+#tab-content-library.library-cockpit #library-brief-settings.library-brief-settings:not(.hidden) {
+  display: block !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  overflow: visible !important;
+}
+
+#tab-content-library.library-cockpit #library-brief-settings .library-brief-control-grid {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 16px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+#tab-content-library.library-cockpit #library-brief-settings .library-bpm-filter-wrap {
+  display: grid !important;
+  grid-template-rows: auto 44px !important;
+  gap: 12px !important;
+  min-width: 0 !important;
+  min-height: 112px !important;
+  margin: 0 !important;
+  padding: 18px 18px 16px !important;
+  border: 1px solid rgba(163, 255, 0, 0.22) !important;
+  border-radius: 0 !important;
+  background:
+    linear-gradient(135deg, rgba(163, 255, 0, 0.035), rgba(255, 255, 255, 0.012)),
+    rgba(5, 10, 6, 0.78) !important;
+  box-shadow: none !important;
+}
+
+#tab-content-library.library-cockpit #library-brief-settings .library-bpm-filter-wrap > span {
+  color: var(--axiom-final-green) !important;
+  font-family: "Bebas Neue", sans-serif !important;
+  font-size: 20px !important;
+  font-weight: 400 !important;
+  letter-spacing: 0.08em !important;
+  line-height: 1 !important;
+  text-transform: uppercase !important;
+}
+
+#tab-content-library.library-cockpit #library-brief-settings .library-brief-select {
+  width: 100% !important;
+  height: 44px !important;
+  min-height: 44px !important;
+  padding: 0 36px 0 14px !important;
+  border: 1px solid rgba(255, 255, 255, 0.10) !important;
+  border-radius: 0 !important;
+  background-color: #050805 !important;
+  color: #f4f5f2 !important;
+  font-family: "Bebas Neue", sans-serif !important;
+  font-size: 18px !important;
+  font-weight: 400 !important;
+  letter-spacing: 0.055em !important;
+  line-height: 1 !important;
+  text-transform: uppercase !important;
+  box-shadow: none !important;
+}
+
+#tab-content-library.library-cockpit #library-brief-settings .library-bpm-filter-wrap:hover,
+#tab-content-library.library-cockpit #library-brief-settings .library-bpm-filter-wrap:focus-within {
+  border-color: rgba(0, 229, 255, 0.54) !important;
+  background:
+    linear-gradient(135deg, rgba(0, 229, 255, 0.055), rgba(163, 255, 0, 0.018)),
+    rgba(5, 10, 6, 0.82) !important;
+}
+
+#tab-content-library.library-cockpit #library-brief-settings .library-bpm-filter-wrap:focus-within > span {
+  color: var(--axiom-final-cyan) !important;
+}
+
+@media (max-width: 1180px) {
+  #tab-content-library.library-cockpit #library-brief-settings .library-brief-control-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
+/* ==========================================================================
+   GUI overhaul pass: Library Set Prep compact final system.
+   Collapsed: compact two-row utility strip. Expanded: dense setup drawer with
+   auto-fit controls, no lane chips, no dead-space slab.
+   ========================================================================== */
+#tab-content-library.library-cockpit #library-brief-lens.library-brief-lens:not(:has(#library-brief-settings:not(.hidden))) {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) 120px !important;
+  grid-template-rows: 28px 34px !important;
+  gap: 12px 18px !important;
+  min-height: 104px !important;
+  height: auto !important;
+  padding: 17px 20px 15px 28px !important;
+  margin-bottom: 12px !important;
+  overflow: hidden !important;
+  align-content: start !important;
+}
+
+#tab-content-library.library-cockpit #library-brief-lens.library-brief-lens:not(:has(#library-brief-settings:not(.hidden))) .library-brief-copy {
+  grid-column: 1 !important;
+  grid-row: 1 !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 14px !important;
+  min-height: 28px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+#tab-content-library.library-cockpit #library-brief-lens.library-brief-lens:not(:has(#library-brief-settings:not(.hidden))) #library-brief-kicker,
+#tab-content-library.library-cockpit #library-brief-lens.library-brief-lens:not(:has(#library-brief-settings:not(.hidden))) #library-brief-title {
+  font-size: 17px !important;
+  line-height: 1 !important;
+}
+
+#tab-content-library.library-cockpit #library-brief-lens.library-brief-lens:not(:has(#library-brief-settings:not(.hidden))) #library-brief-collapse {
+  grid-column: 2 !important;
+  grid-row: 1 !important;
+  align-self: center !important;
+  justify-self: end !important;
+  width: 120px !important;
+  min-width: 120px !important;
+  height: 34px !important;
+  min-height: 34px !important;
+  padding: 0 14px !important;
+  font-size: 15px !important;
+}
+
+#tab-content-library.library-cockpit #library-brief-lens.library-brief-lens:not(:has(#library-brief-settings:not(.hidden))) .library-brief-panel {
+  grid-column: 1 / -1 !important;
+  grid-row: 2 !important;
+  display: block !important;
+  min-height: 34px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+#tab-content-library.library-cockpit #library-brief-lens.library-brief-lens:not(:has(#library-brief-settings:not(.hidden))) .library-brief-chip-row {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) 120px !important;
+  align-items: center !important;
+  gap: 18px !important;
+  min-height: 34px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+#tab-content-library.library-cockpit #library-brief-lens.library-brief-lens:not(:has(#library-brief-settings:not(.hidden))) .library-brief-chips {
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  align-items: center !important;
+  gap: 8px !important;
+  min-height: 34px !important;
+  overflow: hidden !important;
+}
+
+#tab-content-library.library-cockpit #library-brief-lens.library-brief-lens:not(:has(#library-brief-settings:not(.hidden))) .library-brief-chip.button--small,
+#tab-content-library.library-cockpit #library-brief-lens.library-brief-lens:not(:has(#library-brief-settings:not(.hidden))) #library-fresh-rotate.library-fresh-rotate {
+  height: 34px !important;
+  min-height: 34px !important;
+  padding: 0 14px !important;
+  font-size: 14px !important;
+  line-height: 1 !important;
+  white-space: nowrap !important;
+}
+
+#tab-content-library.library-cockpit #library-brief-lens.library-brief-lens:not(:has(#library-brief-settings:not(.hidden))) #library-fresh-rotate.library-fresh-rotate {
+  justify-self: end !important;
+  width: 120px !important;
+  min-width: 120px !important;
+}
+
+#tab-content-library.library-cockpit #library-brief-lens.library-brief-lens:has(#library-brief-settings:not(.hidden)) {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) 128px !important;
+  grid-template-rows: 34px auto !important;
+  gap: 18px 20px !important;
+  min-height: 0 !important;
+  height: auto !important;
+  padding: 21px 24px 24px 30px !important;
+  margin-bottom: 14px !important;
+  overflow: hidden !important;
+  align-content: start !important;
+}
+
+#tab-content-library.library-cockpit #library-brief-lens.library-brief-lens:has(#library-brief-settings:not(.hidden))::after {
+  left: 30px !important;
+  right: 24px !important;
+  top: 66px !important;
+}
+
+#tab-content-library.library-cockpit #library-brief-lens:has(#library-brief-settings:not(.hidden)) .library-brief-copy {
+  min-height: 34px !important;
+  gap: 14px !important;
+}
+
+#tab-content-library.library-cockpit #library-brief-lens:has(#library-brief-settings:not(.hidden)) #library-brief-kicker,
+#tab-content-library.library-cockpit #library-brief-lens:has(#library-brief-settings:not(.hidden)) #library-brief-title {
+  font-size: 18px !important;
+  line-height: 1 !important;
+}
+
+#tab-content-library.library-cockpit #library-brief-lens:has(#library-brief-settings:not(.hidden)) #library-brief-collapse {
+  width: 128px !important;
+  min-width: 128px !important;
+  height: 34px !important;
+  min-height: 34px !important;
+  padding: 0 14px !important;
+  font-size: 15px !important;
+}
+
+#tab-content-library.library-cockpit #library-brief-lens:has(#library-brief-settings:not(.hidden)) .library-brief-panel {
+  grid-column: 1 / -1 !important;
+  grid-row: 2 !important;
+  display: block !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+#tab-content-library.library-cockpit #library-brief-settings.library-brief-settings:not(.hidden) {
+  display: block !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+  overflow: visible !important;
+}
+
+#tab-content-library.library-cockpit #library-brief-settings .library-brief-control-grid {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(168px, 1fr)) !important;
+  gap: 10px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+#tab-content-library.library-cockpit #library-brief-settings .library-bpm-filter-wrap {
+  grid-template-rows: auto 34px !important;
+  gap: 8px !important;
+  min-height: 76px !important;
+  padding: 11px 12px !important;
+  border-color: rgba(163, 255, 0, 0.20) !important;
+}
+
+#tab-content-library.library-cockpit #library-brief-settings .library-bpm-filter-wrap > span {
+  font-size: 15px !important;
+  letter-spacing: 0.075em !important;
+}
+
+#tab-content-library.library-cockpit #library-brief-settings .library-brief-select {
+  height: 34px !important;
+  min-height: 34px !important;
+  padding: 0 30px 0 11px !important;
+  font-size: 14px !important;
+  letter-spacing: 0.05em !important;
+}
+
+/* ==========================================================================
+   GUI overhaul pass: Library Set Prep collapsed single-line command strip.
+   Place title/mode, lane chips, Show Setup, and Fresh Picks on one line.
+   ========================================================================== */
+#tab-content-library.library-cockpit #library-brief-lens.library-brief-lens:not(:has(#library-brief-settings:not(.hidden))) {
+  display: grid !important;
+  grid-template-columns: auto minmax(0, 1fr) 106px 112px !important;
+  grid-template-rows: 32px !important;
+  align-items: center !important;
+  gap: 10px !important;
+  min-height: 66px !important;
+  height: auto !important;
+  padding: 16px 18px 16px 28px !important;
+  margin-bottom: 10px !important;
+  overflow: hidden !important;
+}
+
+#tab-content-library.library-cockpit #library-brief-lens.library-brief-lens:not(:has(#library-brief-settings:not(.hidden))) .library-brief-copy {
+  grid-column: 1 !important;
+  grid-row: 1 !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  min-width: 210px !important;
+  min-height: 32px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  white-space: nowrap !important;
+}
+
+#tab-content-library.library-cockpit #library-brief-lens.library-brief-lens:not(:has(#library-brief-settings:not(.hidden))) #library-brief-kicker,
+#tab-content-library.library-cockpit #library-brief-lens.library-brief-lens:not(:has(#library-brief-settings:not(.hidden))) #library-brief-title {
+  font-size: 15px !important;
+  line-height: 1 !important;
+  white-space: nowrap !important;
+}
+
+#tab-content-library.library-cockpit #library-brief-lens.library-brief-lens:not(:has(#library-brief-settings:not(.hidden))) .library-brief-panel,
+#tab-content-library.library-cockpit #library-brief-lens.library-brief-lens:not(:has(#library-brief-settings:not(.hidden))) .library-brief-chip-row {
+  display: contents !important;
+}
+
+#tab-content-library.library-cockpit #library-brief-lens.library-brief-lens:not(:has(#library-brief-settings:not(.hidden))) .library-brief-chips {
+  grid-column: 2 !important;
+  grid-row: 1 !important;
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  gap: 6px !important;
+  min-width: 0 !important;
+  min-height: 32px !important;
+  overflow: hidden !important;
+}
+
+#tab-content-library.library-cockpit #library-brief-lens.library-brief-lens:not(:has(#library-brief-settings:not(.hidden))) #library-brief-collapse {
+  grid-column: 3 !important;
+  grid-row: 1 !important;
+  align-self: center !important;
+  justify-self: stretch !important;
+  width: auto !important;
+  min-width: 0 !important;
+  height: 32px !important;
+  min-height: 32px !important;
+  margin: 0 !important;
+  padding: 0 10px !important;
+  font-size: 13px !important;
+  position: static !important;
+  transform: none !important;
+}
+
+#tab-content-library.library-cockpit #library-brief-lens.library-brief-lens:not(:has(#library-brief-settings:not(.hidden))) #library-fresh-rotate.library-fresh-rotate {
+  grid-column: 4 !important;
+  grid-row: 1 !important;
+  align-self: center !important;
+  justify-self: stretch !important;
+  width: auto !important;
+  min-width: 0 !important;
+  height: 32px !important;
+  min-height: 32px !important;
+  margin: 0 !important;
+  padding: 0 10px !important;
+  font-size: 13px !important;
+  white-space: nowrap !important;
+  position: static !important;
+  transform: none !important;
+}
+
+#tab-content-library.library-cockpit #library-brief-lens.library-brief-lens:not(:has(#library-brief-settings:not(.hidden))) .library-brief-chip.button--small:not(.library-fresh-rotate) {
+  flex: 0 1 auto !important;
+  height: 32px !important;
+  min-height: 32px !important;
+  min-width: 0 !important;
+  padding: 0 clamp(8px, 0.85vw, 13px) !important;
+  font-size: clamp(11px, 0.9vw, 13px) !important;
+  line-height: 1 !important;
+  white-space: nowrap !important;
+}
+
+@media (max-width: 1180px) {
+  #tab-content-library.library-cockpit #library-brief-lens.library-brief-lens:not(:has(#library-brief-settings:not(.hidden))) {
+    grid-template-columns: auto minmax(0, 1fr) 96px 104px !important;
+    gap: 8px !important;
+    padding-left: 22px !important;
+  }
+
+  #tab-content-library.library-cockpit #library-brief-lens.library-brief-lens:not(:has(#library-brief-settings:not(.hidden))) .library-brief-copy {
+    min-width: 178px !important;
+    gap: 8px !important;
+  }
+}
+
+/* GUI overhaul pass: Library Set Prep collapsed flex-row correction.
+   Force one horizontal row: title/mode, lane chips, Fresh Picks, Show Setup. */
+#tab-content-library.library-cockpit #library-brief-lens.library-brief-lens:not(:has(#library-brief-settings:not(.hidden))) {
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  min-height: 62px !important;
+  height: auto !important;
+  padding: 14px 18px 14px 28px !important;
+  margin-bottom: 10px !important;
+  overflow: hidden !important;
+}
+
+#tab-content-library.library-cockpit #library-brief-lens.library-brief-lens:not(:has(#library-brief-settings:not(.hidden))) .library-brief-copy {
+  order: 1 !important;
+  flex: 0 0 auto !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  min-width: 206px !important;
+  min-height: 34px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  white-space: nowrap !important;
+}
+
+#tab-content-library.library-cockpit #library-brief-lens.library-brief-lens:not(:has(#library-brief-settings:not(.hidden))) #library-brief-kicker,
+#tab-content-library.library-cockpit #library-brief-lens.library-brief-lens:not(:has(#library-brief-settings:not(.hidden))) #library-brief-title {
+  font-size: 16px !important;
+  line-height: 1 !important;
+  white-space: nowrap !important;
+}
+
+#tab-content-library.library-cockpit #library-brief-lens.library-brief-lens:not(:has(#library-brief-settings:not(.hidden))) .library-brief-panel {
+  order: 2 !important;
+  flex: 1 1 auto !important;
+  display: flex !important;
+  align-items: center !important;
+  min-width: 0 !important;
+  min-height: 34px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+}
+
+#tab-content-library.library-cockpit #library-brief-lens.library-brief-lens:not(:has(#library-brief-settings:not(.hidden))) .library-brief-chip-row {
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  min-height: 34px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+}
+
+#tab-content-library.library-cockpit #library-brief-lens.library-brief-lens:not(:has(#library-brief-settings:not(.hidden))) .library-brief-chips {
+  flex: 1 1 auto !important;
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  gap: 6px !important;
+  min-width: 0 !important;
+  min-height: 34px !important;
+  overflow: hidden !important;
+}
+
+#tab-content-library.library-cockpit #library-brief-lens.library-brief-lens:not(:has(#library-brief-settings:not(.hidden))) #library-fresh-rotate.library-fresh-rotate {
+  flex: 0 0 112px !important;
+  width: 112px !important;
+  min-width: 112px !important;
+  height: 34px !important;
+  min-height: 34px !important;
+  margin: 0 !important;
+  padding: 0 10px !important;
+  font-size: 13px !important;
+  position: static !important;
+  transform: none !important;
+  white-space: nowrap !important;
+}
+
+#tab-content-library.library-cockpit #library-brief-lens.library-brief-lens:not(:has(#library-brief-settings:not(.hidden))) #library-brief-collapse {
+  order: 3 !important;
+  flex: 0 0 110px !important;
+  width: 110px !important;
+  min-width: 110px !important;
+  height: 34px !important;
+  min-height: 34px !important;
+  align-self: center !important;
+  margin: 0 !important;
+  padding: 0 10px !important;
+  font-size: 13px !important;
+  position: static !important;
+  transform: none !important;
+}
+
+#tab-content-library.library-cockpit #library-brief-lens.library-brief-lens:not(:has(#library-brief-settings:not(.hidden))) .library-brief-chip.button--small:not(.library-fresh-rotate) {
+  flex: 0 1 auto !important;
+  height: 34px !important;
+  min-height: 34px !important;
+  min-width: 0 !important;
+  margin: 0 !important;
+  padding: 0 clamp(8px, 0.75vw, 12px) !important;
+  font-size: clamp(11px, 0.82vw, 13px) !important;
+  line-height: 1 !important;
+  white-space: nowrap !important;
+}
+
+@media (max-width: 1180px) {
+  #tab-content-library.library-cockpit #library-brief-lens.library-brief-lens:not(:has(#library-brief-settings:not(.hidden))) .library-brief-copy {
+    min-width: 176px !important;
+    gap: 8px !important;
+  }
+
+  #tab-content-library.library-cockpit #library-brief-lens.library-brief-lens:not(:has(#library-brief-settings:not(.hidden))) #library-fresh-rotate.library-fresh-rotate {
+    flex-basis: 104px !important;
+    width: 104px !important;
+    min-width: 104px !important;
+  }
+
+  #tab-content-library.library-cockpit #library-brief-lens.library-brief-lens:not(:has(#library-brief-settings:not(.hidden))) #library-brief-collapse {
+    flex-basis: 102px !important;
+    width: 102px !important;
+    min-width: 102px !important;
+  }
+}
+
+/* ==========================================================================
+   GUI overhaul pass: Library Set Prep expanded state hard reset.
+   Open setup is allowed to take space. Use normal document flow so controls
+   cannot overlap the header, Hide Setup button, or each other.
+   ========================================================================== */
+#tab-content-library.library-cockpit #library-brief-lens.library-brief-lens:has(#library-brief-settings:not(.hidden)) {
+  position: relative !important;
+  display: block !important;
+  min-height: 520px !important;
+  height: auto !important;
+  padding: 30px 32px 34px 38px !important;
+  margin-bottom: 22px !important;
+  overflow: visible !important;
+  border: 1px solid rgba(163, 255, 0, 0.30) !important;
+  border-radius: 0 !important;
+  background:
+    linear-gradient(90deg, rgba(163, 255, 0, 0.08), rgba(5, 10, 6, 0.95) 18%, rgba(3, 6, 4, 0.99) 100%),
+    #030604 !important;
+  box-shadow: none !important;
+}
+
+#tab-content-library.library-cockpit #library-brief-lens.library-brief-lens:has(#library-brief-settings:not(.hidden))::after {
+  content: "" !important;
+  position: absolute !important;
+  left: 38px !important;
+  right: 32px !important;
+  top: 82px !important;
+  height: 1px !important;
+  background: rgba(163, 255, 0, 0.22) !important;
+  pointer-events: none !important;
+}
+
+#tab-content-library.library-cockpit #library-brief-lens:has(#library-brief-settings:not(.hidden)) .library-brief-copy {
+  display: flex !important;
+  align-items: center !important;
+  gap: 18px !important;
+  width: calc(100% - 180px) !important;
+  min-height: 34px !important;
+  margin: 0 0 34px !important;
+  padding: 0 !important;
+  opacity: 1 !important;
+  transform: none !important;
+}
+
+#tab-content-library.library-cockpit #library-brief-lens:has(#library-brief-settings:not(.hidden)) #library-brief-kicker,
+#tab-content-library.library-cockpit #library-brief-lens:has(#library-brief-settings:not(.hidden)) #library-brief-title {
+  display: inline-block !important;
+  opacity: 1 !important;
+  color: #f4f5f2 !important;
+  font-size: 22px !important;
+  line-height: 1 !important;
+  white-space: nowrap !important;
+  text-shadow: none !important;
+}
+
+#tab-content-library.library-cockpit #library-brief-lens:has(#library-brief-settings:not(.hidden)) #library-brief-kicker {
+  color: var(--axiom-final-green) !important;
+}
+
+#tab-content-library.library-cockpit #library-brief-lens:has(#library-brief-settings:not(.hidden)) #library-brief-collapse {
+  position: absolute !important;
+  top: 24px !important;
+  right: 32px !important;
+  width: 148px !important;
+  min-width: 148px !important;
+  height: 44px !important;
+  min-height: 44px !important;
+  margin: 0 !important;
+  padding: 0 18px !important;
+  transform: none !important;
+  z-index: 3 !important;
+  background: var(--axiom-final-green) !important;
+  border-color: var(--axiom-final-green) !important;
+  color: #061000 !important;
+}
+
+#tab-content-library.library-cockpit #library-brief-lens:has(#library-brief-settings:not(.hidden)) .library-brief-panel {
+  display: block !important;
+  width: 100% !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: visible !important;
+  transform: none !important;
+}
+
+#tab-content-library.library-cockpit #library-brief-lens:has(#library-brief-settings:not(.hidden)) .library-brief-chip-row,
+#tab-content-library.library-cockpit #library-brief-lens:has(#library-brief-settings:not(.hidden)) .library-brief-chips,
+#tab-content-library.library-cockpit #library-brief-lens:has(#library-brief-settings:not(.hidden)) #library-fresh-rotate.library-fresh-rotate {
+  display: none !important;
+}
+
+#tab-content-library.library-cockpit #library-brief-settings.library-brief-settings:not(.hidden) {
+  display: block !important;
+  width: 100% !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  overflow: visible !important;
+  transform: none !important;
+}
+
+#tab-content-library.library-cockpit #library-brief-settings .library-brief-control-grid {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 16px !important;
+  width: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+#tab-content-library.library-cockpit #library-brief-settings .library-bpm-filter-wrap {
+  position: relative !important;
+  display: grid !important;
+  grid-template-rows: auto 42px !important;
+  gap: 10px !important;
+  min-width: 0 !important;
+  min-height: 104px !important;
+  margin: 0 !important;
+  padding: 16px 16px 14px !important;
+  border: 1px solid rgba(163, 255, 0, 0.22) !important;
+  border-radius: 0 !important;
+  background: rgba(5, 10, 6, 0.82) !important;
+  box-shadow: none !important;
+  overflow: hidden !important;
+  transform: none !important;
+}
+
+#tab-content-library.library-cockpit #library-brief-settings .library-bpm-filter-wrap > span {
+  position: static !important;
+  display: block !important;
+  color: var(--axiom-final-green) !important;
+  font-family: "Bebas Neue", sans-serif !important;
+  font-size: 19px !important;
+  font-weight: 400 !important;
+  letter-spacing: 0.08em !important;
+  line-height: 1 !important;
+  text-transform: uppercase !important;
+}
+
+#tab-content-library.library-cockpit #library-brief-settings .library-brief-select {
+  position: static !important;
+  width: 100% !important;
+  height: 42px !important;
+  min-height: 42px !important;
+  margin: 0 !important;
+  padding: 0 34px 0 13px !important;
+  border: 1px solid rgba(255, 255, 255, 0.10) !important;
+  border-radius: 0 !important;
+  background-color: #050805 !important;
+  color: #f4f5f2 !important;
+  font-family: "Bebas Neue", sans-serif !important;
+  font-size: 17px !important;
+  font-weight: 400 !important;
+  letter-spacing: 0.055em !important;
+  line-height: 1 !important;
+  text-transform: uppercase !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+@media (max-width: 1180px) {
+  #tab-content-library.library-cockpit #library-brief-lens.library-brief-lens:has(#library-brief-settings:not(.hidden)) {
+    min-height: 640px !important;
+  }
+
+  #tab-content-library.library-cockpit #library-brief-settings .library-brief-control-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
+/* GUI overhaul pass: Library setup drawer helper copy removal. */
+#library-brief-lens #library-brief-active-summary,
+#library-brief-lens .library-brief-active-summary,
+#library-brief-lens .library-brief-settings-summary,
+#library-brief-lens .library-brief-summary,
+#library-brief-lens .library-brief-helper,
+#library-brief-lens .library-brief-explainer {
+  display: none !important;
+}
+
+#tab-content-library.library-cockpit #library-brief-lens.library-brief-lens:has(#library-brief-settings:not(.hidden)) {
+  min-height: 480px !important;
+  padding-bottom: 28px !important;
+}
+
+/* GUI overhaul pass: Library setup drawer direct explainer removal. */
+#library-brief-settings > :not(.library-brief-control-grid),
+#library-brief-settings > p,
+#library-brief-settings > small,
+#library-brief-settings > span,
+#library-brief-settings > div:not(.library-brief-control-grid) {
+  display: none !important;
+}
+
+#tab-content-library.library-cockpit #library-brief-lens.library-brief-lens:has(#library-brief-settings:not(.hidden)) {
+  min-height: 458px !important;
+  padding-bottom: 24px !important;
+}
+
+/* GUI overhaul pass: Library setup cards must always read as populated controls. */
+#tab-content-library.library-cockpit #library-brief-settings .library-bpm-filter-wrap {
+  background:
+    linear-gradient(135deg, rgba(163, 255, 0, 0.075), rgba(0, 229, 255, 0.022)),
+    rgba(9, 16, 9, 0.92) !important;
+}
+
+#tab-content-library.library-cockpit #library-brief-settings .library-brief-select {
+  border-color: rgba(163, 255, 0, 0.20) !important;
+  background:
+    linear-gradient(90deg, rgba(163, 255, 0, 0.08), rgba(255, 255, 255, 0.025)),
+    #071007 !important;
+  color: #f4f5f2 !important;
+}
+
+#tab-content-library.library-cockpit #library-brief-settings .library-brief-select:invalid,
+#tab-content-library.library-cockpit #library-brief-settings .library-brief-select option[value=""] {
+  color: rgba(244, 245, 242, 0.72) !important;
+}
+
+#tab-content-library.library-cockpit #library-brief-settings .library-bpm-filter-wrap:focus-within .library-brief-select,
+#tab-content-library.library-cockpit #library-brief-settings .library-bpm-filter-wrap:hover .library-brief-select {
+  border-color: rgba(0, 229, 255, 0.44) !important;
+  background:
+    linear-gradient(90deg, rgba(0, 229, 255, 0.095), rgba(163, 255, 0, 0.04)),
+    #071007 !important;
+}
+
+/* GUI overhaul pass: Library Prep Mode blank-value guard. */
+#tab-content-library.library-cockpit #library-brief-intention.library-brief-select {
+  min-width: 0 !important;
+  background:
+    linear-gradient(90deg, rgba(163, 255, 0, 0.11), rgba(255, 255, 255, 0.035)),
+    #071007 !important;
+}
+
+#tab-content-library.library-cockpit #library-brief-intention.library-brief-select:has(option:checked[value=""]),
+#tab-content-library.library-cockpit #library-brief-intention.library-brief-select[value=""] {
+  color: var(--axiom-final-green) !important;
+}
+
+/* GUI overhaul pass: Library Prep Mode explicit visible value layer. */
+#tab-content-library.library-cockpit #library-brief-settings .library-bpm-filter-wrap:has(#library-brief-intention) {
+  position: relative !important;
+}
+
+#tab-content-library.library-cockpit #library-brief-settings .library-bpm-filter-wrap:has(#library-brief-intention)::after {
+  content: attr(data-brief-display) !important;
+  position: absolute !important;
+  left: 30px !important;
+  right: 54px !important;
+  bottom: 25px !important;
+  z-index: 3 !important;
+  overflow: hidden !important;
+  color: #f4f5f2 !important;
+  font-family: "Bebas Neue", sans-serif !important;
+  font-size: 17px !important;
+  font-weight: 400 !important;
+  letter-spacing: 0.055em !important;
+  line-height: 1 !important;
+  text-overflow: ellipsis !important;
+  text-transform: uppercase !important;
+  white-space: nowrap !important;
+  pointer-events: none !important;
+}
+
+#tab-content-library.library-cockpit #library-brief-settings #library-brief-intention.library-brief-select {
+  color: transparent !important;
+  text-shadow: none !important;
+}
+
+#tab-content-library.library-cockpit #library-brief-settings #library-brief-intention.library-brief-select option {
+  color: #071005 !important;
+}
+
+/* GUI overhaul pass: Library setup cards visible by default. */
+#tab-content-library.library-cockpit #library-brief-settings .library-bpm-filter-wrap {
+  border-color: rgba(163, 255, 0, 0.34) !important;
+  background:
+    linear-gradient(135deg, rgba(163, 255, 0, 0.12), rgba(0, 229, 255, 0.035)),
+    rgba(12, 22, 11, 0.96) !important;
+}
+
+#tab-content-library.library-cockpit #library-brief-settings .library-bpm-filter-wrap > span {
+  color: var(--axiom-final-green) !important;
+  opacity: 1 !important;
+}
+
+#tab-content-library.library-cockpit #library-brief-settings .library-brief-select {
+  border-color: rgba(244, 245, 242, 0.18) !important;
+  background:
+    linear-gradient(90deg, rgba(244, 245, 242, 0.075), rgba(163, 255, 0, 0.055)),
+    #091109 !important;
+  color: #f4f5f2 !important;
+  opacity: 1 !important;
+}
+
+#tab-content-library.library-cockpit #library-brief-settings #library-brief-intention.library-brief-select {
+  color: transparent !important;
+}
+
+#tab-content-library.library-cockpit #library-brief-settings .library-bpm-filter-wrap:has(#library-brief-intention)::after {
+  color: #f4f5f2 !important;
+  opacity: 1 !important;
+}
+
+/* GUI overhaul pass: Library Prep Mode custom visible select face. */
+#tab-content-library.library-cockpit #library-brief-settings .library-bpm-filter-wrap:has(#library-brief-intention) {
+  position: relative !important;
+}

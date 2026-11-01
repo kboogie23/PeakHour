@@ -1,0 +1,28 @@
+/* Studio import shares the approved Record Vault handoff composition. */
+html body #csv-path-modal.vault-csv { --vault-provider:#a3ff00; }
+html body #csv-path-modal .vault-export-card { background:#0d110e!important; }
+html body #csv-path-modal #csv-import-title { font:400 44px/1.06 'Bebas Neue',sans-serif; color:#f4f5f2; margin:0 0 15px; letter-spacing:.3px; }
+#csv-path-modal .vault-export-description { max-width:490px; }
+#csv-path-modal [hidden] { display:none!important; }
+.csv-import-file { display:flex; align-items:center; gap:15px; min-width:0; padding:16px; background:#090d0b; border:1px solid #46513f; border-radius:4px; }
+.csv-import-file img { width:28px; height:28px; flex:none; filter:invert(1); }
+.csv-import-file div { min-width:0; }
+.csv-import-file span,.csv-import-file small { display:block; color:#aeb8ab; font:12px/1.5 'Barlow',sans-serif; }
+.csv-import-file span { font-size:9px; letter-spacing:1.6px; margin-bottom:6px; }
+.csv-import-file strong { display:block; color:#f4f5f2; font:600 17px/1.4 'Barlow',sans-serif; overflow-wrap:anywhere; }
+.csv-import-file small { margin-top:5px; }
+.csv-import-status { color:#c0c8bc; font:14px/1.5 'Barlow',sans-serif; margin:16px 0 24px; min-height:21px; }
+.csv-import-status[data-state="complete"] { color:#a3ff00; }
+.csv-import-status[data-state="error"] { color:#ff9298; }
+#csv-path-modal .csv-import-art { min-height:350px; }
+#csv-path-modal .csv-import-art img { width:100%; left:0; height:90%; }
+.csv-import-art>span { position:absolute; left:0; right:0; bottom:8px; text-align:center; color:#aeb8ab; font:10px 'Barlow',sans-serif; letter-spacing:2.6px; }
+.csv-import-path { margin-top:22px; border-top:1px solid #384334; padding-top:16px; color:#bfc4c1; }
+.csv-import-path summary { font:500 13px 'Barlow',sans-serif; cursor:pointer; }
+.csv-import-path label { margin:18px 0 8px; font-size:12px; }
+html body #csv-path-modal .csv-import-path button { min-height:38px!important; font-size:15px!important; margin-top:12px; }
+#csv-path-modal .vault-export-summary { gap:18px; flex-wrap:wrap; }
+#csv-path-modal .vault-export-summary>div { border:0; padding:0 18px 0 0; }
+#csv-path-modal .vault-export-summary strong { color:#f4f5f2; }
+#csv-path-modal .axiom-dialog-actions { flex-wrap:wrap; }
+@media(max-width:760px) { html body #csv-path-modal #csv-import-title { font-size:36px; } #csv-path-modal .csv-import-art { min-height:230px; margin-top:12px; } }

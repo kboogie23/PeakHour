@@ -1,0 +1,27 @@
+<dialog id="dropbox-dialog" class="dropbox-dialog" aria-labelledby="dropbox-title">
+  <div class="dropbox-heading"><div><p>AXIOM BACKUP</p><h2 id="dropbox-title">DROPBOX BACKUP &amp; RESTORE</h2></div><button type="button" aria-label="Close Dropbox backup" onclick="AxiomDropbox.close()">Close</button></div>
+  <p class="dropbox-description">Copy saved playlists, a playlist folder or your entire AXIOM library to Dropbox. Keep the names, folder structure and track order. Include music for a portable copy.</p>
+  <section class="dropbox-card">
+    <strong id="dropbox-connection">Checking Dropbox connection...</strong>
+    <p id="dropbox-last-backup">No verified Dropbox backup yet.</p>
+    <div class="dropbox-actions"><button id="dropbox-connect" data-action="connect" class="primary" onclick="AxiomDropbox.action('connect')">Connect Dropbox</button><button id="dropbox-disconnect" data-action="disconnect" hidden onclick="AxiomDropbox.action('disconnect')">Disconnect</button></div>
+    <div id="dropbox-code-step" hidden><label for="dropbox-code">Connection code from Dropbox</label><input id="dropbox-code" type="password" autocomplete="off" spellcheck="false"><button data-action="finish-connect" onclick="AxiomDropbox.action('finish-connect')">Finish Connecting</button></div>
+  </section>
+  <section class="dropbox-card">
+    <h3>CHOOSE WHAT TO COPY</h3>
+    <label for="dropbox-scope">Copy from AXIOM</label>
+    <select id="dropbox-scope" onchange="AxiomDropbox.selectionChanged()"><option value="library">Entire AXIOM library</option><option value="playlists">Choose saved playlists</option><option value="folder">Choose a playlist folder</option></select>
+    <div id="dropbox-playlist-choices" hidden></div>
+    <div id="dropbox-folder-choice" hidden><label for="dropbox-folder">Playlist folder</label><select id="dropbox-folder" onchange="AxiomDropbox.selectionChanged()"></select></div>
+    <p id="dropbox-selection-summary">Loading your saved playlists...</p>
+    <label class="dropbox-music-choice"><input id="dropbox-include-music" type="checkbox" onchange="AxiomDropbox.selectionChanged()"> Include music files</label>
+    <p>Music is copied byte for byte. Your originals stay untouched. Without music, the copy keeps your playlists and library information and needs access to the original songs.</p>
+    <button id="dropbox-backup-now" data-action="plan-copy" class="primary" onclick="AxiomDropbox.action('plan-copy')">Preview Copy</button>
+    <div id="dropbox-copy-preview" hidden><h3>COPY PREVIEW</h3><p id="dropbox-copy-preview-text"></p><button id="dropbox-confirm-copy" data-action="backup" class="primary" onclick="AxiomDropbox.action('backup')">Copy to Dropbox</button></div>
+  </section>
+  <section class="dropbox-card"><label><input id="dropbox-daily" type="checkbox" onchange="AxiomDropbox.action('schedule')"> Back up library information daily while AXIOM is open</label><p>Daily backups include all saved playlists and your unfinished sets, without music files. This does not merge edits between computers. DJ software databases and account credentials are never uploaded.</p></section>
+  <div id="dropbox-message" role="status" aria-live="polite"></div>
+  <button id="dropbox-retry-restore" data-action="retry-restore" hidden onclick="AxiomDropbox.action('retry-restore')">Retry Recovery</button>
+  <section class="dropbox-card"><div class="dropbox-heading"><h3>BACKUP HISTORY</h3><button id="dropbox-history-refresh" data-action="history" onclick="AxiomDropbox.action('history')">Refresh</button></div><div id="dropbox-history">Connect Dropbox to see your backups.</div></section>
+  <section id="dropbox-preview" class="dropbox-card" hidden><h3>RESTORE PREVIEW</h3><p id="dropbox-preview-copy"></p><div class="dropbox-actions"><button data-action="restore" class="primary" onclick="AxiomDropbox.action('restore')">Restore This Backup</button><button onclick="document.getElementById('dropbox-preview').hidden=true">Cancel</button></div></section>
+</dialog>

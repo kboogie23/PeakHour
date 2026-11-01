@@ -1,0 +1,33 @@
+<style id="library-source-helper-hover-v1">
+  /* Keep the Library command rail quiet until the source action is being
+     considered. The helper remains in flow so revealing it cannot move the
+     Track Prep rail or resize the header. */
+  html body #tab-content-library.library-cockpit#tab-content-library
+    .library-control-row > #library-source-helper {
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+    transform: translateX(-8px) !important;
+    transition:
+      opacity 150ms ease,
+      transform 150ms ease,
+      visibility 0s linear 150ms !important;
+  }
+
+  html body #tab-content-library.library-cockpit#tab-content-library
+    .library-control-row > .library-add-folder:is(:hover, :focus-visible)
+    + #library-source-helper {
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: translateX(0) !important;
+    transition-delay: 0s !important;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html body #tab-content-library.library-cockpit#tab-content-library
+      .library-control-row > #library-source-helper {
+      transform: none !important;
+      transition: none !important;
+    }
+  }
+</style>

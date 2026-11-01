@@ -1,0 +1,1750 @@
+
+
+html body.light-mode #tab-content-library.library-cockpit #search-results
+  .library-track-card.axiom-focus-deck-row :is(
+    .library-track-artist,
+    .library-fit-row,
+    .library-meta-line,
+    .library-meta-line span,
+    .library-bpm-tools,
+    .library-bpm-tools button
+  ) {
+  color: #40516a !important;
+  -webkit-text-fill-color: #40516a !important;
+  text-shadow: none !important;
+}
+
+html body.light-mode #tab-content-library.library-cockpit #search-results
+  .library-track-card.axiom-focus-deck-row :is(.library-meta-line, .library-health-chips) {
+  min-height: 16px !important;
+  width: 100% !important;
+  margin: 0 !important;
+  overflow: hidden !important;
+  white-space: nowrap !important;
+}
+
+html body.light-mode #tab-content-library.library-cockpit #search-results
+  .library-track-card.axiom-focus-deck-row .library-health-chips {
+  display: flex !important;
+  align-items: center !important;
+  gap: 5px !important;
+}
+
+html body.light-mode #tab-content-library.library-cockpit #search-results
+  .library-track-card.axiom-focus-deck-row :is(.library-dna-chip, .library-year-chip, .library-health-chip) {
+  border-color: rgba(0, 71, 171, 0.34) !important;
+  background: #eef4ff !important;
+  color: #0047ab !important;
+  -webkit-text-fill-color: #0047ab !important;
+  box-shadow: none !important;
+}
+
+html body.light-mode #tab-content-library.library-cockpit #search-results
+  .library-track-card.axiom-focus-deck-row .library-bpm-value {
+  border-color: rgba(0, 71, 171, 0.18) !important;
+  background: #f7faff !important;
+  color: #0047ab !important;
+  -webkit-text-fill-color: #0047ab !important;
+  box-shadow: none !important;
+}
+
+html body.light-mode #tab-content-library.library-cockpit #search-results
+  .library-track-card.axiom-focus-deck-row .library-key-metric.has-key {
+  border-color: rgba(8, 160, 183, 0.56) !important;
+  background: #eafcff !important;
+}
+
+html body.light-mode #tab-content-library.library-cockpit #search-results
+  .library-track-card.axiom-focus-deck-row:is(.selected, .playing-track, .library-track-playing)
+  .library-key-metric.has-key {
+  border-color: #20dff2 !important;
+  background: #20dff2 !important;
+}
+
+html body.light-mode #tab-content-library.library-cockpit #search-results
+  .library-track-card.axiom-focus-deck-row .library-key-metric.has-key :is(.camelot-pill, small) {
+  color: #06324a !important;
+  -webkit-text-fill-color: #06324a !important;
+}
+
+html body.light-mode #tab-content-library.library-cockpit #search-results
+  .library-track-card.axiom-focus-deck-row .library-add-btn {
+  border-color: #0047ab !important;
+  background: #0047ab !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  box-shadow: none !important;
+}
+
+html body.light-mode #tab-content-library.library-cockpit #search-results
+  .library-track-card.axiom-focus-deck-row > .fav-star-btn,
+html body.light-mode #tab-content-library.library-cockpit #lib-suggestions-list
+  .recommendation-card > .fav-star-btn {
+  border-color: rgba(0, 71, 171, 0.10) !important;
+  background: #eef4ff !important;
+  color: #0047ab !important;
+  -webkit-text-fill-color: #0047ab !important;
+  box-shadow: none !important;
+}
+
+/* Matching Songs rail: protect the copy lane and keep its actions centred
+   inside the card rather than pressed against the right edge. */
+html body.light-mode #tab-content-library.library-cockpit #lib-suggestions-list .recommendation-card {
+  min-height: 104px !important;
+  grid-template-columns: 58px minmax(0, 1fr) 38px !important;
+  grid-template-rows: minmax(38px, auto) minmax(38px, auto) !important;
+  column-gap: 11px !important;
+  row-gap: 7px !important;
+  padding: 12px 14px !important;
+  border-color: rgba(0, 71, 171, 0.13) !important;
+  background: #ffffff !important;
+  box-shadow: 0 8px 18px rgba(7, 17, 31, 0.055) !important;
+}
+
+html body.light-mode #tab-content-library.library-cockpit #lib-suggestions-list
+  .recommendation-card :is(.recommendation-title, .recommendation-artist) {
+  color: #07111f !important;
+  -webkit-text-fill-color: #07111f !important;
+  text-shadow: none !important;
+}
+
+html body.light-mode #tab-content-library.library-cockpit #lib-suggestions-list
+  .recommendation-card .recommendation-meta {
+  display: flex !important;
+  min-width: 0 !important;
+  gap: 8px !important;
+  padding-right: 2px !important;
+  justify-content: flex-end !important;
+}
+
+html body.light-mode #tab-content-library.library-cockpit #lib-suggestions-list
+  .recommendation-card .recommendation-add-btn {
+  min-width: 48px !important;
+  height: 36px !important;
+  border-color: #0047ab !important;
+  background: #0047ab !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  box-shadow: none !important;
+}
+
+/* Studio: all five interaction states share one light surface and one grid.
+   Blue selected paint never changes the title, BPM, key, harmonic or action
+   coordinates. */
+html body.light-mode #active-playlist-container
+  .playlist-row.studio-transition-row.axiom-focus-deck-row {
+  border: 0 !important;
+  border-bottom: 1px solid rgba(0, 71, 171, 0.15) !important;
+  background: #ffffff !important;
+  color: #07111f !important;
+  box-shadow: none !important;
+}
+
+html body.light-mode #active-playlist-container
+  .playlist-row.studio-transition-row.axiom-focus-deck-row:hover {
+  border-bottom-color: rgba(0, 71, 171, 0.34) !important;
+  background: #f7faff !important;
+  box-shadow: inset 3px 0 0 rgba(0, 71, 171, 0.52) !important;
+}
+
+html body.light-mode #active-playlist-container
+  .playlist-row.studio-transition-row.axiom-focus-deck-row:is(.selected, .playing-track) {
+  border: 0 !important;
+  border-top: 2px solid #0047ab !important;
+  border-right: 1px solid rgba(0, 71, 171, 0.46) !important;
+  border-bottom: 2px solid #0047ab !important;
+  background: linear-gradient(90deg, #e9f1ff 0%, #ffffff 46%, #f6faff 100%) !important;
+  color: #07111f !important;
+  box-shadow: 0 9px 22px rgba(7, 17, 31, 0.09) !important;
+}
+
+html body.light-mode #active-playlist-container
+  .playlist-row.studio-transition-row.axiom-focus-deck-row :is(
+    .studio-row-title,
+    .track-title-resize,
+    .studio-row-artist,
+    .track-artist-resize,
+    .studio-transition-tagline,
+    .studio-metric,
+    .studio-metric small
+  ) {
+  color: #07111f !important;
+  -webkit-text-fill-color: #07111f !important;
+  text-shadow: none !important;
+}
+
+html body.light-mode #active-playlist-container
+  .playlist-row.studio-transition-row.axiom-focus-deck-row :is(.studio-row-artist, .track-artist-resize, .studio-transition-tagline, .studio-metric small) {
+  color: #52617a !important;
+  -webkit-text-fill-color: #52617a !important;
+}
+
+html body.light-mode #active-playlist-container
+  .playlist-row.studio-transition-row.axiom-focus-deck-row:is(.selected, .playing-track)
+  .studio-row-title {
+  display: block !important;
+  width: max-content !important;
+  max-width: 100% !important;
+  padding-bottom: 4px !important;
+  border-bottom: 2px solid #0047ab !important;
+  color: #07111f !important;
+  -webkit-text-fill-color: #07111f !important;
+  text-decoration: none !important;
+}
+
+html body.light-mode #active-playlist-container
+  .playlist-row.studio-transition-row.axiom-focus-deck-row .studio-dna-chip {
+  border-color: rgba(0, 71, 171, 0.34) !important;
+  background: #eef4ff !important;
+  color: #0047ab !important;
+  -webkit-text-fill-color: #0047ab !important;
+  box-shadow: none !important;
+}
+
+html body.light-mode #active-playlist-container
+  .playlist-row.studio-transition-row.axiom-focus-deck-row .studio-metric {
+  border-left-color: rgba(0, 71, 171, 0.12) !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+html body.light-mode #studio-active-view #active-playlist-container
+  .playlist-row.studio-transition-row.axiom-focus-deck-row .studio-key-metric {
+  border-color: rgba(8, 160, 183, 0.56) !important;
+  background: #eafcff !important;
+}
+
+html body.light-mode #studio-active-view #active-playlist-container
+  .playlist-row.studio-transition-row.axiom-focus-deck-row .studio-key-metric :is(.camelot-pill, small) {
+  color: #06324a !important;
+  -webkit-text-fill-color: #06324a !important;
+}
+
+html body.light-mode #studio-active-view #active-playlist-container
+  .playlist-row.studio-transition-row.axiom-focus-deck-row:is(.selected, .playing-track)
+  .studio-key-metric:not(.is-missing) {
+  border-color: #20dff2 !important;
+  background: #20dff2 !important;
+}
+
+html body.light-mode #studio-active-view #active-playlist-container
+  .playlist-row.studio-transition-row.axiom-focus-deck-row .studio-key-metric.is-missing {
+  border-color: #c9d4e7 !important;
+  background: #f1f5fb !important;
+}
+
+html body.light-mode #studio-active-view #active-playlist-container
+  .playlist-row.studio-transition-row.axiom-focus-deck-row .studio-key-metric.is-missing :is(.camelot-pill, small) {
+  color: #64748b !important;
+  -webkit-text-fill-color: #64748b !important;
+}
+
+html body.light-mode #studio-active-view#studio-active-view #active-playlist-container#active-playlist-container
+  .playlist-row.studio-transition-row.axiom-focus-deck-row > .studio-smart-btn.button--green-outline {
+  border-color: rgba(0, 71, 171, 0.62) !important;
+  background: #ffffff !important;
+  color: #0047ab !important;
+  -webkit-text-fill-color: #0047ab !important;
+  box-shadow: none !important;
+}
+
+html body.light-mode #studio-active-view#studio-active-view #active-playlist-container#active-playlist-container
+  .playlist-row.studio-transition-row.axiom-focus-deck-row:is(.selected, .playing-track)
+  > .studio-smart-btn.button--green-outline {
+  border-color: #0047ab !important;
+  background: #0047ab !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  box-shadow: none !important;
+}
+
+html body.light-mode #active-playlist-container
+  .playlist-row.studio-transition-row.axiom-focus-deck-row > .fav-star-btn {
+  color: #0047ab !important;
+  -webkit-text-fill-color: #0047ab !important;
+  background: #eef4ff !important;
+  border-color: rgba(0, 71, 171, 0.10) !important;
+  box-shadow: none !important;
+}
+
+html body.light-mode #studio-active-view#studio-active-view #active-playlist-container#active-playlist-container
+  .playlist-row.studio-transition-row.axiom-focus-deck-row .transition-badge.energy-spine-node {
+  border-color: #75a8ff !important;
+  background: #ffffff !important;
+  color: #0047ab !important;
+  box-shadow: 0 0 0 3px rgba(0, 71, 171, 0.08), 0 0 16px rgba(0, 71, 171, 0.30) !important;
+}
+
+html body.light-mode #studio-active-view#studio-active-view #active-playlist-container#active-playlist-container
+  .playlist-row.studio-transition-row.axiom-focus-deck-row
+  .transition-badge.energy-spine-node .studio-node-bpm-value {
+  color: #0047ab !important;
+  -webkit-text-fill-color: #0047ab !important;
+  text-shadow: none !important;
+}
+
+html body.light-mode #studio-active-view#studio-active-view #active-playlist-container#active-playlist-container
+  .playlist-row.studio-transition-row.axiom-focus-deck-row
+  .transition-badge.energy-spine-node .studio-node-bpm-label {
+  color: #40516a !important;
+  -webkit-text-fill-color: #40516a !important;
+  text-shadow: none !important;
+}
+
+html body.light-mode #active-playlist-container
+  .playlist-row.studio-transition-row .transition-badge.energy-spine-node::after {
+  background: linear-gradient(180deg, rgba(0, 71, 171, 0.30), #70a5ff 48%, rgba(0, 71, 171, 0.36)) !important;
+  box-shadow: 0 0 5px rgba(0, 71, 171, 0.45), 0 0 13px rgba(0, 71, 171, 0.28) !important;
+}
+
+/* Matching Songs modal uses the same blue selected language as both source
+   lists. No Night Mode green, white-on-white copy, or selected-state reflow. */
+html body.light-mode #replacement-modal #modal-suggestions-list
+  .anchor-suggestion-row.axiom-focus-deck-row:is(.selected, .active-suggestion) {
+  border: 0 !important;
+  border-top: 2px solid #0047ab !important;
+  border-right: 1px solid rgba(0, 71, 171, 0.46) !important;
+  border-bottom: 2px solid #0047ab !important;
+  background: linear-gradient(90deg, #e9f1ff 0%, #ffffff 46%, #f6faff 100%) !important;
+  box-shadow: 0 9px 22px rgba(7, 17, 31, 0.09) !important;
+}
+
+html body.light-mode #replacement-modal #modal-suggestions-list
+  .anchor-suggestion-row.axiom-focus-deck-row:is(.selected, .active-suggestion)
+  :is(.anchor-suggestion-title, .anchor-suggestion-artist, .anchor-suggestion-tags, .anchor-suggestion-tags span) {
+  color: #07111f !important;
+  -webkit-text-fill-color: #07111f !important;
+  text-shadow: none !important;
+}
+
+html body.light-mode #replacement-modal #modal-suggestions-list
+  .anchor-suggestion-row.axiom-focus-deck-row:is(.selected, .active-suggestion)
+  .anchor-suggestion-title {
+  border-bottom-color: #0047ab !important;
+}
+
+html body.light-mode #replacement-modal #modal-suggestions-list
+  .anchor-suggestion-row.axiom-focus-deck-row:is(.selected, .active-suggestion)
+  .anchor-suggestion-add {
+  border-color: #0047ab !important;
+  background: #0047ab !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  box-shadow: none !important;
+}
+
+/* Health review and empty states: all copy remains dark on white, review rows
+   have stable columns, and positive status uses Day Mode blue rather than the
+   Night Mode acid green. */
+html body.light-mode #health-inbox-app#health-inbox-app .health-inbox-detail {
+  background: #ffffff !important;
+  color: #07111f !important;
+}
+
+html body.light-mode #health-inbox-app#health-inbox-app .health-detail-state {
+  border-color: rgba(0, 71, 171, 0.24) !important;
+  background: #eef4ff !important;
+  color: #0047ab !important;
+  -webkit-text-fill-color: #0047ab !important;
+}
+
+html body.light-mode #health-inbox-app#health-inbox-app .health-detail-state.healthy {
+  border-color: rgba(0, 71, 171, 0.42) !important;
+  background: #e8f0ff !important;
+  color: #0047ab !important;
+  -webkit-text-fill-color: #0047ab !important;
+}
+
+html body.light-mode #health-inbox-app#health-inbox-app .health-detail-state.danger {
+  border-color: rgba(220, 38, 38, 0.38) !important;
+  background: #fff1f1 !important;
+  color: #c81e1e !important;
+  -webkit-text-fill-color: #c81e1e !important;
+}
+
+html body.light-mode #health-inbox-app#health-inbox-app :is(
+  .health-detail-title,
+  .health-detail-copy,
+  .health-detail-guidance-card strong,
+  .health-detail-trust,
+  .health-detail-table td,
+  .health-detail-list-row strong,
+  .health-detail-list-row span
+) {
+  color: #07111f !important;
+  -webkit-text-fill-color: #07111f !important;
+  text-shadow: none !important;
+}
+
+html body.light-mode #health-inbox-app#health-inbox-app :is(
+  .health-detail-copy,
+  .health-detail-trust,
+  .health-detail-list-row span,
+  .health-detail-track-sub,
+  .health-detail-path,
+  .health-detail-footer
+) {
+  color: #52617a !important;
+  -webkit-text-fill-color: #52617a !important;
+}
+
+html body.light-mode #health-inbox-app#health-inbox-app .health-detail-guidance-card {
+  border-color: rgba(0, 71, 171, 0.16) !important;
+  background: #f7faff !important;
+  box-shadow: none !important;
+}
+
+html body.light-mode #health-inbox-app#health-inbox-app .health-detail-guidance-card span {
+  color: #0047ab !important;
+  -webkit-text-fill-color: #0047ab !important;
+}
+
+html body.light-mode #health-inbox-app#health-inbox-app .health-detail-list {
+  border-color: rgba(0, 71, 171, 0.16) !important;
+}
+
+html body.light-mode #health-inbox-app#health-inbox-app .health-detail-list-row {
+  grid-template-columns: minmax(180px, 1.15fr) minmax(0, 1.7fr) minmax(88px, 96px) !important;
+  gap: 18px !important;
+  min-height: 72px !important;
+  padding: 12px 10px !important;
+  border-color: rgba(0, 71, 171, 0.14) !important;
+  background: #ffffff !important;
+}
+
+html body.light-mode #health-inbox-app#health-inbox-app .health-detail-list-row > * {
+  min-width: 0 !important;
+}
+
+html body.light-mode #health-inbox-app#health-inbox-app .health-detail-list-row :is(strong, span) {
+  overflow-wrap: anywhere !important;
+}
+
+html body.light-mode #health-inbox-app#health-inbox-app .health-detail-list-row b {
+  justify-self: end !important;
+  color: #0047ab !important;
+  -webkit-text-fill-color: #0047ab !important;
+  text-shadow: none !important;
+}
+
+html body.light-mode #health-inbox-app#health-inbox-app .health-detail-action {
+  min-width: 96px !important;
+  min-height: 40px !important;
+  padding: 0 14px !important;
+  border-color: rgba(0, 71, 171, 0.38) !important;
+  background: #ffffff !important;
+  color: #0047ab !important;
+  -webkit-text-fill-color: #0047ab !important;
+  box-shadow: none !important;
+}
+
+html body.light-mode #health-inbox-app#health-inbox-app .health-detail-action.primary {
+  border-color: #0047ab !important;
+  background: #0047ab !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+
+html body.light-mode #health-inbox-app#health-inbox-app .health-detail-action.danger {
+  border-color: rgba(220, 38, 38, 0.55) !important;
+  background: #ffffff !important;
+  color: #c81e1e !important;
+  -webkit-text-fill-color: #c81e1e !important;
+}
+
+html body.light-mode #health-inbox-app#health-inbox-app .health-detail-table :is(th, td) {
+  border-color: rgba(0, 71, 171, 0.13) !important;
+}
+
+html body.light-mode #health-inbox-app#health-inbox-app .health-detail-badge {
+  color: #c81e1e !important;
+  -webkit-text-fill-color: #c81e1e !important;
+}
+
+@media (max-width: 1180px) {
+  html body.light-mode #health-inbox-app#health-inbox-app .health-detail-list-row {
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 10px !important;
+  }
+
+  html body.light-mode #health-inbox-app#health-inbox-app .health-detail-list-row b,
+  html body.light-mode #health-inbox-app#health-inbox-app .health-detail-list-row .health-detail-action {
+    justify-self: start !important;
+  }
+}
+
+/* Library musical-data parity. Library keeps its approved rectangular BPM
+   treatment (the connected spine belongs to Studio), while key data, type,
+   states, and action hierarchy follow the same component contract. */
+#tab-content-library.library-cockpit #search-results
+  .library-track-card.axiom-focus-deck-row .library-bpm-cell {
+  gap: 2px !important;
+}
+
+#tab-content-library.library-cockpit #search-results
+  .library-track-card.axiom-focus-deck-row .library-bpm-value {
+  height: 38px !important;
+  min-height: 38px !important;
+  color: #f1f3f1 !important;
+  font-family: "Bebas Neue", Impact, sans-serif !important;
+  font-size: 22px !important;
+  font-weight: 400 !important;
+  line-height: 1 !important;
+  letter-spacing: 0.015em !important;
+}
+
+#tab-content-library.library-cockpit #search-results
+  .library-track-card.axiom-focus-deck-row .library-bpm-label {
+  color: rgba(224, 230, 222, 0.54) !important;
+  font-family: "Barlow", sans-serif !important;
+  font-size: 8px !important;
+  font-weight: 700 !important;
+  line-height: 1 !important;
+  letter-spacing: 0.08em !important;
+}
+
+#tab-content-library.library-cockpit #search-results
+  .library-track-card.axiom-focus-deck-row .library-key-metric {
+  justify-self: center !important;
+  display: grid !important;
+  grid-template-rows: minmax(0, 1fr) auto !important;
+  align-items: center !important;
+  justify-items: center !important;
+  width: 58px !important;
+  min-width: 58px !important;
+  height: 48px !important;
+  min-height: 48px !important;
+  padding: 5px 4px 4px !important;
+  border: 1px solid rgba(32, 223, 242, 0.75) !important;
+  border-radius: 5px !important;
+  background: rgba(10, 18, 19, 0.78) !important;
+  box-shadow: none !important;
+}
+
+#tab-content-library.library-cockpit #search-results
+  .library-track-card.axiom-focus-deck-row .library-key-metric .camelot-pill {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  height: auto !important;
+  min-height: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  color: #20dff2 !important;
+  font-family: "Bebas Neue", Impact, sans-serif !important;
+  font-size: 18px !important;
+  font-weight: 400 !important;
+  line-height: 1 !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+#tab-content-library.library-cockpit #search-results
+  .library-track-card.axiom-focus-deck-row .library-key-metric > small {
+  color: rgba(32, 223, 242, 0.78) !important;
+  font-family: "Barlow", sans-serif !important;
+  font-size: 8px !important;
+  font-weight: 700 !important;
+  line-height: 1 !important;
+  letter-spacing: 0.08em !important;
+}
+
+#tab-content-library.library-cockpit #search-results
+  .library-track-card.axiom-focus-deck-row .library-key-metric.is-missing {
+  border-color: #343a35 !important;
+  background: rgba(12, 15, 13, 0.78) !important;
+}
+
+#tab-content-library.library-cockpit #search-results
+  .library-track-card.axiom-focus-deck-row .library-key-metric.is-missing .camelot-pill {
+  color: rgba(241, 243, 241, 0.62) !important;
+}
+
+#tab-content-library.library-cockpit #search-results
+  .library-track-card.axiom-focus-deck-row .library-key-metric.is-missing > small {
+  color: rgba(226, 230, 223, 0.50) !important;
+}
+
+#tab-content-library.library-cockpit #search-results
+  .library-track-card.axiom-focus-deck-row.selected .library-key-metric.has-key,
+#tab-content-library.library-cockpit #search-results
+  .library-track-card.axiom-focus-deck-row.selected.playing-track .library-key-metric.has-key {
+  border-color: #20dff2 !important;
+  background: #20dff2 !important;
+}
+
+#tab-content-library.library-cockpit #search-results
+  .library-track-card.axiom-focus-deck-row.selected .library-key-metric.has-key .camelot-pill,
+#tab-content-library.library-cockpit #search-results
+  .library-track-card.axiom-focus-deck-row.selected.playing-track .library-key-metric.has-key .camelot-pill {
+  color: #061012 !important;
+}
+
+#tab-content-library.library-cockpit #search-results
+  .library-track-card.axiom-focus-deck-row.selected .library-key-metric.has-key > small,
+#tab-content-library.library-cockpit #search-results
+  .library-track-card.axiom-focus-deck-row.selected.playing-track .library-key-metric.has-key > small {
+  color: rgba(6, 16, 18, 0.75) !important;
+}
+
+/* Matching Songs uses the same key language at a compact rail proportion. */
+#tab-content-library.library-cockpit #lib-suggestions-list .recommendation-key-metric {
+  display: grid !important;
+  grid-template-rows: minmax(0, 1fr) auto !important;
+  align-items: center !important;
+  justify-items: center !important;
+  width: 50px !important;
+  min-width: 50px !important;
+  height: 40px !important;
+  min-height: 40px !important;
+  padding: 4px 3px 3px !important;
+  border: 1px solid rgba(32, 223, 242, 0.68) !important;
+  border-radius: 5px !important;
+  background: rgba(10, 18, 19, 0.76) !important;
+  box-shadow: none !important;
+}
+
+#tab-content-library.library-cockpit #lib-suggestions-list
+  .recommendation-key-metric .camelot-pill {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  height: auto !important;
+  min-height: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  color: #20dff2 !important;
+  font-family: "Bebas Neue", Impact, sans-serif !important;
+  font-size: 16px !important;
+  font-weight: 400 !important;
+  line-height: 1 !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+#tab-content-library.library-cockpit #lib-suggestions-list
+  .recommendation-key-metric > small {
+  color: rgba(32, 223, 242, 0.74) !important;
+  font-family: "Barlow", sans-serif !important;
+  font-size: 7px !important;
+  font-weight: 700 !important;
+  line-height: 1 !important;
+  letter-spacing: 0.08em !important;
+}
+
+#tab-content-library.library-cockpit #lib-suggestions-list
+  .recommendation-key-metric.is-missing {
+  border-color: #343a35 !important;
+  background: rgba(12, 15, 13, 0.78) !important;
+}
+
+#tab-content-library.library-cockpit #lib-suggestions-list
+  .recommendation-key-metric.is-missing .camelot-pill {
+  color: rgba(241, 243, 241, 0.58) !important;
+}
+
+#tab-content-library.library-cockpit #lib-suggestions-list
+  .recommendation-key-metric.is-missing > small {
+  color: rgba(226, 230, 223, 0.46) !important;
+}
+
+#axiom-sidebar .axiom-sidebar-submenu > button {
+  display: grid;
+  grid-template-columns: 16px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  min-height: 36px;
+  width: 100%;
+  padding: 7px 10px;
+  border: 1px solid transparent;
+  border-radius: 2px;
+  background: transparent;
+  color: rgba(245, 246, 243, 0.68);
+  font-family: "Barlow", sans-serif;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  line-height: 1.1;
+  text-align: left;
+  text-transform: uppercase;
+  transition: border-color 150ms ease, background 150ms ease, color 150ms ease;
+}
+
+#axiom-sidebar .axiom-sidebar-submenu > button:hover,
+#axiom-sidebar .axiom-sidebar-submenu > button:focus-visible {
+  border-color: rgba(163, 255, 0, 0.32);
+  background: rgba(163, 255, 0, 0.07);
+  color: #ffffff;
+  outline: none;
+}
+
+#axiom-sidebar .axiom-sidebar-submenu > button > img {
+  width: 15px;
+  height: 15px;
+  object-fit: contain;
+  opacity: 0.66;
+  filter: grayscale(1) invert(1) brightness(0.82);
+}
+
+#axiom-sidebar .axiom-sidebar-submenu > button > small {
+  justify-self: end;
+  color: rgba(163, 255, 0, 0.72);
+  font-size: 7px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  white-space: nowrap;
+}
+
+#axiom-sidebar .axiom-sidebar-submenu > button:hover > img,
+#axiom-sidebar .axiom-sidebar-submenu > button:focus-visible > img {
+  opacity: 1;
+  filter: invert(89%) sepia(97%) saturate(2455%) hue-rotate(29deg) brightness(113%) contrast(106%);
+}
+
+#axiom-sidebar #fav-sidebar-badge {
+  min-width: 18px;
+  padding: 3px 5px;
+  border-radius: 2px !important;
+  background: var(--axiom-final-green) !important;
+  color: #071005 !important;
+  font-size: 8px;
+  font-weight: 900;
+  line-height: 1;
+  text-align: center;
+}
+
+body.studio-health-mode .loud-audio-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: 6px;
+  background: rgba(3, 6, 4, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  font-family: 'Barlow', sans-serif;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.8);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+@media (max-height: 780px) and (min-width: 769px), (max-width: 1180px) and (min-width: 769px) {
+  #axiom-sidebar #studio-sidebar-tools-container {
+    --axiom-studio-nav-row-height: 50px;
+  }
+
+  #axiom-sidebar #sidebar-export-group {
+    --axiom-export-nav-row-height: 50px;
+  }
+
+  #studio-start-view .build-night-card {
+    grid-template-columns: 30px minmax(0, 1fr) !important;
+    gap: 9px !important;
+  }
+
+  #studio-start-view .build-night-card .build-night-icon {
+    width: 28px !important;
+    height: 26px !important;
+  }
+
+  #axiom-sidebar .axiom-sidebar-submenu {
+    padding-top: 3px;
+    padding-bottom: 5px;
+  }
+
+  #axiom-sidebar .axiom-sidebar-submenu > button {
+    min-height: 32px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Matching Songs row parity
+   Uses the approved Library/Studio hierarchy without clipping dense controls.
+   -------------------------------------------------------------------------- */
+
+#replacement-modal #modal-suggestions-list .anchor-suggestion-row {
+  grid-template-columns: 68px minmax(190px, 1fr) 92px 58px 72px 66px !important;
+  grid-template-areas:
+    "art info bpm key match add"
+    "art info bpm decisions decisions decisions" !important;
+  grid-template-rows: minmax(54px, auto) 32px !important;
+  align-items: center !important;
+  column-gap: 10px !important;
+  row-gap: 6px !important;
+  min-height: 118px !important;
+  padding: 10px 12px !important;
+  overflow: hidden !important;
+}
+
+#replacement-modal #modal-suggestions-list .anchor-suggestion-row.axiom-focus-deck-row:is(.selected, .active-suggestion) {
+  min-height: 118px !important;
+  padding-left: 58px !important;
+}
+
+#replacement-modal #modal-suggestions-list .anchor-suggestion-play {
+  grid-area: art;
+  align-self: center;
+  justify-self: center;
+  z-index: 4;
+  width: 36px;
+  height: 36px;
+  border: 1px solid rgba(163, 255, 0, 0.78);
+  background: rgba(4, 8, 5, 0.74);
+  box-shadow: 0 0 16px rgba(163, 255, 0, 0.16);
+}
+
+#replacement-modal #modal-suggestions-list .anchor-suggestion-art {
+  grid-area: art;
+  align-self: center;
+  justify-self: center;
+  width: 66px;
+  height: 66px;
+  aspect-ratio: 1;
+  overflow: hidden;
+  border-radius: 5px;
+  background: #030503;
+}
+
+#replacement-modal #modal-suggestions-list .anchor-suggestion-art img,
+#replacement-modal #modal-suggestions-list .anchor-suggestion-art .track-artwork-image,
+#replacement-modal #modal-suggestions-list .anchor-suggestion-art .artwork-fallback {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+#replacement-modal #modal-suggestions-list .anchor-suggestion-row > .min-w-0 {
+  grid-area: info;
+  align-self: center;
+  min-width: 0;
+}
+
+#replacement-modal #modal-suggestions-list .anchor-suggestion-title {
+  width: fit-content;
+  max-width: 100%;
+  color: #ffffff;
+  font-family: "Bebas Neue", Impact, sans-serif;
+  font-size: 21px;
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: 0.025em;
+}
+
+#replacement-modal #modal-suggestions-list .anchor-suggestion-artist {
+  color: rgba(245, 247, 242, 0.70);
+  font-family: "Barlow", sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+#replacement-modal #modal-suggestions-list .axiom-role-fit {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+#replacement-modal #modal-suggestions-list .anchor-suggestion-bpm {
+  grid-area: bpm;
+}
+
+#replacement-modal #modal-suggestions-list .anchor-suggestion-bpm > strong {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 70px;
+  min-height: 38px;
+  padding: 2px 8px 0;
+  border: 1px solid rgba(255, 255, 255, 0.20);
+  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.30);
+  color: #ffffff;
+  font-family: "Bebas Neue", Impact, sans-serif;
+  font-size: 27px;
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: 0.025em;
+  font-variant-numeric: tabular-nums;
+}
+
+#replacement-modal #modal-suggestions-list .anchor-suggestion-bpm-tools {
+  margin-top: 6px;
+}
+
+#replacement-modal #modal-suggestions-list .anchor-suggestion-key {
+  grid-area: key;
+}
+
+#replacement-modal #modal-suggestions-list .anchor-suggestion-key strong {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 52px;
+  min-height: 34px;
+  border: 1px solid rgba(24, 216, 232, 0.58);
+  border-radius: 5px;
+  background: rgba(24, 216, 232, 0.12);
+  color: #35e8ff;
+  font-family: "Bebas Neue", Impact, sans-serif;
+  font-size: 21px;
+  font-weight: 400;
+  line-height: 1;
+}
+
+#replacement-modal #modal-suggestions-list .anchor-suggestion-match {
+  grid-area: match;
+}
+
+#replacement-modal #modal-suggestions-list .anchor-suggestion-match strong {
+  color: var(--focus-deck-lime);
+  font-family: "Bebas Neue", Impact, sans-serif;
+  font-size: 27px;
+  font-weight: 400;
+  line-height: 1;
+}
+
+#replacement-modal #modal-suggestions-list .anchor-suggestion-add {
+  grid-area: add;
+  align-self: center;
+  min-height: 36px;
+  border-radius: 6px;
+  font-family: "Barlow", sans-serif;
+  font-size: 10px;
+  font-weight: 900;
+}
+
+#replacement-modal #modal-suggestions-list .anchor-decision-actions {
+  grid-area: decisions;
+  align-self: end;
+  justify-self: stretch;
+}
+
+#replacement-modal #modal-suggestions-list .anchor-decision-btn {
+  min-height: 30px;
+  border-radius: 5px;
+}
+
+@media (max-width: 1180px) and (min-width: 761px) {
+  #replacement-modal #modal-suggestions-list .anchor-suggestion-row {
+    grid-template-columns: 62px minmax(160px, 1fr) 84px 54px 64px 60px !important;
+    column-gap: 8px !important;
+  }
+
+  #replacement-modal #modal-suggestions-list .anchor-suggestion-row.axiom-focus-deck-row:is(.selected, .active-suggestion) {
+    padding-left: 48px !important;
+  }
+
+  #replacement-modal #modal-suggestions-list .anchor-suggestion-art {
+    width: 60px;
+    height: 60px;
+  }
+
+  #replacement-modal #modal-suggestions-list .anchor-suggestion-bpm > strong {
+    min-width: 62px;
+    font-size: 24px;
+  }
+}
+
+/* AXIOM shared button system — Library and Studio. These variants own only
+   presentation; existing labels, handlers, ARIA, and product behavior remain. */
+:where(
+  button.button--primary,
+  button.button--secondary,
+  button.button--green-outline,
+  button.button--cyan-outline,
+  button.button--danger,
+  button.button--small,
+  button.button--icon
+) {
+  box-sizing: border-box !important;
+  min-height: 42px !important;
+  padding: 0 20px !important;
+  border-width: 1px !important;
+  border-style: solid !important;
+  border-radius: 5px !important;
+  font-family: "Barlow", sans-serif !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  line-height: 1 !important;
+  letter-spacing: 0.05em !important;
+  text-transform: uppercase !important;
+  text-shadow: none !important;
+  transition:
+    background-color 150ms ease,
+    border-color 150ms ease,
+    color 150ms ease,
+    box-shadow 150ms ease,
+    transform 100ms ease !important;
+}
+
+button.button--primary {
+  background: #a3ff00 !important;
+  border-color: #a3ff00 !important;
+  color: #050705 !important;
+  box-shadow: 0 0 16px rgba(163, 255, 0, 0.18) !important;
+}
+
+button.button--primary:hover:not(:disabled) {
+  background: #b4ff2c !important;
+  border-color: #b4ff2c !important;
+  color: #050705 !important;
+  box-shadow: 0 0 20px rgba(163, 255, 0, 0.28) !important;
+  transform: none !important;
+}
+
+button.button--primary:active:not(:disabled) {
+  background: #91e600 !important;
+  border-color: #91e600 !important;
+  box-shadow: 0 0 8px rgba(163, 255, 0, 0.16) !important;
+  transform: translateY(1px) !important;
+}
+
+button.button--secondary {
+  background: rgba(12, 15, 13, 0.72) !important;
+  border-color: #343a35 !important;
+  color: #f1f3f1 !important;
+  box-shadow: none !important;
+}
+
+button.button--secondary:hover:not(:disabled),
+button.button--secondary[aria-expanded="true"] {
+  background: #151916 !important;
+  border-color: #5b655d !important;
+  color: #ffffff !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+button.button--green-outline {
+  background: #0b0e0b !important;
+  border-color: rgba(163, 255, 0, 0.55) !important;
+  color: #a3ff00 !important;
+  box-shadow: none !important;
+}
+
+button.button--green-outline:hover:not(:disabled) {
+  background: rgba(163, 255, 0, 0.08) !important;
+  border-color: #a3ff00 !important;
+  color: #a3ff00 !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+button.button--cyan-outline {
+  background: transparent !important;
+  border-color: rgba(32, 223, 242, 0.65) !important;
+  color: #20dff2 !important;
+  box-shadow: none !important;
+}
+
+button.button--cyan-outline:hover:not(:disabled) {
+  background: rgba(32, 223, 242, 0.08) !important;
+  border-color: #20dff2 !important;
+  color: #57edfa !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+button.button--danger {
+  background: transparent !important;
+  border-color: rgba(255, 77, 77, 0.55) !important;
+  color: #ff4d4d !important;
+  box-shadow: none !important;
+}
+
+button.button--danger:hover:not(:disabled) {
+  background: rgba(255, 77, 77, 0.08) !important;
+  border-color: #ff4d4d !important;
+  color: #ff6868 !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+button.button--small {
+  min-height: 32px !important;
+  height: 32px !important;
+  padding-inline: 12px !important;
+  border-radius: 4px !important;
+  font-size: 10px !important;
+}
+
+button.button--icon {
+  width: 40px !important;
+  min-width: 40px !important;
+  height: 40px !important;
+  min-height: 40px !important;
+  padding: 0 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+:where(
+  button.button--primary,
+  button.button--secondary,
+  button.button--green-outline,
+  button.button--cyan-outline,
+  button.button--danger,
+  button.button--small,
+  button.button--icon
+):focus-visible {
+  outline: 2px solid #a3ff00 !important;
+  outline-offset: 2px !important;
+}
+
+:where(
+  button.button--primary,
+  button.button--secondary,
+  button.button--green-outline,
+  button.button--cyan-outline,
+  button.button--danger,
+  button.button--small,
+  button.button--icon
+):disabled,
+:where(
+  button.button--primary,
+  button.button--secondary,
+  button.button--green-outline,
+  button.button--cyan-outline,
+  button.button--danger,
+  button.button--small,
+  button.button--icon
+)[aria-disabled="true"] {
+  opacity: 0.35 !important;
+  cursor: not-allowed !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+/* Header tools are one compact family. HELP is intentionally a standard
+   utility control here, not a green hero action. */
+#studio-active-view .studio-header .studio-actions {
+  align-items: center !important;
+  gap: 10px !important;
+}
+
+#studio-active-view .studio-header .studio-actions #studio-save-set-btn.button--primary,
+#studio-active-view .studio-header .studio-actions #export-dropdown-btn.button--secondary,
+#studio-active-view .studio-header .studio-actions #btn-studio-guide.button--secondary,
+#studio-active-view .studio-header .studio-actions #studio-more-menu-btn.button--icon {
+  height: 44px !important;
+  min-height: 44px !important;
+  border-radius: 5px !important;
+  font-family: "Barlow", sans-serif !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  line-height: 1 !important;
+  letter-spacing: 0.05em !important;
+}
+
+#studio-active-view .studio-header .studio-actions #studio-save-set-btn.button--primary {
+  min-width: 120px !important;
+  width: auto !important;
+  padding-inline: 22px !important;
+}
+
+#studio-active-view .studio-header .studio-actions #export-dropdown-btn.button--secondary {
+  min-width: 112px !important;
+  width: auto !important;
+  padding-inline: 20px !important;
+}
+
+#studio-active-view .studio-header .studio-actions #btn-studio-guide.button--secondary,
+body.light-mode #studio-active-view .studio-header .studio-actions #btn-studio-guide.button--secondary {
+  min-width: 92px !important;
+  width: auto !important;
+  padding-inline: 20px !important;
+  background: rgba(12, 15, 13, 0.72) !important;
+  border: 1px solid #343a35 !important;
+  color: #f1f3f1 !important;
+  box-shadow: none !important;
+}
+
+#studio-active-view .studio-header .studio-actions #btn-studio-guide.button--secondary::before {
+  content: none !important;
+  display: none !important;
+}
+
+#studio-active-view .studio-header .studio-actions #btn-studio-guide.button--secondary span {
+  color: inherit !important;
+  font-family: "Barlow", sans-serif !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  line-height: 1 !important;
+  letter-spacing: 0.05em !important;
+}
+
+#studio-active-view .studio-mode-controls {
+  align-items: center !important;
+  gap: 10px !important;
+}
+
+#studio-active-view #studio-tab-manual.button--primary,
+#studio-active-view #btn-optimize.button--secondary {
+  height: 44px !important;
+  min-height: 44px !important;
+  margin: 0 !important;
+  border-radius: 5px !important;
+  font-family: "Barlow", sans-serif !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  line-height: 1 !important;
+  letter-spacing: 0.05em !important;
+}
+
+#studio-active-view #studio-tab-manual.button--primary {
+  min-width: 150px !important;
+}
+
+#studio-active-view #btn-optimize.button--secondary {
+  min-width: 160px !important;
+  background: rgba(12, 15, 13, 0.72) !important;
+  border-color: #343a35 !important;
+  color: #f1f3f1 !important;
+  box-shadow: none !important;
+}
+
+/* Matching Songs keeps one position and one size in every Studio state. */
+#active-playlist-container .playlist-row.studio-transition-row.axiom-focus-deck-row
+  > .studio-smart-btn.button--green-outline {
+  width: 140px !important;
+  min-width: 140px !important;
+  height: 42px !important;
+  min-height: 42px !important;
+  padding-inline: 12px !important;
+  background: #0b0e0b !important;
+  border: 1px solid rgba(163, 255, 0, 0.55) !important;
+  color: #a3ff00 !important;
+  box-shadow: none !important;
+}
+
+#active-playlist-container .playlist-row.studio-transition-row.axiom-focus-deck-row.selected
+  > .studio-smart-btn.button--green-outline,
+#active-playlist-container .playlist-row.studio-transition-row.axiom-focus-deck-row.selected.playing-track
+  > .studio-smart-btn.button--green-outline {
+  width: 140px !important;
+  min-width: 140px !important;
+  background: #a3ff00 !important;
+  border-color: #a3ff00 !important;
+  color: #050705 !important;
+  box-shadow: 0 0 16px rgba(163, 255, 0, 0.16) !important;
+  transform: none !important;
+}
+
+/* Library header and prep controls use the same system without disturbing the
+   search field or the established two-column content shell. */
+body #tab-content-library.library-cockpit .library-guide-btn.button--secondary {
+  position: absolute !important;
+  top: 0 !important;
+  right: 0 !important;
+  width: auto !important;
+  min-width: 92px !important;
+  height: 44px !important;
+  min-height: 44px !important;
+  padding-inline: 20px !important;
+  background: rgba(12, 15, 13, 0.72) !important;
+  border: 1px solid #343a35 !important;
+  border-radius: 5px !important;
+  color: #f1f3f1 !important;
+  box-shadow: none !important;
+}
+
+body #tab-content-library.library-cockpit .library-guide-btn.button--secondary::before {
+  content: none !important;
+  display: none !important;
+}
+
+#tab-content-library.library-cockpit .library-add-folder.button--primary {
+  height: 44px !important;
+  min-height: 44px !important;
+  padding-inline: 22px !important;
+  border-radius: 5px !important;
+}
+
+#tab-content-library.library-cockpit :is(
+  .library-brief-chip.button--small,
+  .library-brief-collapse.button--small,
+  .library-fresh-rotate.button--small,
+  .recommendations-controls .button--small
+) {
+  height: 32px !important;
+  min-height: 32px !important;
+  padding-inline: 12px !important;
+  border-radius: 4px !important;
+  font-family: "Barlow", sans-serif !important;
+  font-size: 10px !important;
+  font-weight: 700 !important;
+  line-height: 1 !important;
+  letter-spacing: 0.05em !important;
+}
+
+#tab-content-library.library-cockpit .library-brief-chip.button--small:not(.active):not(.library-fresh-rotate) {
+  background: #111411 !important;
+  border: 1px solid #343934 !important;
+  color: #f1f3f1 !important;
+  box-shadow: none !important;
+}
+
+#tab-content-library.library-cockpit .library-brief-chip.button--small.active {
+  background: rgba(163, 255, 0, 0.07) !important;
+  border-color: rgba(163, 255, 0, 0.60) !important;
+  color: #a3ff00 !important;
+  box-shadow: none !important;
+}
+
+#tab-content-library.library-cockpit .recommendations-controls select {
+  height: 32px !important;
+  min-height: 32px !important;
+  padding: 0 12px !important;
+  background: #111411 !important;
+  border: 1px solid #343934 !important;
+  border-radius: 4px !important;
+  color: #f1f3f1 !important;
+  font-family: "Barlow", sans-serif !important;
+  font-size: 10px !important;
+  font-weight: 700 !important;
+  line-height: 1 !important;
+  letter-spacing: 0.05em !important;
+  text-transform: uppercase !important;
+  box-shadow: none !important;
+}
+
+/* Library rows and song suggestions share the approved title/artist hierarchy.
+   Suggestion titles stay slightly smaller because their column is narrower. */
+#tab-content-library.library-cockpit .recommendation-card .recommendation-title {
+  overflow: hidden !important;
+  color: #f7f8f5 !important;
+  font-family: "Bebas Neue", Impact, sans-serif !important;
+  font-size: 17px !important;
+  font-weight: 400 !important;
+  line-height: 1.05 !important;
+  letter-spacing: 0.025em !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+#tab-content-library.library-cockpit .recommendation-card .recommendation-artist {
+  overflow: hidden !important;
+  color: rgba(229, 233, 225, 0.60) !important;
+  font-family: "Barlow", sans-serif !important;
+  font-size: 12px !important;
+  font-weight: 500 !important;
+  line-height: 1.15 !important;
+  letter-spacing: 0.065em !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+#tab-content-library.library-cockpit .recommendation-card :is(
+  .recommendation-meta,
+  .recommendation-bpm,
+  .track-role-evidence,
+  .library-bpm-tools
+) {
+  font-family: "Barlow", sans-serif !important;
+  font-size: 10px !important;
+  font-weight: 600 !important;
+  line-height: 1.1 !important;
+}
+
+#tab-content-library.library-cockpit :is(
+  .library-add-btn.button--primary,
+  .recommendation-add-btn.button--primary
+) {
+  height: 42px !important;
+  min-height: 42px !important;
+  padding-inline: 18px !important;
+  border-radius: 5px !important;
+  font-family: "Barlow", sans-serif !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  line-height: 1 !important;
+  letter-spacing: 0.05em !important;
+}
+
+#tab-content-library.library-cockpit .library-more-btn.button--icon {
+  width: 40px !important;
+  min-width: 40px !important;
+  height: 40px !important;
+  min-height: 40px !important;
+  border-color: transparent !important;
+  background: transparent !important;
+  color: rgba(241, 243, 241, 0.55) !important;
+  box-shadow: none !important;
+}
+
+#audio-player.library-player-upgrade .player-add-btn.button--primary {
+  height: 42px !important;
+  min-height: 42px !important;
+  padding-inline: 18px !important;
+  border-radius: 5px !important;
+  font-family: "Barlow", sans-serif !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  line-height: 1 !important;
+  letter-spacing: 0.05em !important;
+}
+
+@media (max-width: 1180px) and (min-width: 761px) {
+  #active-playlist-container .playlist-row.studio-transition-row.axiom-focus-deck-row
+    > .studio-smart-btn.button--green-outline,
+  #active-playlist-container .playlist-row.studio-transition-row.axiom-focus-deck-row.selected
+    > .studio-smart-btn.button--green-outline {
+    width: 120px !important;
+    min-width: 120px !important;
+  }
+}
+
+@media (max-width: 760px) {
+  #replacement-modal #modal-suggestions-list .anchor-suggestion-row,
+  #replacement-modal #modal-suggestions-list .anchor-suggestion-row.axiom-focus-deck-row:is(.selected, .active-suggestion) {
+    grid-template-columns: 58px minmax(150px, 1fr) 78px 54px !important;
+    grid-template-areas:
+      "art info bpm key"
+      "art info match add"
+      "decisions decisions decisions decisions" !important;
+    grid-template-rows: minmax(52px, auto) 36px 32px !important;
+    min-height: 148px !important;
+    padding: 10px 10px 10px 48px !important;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   AXIOM 2.0 Matching Songs shell merge
+   Faithfully carries the finalized full-window layout while preserving the
+   live AXIOM Selection shell and all existing matching-song actions.
+   -------------------------------------------------------------------------- */
+
+#replacement-modal.anchor-dj-modal {
+  /* Keep the shared preview controls clickable while matching songs. */
+  bottom: var(--axiom-approved-player, 108px) !important;
+  padding: 0 !important;
+  background: #030403 !important;
+  backdrop-filter: none !important;
+}
+
+#replacement-modal.anchor-dj-modal .anchor-dj-shell {
+  display: grid !important;
+  width: 100vw !important;
+  height: 100% !important;
+  max-width: none !important;
+  max-height: none !important;
+  grid-template-columns: minmax(0, 2.03fr) minmax(360px, 0.97fr) !important;
+  grid-template-rows: 64px 220px 53px minmax(0, 1fr) 54px !important;
+  gap: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background:
+    radial-gradient(circle at 72% 28%, rgba(46, 64, 52, 0.13), transparent 34%),
+    linear-gradient(135deg, #070908 0%, #030403 100%) !important;
+  box-shadow: none !important;
+}
+
+#replacement-modal.anchor-dj-modal .anchor-dj-shell::before {
+  display: none !important;
+}
+
+#replacement-modal.anchor-dj-modal .anchor-dj-topline {
+  display: grid !important;
+  min-height: 0 !important;
+  grid-column: 1 / -1 !important;
+  grid-row: 1 !important;
+  grid-template-columns: 150px minmax(0, 1fr) auto !important;
+  align-items: center !important;
+  gap: 22px !important;
+  padding: 0 22px !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.13) !important;
+}
+
+#replacement-modal.anchor-dj-modal .anchor-brand-lockup {
+  display: contents !important;
+}
+
+#replacement-modal.anchor-dj-modal .anchor-logo-word {
+  color: #f3f4f0 !important;
+  font-family: "Bebas Neue", Impact, sans-serif !important;
+  font-size: 35px !important;
+  font-weight: 400 !important;
+  line-height: 1 !important;
+  letter-spacing: 0.19em !important;
+}
+
+#replacement-modal.anchor-dj-modal .anchor-kicker {
+  color: #f3f4f0 !important;
+  font-family: "Barlow", sans-serif !important;
+  font-size: 9px !important;
+  font-weight: 700 !important;
+  line-height: 1 !important;
+  letter-spacing: 0.15em !important;
+}
+
+#replacement-modal.anchor-dj-modal .anchor-dj-topline > .flex {
+  display: flex !important;
+  gap: 12px !important;
+}
+
+#replacement-modal.anchor-dj-modal .anchor-close-btn,
+#replacement-modal.anchor-dj-modal .anchor-close-btn.axiom-help-btn-compact {
+  min-width: 100px !important;
+  min-height: 40px !important;
+  height: 40px !important;
+  padding: 0 14px !important;
+  border: 1px solid rgba(255, 255, 255, 0.22) !important;
+  border-radius: 2px !important;
+  background: transparent !important;
+  color: #f3f4f0 !important;
+  font-family: "Bebas Neue", Impact, sans-serif !important;
+  font-size: 18px !important;
+  font-weight: 400 !important;
+  line-height: 1 !important;
+  letter-spacing: 0.08em !important;
+  box-shadow: none !important;
+}
+
+#replacement-modal.anchor-dj-modal .anchor-close-btn.axiom-help-btn-compact {
+  border-color: #a3ff00 !important;
+  background: #a3ff00 !important;
+  color: #0c0f09 !important;
+}
+
+#replacement-modal.anchor-dj-modal .anchor-close-btn:hover {
+  transform: none !important;
+}
+
+#replacement-modal.anchor-dj-modal .anchor-close-btn > span {
+  margin: 0 !important;
+  font-family: "Barlow", sans-serif !important;
+  font-size: 18px !important;
+  font-weight: 400 !important;
+}
+
+#replacement-modal.anchor-dj-modal .anchor-hero-panel {
+  display: grid !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  grid-column: 1 / -1 !important;
+  grid-row: 2 !important;
+  grid-template-columns: 120px 212px minmax(0, 1fr) !important;
+  align-items: start !important;
+  column-gap: 18px !important;
+  margin: 0 22px !important;
+  padding: 14px !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  border-radius: 0 !important;
+  background: linear-gradient(120deg, rgba(17, 20, 18, 0.98), rgba(10, 12, 11, 0.96)) !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+}
+
+#replacement-modal.anchor-dj-modal .anchor-cover-card {
+  width: 120px !important;
+  height: 120px !important;
+  aspect-ratio: 1 !important;
+  border: 1px solid rgba(255, 255, 255, 0.17) !important;
+  border-radius: 2px !important;
+  box-shadow: none !important;
+}
+
+#replacement-modal.anchor-dj-modal .anchor-cover-card .artwork-fallback {
+  font-size: 58px !important;
+}
+
+#replacement-modal.anchor-dj-modal .anchor-section-label,
+#replacement-modal.anchor-dj-modal .anchor-board-mode,
+#replacement-modal.anchor-dj-modal .anchor-intent-label {
+  color: #d4d7d1 !important;
+  font-family: "Barlow", sans-serif !important;
+  font-size: 8px !important;
+  font-weight: 700 !important;
+  line-height: 1 !important;
+  letter-spacing: 0.12em !important;
+  text-transform: uppercase !important;
+}
+
+#replacement-modal.anchor-dj-modal .anchor-context-copy {
+  max-width: 230px !important;
+  margin: 7px 0 12px !important;
+  color: #b8bcb6 !important;
+  font-size: 10px !important;
+  font-weight: 400 !important;
+  line-height: 1.35 !important;
+}
+
+#replacement-modal.anchor-dj-modal .anchor-title {
+  display: -webkit-box !important;
+  max-width: 240px !important;
+  margin: 0 !important;
+  color: #f3f4f0 !important;
+  font-family: "Bebas Neue", Impact, sans-serif !important;
+  font-size: 27px !important;
+  font-weight: 400 !important;
+  line-height: 0.98 !important;
+  letter-spacing: 0.025em !important;
+  -webkit-line-clamp: 2 !important;
+  line-clamp: 2 !important;
+}
+
+#replacement-modal.anchor-dj-modal .anchor-subtitle {
+  margin: 10px 0 0 !important;
+  color: #a7aba6 !important;
+  font-family: "Barlow", sans-serif !important;
+  font-size: 9px !important;
+  font-weight: 700 !important;
+  line-height: 1 !important;
+  letter-spacing: 0.07em !important;
+}
+
+#replacement-modal.anchor-dj-modal .anchor-meta-stack,
+#replacement-modal.anchor-dj-modal .anchor-tag-row {
+  display: flex !important;
+  gap: 6px !important;
+}
+
+#replacement-modal.anchor-dj-modal .anchor-meta-stack {
+  margin-top: 10px !important;
+}
+
+#replacement-modal.anchor-dj-modal .anchor-tag-row {
+  margin-top: 6px !important;
+}
+
+#replacement-modal.anchor-dj-modal .anchor-meta-pill,
+#replacement-modal.anchor-dj-modal .anchor-tag-row span {
+  padding: 4px 7px !important;
+  border: 1px solid rgba(255, 255, 255, 0.18) !important;
+  border-radius: 2px !important;
+  background: transparent !important;
+  color: #d7dad5 !important;
+  font-size: 8px !important;
+  font-weight: 700 !important;
+}
+
+#replacement-modal.anchor-dj-modal .anchor-meta-pill.accent {
+  border-color: rgba(163, 255, 0, 0.34) !important;
+  color: #a3ff00 !important;
+}
+
+#replacement-modal.anchor-dj-modal .anchor-transition-zone {
+  display: grid !important;
+  min-width: 0 !important;
+  align-self: stretch !important;
+  grid-template-rows: 25px minmax(0, 1fr) !important;
+  gap: 0 !important;
+  margin-left: 7px !important;
+  overflow: hidden !important;
+}
+
+#replacement-modal.anchor-dj-modal .anchor-board-head {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+}
+
+#replacement-modal.anchor-dj-modal .anchor-board-status {
+  display: flex !important;
+  align-items: center !important;
+  gap: 9px !important;
+}
+
+#replacement-modal.anchor-dj-modal .anchor-cue-source,
+#replacement-modal.anchor-dj-modal .anchor-cue-copy {
+  font-family: "Bebas Neue", Impact, sans-serif !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.08em !important;
+}
+
+#replacement-modal.anchor-dj-modal .anchor-cue-source {
+  color: #9da39a !important;
+  font-size: 10px !important;
+}
+
+#replacement-modal.anchor-dj-modal .anchor-cue-copy {
+  height: 21px !important;
+  padding: 0 9px !important;
+  border: 1px solid rgba(163, 255, 0, 0.52) !important;
+  border-radius: 2px !important;
+  background: #0b1009 !important;
+  color: #a3ff00 !important;
+  font-size: 10px !important;
+  cursor: pointer !important;
+}
+
+#replacement-modal.anchor-dj-modal .anchor-cue-copy:hover,
+#replacement-modal.anchor-dj-modal .anchor-cue-copy:focus-visible {
+  background: #a3ff00 !important;
+  color: #071005 !important;
+  outline: none !important;
+}
+
+#replacement-modal.anchor-dj-modal .anchor-board-mode {
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+}
+
+#replacement-modal.anchor-dj-modal .anchor-remaining {
+  color: #f3f4f0 !important;
+  font-family: "Bebas Neue", Impact, sans-serif !important;
+  font-size: 16px !important;
+  font-weight: 400 !important;
+}
+
+#replacement-modal.anchor-dj-modal .anchor-transition-board {
+  display: grid !important;
+  min-height: 0 !important;
+  grid-template-rows: 88px 48px !important;
+  gap: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+}
+
+#replacement-modal.anchor-dj-modal .anchor-section-strip {
+  display: grid !important;
+  grid-template-columns: repeat(var(--cue-count, 4), minmax(0, 1fr)) !important;
+  gap: 0 !important;
+}
+
+#replacement-modal.anchor-dj-modal .anchor-section-chip {
+  display: flex !important;
+  min-height: 0 !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  padding: 0 14px !important;
+  border: 1px solid color-mix(in srgb, var(--cue, #a3ff00) 58%, transparent) !important;
+  border-radius: 0 !important;
+  background: color-mix(in srgb, var(--cue, #a3ff00) 7%, #101311) !important;
+  transform: none !important;
+  position: relative !important;
+}
+
+#replacement-modal.anchor-dj-modal .anchor-section-chip strong {
+  color: var(--cue, #a3ff00) !important;
+  font-size: 9px !important;
+  letter-spacing: 0.04em !important;
+  max-width: 100% !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}

@@ -1,0 +1,25 @@
+#daw-drum-extract { width: min(780px, 94vw); max-height: 90vh; overflow: auto; padding: 20px; border: 1px solid #697268; border-radius: 6px; background: #151c19; color: #edf2ed; }
+#daw-drum-extract header, #daw-drum-extract footer, #daw-drum-extract nav, .daw-extract-input { display: flex; gap: 12px; align-items: center; justify-content: space-between; }
+#daw-drum-extract h2 { font-size: 24px; }
+#daw-drum-extract label { display: grid; gap: 6px; margin: 12px 0; min-width: 0; font-size: 14px; }
+#daw-drum-extract select { width: 100%; min-width: 0; color: inherit; background: #080d0b; border: 1px solid #536157; padding: 8px; }
+#daw-drum-extract button, .daw-extract-launch { min-height: 34px; padding: 6px 10px; background: #27312b; color: #edf2ed; border: 1px solid #697268; border-radius: 3px; }
+#daw-drum-extract button:disabled { opacity: .45; }
+#daw-drum-extract img, .daw-extract-launch img { width: 18px; height: 18px; }
+#daw-drum-extract [data-apply], #daw-drum-extract [data-analyze] { background: var(--accent); color: #071005; }
+#daw-drum-extract [data-rows] { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+#daw-drum-extract .daw-extract-row { grid-template-columns: 20px 1fr; align-items: center; }
+#daw-drum-extract .daw-extract-row select { grid-column: 1 / -1; }
+#daw-drum-extract input { accent-color: var(--accent); }
+#daw-drum-extract output { display: block; min-height: 44px; padding: 12px 0; font-size: 14px; overflow-wrap: anywhere; }
+.daw-extract-input label { flex: 1; }
+.daw-extract-score { display: grid; grid-template-columns: 52px repeat(64, minmax(0, 1fr)); gap: 1px; margin-bottom: 14px; }
+.daw-extract-score strong { align-self: center; font-size: 13px; }
+#daw-drum-extract .daw-extract-cell { padding: 0; border-radius: 0; min-width: 0; height: 42px; border: 0; }
+#daw-drum-extract .daw-extract-cell[aria-pressed="true"] { background: var(--accent); color: #071005; }
+#daw-drum-extract .daw-extract-cell[data-uncertain="true"] { background: #f2bc4a; }
+#daw-drum-extract button:focus-visible { outline: 2px solid #67cee8; outline-offset: 2px; }
+#daw-drum-extract nav { margin-bottom: 14px; }
+#daw-drum-extract nav[hidden] { display: none; }
+.daw-extract-launch { width: 36px; margin-top: 8px; }
+@media (max-width: 600px) { #daw-drum-extract { padding: 12px; } .daw-extract-score { overflow-x: auto; grid-template-columns: 52px repeat(64, 10px); } }

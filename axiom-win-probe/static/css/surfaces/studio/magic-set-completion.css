@@ -1,0 +1,69 @@
+/* Magic Set completion handoff. Scoped to the Studio surface. */
+    #studio-active-view #btn-view-studio-set {
+      position: absolute;
+      right: 18px;
+      top: 18px;
+      bottom: auto;
+      z-index: 8 !important;
+      background: #2bff00;
+      color: #000000;
+      border: 2px solid #071005;
+      padding: 12px 16px 12px 18px;
+      font-size: 10px;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 0 0 3px rgba(163,255,0,0.18), 0 0 30px rgba(163,255,0,0.5), 0 16px 34px rgba(0,0,0,0.42) !important;
+      transition: transform 160ms ease, filter 160ms ease, box-shadow 160ms ease;
+    }
+
+    #studio-active-view #btn-view-studio-set.hidden {
+      display: none !important;
+    }
+
+    #studio-active-view #btn-view-studio-set .magic-studio-return-copy {
+      display: grid;
+      gap: 1px;
+      text-align: left;
+      line-height: 1;
+    }
+
+    #studio-active-view #btn-view-studio-set .magic-studio-return-copy strong,
+    #studio-active-view #btn-view-studio-set .magic-studio-return-copy small {
+      color: #071005 !important;
+      -webkit-text-fill-color: #071005 !important;
+    }
+
+    #studio-active-view #btn-view-studio-set .magic-studio-return-copy strong {
+      font-size: 13px;
+      letter-spacing: 0.06em;
+    }
+
+    #studio-active-view #btn-view-studio-set .magic-studio-return-copy small {
+      font: 900 8px/1.2 'Barlow', sans-serif;
+      letter-spacing: 0.12em;
+      opacity: 0.72;
+    }
+
+    #studio-active-view .studio-header .studio-actions #export-dropdown-container.magic-set-export-ready #export-dropdown-btn,
+    #studio-active-view .studio-header .studio-actions #export-dropdown-btn.magic-set-export-ready {
+      border-color: #071005 !important;
+      background: linear-gradient(145deg, #d9ff57, #9cff00 48%, #58f000) !important;
+      color: #071005 !important;
+      -webkit-text-fill-color: #071005 !important;
+      box-shadow:
+        0 0 0 3px rgba(163,255,0,0.18),
+        0 0 30px rgba(163,255,0,0.52),
+        inset 0 1px 0 rgba(255,255,255,0.62) !important;
+    }
+
+    #studio-active-view .studio-header .studio-actions #export-dropdown-container.magic-set-export-ready #export-dropdown-btn :is(span, svg, path),
+    #studio-active-view .studio-header .studio-actions #export-dropdown-btn.magic-set-export-ready :is(span, svg, path) {
+      color: #071005 !important;
+      -webkit-text-fill-color: #071005 !important;
+      stroke: currentColor !important;
+    }
+

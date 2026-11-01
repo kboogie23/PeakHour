@@ -1,0 +1,58 @@
+
+
+#health-inbox-app #btn-coreaudio-loud.status-error {
+  border-color: rgba(255, 59, 48, 0.72);
+  background: rgba(255, 59, 48, 0.1);
+}
+
+#health-inbox-app #btn-coreaudio-loud.status-error .status-icon {
+  background: #ff3b30;
+  box-shadow: 0 0 10px rgba(255, 59, 48, 0.76);
+}
+
+body.light-mode #health-inbox-app .health-source-connections {
+  border-color: rgba(35, 43, 47, 0.7);
+  background: rgba(11, 79, 177, 0.12);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.78),
+    0 0 0 1px rgba(11, 79, 177, 0.07);
+}
+
+body.light-mode #health-inbox-app .health-source-connection {
+  background: #ffffff;
+}
+
+body.light-mode #health-inbox-app .health-source-connection-copy > span,
+body.light-mode #health-inbox-app .health-source-connection-copy > strong {
+  color: #07111f;
+  -webkit-text-fill-color: #07111f;
+}
+
+body.light-mode #health-inbox-app .health-source-connection-copy > small {
+  color: #526173;
+  -webkit-text-fill-color: #526173;
+}
+
+body.light-mode #health-inbox-app #btn-coreaudio-loud {
+  border-color: rgba(0, 71, 171, 0.42);
+  background: #f3f7fd;
+  color: #0047ab;
+  -webkit-text-fill-color: #0047ab;
+}
+
+@media (max-width: 980px) {
+  #health-inbox-app .health-source-connections {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 620px) {
+  #health-inbox-app .health-source-connection {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  #health-inbox-app .health-source-connection-action {
+    width: 100%;
+  }
+}

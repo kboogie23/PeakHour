@@ -1,0 +1,233 @@
+153           0 RESUME                   0
+
+154           2 LOAD_FAST                0 (self)
+              4 LOAD_ATTR                1 (NULL|self + _idle_state)
+             24 CALL                     0
+             32 STORE_FAST               1 (state)
+
+155          34 NOP
+
+156          36 LOAD_GLOBAL              3 (NULL + open)
+             46 LOAD_FAST                0 (self)
+             48 LOAD_ATTR                4 (state_path)
+             68 LOAD_CONST               1 ('r')
+             70 LOAD_CONST               2 ('utf-8')
+             72 KW_NAMES                 3 (('encoding',))
+             74 CALL                     3
+             82 BEFORE_WITH
+             84 STORE_FAST               2 (handle)
+
+157          86 LOAD_GLOBAL              7 (NULL + json)
+             96 LOAD_ATTR                8 (load)
+            116 LOAD_FAST                2 (handle)
+            118 CALL                     1
+            126 STORE_FAST               3 (saved)
+
+156         128 LOAD_CONST               0 (None)
+            130 LOAD_CONST               0 (None)
+            132 LOAD_CONST               0 (None)
+            134 CALL                     2
+            142 POP_TOP
+
+158     >>  144 LOAD_GLOBAL             11 (NULL + isinstance)
+            154 LOAD_FAST_CHECK          3 (saved)
+            156 LOAD_GLOBAL             12 (dict)
+            166 CALL                     2
+            174 POP_JUMP_IF_FALSE       17 (to 210)
+
+159         176 LOAD_FAST                1 (state)
+            178 LOAD_ATTR               15 (NULL|self + update)
+            198 LOAD_FAST                3 (saved)
+            200 CALL                     1
+            208 POP_TOP
+
+163     >>  210 LOAD_FAST                1 (state)
+            212 LOAD_ATTR               23 (NULL|self + get)
+            232 LOAD_CONST               4 ('status')
+            234 CALL                     1
+            242 LOAD_CONST               5 (frozenset({'recording', 'stopping'}))
+            244 CONTAINS_OP              1
+            246 POP_JUMP_IF_FALSE       12 (to 272)
+
+164         248 LOAD_CONST               6 (False)
+            250 LOAD_FAST                1 (state)
+            252 LOAD_CONST               7 ('recording')
+            254 STORE_SUBSCR
+
+165         258 LOAD_CONST               8 (0.0)
+            260 LOAD_FAST                1 (state)
+            262 LOAD_CONST               9 ('started_monotonic')
+            264 STORE_SUBSCR
+
+166         268 LOAD_FAST                1 (state)
+            270 RETURN_VALUE
+
+168     >>  272 LOAD_GLOBAL             24 (os)
+            282 LOAD_ATTR               26 (path)
+            302 LOAD_ATTR               29 (NULL|self + abspath)
+            322 LOAD_GLOBAL             31 (NULL + str)
+            332 LOAD_FAST                1 (state)
+            334 LOAD_ATTR               23 (NULL|self + get)
+            354 LOAD_CONST              10 ('temp_wav_path')
+            356 CALL                     1
+            364 COPY                     1
+            366 POP_JUMP_IF_TRUE         2 (to 372)
+            368 POP_TOP
+            370 LOAD_CONST              11 ('')
+        >>  372 CALL                     1
+            380 CALL                     1
+            388 STORE_FAST               4 (temp_wav)
+
+169         390 LOAD_GLOBAL             24 (os)
+            400 LOAD_ATTR               26 (path)
+            420 LOAD_ATTR               29 (NULL|self + abspath)
+            440 LOAD_GLOBAL             31 (NULL + str)
+            450 LOAD_FAST                1 (state)
+            452 LOAD_ATTR               23 (NULL|self + get)
+            472 LOAD_CONST              12 ('output_path')
+            474 CALL                     1
+            482 COPY                     1
+            484 POP_JUMP_IF_TRUE         2 (to 490)
+            486 POP_TOP
+            488 LOAD_CONST              11 ('')
+        >>  490 CALL                     1
+            498 CALL                     1
+            506 STORE_FAST               5 (output_path)
+
+170         508 LOAD_CONST              11 ('')
+            510 STORE_FAST               6 (recovery_path)
+
+171         512 LOAD_FAST                4 (temp_wav)
+            514 POP_JUMP_IF_FALSE      109 (to 734)
+            516 LOAD_GLOBAL             24 (os)
+            526 LOAD_ATTR               26 (path)
+            546 LOAD_ATTR               33 (NULL|self + isfile)
+            566 LOAD_FAST                4 (temp_wav)
+            568 CALL                     1
+            576 POP_JUMP_IF_FALSE       78 (to 734)
+            578 LOAD_GLOBAL             24 (os)
+            588 LOAD_ATTR               26 (path)
+            608 LOAD_ATTR               35 (NULL|self + getsize)
+            628 LOAD_FAST                4 (temp_wav)
+            630 CALL                     1
+            638 LOAD_CONST              13 (44)
+            640 COMPARE_OP              68 (>)
+            644 POP_JUMP_IF_FALSE       44 (to 734)
+
+172         646 LOAD_FAST                0 (self)
+            648 LOAD_ATTR               37 (NULL|self + _next_recovery_path)
+            668 LOAD_FAST                5 (output_path)
+            670 COPY                     1
+            672 POP_JUMP_IF_TRUE         2 (to 678)
+            674 POP_TOP
+            676 LOAD_FAST                4 (temp_wav)
+        >>  678 CALL                     1
+            686 STORE_FAST               6 (recovery_path)
+
+173         688 NOP
+
+174         690 LOAD_GLOBAL             25 (NULL + os)
+            700 LOAD_ATTR               38 (replace)
+            720 LOAD_FAST                4 (temp_wav)
+            722 LOAD_FAST                6 (recovery_path)
+            724 CALL                     2
+            732 POP_TOP
+
+177     >>  734 LOAD_FAST                1 (state)
+            736 LOAD_ATTR               15 (NULL|self + update)
+
+178         756 LOAD_CONST              14 ('failed')
+
+179         758 LOAD_CONST               6 (False)
+
+180         760 LOAD_CONST               8 (0.0)
+
+181         762 LOAD_FAST                6 (recovery_path)
+
+184         764 LOAD_FAST                6 (recovery_path)
+            766 POP_JUMP_IF_FALSE        6 (to 780)
+
+183         768 LOAD_CONST              15 ('AXIOM closed before the recording finished. An unfinished recovery file was kept at ')
+            770 LOAD_FAST                6 (recovery_path)
+            772 FORMAT_VALUE             0
+            774 LOAD_CONST              16 ('.')
+            776 BUILD_STRING             3
+            778 JUMP_FORWARD             1 (to 782)
+
+185     >>  780 LOAD_CONST              17 ('AXIOM closed before the recording finished, and no recoverable audio file was found.')
+
+187     >>  782 LOAD_CONST              18 ('Previous recording was interrupted')
+
+177         784 LOAD_CONST              19 (('status', 'recording', 'started_monotonic', 'recovery_path', 'error', 'message'))
+            786 BUILD_CONST_KEY_MAP      6
+            788 CALL                     1
+            796 POP_TOP
+
+189         798 LOAD_FAST                0 (self)
+            800 LOAD_ATTR               41 (NULL|self + _persist_state_payload)
+            820 LOAD_FAST                1 (state)
+            822 CALL                     1
+            830 POP_TOP
+
+190         832 LOAD_FAST                1 (state)
+            834 RETURN_VALUE
+
+156     >>  836 PUSH_EXC_INFO
+            838 WITH_EXCEPT_START
+            840 POP_JUMP_IF_TRUE         1 (to 844)
+            842 RERAISE                  2
+        >>  844 POP_TOP
+            846 POP_EXCEPT
+            848 POP_TOP
+            850 POP_TOP
+            852 EXTENDED_ARG             1
+            854 JUMP_BACKWARD          356 (to 144)
+        >>  856 COPY                     3
+            858 POP_EXCEPT
+            860 RERAISE                  1
+        >>  862 PUSH_EXC_INFO
+
+160         864 LOAD_GLOBAL             16 (FileNotFoundError)
+            874 LOAD_GLOBAL             18 (OSError)
+            884 LOAD_GLOBAL             20 (ValueError)
+            894 BUILD_TUPLE              3
+            896 CHECK_EXC_MATCH
+            898 POP_JUMP_IF_FALSE        5 (to 910)
+            900 POP_TOP
+
+161         902 LOAD_FAST                1 (state)
+            904 SWAP                     2
+            906 POP_EXCEPT
+            908 RETURN_VALUE
+
+160     >>  910 RERAISE                  0
+        >>  912 COPY                     3
+            914 POP_EXCEPT
+            916 RERAISE                  1
+        >>  918 PUSH_EXC_INFO
+
+175         920 LOAD_GLOBAL             18 (OSError)
+            930 CHECK_EXC_MATCH
+            932 POP_JUMP_IF_FALSE        5 (to 944)
+            934 POP_TOP
+
+176         936 LOAD_FAST                4 (temp_wav)
+            938 STORE_FAST               6 (recovery_path)
+            940 POP_EXCEPT
+            942 JUMP_BACKWARD          105 (to 734)
+
+175     >>  944 RERAISE                  0
+        >>  946 COPY                     3
+            948 POP_EXCEPT
+            950 RERAISE                  1
+ExceptionTable:
+  36 to 82 -> 862 [0]
+  84 to 126 -> 836 [1] lasti
+  128 to 208 -> 862 [0]
+  690 to 732 -> 918 [0]
+  836 to 844 -> 856 [3] lasti
+  846 to 860 -> 862 [0]
+  862 to 904 -> 912 [1] lasti
+  910 to 910 -> 912 [1] lasti
+  918 to 938 -> 946 [1] lasti
+  944 to 944 -> 946 [1] lasti

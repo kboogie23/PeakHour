@@ -1,0 +1,1762 @@
+
+
+.axiom-help-btn,
+body.light-mode .axiom-help-btn {
+  position: relative !important;
+  display: inline-flex !important;
+  flex: 0 0 auto !important;
+  align-items: center !important;
+  justify-content: center !important;
+  margin: 0 !important;
+  border: 1px solid var(--axiom-help-accent) !important;
+  background: var(--axiom-help-accent) !important;
+  color: var(--axiom-help-ink) !important;
+  font-family: "Bebas Neue", Impact, sans-serif !important;
+  font-weight: 400 !important;
+  line-height: 1 !important;
+  letter-spacing: 0.08em !important;
+  text-transform: uppercase !important;
+  text-align: center !important;
+  text-shadow: none !important;
+  box-shadow: none !important;
+  animation: none !important;
+  transform: none !important;
+  transition: filter 140ms ease, outline-color 140ms ease !important;
+}
+
+.axiom-help-btn:hover,
+body.light-mode .axiom-help-btn:hover {
+  border-color: var(--axiom-help-accent) !important;
+  background: var(--axiom-help-accent) !important;
+  color: var(--axiom-help-ink) !important;
+  filter: brightness(1.08) !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+.axiom-help-btn:focus-visible {
+  outline: 2px solid #f5ffe7 !important;
+  outline-offset: 3px !important;
+}
+
+.axiom-help-btn--compact,
+#studio-active-view .studio-header .studio-actions #btn-studio-guide.axiom-help-btn--compact,
+#replacement-modal.anchor-dj-modal .anchor-close-btn.axiom-help-btn--compact,
+body.light-mode #studio-active-view .studio-header .studio-actions #btn-studio-guide.axiom-help-btn--compact,
+body.light-mode #replacement-modal.anchor-dj-modal .anchor-close-btn.axiom-help-btn--compact {
+  width: 100px !important;
+  min-width: 100px !important;
+  height: 40px !important;
+  min-height: 40px !important;
+  padding: 0 14px !important;
+  border-radius: 2px !important;
+  background: var(--axiom-help-accent) !important;
+  color: var(--axiom-help-ink) !important;
+  font-family: "Bebas Neue", Impact, sans-serif !important;
+  font-size: 18px !important;
+  font-weight: 400 !important;
+  letter-spacing: 0.08em !important;
+  box-shadow: none !important;
+}
+
+#studio-active-view .studio-header .studio-actions #btn-studio-guide.axiom-help-btn--compact span,
+body.light-mode #studio-active-view .studio-header .studio-actions #btn-studio-guide.axiom-help-btn--compact span {
+  color: var(--axiom-help-ink) !important;
+  font-family: "Bebas Neue", Impact, sans-serif !important;
+  font-size: 18px !important;
+  font-weight: 400 !important;
+  letter-spacing: 0.08em !important;
+}
+
+.axiom-help-btn--standard {
+  width: 125px !important;
+  min-width: 125px !important;
+  height: 50px !important;
+  min-height: 50px !important;
+  padding: 0 18px !important;
+  border-radius: 3px !important;
+  font-size: 23px !important;
+}
+
+.axiom-help-btn--feature,
+#tab-content-library.library-cockpit .library-guide-btn.axiom-help-btn--feature,
+body.axiom-free-access #tab-content-library.library-cockpit .library-guide-btn.axiom-help-btn--feature,
+body.light-mode #tab-content-library.library-cockpit .library-guide-btn.axiom-help-btn--feature {
+  width: 185px !important;
+  min-width: 185px !important;
+  height: 74px !important;
+  min-height: 74px !important;
+  padding: 0 26px !important;
+  border-radius: 4px !important;
+  background: var(--axiom-help-accent) !important;
+  color: var(--axiom-help-ink) !important;
+  font-family: "Bebas Neue", Impact, sans-serif !important;
+  font-size: 33px !important;
+  font-weight: 400 !important;
+  letter-spacing: 0.08em !important;
+  box-shadow: none !important;
+  animation: none !important;
+}
+
+#tab-content-library.library-cockpit .library-guide-btn.axiom-help-btn--feature::before,
+body.axiom-free-access #tab-content-library.library-cockpit .library-guide-btn.axiom-help-btn--feature::before {
+  content: none !important;
+}
+
+@media (max-width: 1180px) {
+  .axiom-help-btn--feature,
+  #tab-content-library.library-cockpit .library-guide-btn.axiom-help-btn--feature,
+  body.axiom-free-access #tab-content-library.library-cockpit .library-guide-btn.axiom-help-btn--feature {
+    width: 160px !important;
+    min-width: 160px !important;
+    height: 64px !important;
+    min-height: 64px !important;
+    padding: 0 22px !important;
+    font-size: 29px !important;
+  }
+}
+
+/* Review-only scale board. It uses the same production classes as the live controls. */
+body.help-button-review-mode > :not(#help-button-scale-review):not(.library-guide-overlay):not(.workflow-overlay):not(.workflow-popover) {
+  visibility: hidden !important;
+}
+
+#help-button-scale-review {
+  position: fixed;
+  inset: 0;
+  z-index: 13000;
+  overflow: auto;
+  padding: 42px 48px 60px;
+  background:
+    linear-gradient(rgba(163, 255, 0, 0.022) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(163, 255, 0, 0.018) 1px, transparent 1px),
+    #030604;
+  background-size: 48px 48px;
+  color: #f3f4f0;
+}
+
+.help-button-review-header {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 32px;
+  max-width: 1320px;
+  margin: 0 auto 30px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid rgba(163, 255, 0, 0.34);
+}
+
+.help-button-review-header > div:first-child > span,
+.help-button-review-copy > span {
+  color: var(--axiom-help-accent);
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 0.18em;
+}
+
+.help-button-review-header h1,
+.help-button-review-copy h2 {
+  margin: 4px 0 0;
+  color: #f3f4f0;
+  font-family: "Bebas Neue", Impact, sans-serif;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+}
+
+.help-button-review-header h1 {
+  font-size: 58px;
+  line-height: 0.94;
+}
+
+.help-button-review-header p,
+.help-button-review-copy p {
+  color: rgba(255, 255, 255, 0.58);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.help-button-review-header p {
+  margin: 10px 0 0;
+}
+
+.help-button-review-key {
+  display: grid;
+  grid-template-columns: repeat(2, auto);
+  gap: 10px 20px;
+  padding: 16px 18px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.025);
+}
+
+.help-button-review-key span {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: rgba(255, 255, 255, 0.68);
+  font-size: 9px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.help-button-review-key i {
+  width: 8px;
+  height: 8px;
+  background: #a3ff00;
+}
+
+.help-button-review-key i.neutral { background: #a5a9a5; }
+.help-button-review-key i.attention { background: #ff9f2f; }
+.help-button-review-key i.danger { background: #ff4f55; }
+
+.help-button-review-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 18px;
+  max-width: 1320px;
+  margin: 0 auto;
+}
+
+.help-button-review-card {
+  display: grid;
+  grid-template-columns: minmax(250px, 0.82fr) minmax(300px, 1.18fr);
+  min-height: 270px;
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  background: rgba(5, 9, 6, 0.84);
+}
+
+.help-button-review-card.feature-card,
+.help-button-review-card.semantic-card {
+  grid-column: 1 / -1;
+}
+
+.help-button-review-copy {
+  padding: 28px;
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.help-button-review-copy h2 {
+  font-size: 38px;
+}
+
+.help-button-review-copy p {
+  max-width: 420px;
+  margin: 10px 0 22px;
+}
+
+.help-button-review-copy dl {
+  display: flex;
+  gap: 22px;
+  margin: 0;
+}
+
+.help-button-review-copy dl div {
+  display: grid;
+  gap: 4px;
+}
+
+.help-button-review-copy dt {
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 8px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.help-button-review-copy dd {
+  margin: 0;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.help-button-review-stage {
+  display: grid;
+  place-items: center;
+  min-width: 0;
+  padding: 30px;
+  background: rgba(255, 255, 255, 0.012);
+}
+
+.help-button-review-stage.large-stage {
+  background:
+    linear-gradient(90deg, transparent 49.8%, rgba(163, 255, 0, 0.12) 50%, transparent 50.2%),
+    linear-gradient(transparent 49.8%, rgba(163, 255, 0, 0.12) 50%, transparent 50.2%),
+    rgba(255, 255, 255, 0.012);
+}
+
+.help-button-review-actions,
+.semantic-stage {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.help-peer-btn {
+  min-width: 100px;
+  height: 40px;
+  padding: 0 16px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 2px;
+  background: transparent;
+  color: #f3f4f0;
+  font-family: "Bebas Neue", Impact, sans-serif;
+  font-size: 18px;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.help-peer-btn.positive {
+  border-color: var(--axiom-help-accent);
+  background: var(--axiom-help-accent);
+  color: var(--axiom-help-ink);
+}
+
+.help-peer-btn.attention {
+  border-color: #ff9f2f;
+  color: #ffb35c;
+}
+
+.help-peer-btn.danger {
+  border-color: #ff4f55;
+  color: #ff7479;
+}
+
+.help-peer-btn.more {
+  width: 40px;
+  min-width: 40px;
+  padding: 0;
+}
+
+@media (max-width: 980px) {
+  #help-button-scale-review {
+    padding: 28px 20px 48px;
+  }
+
+  .help-button-review-header,
+  .help-button-review-card {
+    grid-template-columns: 1fr;
+  }
+
+  .help-button-review-header {
+    align-items: start;
+    flex-direction: column;
+  }
+
+  .help-button-review-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .help-button-review-card,
+  .help-button-review-card.feature-card,
+  .help-button-review-card.semantic-card {
+    grid-column: auto;
+  }
+
+  .help-button-review-copy {
+    border-right: 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+}
+
+/* ==========================================================================
+   STUDIO SET START — APPROVED AXIOM 2.0 DIRECTION
+   The path cards select first and commit only from their dedicated CTA.
+   ========================================================================== */
+
+body:has(#studio-start-view:not(.hidden)) {
+  --axiom-approved-player: 126px;
+}
+
+body:has(#studio-start-view:not(.hidden)) #audio-player.library-player-upgrade {
+  height: var(--axiom-approved-player) !important;
+}
+
+#studio-start-view.command-launch-shell {
+  grid-template-rows: minmax(240px, 29vh) minmax(236px, 26vh) minmax(190px, 1fr) !important;
+  padding-right: 24px !important;
+  padding-bottom: 26px !important;
+  padding-left: 30px !important;
+}
+
+#studio-start-view .command-launch-hero > div:not(.command-terrain):not(.command-status-readout) {
+  width: 100% !important;
+}
+
+@media (min-width: 1181px) {
+  #studio-start-view .command-terrain {
+    width: calc(100% + 80px) !important;
+    transform: translateX(-80px) !important;
+  }
+}
+
+#studio-start-view .command-action-grid {
+  position: relative !important;
+  height: calc(100% + 21px) !important;
+  margin-top: 5px !important;
+}
+
+#studio-start-view .command-action-card,
+#studio-start-view .command-action-card.primary,
+#studio-start-view .command-action-card.secondary {
+  grid-template-columns: 34px minmax(0, 1fr) auto !important;
+  align-items: start !important;
+  gap: 14px !important;
+  padding: clamp(25px, 2.2vw, 34px) clamp(22px, 2.3vw, 34px) !important;
+  cursor: pointer !important;
+  transition: background 160ms ease, color 160ms ease, filter 160ms ease !important;
+}
+
+#studio-start-view .command-action-card:first-child,
+#studio-start-view .command-action-card:last-child,
+#studio-start-view .command-action-card:not(.is-selected) {
+  background: #080a08 !important;
+  color: #f4f5f2 !important;
+}
+
+#studio-start-view .command-action-card.is-selected,
+#studio-start-view .command-action-card:first-child.is-selected,
+#studio-start-view .command-action-card:last-child.is-selected {
+  background: linear-gradient(110deg, #9cf000 0%, #b9ff23 100%) !important;
+  color: #061000 !important;
+}
+
+#studio-start-view .command-action-card:last-child {
+  border-left: 1px solid rgba(255, 255, 255, 0.2) !important;
+}
+
+#studio-start-view .command-action-card:first-child {
+  padding-left: 24px !important;
+}
+
+#studio-start-view .command-action-card:focus-visible {
+  outline: 2px solid var(--axiom-final-cyan) !important;
+  outline-offset: -3px !important;
+}
+
+#studio-start-view .command-path-radio {
+  appearance: none !important;
+  display: grid !important;
+  place-items: center !important;
+  width: 24px !important;
+  height: 24px !important;
+  margin: 40px 0 0 !important;
+  border: 2px solid currentColor !important;
+  border-radius: 50% !important;
+  background: transparent !important;
+  color: inherit !important;
+  cursor: pointer !important;
+}
+
+#studio-start-view .command-path-radio::before {
+  content: "" !important;
+  width: 10px !important;
+  height: 10px !important;
+  border-radius: 50% !important;
+  background: currentColor !important;
+  transform: scale(0) !important;
+  transition: transform 120ms ease !important;
+}
+
+#studio-start-view .command-path-radio:checked::before {
+  transform: scale(1) !important;
+}
+
+#studio-start-view .command-path-radio:focus-visible {
+  outline: 2px solid var(--axiom-final-cyan) !important;
+  outline-offset: 3px !important;
+}
+
+#studio-start-view .command-card-copy {
+  align-self: start !important;
+}
+
+#studio-start-view .command-card-kicker {
+  position: relative !important;
+  margin-bottom: 20px !important;
+  padding-left: 20px !important;
+}
+
+#studio-start-view .command-card-kicker::before {
+  content: "" !important;
+  position: absolute !important;
+  top: 50% !important;
+  left: 0 !important;
+  width: 9px !important;
+  height: 9px !important;
+  border-radius: 50% !important;
+  background: var(--axiom-final-green) !important;
+  transform: translateY(-50%) !important;
+}
+
+#studio-start-view .command-action-card.is-selected .command-card-kicker::before {
+  background: var(--axiom-final-cyan) !important;
+}
+
+#studio-start-view .command-action-card:not(.is-selected) .command-card-kicker,
+#studio-start-view .command-action-card:not(.is-selected) .command-card-title {
+  color: #f4f5f2 !important;
+  text-shadow: none !important;
+}
+
+#studio-start-view .command-action-card:not(.is-selected) .command-card-desc,
+#studio-start-view .command-action-card:not(.is-selected) .command-card-guidance,
+#studio-start-view .command-action-card:not(.is-selected) .command-card-guidance span {
+  color: rgba(244, 245, 242, 0.72) !important;
+}
+
+#studio-start-view .command-action-card.is-selected .command-card-kicker,
+#studio-start-view .command-action-card.is-selected .command-card-title {
+  color: #061000 !important;
+  text-shadow: none !important;
+}
+
+#studio-start-view .command-action-card.is-selected .command-card-desc,
+#studio-start-view .command-action-card.is-selected .command-card-guidance,
+#studio-start-view .command-action-card.is-selected .command-card-guidance span {
+  color: rgba(6, 16, 0, 0.82) !important;
+}
+
+#studio-start-view .command-card-guidance > span::before,
+#studio-start-view .command-action-card:last-child .command-card-guidance > span::before {
+  background: var(--axiom-final-green) !important;
+}
+
+#studio-start-view .command-action-card.is-selected .command-card-guidance > span::before {
+  background: var(--axiom-final-cyan) !important;
+}
+
+#studio-start-view .command-card-cta,
+#studio-start-view #btn-upload-csv.command-card-cta {
+  align-self: center !important;
+  margin-top: 38px !important;
+  border-color: rgba(163, 255, 0, 0.76) !important;
+  background: transparent !important;
+  color: var(--axiom-final-green) !important;
+  cursor: pointer !important;
+}
+
+#studio-start-view .command-action-card.is-selected .command-card-cta,
+#studio-start-view .command-action-card.is-selected #btn-upload-csv.command-card-cta {
+  border-color: #050605 !important;
+  background: #050605 !important;
+  color: #f4f5f2 !important;
+}
+
+#studio-start-view .command-card-cta:hover,
+#studio-start-view .command-card-cta:focus-visible {
+  filter: brightness(1.16) !important;
+}
+
+#studio-start-view .command-path-or {
+  position: absolute !important;
+  z-index: 4 !important;
+  top: 50% !important;
+  left: 50% !important;
+  display: grid !important;
+  place-items: center !important;
+  width: 42px !important;
+  height: 42px !important;
+  border: 1px solid rgba(244, 245, 242, 0.65) !important;
+  border-radius: 50% !important;
+  background: #070907 !important;
+  color: #f4f5f2 !important;
+  font-size: 11px !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.04em !important;
+  transform: translate(-50%, -50%) !important;
+  pointer-events: none !important;
+}
+
+#studio-start-view .command-path-or.hidden {
+  display: none !important;
+}
+
+#studio-start-view .build-night-panel {
+  display: grid !important;
+  grid-template-columns: minmax(330px, 0.78fr) minmax(600px, 1.22fr) !important;
+  height: calc(100% - 27px) !important;
+  min-height: 0 !important;
+  margin-top: 26px !important;
+  border: 0 !important;
+  background: transparent !important;
+}
+
+#studio-start-view .build-night-copy {
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  min-width: 0 !important;
+  padding: 12px clamp(34px, 4vw, 64px) 12px 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+  transform: translateY(-10px) !important;
+}
+
+#studio-start-view .build-night-kicker {
+  color: #f4f5f2 !important;
+  font-size: 10px !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.08em !important;
+  text-transform: uppercase !important;
+}
+
+#studio-start-view .build-night-title {
+  margin: 8px 0 0 !important;
+  color: #f4f5f2 !important;
+  font-family: "Bebas Neue", sans-serif !important;
+  font-size: clamp(43px, 4vw, 57px) !important;
+  font-weight: 400 !important;
+  line-height: 0.98 !important;
+  letter-spacing: 0.01em !important;
+  text-transform: uppercase !important;
+}
+
+#studio-start-view .build-night-text {
+  max-width: 470px !important;
+  margin: 12px 0 0 !important;
+  color: rgba(244, 245, 242, 0.69) !important;
+  font-size: 11px !important;
+  line-height: 1.45 !important;
+}
+
+#studio-start-view .build-night-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  grid-template-rows: repeat(2, minmax(0, 1fr)) !important;
+  height: auto !important;
+  min-height: 0 !important;
+  border: 1px solid rgba(255, 255, 255, 0.18) !important;
+}
+
+#studio-start-view .build-night-card {
+  min-height: 0 !important;
+  padding: clamp(15px, 1.5vw, 23px) clamp(14px, 1.4vw, 21px) !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+}
+
+#studio-start-view .build-night-card:nth-child(odd) {
+  border-right: 1px solid rgba(255, 255, 255, 0.16) !important;
+}
+
+#studio-start-view .build-night-card:nth-child(-n + 2) {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.16) !important;
+}
+
+#studio-start-view .build-night-card-copy > span {
+  display: block !important;
+  -webkit-line-clamp: unset !important;
+}
+
+#studio-start-view .build-night-card-copy > .build-night-settings,
+#studio-start-view .build-night-card-copy > .build-night-start {
+  display: none !important;
+}
+
+@media (max-height: 950px) and (min-height: 781px) {
+  body:has(#studio-start-view:not(.hidden)) {
+    --axiom-approved-player: 108px;
+  }
+
+  #studio-start-view .build-night-panel {
+    height: 211px !important;
+  }
+}
+
+@media (max-height: 780px), (max-width: 1180px) {
+  #studio-start-view .command-path-radio {
+    margin-top: 30px !important;
+  }
+
+  #studio-start-view .command-card-kicker {
+    margin-bottom: 12px !important;
+  }
+
+  #studio-start-view .command-card-cta,
+  #studio-start-view #btn-upload-csv.command-card-cta {
+    margin-top: 28px !important;
+  }
+
+  #studio-start-view .build-night-panel {
+    grid-template-columns: 1fr !important;
+  }
+
+  #studio-start-view .build-night-copy {
+    display: none !important;
+  }
+
+  #studio-start-view .build-night-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+    grid-template-rows: 1fr !important;
+  }
+
+  #studio-start-view .build-night-card {
+    border-right: 1px solid rgba(255, 255, 255, 0.16) !important;
+    border-bottom: 0 !important;
+  }
+
+  #studio-start-view .build-night-card:last-child {
+    border-right: 0 !important;
+  }
+}
+
+/* Build The Night uses the full AXIOM 2.0 mission-card anatomy: icon,
+   room outcome, working defaults, and a clear Library destination. */
+#studio-start-view .build-night-panel {
+  display: block !important;
+  height: 188px !important;
+  margin-top: 44px !important;
+}
+
+#studio-start-view .build-night-copy {
+  display: none !important;
+}
+
+#studio-start-view .build-night-grid {
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  grid-template-rows: 1fr !important;
+  width: 100% !important;
+  height: 100% !important;
+  background: #080a08 !important;
+}
+
+#studio-start-view .build-night-card {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  gap: 12px !important;
+  min-height: 0 !important;
+  padding: 20px 20px 18px !important;
+  border: 0 !important;
+  border-right: 1px solid rgba(255, 255, 255, 0.18) !important;
+  border-bottom: 0 !important;
+  background: #080a08 !important;
+  color: var(--axiom-final-green) !important;
+  transition: background 150ms ease, box-shadow 150ms ease !important;
+}
+
+#studio-start-view .build-night-card:last-child {
+  border-right: 0 !important;
+}
+
+#studio-start-view .build-night-card:hover,
+#studio-start-view .build-night-card:focus-visible {
+  background: #141a12 !important;
+  box-shadow: inset 0 3px 0 var(--axiom-final-green) !important;
+  outline: 0 !important;
+}
+
+#studio-start-view .build-night-icon {
+  flex: 0 0 auto !important;
+  width: 33px !important;
+  height: 33px !important;
+}
+
+#studio-start-view .build-night-card-copy {
+  display: flex !important;
+  flex: 1 1 auto !important;
+  flex-direction: column !important;
+  gap: 5px !important;
+  width: 100% !important;
+  min-width: 0 !important;
+}
+
+#studio-start-view .build-night-card strong {
+  font-size: 23px !important;
+  font-weight: 400 !important;
+  line-height: 1 !important;
+  letter-spacing: 0.03em !important;
+}
+
+#studio-start-view .build-night-card-copy > span:not(.build-night-settings):not(.build-night-start) {
+  display: block !important;
+  margin-top: 0 !important;
+  overflow: visible !important;
+  color: rgba(244, 245, 242, 0.64) !important;
+  font-size: 12px !important;
+  line-height: 1.34 !important;
+  text-overflow: clip !important;
+  -webkit-line-clamp: unset !important;
+}
+
+#studio-start-view .build-night-card small {
+  display: none !important;
+}
+
+#studio-start-view .build-night-card-copy > .build-night-settings {
+  order: 3 !important;
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 4px !important;
+  margin-top: auto !important;
+  overflow: visible !important;
+}
+
+#studio-start-view .build-night-settings b {
+  padding: 4px 6px !important;
+  border: 1px solid rgba(163, 255, 0, 0.28) !important;
+  border-radius: 3px !important;
+  color: #c8d4c4 !important;
+  font-size: 7px !important;
+  font-weight: 700 !important;
+  font-style: normal !important;
+  letter-spacing: 0.04em !important;
+  line-height: 1 !important;
+}
+
+#studio-start-view .build-night-card-copy > .build-night-start {
+  order: 4 !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 7px !important;
+  margin-top: 2px !important;
+  overflow: visible !important;
+  color: var(--axiom-final-green) !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.04em !important;
+  line-height: 1 !important;
+  -webkit-line-clamp: unset !important;
+}
+
+@media (max-height: 780px) {
+  #studio-start-view .build-night-panel {
+    height: 84px !important;
+    margin-top: 0 !important;
+  }
+
+  #studio-start-view .build-night-card {
+    gap: 7px !important;
+    padding: 11px 12px !important;
+  }
+
+  #studio-start-view .build-night-icon {
+    width: 24px !important;
+    height: 24px !important;
+  }
+
+  #studio-start-view .build-night-card-copy > .build-night-settings,
+  #studio-start-view .build-night-card small {
+    display: none !important;
+  }
+
+  #studio-start-view .build-night-card-copy > .build-night-start {
+    margin-top: auto !important;
+  }
+}
+
+/* ==========================================================================
+   GLOBAL SIDEBAR — APPROVED EDITORIAL RAIL
+   Axiom Start lives in the neutral wordmark; navigation and live status stay
+   connected to the existing application handlers and data.
+   ========================================================================== */
+
+#axiom-sidebar.axiom-sidebar {
+  width: 18rem !important;
+  min-width: 18rem !important;
+  border-right: 1px solid rgba(255, 255, 255, 0.09) !important;
+  background: #0e100e !important;
+  box-shadow: inset -1px 0 rgba(0, 0, 0, 0.55) !important;
+  backdrop-filter: none !important;
+  border-radius: 0 !important;
+}
+
+#axiom-sidebar .axiom-sidebar-brand-row {
+  flex: 0 0 132px;
+  min-height: 132px;
+  padding: 28px 34px 24px 40px !important;
+  gap: 18px;
+}
+
+#axiom-start-button.axiom-start-wordmark {
+  appearance: none;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: #f5f6f3;
+  font-family: "Bebas Neue", sans-serif;
+  font-size: 47px;
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: 0.18em;
+  text-align: left;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: none;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+}
+
+#axiom-start-button.axiom-start-wordmark .axiom-start-wordmark-main {
+  display: block;
+  line-height: 0.88;
+}
+
+#axiom-start-button.axiom-start-wordmark .axiom-start-wordmark-edition {
+  display: block;
+  margin-left: 2px;
+  color: var(--accent);
+  font-family: "Barlow", Arial, sans-serif;
+  font-size: 9px;
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: 0.42em;
+  text-shadow: 0 0 14px rgba(163, 255, 0, 0.34);
+}
+
+#axiom-start-button.axiom-start-wordmark:hover,
+#axiom-start-button.axiom-start-wordmark:active,
+#axiom-start-button.axiom-start-wordmark[aria-current="page"] {
+  border: 0;
+  background: transparent;
+  color: #f5f6f3;
+  filter: none;
+  box-shadow: none;
+  text-shadow: none;
+  transform: none;
+}
+
+#axiom-start-button.axiom-start-wordmark:focus-visible {
+  outline: 1px solid rgba(245, 246, 243, 0.62);
+  outline-offset: 6px;
+}
+
+#axiom-sidebar .axiom-sidebar-utilities {
+  flex: 0 0 auto;
+  gap: 8px !important;
+}
+
+#axiom-sidebar .axiom-sidebar-utilities .refresh-icon-btn {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  padding: 0 !important;
+  border: 1px solid rgba(255, 255, 255, 0.33) !important;
+  border-radius: 50% !important;
+  background: rgba(0, 0, 0, 0.12) !important;
+  color: rgba(245, 246, 243, 0.68) !important;
+  box-shadow: none !important;
+}
+
+#axiom-sidebar .axiom-sidebar-utilities .refresh-icon-btn:hover {
+  border-color: rgba(255, 255, 255, 0.62) !important;
+  background: rgba(255, 255, 255, 0.035) !important;
+  color: #f5f6f3 !important;
+  transform: none !important;
+}
+
+#axiom-sidebar .axiom-sidebar-utilities .refresh-icon-btn:focus-visible {
+  outline: 2px solid var(--axiom-final-green) !important;
+  outline-offset: 3px !important;
+}
+
+#axiom-sidebar .axiom-sidebar-nav {
+  margin-top: 0 !important;
+  padding: 10px 0 18px !important;
+  gap: 0 !important;
+}
+
+#axiom-sidebar .axiom-sidebar-nav-item {
+  position: relative;
+  min-height: 64px;
+  padding: 0 38px 0 40px !important;
+  border: 0 !important;
+  border-left: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  color: #f3f4f1 !important;
+  font-family: "Barlow", sans-serif !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  line-height: 1.15 !important;
+  letter-spacing: 0.16em !important;
+  text-align: left;
+  text-transform: uppercase;
+  box-shadow: none !important;
+}
+
+#axiom-sidebar .axiom-sidebar-nav-item > div {
+  min-width: 0;
+  gap: 22px !important;
+}
+
+#axiom-sidebar .axiom-sidebar-nav-item svg {
+  flex: 0 0 23px;
+  width: 23px !important;
+  height: 23px !important;
+  color: rgba(245, 246, 243, 0.56) !important;
+  opacity: 1 !important;
+  filter: none !important;
+  stroke-width: 1.75;
+}
+
+#axiom-sidebar .axiom-sidebar-nav-item > div > span:not(#fav-sidebar-badge) {
+  color: #f3f4f1 !important;
+}
+
+#axiom-sidebar .axiom-sidebar-nav-item > span:last-child:not(.axiom-sidebar-nav-label) {
+  display: none !important;
+}
+
+#axiom-sidebar .axiom-sidebar-nav-item:hover {
+  background: rgba(255, 255, 255, 0.035) !important;
+  color: #ffffff !important;
+}
+
+#axiom-sidebar .axiom-sidebar-nav-item:hover svg {
+  color: rgba(255, 255, 255, 0.84) !important;
+}
+
+#axiom-sidebar .axiom-sidebar-nav-item:focus-visible {
+  outline: 2px solid rgba(163, 255, 0, 0.78) !important;
+  outline-offset: -4px !important;
+}
+
+#axiom-sidebar .axiom-sidebar-nav-item[data-nav-state="active"] {
+  background: rgba(92, 145, 25, 0.24) !important;
+  color: #ffffff !important;
+  box-shadow:
+    inset 5px 0 0 var(--axiom-final-green),
+    inset 0 1px 0 rgba(163, 255, 0, 0.48),
+    inset 0 -1px 0 rgba(163, 255, 0, 0.48) !important;
+}
+
+#axiom-sidebar .axiom-sidebar-nav-item[data-nav-state="active"] svg {
+  color: var(--axiom-final-green) !important;
+  filter: drop-shadow(0 0 7px rgba(163, 255, 0, 0.66)) !important;
+}
+
+#axiom-sidebar .axiom-sidebar-nav-item[data-nav-state="active"] > div > span:not(#fav-sidebar-badge) {
+  color: #ffffff !important;
+}
+
+body:has(#studio-start-view:not(.hidden)) #axiom-sidebar .axiom-sidebar-nav-item[data-nav-state="active"],
+body.axiom-start-mode #axiom-sidebar .axiom-sidebar-nav-item[data-nav-state="active"] {
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+body:has(#studio-start-view:not(.hidden)) #axiom-sidebar .axiom-sidebar-nav-item[data-nav-state="active"] svg,
+body.axiom-start-mode #axiom-sidebar .axiom-sidebar-nav-item[data-nav-state="active"] svg {
+  color: rgba(245, 246, 243, 0.56) !important;
+  filter: none !important;
+}
+
+#axiom-sidebar #fav-sidebar-badge {
+  margin-left: auto;
+  border-radius: 2px !important;
+  background: var(--axiom-final-green) !important;
+  color: #071005 !important;
+}
+
+#axiom-sidebar .axiom-sidebar-track-dock {
+  display: flex !important;
+  flex: 0 0 98px;
+  align-items: center !important;
+  gap: 12px !important;
+  min-height: 98px;
+  margin: 0 !important;
+  padding: 0 34px 0 40px !important;
+  border: 0 !important;
+  border-top: 2px solid var(--axiom-final-green) !important;
+  border-radius: 0 !important;
+  background: #111611 !important;
+  box-shadow: inset 0 14px 30px rgba(104, 162, 29, 0.08) !important;
+  cursor: default;
+  transition: background 160ms ease, box-shadow 160ms ease !important;
+}
+
+#axiom-sidebar .axiom-sidebar-track-count,
+#axiom-sidebar .axiom-sidebar-track-unit {
+  font-family: "Bebas Neue", sans-serif !important;
+  font-size: 38px !important;
+  font-weight: 400 !important;
+  line-height: 1 !important;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+#axiom-sidebar .axiom-sidebar-track-count {
+  color: var(--axiom-final-green) !important;
+}
+
+#axiom-sidebar .axiom-sidebar-track-unit {
+  color: #f5f6f3 !important;
+}
+
+#axiom-sidebar .axiom-sidebar-track-hint {
+  align-self: center;
+  margin-left: auto;
+  color: var(--axiom-final-green) !important;
+  font-family: "Barlow", sans-serif !important;
+  font-size: 8px !important;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  opacity: 0;
+  transition: opacity 160ms ease;
+}
+
+#axiom-sidebar .axiom-sidebar-engine {
+  flex: 0 0 var(--axiom-approved-player, 108px);
+  min-height: var(--axiom-approved-player, 108px);
+  margin: 0 !important;
+  padding: 0 40px !important;
+  display: flex;
+  align-items: center;
+  border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
+  background: #0b0d0b;
+}
+
+#axiom-sidebar #lib-status {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin: 0;
+  color: rgba(245, 246, 243, 0.5) !important;
+  font-family: "Barlow", sans-serif !important;
+  font-size: 8px !important;
+  font-weight: 700 !important;
+  line-height: 1;
+  letter-spacing: 0.1em !important;
+  white-space: nowrap;
+}
+
+#axiom-sidebar #lib-status::before {
+  content: "";
+  flex: 0 0 8px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--axiom-final-green);
+  box-shadow: 0 0 8px rgba(163, 255, 0, 0.35);
+}
+
+#axiom-sidebar #lib-status span {
+  color: rgba(245, 246, 243, 0.72) !important;
+}
+
+body.light-mode #axiom-sidebar.axiom-sidebar {
+  background: #f7f9fc !important;
+  border: 0 !important;
+  border-right: 1px solid #d5deeb !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+body.light-mode #axiom-sidebar :is(.axiom-start-wordmark, .axiom-sidebar-nav-item, .axiom-sidebar-track-unit) {
+  color: #26364d !important;
+}
+
+body.light-mode #axiom-sidebar .axiom-sidebar-nav-item[data-nav-state="active"] {
+  border: 0 !important;
+  background: #e7effb !important;
+  color: #0047ab !important;
+  box-shadow: inset 3px 0 #0047ab !important;
+}
+
+body.light-mode #axiom-sidebar .axiom-sidebar-nav-item[data-nav-state="active"] svg {
+  color: #0047ab !important;
+  filter: none !important;
+}
+
+body.light-mode:has(#studio-start-view:not(.hidden)) #axiom-sidebar .axiom-sidebar-nav-item[data-nav-state="active"],
+body.light-mode.axiom-start-mode #axiom-sidebar .axiom-sidebar-nav-item[data-nav-state="active"] {
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+body.light-mode:has(#studio-start-view:not(.hidden)) #axiom-sidebar .axiom-sidebar-nav-item[data-nav-state="active"] svg,
+body.light-mode.axiom-start-mode #axiom-sidebar .axiom-sidebar-nav-item[data-nav-state="active"] svg {
+  color: #526173 !important;
+  filter: none !important;
+}
+
+body.light-mode #axiom-sidebar #tracks-drop-zone {
+  border: 0 !important;
+  border-top: 2px solid #0047ab !important;
+  border-radius: 0 !important;
+  background: #eaf0f8 !important;
+  box-shadow: none !important;
+}
+
+body.light-mode #axiom-sidebar #tracks-drop-zone #lib-track-count-val {
+  color: #0047ab !important;
+}
+
+body.light-mode #axiom-sidebar #tracks-drop-zone .axiom-sidebar-track-unit {
+  color: #26364d !important;
+}
+
+body.light-mode #axiom-sidebar #lib-status,
+body.light-mode #axiom-sidebar #lib-status span {
+  background: transparent !important;
+  color: #526173 !important;
+}
+
+@media (max-height: 780px) and (min-width: 769px) {
+  #axiom-sidebar .axiom-sidebar-brand-row {
+    flex-basis: 102px;
+    min-height: 102px;
+    padding-top: 18px !important;
+    padding-bottom: 16px !important;
+  }
+
+  #axiom-sidebar .axiom-sidebar-nav {
+    padding-top: 2px !important;
+    padding-bottom: 8px !important;
+  }
+
+  #axiom-start-button.axiom-start-wordmark .axiom-start-wordmark-edition {
+    font-size: 8px;
+  }
+
+  #axiom-sidebar .axiom-sidebar-nav-item {
+    min-height: 50px;
+  }
+
+  #axiom-sidebar .axiom-sidebar-track-dock {
+    flex-basis: 68px;
+    min-height: 68px;
+  }
+
+  #axiom-sidebar .axiom-sidebar-engine {
+    flex-basis: var(--axiom-approved-player, 108px);
+    min-height: var(--axiom-approved-player, 108px);
+  }
+
+  #studio-start-view .build-night-card {
+    display: grid !important;
+    grid-template-columns: 24px minmax(0, 1fr) !important;
+    grid-template-rows: 1fr !important;
+    align-items: center !important;
+    gap: 10px !important;
+    padding: 10px 12px !important;
+  }
+
+  #studio-start-view .build-night-icon {
+    display: block !important;
+    align-self: center !important;
+    width: 24px !important;
+    height: 24px !important;
+  }
+
+  #studio-start-view .build-night-card-copy {
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    gap: 5px !important;
+  }
+
+  #studio-start-view .build-night-card strong {
+    display: block !important;
+    font-size: 18px !important;
+    line-height: 1 !important;
+  }
+
+  #studio-start-view .build-night-card-copy > span:not(.build-night-start),
+  #studio-start-view .build-night-card-copy > .build-night-settings,
+  #studio-start-view .build-night-card small {
+    display: none !important;
+  }
+
+  #studio-start-view .build-night-card-copy > .build-night-start {
+    display: flex !important;
+    margin-top: 0 !important;
+    font-size: 9px !important;
+  }
+}
+
+@media (max-width: 1180px) and (min-width: 769px) {
+  #studio-start-view .build-night-panel {
+    height: 96px !important;
+    margin-top: 0 !important;
+  }
+
+  #studio-start-view .build-night-card {
+    display: grid !important;
+    grid-template-columns: 26px minmax(0, 1fr) !important;
+    grid-template-rows: 1fr !important;
+    align-items: center !important;
+    gap: 10px !important;
+    padding: 12px !important;
+  }
+
+  #studio-start-view .build-night-card .build-night-icon {
+    display: block !important;
+    align-self: center !important;
+    width: 26px !important;
+    height: 26px !important;
+  }
+
+  #studio-start-view .build-night-card .build-night-card-copy {
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    gap: 6px !important;
+  }
+
+  #studio-start-view .build-night-card .build-night-card-copy strong {
+    display: block !important;
+    font-size: 18px !important;
+    line-height: 1 !important;
+  }
+
+  #studio-start-view .build-night-card .build-night-card-copy > span:not(.build-night-start),
+  #studio-start-view .build-night-card .build-night-card-copy > .build-night-settings,
+  #studio-start-view .build-night-card .build-night-card-copy > small {
+    display: none !important;
+  }
+
+  #studio-start-view .build-night-card .build-night-card-copy > .build-night-start {
+    display: flex !important;
+    margin-top: 0 !important;
+    font-size: 9px !important;
+  }
+}
+
+/* ========================================================================== */
+/* AXIOM START MISSION MARKS + SIDEBAR GROUPS + DJ SOFTWARE HANDOFF REVIEW     */
+/* ========================================================================== */
+
+#studio-start-view .build-night-card {
+  grid-template-columns: 46px minmax(0, 1fr) !important;
+  gap: 12px !important;
+}
+
+#studio-start-view .build-night-card .build-night-icon {
+  display: block !important;
+  align-self: start !important;
+  width: 42px !important;
+  height: 36px !important;
+  object-fit: contain !important;
+  object-position: center !important;
+  filter: none !important;
+}
+
+#axiom-sidebar .axiom-sidebar-nav {
+  overflow-x: hidden;
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+
+#axiom-sidebar .axiom-sidebar-nav::-webkit-scrollbar {
+  display: none;
+}
+
+#axiom-sidebar .axiom-sidebar-nav-group {
+  flex: 0 0 auto;
+  width: 100%;
+}
+
+/* The Studio counter belongs to the 64px Studio row, not the full group.
+   Keep it pinned while the Magic Set submenu increases the group height. */
+#axiom-sidebar #studio-sidebar-tools-container {
+  --axiom-studio-nav-row-height: 64px;
+}
+
+#axiom-sidebar #studio-tools-dropdown-btn {
+  top: calc(var(--axiom-studio-nav-row-height) / 2) !important;
+}
+
+/* Export uses the same counter pattern. Keep 03 attached to the Export row
+   while its three-option submenu expands beneath it. */
+#axiom-sidebar #sidebar-export-group {
+  --axiom-export-nav-row-height: 64px;
+}
+
+#axiom-sidebar #sidebar-export-dropdown-btn {
+  top: calc(var(--axiom-export-nav-row-height) / 2) !important;
+}
+
+#axiom-sidebar .axiom-sidebar-counter-menu-btn {
+  min-width: 39px;
+  height: 25px;
+  justify-content: center;
+  border: 1px solid rgba(163, 255, 0, 0.2) !important;
+  border-radius: 6px !important;
+  background: rgba(0, 0, 0, 0.24) !important;
+  color: rgba(163, 255, 0, 0.82) !important;
+  font-family: "Bebas Neue", Impact, sans-serif !important;
+  font-size: 9px !important;
+  letter-spacing: 0.08em !important;
+  line-height: 1 !important;
+  opacity: 0.78;
+}
+
+#axiom-sidebar .axiom-sidebar-counter-menu-btn:hover,
+#axiom-sidebar .axiom-sidebar-counter-menu-btn[aria-expanded="true"] {
+  border-color: rgba(163, 255, 0, 0.62) !important;
+  background: rgba(163, 255, 0, 0.1) !important;
+  color: #a3ff00 !important;
+  opacity: 1;
+}
+
+#axiom-sidebar .axiom-sidebar-counter-menu-btn svg {
+  width: 10px;
+  height: 10px;
+  flex: 0 0 10px;
+}
+
+#axiom-sidebar .axiom-sidebar-counter-menu-btn.hidden {
+  display: none !important;
+}
+
+#axiom-sidebar .axiom-sidebar-nav-label {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 20px;
+}
+
+#axiom-sidebar .axiom-sidebar-nav-label > span {
+  color: #e0e0e0 !important;
+  -webkit-text-fill-color: #e0e0e0 !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+#axiom-sidebar .axiom-sidebar-nav-icon {
+  width: 20px;
+  height: 20px;
+  flex: 0 0 20px;
+  object-fit: contain;
+  opacity: 0.52;
+  filter: grayscale(1) invert(1) brightness(0.82);
+  transition: opacity 160ms ease, filter 160ms ease;
+}
+
+#axiom-sidebar .axiom-sidebar-nav-item:hover .axiom-sidebar-nav-icon,
+#axiom-sidebar .axiom-sidebar-nav-group.is-expanded .axiom-sidebar-nav-icon {
+  opacity: 1;
+}
+
+#axiom-sidebar .axiom-sidebar-menu-arrow {
+  width: 13px;
+  height: 13px;
+  flex: 0 0 13px;
+  opacity: 0.48;
+  filter: invert(1);
+  transition: transform 160ms ease, opacity 160ms ease;
+}
+
+#axiom-sidebar .axiom-sidebar-nav-group.is-expanded > .axiom-sidebar-nav-item {
+  background: rgba(92, 145, 25, 0.24) !important;
+  color: #ffffff !important;
+  box-shadow:
+    inset 5px 0 0 var(--axiom-final-green),
+    inset 0 1px 0 rgba(163, 255, 0, 0.48),
+    inset 0 -1px 0 rgba(163, 255, 0, 0.48) !important;
+}
+
+/* Axiom Start keeps ordinary route selections neutral, but an open utility
+   group is an intentional live selection and must retain the standard state. */
+body:has(#studio-start-view:not(.hidden)) #axiom-sidebar .axiom-sidebar-nav-group.is-expanded > .axiom-sidebar-nav-item,
+body.axiom-start-mode #axiom-sidebar .axiom-sidebar-nav-group.is-expanded > .axiom-sidebar-nav-item,
+body.light-mode:has(#studio-start-view:not(.hidden)) #axiom-sidebar .axiom-sidebar-nav-group.is-expanded > .axiom-sidebar-nav-item,
+body.light-mode.axiom-start-mode #axiom-sidebar .axiom-sidebar-nav-group.is-expanded > .axiom-sidebar-nav-item {
+  background: rgba(92, 145, 25, 0.24) !important;
+  color: #ffffff !important;
+  box-shadow:
+    inset 5px 0 0 var(--axiom-final-green),
+    inset 0 1px 0 rgba(163, 255, 0, 0.48),
+    inset 0 -1px 0 rgba(163, 255, 0, 0.48) !important;
+}
+
+/* Export is a selected sidebar feature, not just an open menu. Keep the same
+   active treatment after its submenu closes or an export option is chosen. */
+body:has(#studio-start-view:not(.hidden)) #axiom-sidebar #tab-btn-export[data-nav-state="active"],
+body.axiom-start-mode #axiom-sidebar #tab-btn-export[data-nav-state="active"],
+body.light-mode:has(#studio-start-view:not(.hidden)) #axiom-sidebar #tab-btn-export[data-nav-state="active"],
+body.light-mode.axiom-start-mode #axiom-sidebar #tab-btn-export[data-nav-state="active"] {
+  background: rgba(92, 145, 25, 0.24) !important;
+  color: #ffffff !important;
+  box-shadow:
+    inset 5px 0 0 var(--axiom-final-green),
+    inset 0 1px 0 rgba(163, 255, 0, 0.48),
+    inset 0 -1px 0 rgba(163, 255, 0, 0.48) !important;
+}
+
+#axiom-sidebar #tab-btn-export[data-nav-state="active"] .axiom-sidebar-nav-label > span {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+
+#axiom-sidebar #tab-btn-export[data-nav-state="active"] .axiom-sidebar-nav-icon {
+  opacity: 1;
+  filter: invert(89%) sepia(97%) saturate(2455%) hue-rotate(29deg) brightness(113%) contrast(106%) drop-shadow(0 0 7px rgba(163, 255, 0, 0.66));
+}
+
+#axiom-sidebar .axiom-sidebar-nav-group.is-expanded > .axiom-sidebar-nav-item .axiom-sidebar-nav-label > span {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+
+#axiom-sidebar .axiom-sidebar-nav-group.is-expanded > .axiom-sidebar-nav-item .axiom-sidebar-nav-icon {
+  opacity: 1;
+  filter: invert(89%) sepia(97%) saturate(2455%) hue-rotate(29deg) brightness(113%) contrast(106%) drop-shadow(0 0 7px rgba(163, 255, 0, 0.66));
+}
+
+#axiom-sidebar .axiom-sidebar-nav-group.is-expanded .axiom-sidebar-menu-arrow {
+  opacity: 1;
+  filter: invert(89%) sepia(97%) saturate(2455%) hue-rotate(29deg) brightness(113%) contrast(106%);
+}
+
+#axiom-sidebar .axiom-sidebar-submenu {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 0;
+  padding: 5px 14px 8px 43px;
+  border-left: 1px solid rgba(163, 255, 0, 0.42);
+  background: #090b09;
+}
+
+#axiom-sidebar .axiom-sidebar-submenu.hidden {
+  display: none !important;
+}
+
+/* --------------------------------------------------------------------------
+   Shared Focus Deck selected-track system
+   Library, Studio, and Matching Songs deliberately share this one state.
+   -------------------------------------------------------------------------- */
+
+.axiom-focus-deck-row {
+  --focus-deck-marker-width: 44px;
+  --focus-deck-lime: #a3ff00;
+  --focus-deck-ink: #071005;
+  position: relative;
+}
+
+.axiom-focus-marker {
+  display: none;
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: var(--focus-deck-marker-width);
+  z-index: 28;
+  align-items: center;
+  justify-content: center;
+  background: var(--focus-deck-lime);
+  color: var(--focus-deck-ink);
+  box-shadow:
+    inset 5px 0 0 #82d900,
+    inset -1px 0 0 rgba(7, 16, 5, 0.38);
+  pointer-events: none;
+}
+
+.axiom-focus-marker img {
+  position: absolute;
+  top: 46%;
+  left: 50%;
+  width: 20px;
+  height: 20px;
+  transform: translate(-50%, -50%);
+  opacity: 1;
+}
+
+.axiom-focus-marker > span {
+  position: absolute;
+  left: 2px;
+  right: 2px;
+  bottom: 8px;
+  color: var(--focus-deck-ink) !important;
+  font-family: 'Barlow', sans-serif !important;
+  font-size: 6px;
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: 0.06em;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+/* Library rows already communicate selection with the solid rail and row
+   highlight. Keep the shared Studio/Matching Songs marker intact, but remove
+   the redundant check-and-label treatment from Library results. */
+body.light-mode #tab-content-library #search-results > .library-track-card > .axiom-focus-marker > :is(img, span) {
+  display: none !important;
+}
+
+.axiom-focus-deck-row.selected .axiom-focus-marker,
+.axiom-focus-deck-row.active-suggestion .axiom-focus-marker {
+  display: flex;
+}
+
+#tab-content-library.library-cockpit #search-results .library-track-card.axiom-focus-deck-row.selected,
+body:not(.light-mode) #active-playlist-container .playlist-row.studio-transition-row.axiom-focus-deck-row.selected,
+#modal-suggestions-list .anchor-suggestion-row.axiom-focus-deck-row.selected,
+#modal-suggestions-list .anchor-suggestion-row.axiom-focus-deck-row.active-suggestion {
+  transform: none !important;
+  border: 0 !important;
+  border-top: 2px solid var(--focus-deck-lime) !important;
+  border-right: 1px solid rgba(163, 255, 0, 0.52) !important;
+  border-bottom: 2px solid var(--focus-deck-lime) !important;
+  border-radius: 2px !important;
+  background:
+    linear-gradient(90deg, rgba(13, 20, 13, 0.995), rgba(7, 10, 8, 0.995) 62%, rgba(12, 16, 11, 0.99)) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.055),
+    inset 0 -1px 0 rgba(163, 255, 0, 0.12),
+    0 0 0 1px rgba(163, 255, 0, 0.12),
+    0 14px 30px rgba(0, 0, 0, 0.38),
+    0 0 24px rgba(163, 255, 0, 0.08) !important;
+  overflow: hidden !important;
+  isolation: isolate;
+}
+
+#tab-content-library.library-cockpit #search-results .library-track-card.axiom-focus-deck-row.selected {
+  min-height: 112px !important;
+  padding-left: 58px !important;
+}
+
+#active-playlist-container .playlist-row.studio-transition-row.axiom-focus-deck-row.selected {
+  grid-template-columns: minmax(300px, 1fr) minmax(70px, 0.2fr) minmax(78px, 0.2fr) minmax(92px, 0.2fr) 128px 44px !important;
+  min-height: 104px !important;
+  padding: 12px 16px 12px 58px !important;
+}
+
+body.matching-songs-left #active-playlist-container .playlist-row.studio-transition-row.axiom-focus-deck-row.selected {
+  grid-template-columns: minmax(390px, 1fr) minmax(70px, 0.2fr) minmax(78px, 0.2fr) minmax(92px, 0.2fr) 44px !important;
+}
+
+#modal-suggestions-list .anchor-suggestion-row.axiom-focus-deck-row.selected,
+#modal-suggestions-list .anchor-suggestion-row.axiom-focus-deck-row.active-suggestion {
+  min-height: 112px;
+  padding-left: 58px !important;
+}
+
+.axiom-focus-deck-row.selected::before,
+.axiom-focus-deck-row.selected::after,
+.axiom-focus-deck-row.active-suggestion::before,
+.axiom-focus-deck-row.active-suggestion::after {
+  opacity: 0 !important;
+}
+
+.axiom-focus-deck-row.selected :is(.library-track-title, .studio-row-title, .anchor-suggestion-title),
+.axiom-focus-deck-row.active-suggestion .anchor-suggestion-title {
+  color: #ffffff !important;
+  text-decoration-line: underline;
+  text-decoration-color: var(--focus-deck-lime);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 6px;
+  text-shadow: none !important;
+}
+
+.axiom-focus-deck-row.selected :is(.library-track-artist, .studio-row-artist, .anchor-suggestion-artist),
+.axiom-focus-deck-row.active-suggestion .anchor-suggestion-artist {
+  color: rgba(245, 247, 242, 0.76) !important;
+}
+
+.axiom-focus-deck-row.selected :is(.library-artwork, .studio-track-artwork, .anchor-suggestion-art),
+.axiom-focus-deck-row.active-suggestion .anchor-suggestion-art {
+  border-color: rgba(163, 255, 0, 0.72) !important;
+  background: #030503 !important;
+  box-shadow:
+    0 0 0 5px rgba(3, 5, 3, 0.82),
+    0 0 22px rgba(163, 255, 0, 0.18),
+    0 12px 24px rgba(0, 0, 0, 0.46) !important;
+}
+
+.axiom-focus-deck-row.selected .library-bpm-value {
+  padding: 0 !important;
+  background: transparent !important;
+  color: #ffffff !important;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 26px;
+  box-shadow: none !important;
+}
+
+.axiom-focus-deck-row.selected .library-bpm-tools,
+.axiom-focus-deck-row.selected .library-meta-line {
+  color: rgba(245, 247, 242, 0.66) !important;
+}
+
+.axiom-focus-deck-row.selected .library-add-btn,
+.axiom-focus-deck-row.selected .studio-smart-btn,
+.axiom-focus-deck-row.selected .anchor-suggestion-add,
+.axiom-focus-deck-row.active-suggestion .anchor-suggestion-add {
+  border-color: var(--focus-deck-lime) !important;
+  background: var(--focus-deck-lime) !important;
+  color: var(--focus-deck-ink) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.44),
+    0 0 20px rgba(163, 255, 0, 0.20) !important;
+}
+
+#active-playlist-container .playlist-row.studio-transition-row.axiom-focus-deck-row.selected .studio-metric {
+  border-left: 0 !important;
+}
+
+#active-playlist-container .playlist-row.studio-transition-row.axiom-focus-deck-row.selected .transition-badge.energy-spine-node {
+  border: 2px solid var(--focus-deck-lime) !important;
+  background: var(--focus-deck-ink) !important;
+  color: var(--focus-deck-lime) !important;
+  box-shadow:
+    0 0 0 4px rgba(163, 255, 0, 0.11),
+    0 0 24px rgba(163, 255, 0, 0.48),
+    inset 0 0 14px rgba(163, 255, 0, 0.10) !important;
+}
+
+#active-playlist-container .playlist-row.studio-transition-row.axiom-focus-deck-row.selected .transition-node-ripple {
+  opacity: 0.16;
+}
+
+#active-playlist-container .playlist-row.studio-transition-row.axiom-focus-deck-row.selected .drag-handle {
+  position: absolute;
+  left: 12px;
+  top: 7px;
+  width: 20px;
+  padding: 0 !important;
+  color: var(--focus-deck-ink) !important;
+  opacity: 0.78;
+  z-index: 34;
+}
+
+#active-playlist-container .playlist-row.studio-transition-row.axiom-focus-deck-row.selected .drag-handle svg {
+  width: 18px;
+  height: 18px;
+}
+
+#active-playlist-container .playlist-row.studio-transition-row.axiom-focus-deck-row.selected .studio-remove-btn {
+  left: 13px !important;
+  /* Keep Remove in its own lane: selection tick above, label below. */
+  top: 58px;
+  bottom: auto;
+  width: 18px !important;
+  height: 18px !important;
+  color: var(--focus-deck-ink) !important;
+  opacity: 0;
+  z-index: 34;
+}
+
+#active-playlist-container .playlist-row.studio-transition-row.axiom-focus-deck-row.selected:hover .studio-remove-btn,
+#active-playlist-container .playlist-row.studio-transition-row.axiom-focus-deck-row.selected:focus-within .studio-remove-btn {
+  opacity: 0.72;
+}
+
+.axiom-focus-deck-row.selected .fav-star-btn,
+.axiom-focus-deck-row.active-suggestion .fav-star-btn {
+  color: rgba(255, 255, 255, 0.46) !important;
+}
+
+/* These surface-specific selectors intentionally outrank the retired full-lime
+   selected-row rules that still serve older, non-cockpit layouts above. */
+#tab-content-library.library-cockpit #search-results .library-track-card.axiom-focus-deck-row.selected .library-track-title,
+#active-playlist-container .playlist-row.studio-transition-row.axiom-focus-deck-row.selected .studio-row-title,
+#replacement-modal #modal-suggestions-list .anchor-suggestion-row.axiom-focus-deck-row:is(.selected, .active-suggestion) .anchor-suggestion-title {
+  display: inline-block;
+  width: fit-content;
+  max-width: 100%;
+  padding-bottom: 4px;
+  color: #ffffff !important;
+  border-bottom: 2px solid var(--focus-deck-lime) !important;
+  text-decoration: none !important;
+  text-shadow: none !important;
+}

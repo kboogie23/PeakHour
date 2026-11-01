@@ -1,0 +1,235 @@
+   0           0 RESUME                   0
+
+   2           2 LOAD_CONST               0 ('\nNative macOS window for AXIOM DJ.\n\nThe AXIOM engine remains the local Flask app. This shell gives the installed\nMac app its own WebKit window instead of handing the cockpit to Chrome.\n')
+               4 STORE_NAME               0 (__doc__)
+
+   9           6 LOAD_CONST               1 (0)
+               8 LOAD_CONST               2 (('annotations',))
+              10 IMPORT_NAME              1 (__future__)
+              12 IMPORT_FROM              2 (annotations)
+              14 STORE_NAME               2 (annotations)
+              16 POP_TOP
+
+  11          18 LOAD_CONST               1 (0)
+              20 LOAD_CONST               3 (None)
+              22 IMPORT_NAME              3 (ctypes)
+              24 STORE_NAME               3 (ctypes)
+
+  12          26 LOAD_CONST               1 (0)
+              28 LOAD_CONST               3 (None)
+              30 IMPORT_NAME              4 (ctypes.util)
+              32 STORE_NAME               3 (ctypes)
+
+  13          34 LOAD_CONST               1 (0)
+              36 LOAD_CONST               3 (None)
+              38 IMPORT_NAME              5 (json)
+              40 STORE_NAME               5 (json)
+
+  14          42 LOAD_CONST               1 (0)
+              44 LOAD_CONST               3 (None)
+              46 IMPORT_NAME              6 (os)
+              48 STORE_NAME               6 (os)
+
+  15          50 LOAD_CONST               1 (0)
+              52 LOAD_CONST               3 (None)
+              54 IMPORT_NAME              7 (sys)
+              56 STORE_NAME               7 (sys)
+
+  16          58 LOAD_CONST               1 (0)
+              60 LOAD_CONST               3 (None)
+              62 IMPORT_NAME              8 (threading)
+              64 STORE_NAME               8 (threading)
+
+  17          66 LOAD_CONST               1 (0)
+              68 LOAD_CONST               3 (None)
+              70 IMPORT_NAME              9 (time)
+              72 STORE_NAME               9 (time)
+
+  18          74 LOAD_CONST               1 (0)
+              76 LOAD_CONST               3 (None)
+              78 IMPORT_NAME             10 (urllib.parse)
+              80 STORE_NAME              11 (urllib)
+
+  19          82 LOAD_CONST               1 (0)
+              84 LOAD_CONST               3 (None)
+              86 IMPORT_NAME             12 (urllib.request)
+              88 STORE_NAME              11 (urllib)
+
+  20          90 LOAD_CONST               1 (0)
+              92 LOAD_CONST               4 (('suppress',))
+              94 IMPORT_NAME             13 (contextlib)
+              96 IMPORT_FROM             14 (suppress)
+              98 STORE_NAME              14 (suppress)
+             100 POP_TOP
+
+  21         102 LOAD_CONST               1 (0)
+             104 LOAD_CONST               5 (('Callable',))
+             106 IMPORT_NAME             15 (typing)
+             108 IMPORT_FROM             16 (Callable)
+             110 STORE_NAME              16 (Callable)
+             112 POP_TOP
+
+  24         114 BUILD_MAP                0
+             116 STORE_NAME              17 (_assist_reveal_timers)
+
+  27         118 LOAD_CONST               6 (<code object _cancel_assist_reveal at 0x000001BD85741A70, file "axiom_native_window.py", line 27>)
+             120 MAKE_FUNCTION            0
+             122 STORE_NAME              18 (_cancel_assist_reveal)
+
+  33         124 LOAD_CONST              28 ((None,))
+             126 LOAD_CONST               7 (<code object _animate_assist_reveal at 0x000001BD850F0F00, file "axiom_native_window.py", line 33>)
+             128 MAKE_FUNCTION            1 (defaults)
+             130 STORE_NAME              19 (_animate_assist_reveal)
+
+  61         132 LOAD_CONST              29 ((False,))
+             134 LOAD_CONST               9 (<code object _assist_open_expanded at 0x000001BD8577BA60, file "axiom_native_window.py", line 61>)
+             136 MAKE_FUNCTION            1 (defaults)
+             138 STORE_NAME              20 (_assist_open_expanded)
+
+  67         140 LOAD_CONST              28 ((None,))
+             142 LOAD_CONST              30 (('return', 'bool'))
+             144 LOAD_CONST              10 (<code object _reveal_ready_assist_panel at 0x000001BD853CF8F0, file "axiom_native_window.py", line 67>)
+             146 MAKE_FUNCTION            5 (defaults, annotations)
+             148 STORE_NAME              21 (_reveal_ready_assist_panel)
+
+  90         150 PUSH_NULL
+             152 LOAD_NAME               22 (getattr)
+             154 LOAD_NAME                7 (sys)
+             156 LOAD_CONST              11 ('frozen')
+             158 LOAD_CONST               8 (False)
+             160 CALL                     3
+             168 POP_JUMP_IF_TRUE       130 (to 430)
+
+  91         170 LOAD_NAME                6 (os)
+             172 LOAD_ATTR               46 (path)
+             192 LOAD_ATTR               49 (NULL|self + abspath)
+             212 LOAD_NAME                6 (os)
+             214 LOAD_ATTR               46 (path)
+             234 LOAD_ATTR               51 (NULL|self + join)
+             254 LOAD_NAME                6 (os)
+             256 LOAD_ATTR               46 (path)
+             276 LOAD_ATTR               53 (NULL|self + dirname)
+             296 LOAD_NAME               27 (__file__)
+             298 CALL                     1
+             306 LOAD_NAME                6 (os)
+             308 LOAD_ATTR               56 (pardir)
+             328 CALL                     2
+             336 CALL                     1
+             344 STORE_NAME              29 (source_root)
+
+  92         346 LOAD_NAME               29 (source_root)
+             348 LOAD_NAME                7 (sys)
+             350 LOAD_ATTR               46 (path)
+             370 CONTAINS_OP              1
+             372 POP_JUMP_IF_FALSE       28 (to 430)
+
+  93         374 LOAD_NAME                7 (sys)
+             376 LOAD_ATTR               46 (path)
+             396 LOAD_ATTR               61 (NULL|self + insert)
+             416 LOAD_CONST               1 (0)
+             418 LOAD_NAME               29 (source_root)
+             420 CALL                     2
+             428 POP_TOP
+
+  96     >>  430 LOAD_NAME               16 (Callable)
+             432 LOAD_NAME               31 (str)
+             434 BUILD_LIST               1
+             436 LOAD_CONST               3 (None)
+             438 BUILD_TUPLE              2
+             440 BINARY_SUBSCR
+             444 STORE_NAME              32 (LogFn)
+
+  98         446 PUSH_NULL
+             448 LOAD_NAME               33 (frozenset)
+
+  99         450 BUILD_SET                0
+             452 LOAD_CONST              12 (frozenset({'com.algoriddim.djay', 'com.serato.djpro', 'com.serato.seratodj', 'com.algoriddim.djay-iphone-free', 'com.algoriddim.djay-pro-mac'}))
+             454 SET_UPDATE               1
+
+  98         456 CALL                     1
+             464 STORE_NAME              34 (PERFORMANCE_DJ_BUNDLE_IDS)
+
+ 109         466 LOAD_CONST              13 ('Serato DJ Pro')
+
+ 110         468 LOAD_CONST              13 ('Serato DJ Pro')
+
+ 111         470 LOAD_CONST              14 ('djay Pro')
+
+ 112         472 LOAD_CONST              14 ('djay Pro')
+
+ 113         474 LOAD_CONST              14 ('djay Pro')
+
+ 108         476 LOAD_CONST              15 (('com.serato.seratodj', 'com.serato.djpro', 'com.algoriddim.djay', 'com.algoriddim.djay-pro-mac', 'com.algoriddim.djay-iphone-free'))
+             478 BUILD_CONST_KEY_MAP      5
+             480 STORE_NAME              35 (PERFORMANCE_DJ_BUNDLE_DISPLAY)
+
+ 117         482 LOAD_CONST              31 (('message', 'str', 'return', 'None'))
+             484 LOAD_CONST              16 (<code object _noop_log at 0x000001BD856F8D30, file "axiom_native_window.py", line 117>)
+             486 MAKE_FUNCTION            4 (annotations)
+             488 STORE_NAME              36 (_noop_log)
+
+ 121         490 LOAD_CONST              32 (((),))
+             492 LOAD_CONST              17 (<code object _assist_request_drop_paths at 0x000001BD85340B50, file "axiom_native_window.py", line 121>)
+             494 MAKE_FUNCTION            1 (defaults)
+             496 STORE_NAME              37 (_assist_request_drop_paths)
+
+ 144         498 LOAD_CONST              30 (('return', 'bool'))
+             500 LOAD_CONST              18 (<code object _release_assist_drag_focus at 0x000001BD851F1110, file "axiom_native_window.py", line 144>)
+             502 MAKE_FUNCTION            4 (annotations)
+             504 STORE_NAME              38 (_release_assist_drag_focus)
+
+ 170         506 LOAD_CONST              33 (('parts', 'str', 'return', 'str'))
+             508 LOAD_CONST              19 (<code object _resource_path at 0x000001BD85332790, file "axiom_native_window.py", line 170>)
+             510 MAKE_FUNCTION            4 (annotations)
+             512 STORE_NAME              39 (_resource_path)
+
+ 187         514 LOAD_CONST              34 (('base_url', 'str', 'path', 'str', 'payload', 'dict[str, str]', 'log', 'LogFn', 'return', 'None'))
+             516 LOAD_CONST              20 (<code object _post_json at 0x000001BD853ADCD0, file "axiom_native_window.py", line 187>)
+             518 MAKE_FUNCTION            4 (annotations)
+             520 STORE_NAME              40 (_post_json)
+
+ 202         522 LOAD_CONST              35 (('path', 'str', 'return', 'dict'))
+             524 LOAD_CONST              21 (<code object read_selected_year_csv at 0x000001BD8531E040, file "axiom_native_window.py", line 202>)
+             526 MAKE_FUNCTION            4 (annotations)
+             528 STORE_NAME              41 (read_selected_year_csv)
+
+ 214         530 LOAD_CONST              36 (('base_url', 'str', 'return', 'bool'))
+             532 LOAD_CONST              22 (<code object trusted_native_message at 0x000001BD853C14C0, file "axiom_native_window.py", line 214>)
+             534 MAKE_FUNCTION            4 (annotations)
+             536 STORE_NAME              42 (trusted_native_message)
+
+ 232         538 LOAD_CONST              29 ((False,))
+             540 LOAD_CONST              37 (('action', 'str', 'lite', 'bool', 'return', 'bool'))
+             542 LOAD_CONST              23 (<code object native_action_in_edition at 0x000001BD858045E0, file "axiom_native_window.py", line 232>)
+             544 MAKE_FUNCTION            5 (defaults, annotations)
+             546 STORE_NAME              43 (native_action_in_edition)
+
+ 245         548 LOAD_CONST              28 ((None,))
+             550 LOAD_CONST               8 (False)
+             552 LOAD_CONST              24 (('lite',))
+             554 BUILD_CONST_KEY_MAP      1
+             556 LOAD_CONST              38 (('url', 'str', 'log', 'LogFn | None', 'lite', 'bool', 'return', 'bool'))
+             558 LOAD_CONST              25 (<code object open_native_window at 0x000001BD853258C0, file "axiom_native_window.py", line 245>)
+             560 MAKE_FUNCTION            7 (defaults, kwdefaults, annotations)
+             562 STORE_NAME              44 (open_native_window)
+
+2974         564 LOAD_CONST              28 ((None,))
+             566 LOAD_CONST              39 (('argv', 'list[str] | None', 'return', 'int'))
+             568 LOAD_CONST              26 (<code object main at 0x000001BD8586A2A0, file "axiom_native_window.py", line 2974>)
+             570 MAKE_FUNCTION            5 (defaults, annotations)
+             572 STORE_NAME              45 (main)
+
+2980         574 LOAD_NAME               46 (__name__)
+             576 LOAD_CONST              27 ('__main__')
+             578 COMPARE_OP              40 (==)
+             582 POP_JUMP_IF_FALSE       13 (to 610)
+
+2981         584 PUSH_NULL
+             586 LOAD_NAME               47 (SystemExit)
+             588 PUSH_NULL
+             590 LOAD_NAME               45 (main)
+             592 CALL                     0
+             600 CALL                     1
+             608 RAISE_VARARGS            1
+
+2980     >>  610 RETURN_CONST             3 (None)

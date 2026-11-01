@@ -1,0 +1,26 @@
+<style id="library-action-state-separation-final-v1">
+  /* The six Library CTAs belong to the closed Library command bar. Track Prep
+     keeps only its own close action; Set Setup uses its separate utility row. */
+  html body
+    #tab-content-library.library-cockpit#tab-content-library
+    #library-brief-lens#library-brief-lens[data-library-brief-panel="closed"]
+    #library-brief-topline#library-brief-topline
+    > .library-brief-copy.library-brief-copy {
+    display: none !important;
+  }
+
+  html body
+    #tab-content-library.library-cockpit#tab-content-library
+    #library-brief-lens#library-brief-lens[data-library-brief-panel="preparation"]
+    #library-brief-action-rail#library-brief-action-rail
+    > #library-recent-toggle#library-recent-toggle {
+    display: none !important;
+  }
+
+  html body.library-setup-open
+    #tab-content-library.library-cockpit#tab-content-library
+    #library-brief-lens#library-brief-lens[data-library-brief-panel="setup"]
+    #library-brief-action-rail#library-brief-action-rail {
+    display: none !important;
+  }
+</style>

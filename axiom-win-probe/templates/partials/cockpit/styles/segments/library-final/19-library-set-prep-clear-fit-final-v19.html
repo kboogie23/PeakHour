@@ -1,0 +1,78 @@
+<style id="library-set-prep-clear-fit-final-v19">
+  /* In the narrow Matching Songs split, active Set Prep state and its exit are
+     separate controls. The label yields first; Clear Set Prep never clips or
+     collides with the neighbouring Set Prep Options control. */
+  html body:not(.library-setup-open)
+    #tab-content-library.library-cockpit#tab-content-library
+    #library-brief-lens[data-library-brief-panel="closed"]
+    .library-brief-copy:has(#library-brief-filter-status:not([hidden])) {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    gap: 0 !important;
+    overflow: hidden !important;
+  }
+
+  html body:not(.library-setup-open)
+    #tab-content-library.library-cockpit#tab-content-library
+    #library-brief-lens[data-library-brief-panel="closed"]
+    .library-brief-copy:has(#library-brief-filter-status:not([hidden]))
+    :is(#library-brief-kicker, #library-brief-title) {
+    display: none !important;
+  }
+
+  html body:not(.library-setup-open)
+    #tab-content-library.library-cockpit#tab-content-library
+    #library-brief-lens[data-library-brief-panel="closed"]
+    #library-brief-filter-status:not([hidden]) {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    align-items: center !important;
+    gap: 3px !important;
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0 !important;
+    padding: 4px 5px 4px 9px !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+  }
+
+  html body:not(.library-matching-songs-disabled):not(.library-setup-open)
+    #tab-content-library.library-cockpit#tab-content-library#tab-content-library
+    #library-brief-lens#library-brief-lens[data-library-brief-panel="closed"]
+    > #library-brief-topline#library-brief-topline {
+    grid-template-columns: 164px minmax(112px, 1fr) 76px 92px !important;
+  }
+
+  html body:not(.library-matching-songs-disabled):not(.library-setup-open)
+    #tab-content-library.library-cockpit#tab-content-library
+    #library-brief-lens#library-brief-lens[data-library-brief-panel="closed"]
+    #library-brief-topline > .library-brief-copy:has(#library-brief-filter-status:not([hidden])) {
+    width: 164px !important;
+    max-width: 164px !important;
+  }
+
+  #tab-content-library #library-brief-filter-status .library-filter-status-label {
+    display: block !important;
+    min-width: 0 !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+  }
+
+  #tab-content-library #library-brief-filter-status .library-filter-status-clear {
+    flex: none !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    height: 24px !important;
+    min-height: 24px !important;
+    padding: 0 7px !important;
+    box-sizing: border-box !important;
+    white-space: nowrap !important;
+    font-family: 'Bebas Neue', sans-serif !important;
+    font-size: 11px !important;
+    line-height: 1 !important;
+    letter-spacing: .06em !important;
+  }
+</style>

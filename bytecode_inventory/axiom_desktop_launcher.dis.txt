@@ -1,0 +1,246 @@
+  0           0 RESUME                   0
+
+  2           2 LOAD_CONST               0 ('\nAXIOM DJ packaged launcher.\n\nStarts the bundled Flask server and opens the local AXIOM cockpit. This file is\nused by PyInstaller so the target Mac does not need Python or internet access.\n')
+              4 STORE_NAME               0 (__doc__)
+
+  9           6 LOAD_CONST               1 (0)
+              8 LOAD_CONST               2 (('annotations',))
+             10 IMPORT_NAME              1 (__future__)
+             12 IMPORT_FROM              2 (annotations)
+             14 STORE_NAME               2 (annotations)
+             16 POP_TOP
+
+ 11          18 LOAD_CONST               1 (0)
+             20 LOAD_CONST               3 (None)
+             22 IMPORT_NAME              3 (os)
+             24 STORE_NAME               3 (os)
+
+ 12          26 LOAD_CONST               1 (0)
+             28 LOAD_CONST               3 (None)
+             30 IMPORT_NAME              4 (platform)
+             32 STORE_NAME               4 (platform)
+
+ 13          34 LOAD_CONST               1 (0)
+             36 LOAD_CONST               3 (None)
+             38 IMPORT_NAME              5 (socket)
+             40 STORE_NAME               5 (socket)
+
+ 14          42 LOAD_CONST               1 (0)
+             44 LOAD_CONST               3 (None)
+             46 IMPORT_NAME              6 (subprocess)
+             48 STORE_NAME               6 (subprocess)
+
+ 15          50 LOAD_CONST               1 (0)
+             52 LOAD_CONST               3 (None)
+             54 IMPORT_NAME              7 (sys)
+             56 STORE_NAME               7 (sys)
+
+ 16          58 LOAD_CONST               1 (0)
+             60 LOAD_CONST               3 (None)
+             62 IMPORT_NAME              8 (threading)
+             64 STORE_NAME               8 (threading)
+
+ 17          66 LOAD_CONST               1 (0)
+             68 LOAD_CONST               3 (None)
+             70 IMPORT_NAME              9 (time)
+             72 STORE_NAME               9 (time)
+
+ 18          74 LOAD_CONST               1 (0)
+             76 LOAD_CONST               3 (None)
+             78 IMPORT_NAME             10 (traceback)
+             80 STORE_NAME              10 (traceback)
+
+ 21          82 LOAD_NAME                3 (os)
+             84 LOAD_ATTR               22 (environ)
+            104 LOAD_ATTR               25 (NULL|self + setdefault)
+            124 LOAD_CONST               4 ('AXIOM_PACKAGED')
+            126 LOAD_CONST               5 ('1')
+            128 CALL                     2
+            136 POP_TOP
+
+ 23         138 PUSH_NULL
+            140 LOAD_NAME               13 (getattr)
+            142 LOAD_NAME                7 (sys)
+            144 LOAD_CONST               6 ('frozen')
+            146 LOAD_CONST               7 (False)
+            148 CALL                     3
+            156 POP_JUMP_IF_TRUE       130 (to 418)
+
+ 24         158 LOAD_NAME                3 (os)
+            160 LOAD_ATTR               28 (path)
+            180 LOAD_ATTR               31 (NULL|self + abspath)
+            200 LOAD_NAME                3 (os)
+            202 LOAD_ATTR               28 (path)
+            222 LOAD_ATTR               33 (NULL|self + join)
+            242 LOAD_NAME                3 (os)
+            244 LOAD_ATTR               28 (path)
+            264 LOAD_ATTR               35 (NULL|self + dirname)
+            284 LOAD_NAME               18 (__file__)
+            286 CALL                     1
+            294 LOAD_NAME                3 (os)
+            296 LOAD_ATTR               38 (pardir)
+            316 CALL                     2
+            324 CALL                     1
+            332 STORE_NAME              20 (source_root)
+
+ 25         334 LOAD_NAME               20 (source_root)
+            336 LOAD_NAME                7 (sys)
+            338 LOAD_ATTR               28 (path)
+            358 CONTAINS_OP              1
+            360 POP_JUMP_IF_FALSE       28 (to 418)
+
+ 26         362 LOAD_NAME                7 (sys)
+            364 LOAD_ATTR               28 (path)
+            384 LOAD_ATTR               43 (NULL|self + insert)
+            404 LOAD_CONST               1 (0)
+            406 LOAD_NAME               20 (source_root)
+            408 CALL                     2
+            416 POP_TOP
+
+ 29     >>  418 LOAD_NAME               22 (__name__)
+            420 LOAD_CONST               8 ('__main__')
+            422 COMPARE_OP              40 (==)
+            426 POP_JUMP_IF_FALSE       52 (to 532)
+            428 LOAD_NAME                7 (sys)
+            430 LOAD_ATTR               46 (argv)
+            450 LOAD_CONST               9 (1)
+            452 LOAD_CONST              10 (2)
+            454 BINARY_SLICE
+            456 LOAD_CONST              11 ('--axiom-drum-analysis')
+            458 BUILD_LIST               1
+            460 COMPARE_OP              40 (==)
+            464 POP_JUMP_IF_FALSE       33 (to 532)
+
+ 32         466 LOAD_CONST               1 (0)
+            468 LOAD_CONST              12 (('worker_main',))
+            470 IMPORT_NAME             24 (studio_daw.drum_beats)
+            472 IMPORT_FROM             25 (worker_main)
+            474 STORE_NAME              25 (worker_main)
+            476 POP_TOP
+
+ 33         478 PUSH_NULL
+            480 LOAD_NAME               26 (SystemExit)
+            482 PUSH_NULL
+            484 LOAD_NAME               25 (worker_main)
+            486 LOAD_NAME                7 (sys)
+            488 LOAD_ATTR               46 (argv)
+            508 LOAD_CONST              10 (2)
+            510 LOAD_CONST               3 (None)
+            512 BINARY_SLICE
+            514 CALL                     1
+            522 CALL                     1
+            530 RAISE_VARARGS            1
+
+ 36     >>  532 LOAD_NAME                3 (os)
+            534 LOAD_ATTR               22 (environ)
+            554 LOAD_ATTR               55 (NULL|self + get)
+            574 LOAD_CONST              13 ('AXIOM_HOST')
+            576 LOAD_CONST              14 ('127.0.0.1')
+            578 CALL                     2
+            586 STORE_NAME              28 (HOST)
+
+ 37         588 PUSH_NULL
+            590 LOAD_NAME               29 (int)
+            592 LOAD_NAME                3 (os)
+            594 LOAD_ATTR               22 (environ)
+            614 LOAD_ATTR               55 (NULL|self + get)
+            634 LOAD_CONST              15 ('AXIOM_PORT')
+            636 LOAD_CONST              16 ('8080')
+            638 CALL                     2
+            646 CALL                     1
+            654 STORE_NAME              30 (PORT)
+
+ 38         656 LOAD_CONST              17 ('http://')
+            658 LOAD_NAME               28 (HOST)
+            660 FORMAT_VALUE             0
+            662 LOAD_CONST              18 (':')
+            664 LOAD_NAME               30 (PORT)
+            666 FORMAT_VALUE             0
+            668 LOAD_CONST              19 ('/')
+            670 BUILD_STRING             5
+            672 STORE_NAME              31 (URL)
+
+ 39         674 LOAD_NAME                3 (os)
+            676 LOAD_ATTR               28 (path)
+            696 LOAD_ATTR               31 (NULL|self + abspath)
+
+ 40         716 LOAD_NAME                3 (os)
+            718 LOAD_ATTR               22 (environ)
+            738 LOAD_ATTR               55 (NULL|self + get)
+            758 LOAD_CONST              20 ('AXIOM_LAUNCH_LOG_PATH')
+            760 CALL                     1
+            768 COPY                     1
+            770 POP_JUMP_IF_TRUE        56 (to 884)
+            772 POP_TOP
+
+ 41         774 LOAD_NAME                3 (os)
+            776 LOAD_ATTR               28 (path)
+            796 LOAD_ATTR               33 (NULL|self + join)
+            816 LOAD_NAME                3 (os)
+            818 LOAD_ATTR               28 (path)
+            838 LOAD_ATTR               65 (NULL|self + expanduser)
+            858 LOAD_CONST              21 ('~')
+            860 CALL                     1
+            868 LOAD_CONST              22 ('Library')
+            870 LOAD_CONST              23 ('Logs')
+            872 LOAD_CONST              24 ('AXIOM DJ')
+            874 LOAD_CONST              25 ('launch.log')
+            876 CALL                     5
+
+ 39     >>  884 CALL                     1
+            892 STORE_NAME              33 (LOG_FILE)
+
+ 43         894 LOAD_NAME                3 (os)
+            896 LOAD_ATTR               28 (path)
+            916 LOAD_ATTR               35 (NULL|self + dirname)
+            936 LOAD_NAME               33 (LOG_FILE)
+            938 CALL                     1
+            946 STORE_NAME              34 (LOG_DIR)
+
+ 46         948 LOAD_CONST              33 (('message', 'str', 'return', 'None'))
+            950 LOAD_CONST              26 (<code object _log at 0x000001BD84D1F2D0, file "axiom_desktop_launcher.py", line 46>)
+            952 MAKE_FUNCTION            4 (annotations)
+            954 STORE_NAME              35 (_log)
+
+ 53         956 LOAD_CONST              34 (('title', 'str', 'message', 'str', 'return', 'None'))
+            958 LOAD_CONST              27 (<code object _show_dialog at 0x000001BD84F27230, file "axiom_desktop_launcher.py", line 53>)
+            960 MAKE_FUNCTION            4 (annotations)
+            962 STORE_NAME              36 (_show_dialog)
+
+ 70         964 LOAD_CONST              35 (('return', 'bool'))
+            966 LOAD_CONST              28 (<code object _port_is_ready at 0x000001BD84D1F480, file "axiom_desktop_launcher.py", line 70>)
+            968 MAKE_FUNCTION            4 (annotations)
+            970 STORE_NAME              37 (_port_is_ready)
+
+ 76         972 LOAD_CONST              36 (('return', 'None'))
+            974 LOAD_CONST              29 (<code object _free_port at 0x000001BD84CDEF70, file "axiom_desktop_launcher.py", line 76>)
+            976 MAKE_FUNCTION            4 (annotations)
+            978 STORE_NAME              38 (_free_port)
+
+ 94         980 LOAD_CONST              35 (('return', 'bool'))
+            982 LOAD_CONST              30 (<code object _open_url at 0x000001BD84F334A0, file "axiom_desktop_launcher.py", line 94>)
+            984 MAKE_FUNCTION            4 (annotations)
+            986 STORE_NAME              39 (_open_url)
+
+122         988 LOAD_CONST              35 (('return', 'bool'))
+            990 LOAD_CONST              31 (<code object _open_cockpit_when_ready at 0x000001BD84D02AD0, file "axiom_desktop_launcher.py", line 122>)
+            992 MAKE_FUNCTION            4 (annotations)
+            994 STORE_NAME              40 (_open_cockpit_when_ready)
+
+140         996 LOAD_CONST              36 (('return', 'None'))
+            998 LOAD_CONST              32 (<code object main at 0x000001BD851FDEA0, file "axiom_desktop_launcher.py", line 140>)
+           1000 MAKE_FUNCTION            4 (annotations)
+           1002 STORE_NAME              41 (main)
+
+183        1004 LOAD_NAME               22 (__name__)
+           1006 LOAD_CONST               8 ('__main__')
+           1008 COMPARE_OP              40 (==)
+           1012 POP_JUMP_IF_FALSE        8 (to 1030)
+
+184        1014 PUSH_NULL
+           1016 LOAD_NAME               41 (main)
+           1018 CALL                     0
+           1026 POP_TOP
+           1028 RETURN_CONST             3 (None)
+
+183     >> 1030 RETURN_CONST             3 (None)

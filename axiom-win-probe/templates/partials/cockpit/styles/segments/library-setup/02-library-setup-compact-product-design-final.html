@@ -1,0 +1,136 @@
+
+    <style id="library-setup-compact-product-design-final">
+      #library-brief-lens:has(#library-brief-settings:not(.hidden)) {
+        display: grid !important;
+        gap: 12px !important;
+        padding: 14px 16px 16px !important;
+        margin-bottom: 12px !important;
+        border: 1px solid rgba(163,255,0,.3) !important;
+        background:
+          linear-gradient(90deg, rgba(163,255,0,.075), rgba(36,218,255,.025) 48%, rgba(0,0,0,.26)),
+          rgba(1,7,5,.94) !important;
+        box-shadow: inset 4px 0 0 var(--accent) !important;
+        overflow: hidden !important;
+      }
+      #library-brief-lens:has(#library-brief-settings:not(.hidden)) #library-brief-topline {
+        display: grid !important;
+        grid-template-columns: minmax(0, 1fr) auto !important;
+        align-items: center !important;
+        gap: 14px !important;
+        min-height: 46px !important;
+        margin: 0 !important;
+        padding: 0 0 10px !important;
+        border-bottom: 1px solid rgba(163,255,0,.18) !important;
+      }
+      #library-brief-lens:has(#library-brief-settings:not(.hidden)) #library-brief-topline > div,
+      #library-brief-lens:has(#library-brief-settings:not(.hidden)) #library-brief-topline > span {
+        display: flex !important;
+        align-items: center !important;
+        flex-wrap: wrap !important;
+        gap: 18px !important;
+      }
+      #library-brief-lens:has(#library-brief-settings:not(.hidden)) #library-brief-topline button {
+        min-height: 42px !important;
+        padding: 0 22px !important;
+        border-radius: 0 !important;
+        font-size: 12px !important;
+        letter-spacing: .1em !important;
+      }
+      #library-brief-lens:has(#library-brief-settings:not(.hidden)) #library-brief-chips {
+        display: none !important;
+      }
+      #library-brief-settings:not(.hidden) {
+        display: block !important;
+        position: relative !important;
+        z-index: 3 !important;
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        overflow: hidden !important;
+      }
+      #library-brief-settings .library-brief-control-grid {
+        display: grid !important;
+        grid-template-columns: repeat(auto-fit, minmax(178px, 1fr)) !important;
+        gap: 8px !important;
+        width: 100% !important;
+        align-items: stretch !important;
+      }
+      #library-brief-settings .library-bpm-filter-wrap {
+        display: grid !important;
+        grid-template-rows: auto 36px !important;
+        gap: 8px !important;
+        min-height: 76px !important;
+        max-height: 76px !important;
+        padding: 10px 12px !important;
+        border: 1px solid rgba(163,255,0,.2) !important;
+        background:
+          linear-gradient(135deg, rgba(163,255,0,.08), rgba(0,0,0,.12)),
+          rgba(0,0,0,.3) !important;
+        box-shadow: none !important;
+        overflow: hidden !important;
+      }
+      #library-brief-settings .library-bpm-filter-wrap > span:first-child,
+      #library-brief-settings .library-bpm-filter-wrap .library-bpm-filter-label {
+        display: block !important;
+        margin: 0 !important;
+        color: var(--accent) !important;
+        font-family: 'Bebas Neue', Impact, sans-serif !important;
+        font-size: 18px !important;
+        line-height: .95 !important;
+        letter-spacing: .08em !important;
+        text-transform: uppercase !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+      }
+      #library-brief-settings .library-bpm-filter-wrap select,
+      #library-brief-settings select {
+        display: block !important;
+        width: 100% !important;
+        min-width: 0 !important;
+        height: 36px !important;
+        min-height: 36px !important;
+        max-height: 36px !important;
+        padding: 0 34px 0 11px !important;
+        border: 1px solid rgba(255,255,255,.16) !important;
+        border-radius: 0 !important;
+        background: rgba(0,0,0,.56) !important;
+        color: #fff !important;
+        font-size: 11px !important;
+        font-weight: 950 !important;
+        letter-spacing: .04em !important;
+        line-height: 36px !important;
+        text-transform: uppercase !important;
+        overflow: hidden !important;
+        appearance: auto !important;
+      }
+      #library-brief-settings select option {
+        background: #071005 !important;
+        color: #fff !important;
+      }
+      #library-brief-settings .library-bpm-filter-wrap:focus-within {
+        border-color: rgba(36,218,255,.7) !important;
+        background:
+          linear-gradient(135deg, rgba(36,218,255,.08), rgba(0,0,0,.14)),
+          rgba(0,0,0,.32) !important;
+      }
+      #library-brief-settings #library-brief-active-summary,
+      #library-brief-settings .library-brief-active-summary {
+        display: none !important;
+      }
+      #tab-content-library #search-results {
+        clear: both !important;
+        position: relative !important;
+        z-index: 1 !important;
+      }
+      @media (max-width: 880px) {
+        #library-brief-settings .library-brief-control-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        }
+      }
+      @media (max-width: 560px) {
+        #library-brief-settings .library-brief-control-grid {
+          grid-template-columns: 1fr !important;
+        }
+      }
+    </style>

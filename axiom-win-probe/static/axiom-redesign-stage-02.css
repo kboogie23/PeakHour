@@ -1,0 +1,1732 @@
+
+
+.performance-suggestion-title {
+  font-size: 18px !important;
+}
+
+.performance-suggestions > .text-center {
+  display: grid;
+  place-items: center;
+  min-height: 280px;
+  margin-top: 18px;
+  border: 1px dashed rgba(255, 255, 255, 0.15);
+  color: rgba(255, 255, 255, 0.48) !important;
+  font-size: 11px !important;
+  line-height: 1.6;
+}
+
+.performance-mini-btn {
+  min-height: 30px;
+  padding: 7px 10px !important;
+  font-size: 9px !important;
+}
+
+.performance-pick-btn {
+  min-height: 36px;
+  font-size: 10px !important;
+}
+
+/* Settings and confirmation dialogs were approved; only normalize their corners. */
+.settings-shell,
+#axiom-modal-card {
+  border-radius: 8px !important;
+}
+
+#axiom-modal-card[data-variant="health"] {
+  --modal-accent: var(--axiom-final-green);
+}
+
+#axiom-modal-card[data-variant="serato"] {
+  --modal-accent: var(--axiom-final-cyan);
+}
+
+#axiom-modal-card[data-variant="djay"] {
+  --modal-accent: var(--axiom-final-orange);
+}
+
+/* Keep the product usable on the minimum supported laptop width. */
+@media (max-width: 1220px) {
+  #tab-content-library .library-main-grid {
+    grid-template-columns: minmax(0, 1fr) 300px !important;
+  }
+
+  #tab-content-library .library-track-card {
+    grid-template-columns: 54px minmax(168px, 1fr) 64px 54px 52px 20px !important;
+  }
+
+  #tab-content-library .library-waveform {
+    display: none !important;
+  }
+
+  #active-playlist-container .playlist-row.studio-transition-row {
+    grid-template-columns: 46px minmax(250px, 1fr) 74px 72px 84px 122px 36px !important;
+  }
+
+  #tab-content-performance > .flex:first-child {
+    align-items: flex-start !important;
+  }
+
+  #tab-content-performance > .flex:first-child > .flex {
+    max-width: 700px;
+  }
+}
+
+@media (max-width: 920px) {
+  #tab-content-library .library-main-grid {
+    display: block !important;
+    overflow-y: auto !important;
+  }
+
+  #tab-content-library .library-results-column {
+    border-right: 0;
+    padding-right: 0;
+  }
+
+  #smart-links-panel.recommendations-panel {
+    margin-top: 24px !important;
+    border-top: 1px solid var(--axiom-final-line) !important;
+  }
+
+  .performance-shell {
+    display: block !important;
+    overflow-y: auto;
+  }
+
+  .performance-now-card {
+    border-right: 0 !important;
+    border-bottom: 1px solid var(--axiom-final-line) !important;
+  }
+}
+
+/* ==========================================================================
+   APPROVED SCREEN COMPOSITIONS — 2026-07-30
+   These route-specific rules translate the approved browser prototypes onto
+   the live AXIOM controls. They deliberately sit after the earlier cleanup
+   layer so old cockpit decoration cannot override the approved hierarchy.
+   ========================================================================== */
+
+:root {
+  --axiom-approved-sidebar: 288px;
+  --axiom-approved-player: 108px;
+  --axiom-approved-row: 100px;
+}
+
+/*
+ * The approved browser compositions use an 18%-wide navigation rail.
+ * Keep the installed shell proportional instead of letting Tailwind's fixed
+ * w-72 consume 288px even when the window is only 1280px wide.
+ */
+body.axiom-installed-app > aside {
+  width: clamp(230px, 18vw, var(--axiom-approved-sidebar)) !important;
+}
+
+/* ---------- Installed update / opening screen ---------- */
+.release-splash-overlay {
+  padding: 27px !important;
+  background: rgba(0, 0, 0, 0.94) !important;
+  z-index: 25000 !important;
+}
+
+.release-splash-shell {
+  display: grid !important;
+  grid-template-columns: minmax(285px, 33.5%) minmax(0, 1fr) !important;
+  gap: 0 !important;
+  width: min(1320px, calc(100vw - 54px)) !important;
+  height: min(860px, calc(100vh - 54px)) !important;
+  min-height: 0 !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  border: 1px solid rgba(255, 255, 255, 0.18) !important;
+  border-radius: 9px !important;
+  background: #030403 !important;
+  box-shadow: 0 28px 80px rgba(0, 0, 0, 0.68) !important;
+}
+
+.release-splash-brand {
+  position: relative !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  justify-content: flex-start !important;
+  min-width: 0 !important;
+  padding: clamp(36px, 5vh, 62px) clamp(32px, 3.5vw, 56px) 38px !important;
+  border-right: 1px solid rgba(255, 255, 255, 0.34) !important;
+  background:
+    radial-gradient(circle at 30% 25%, rgba(163, 255, 0, 0.065), transparent 34%),
+    #030403 !important;
+}
+
+.release-splash-brand::before {
+  display: none !important;
+}
+
+.release-splash-mark {
+  display: block !important;
+  width: clamp(104px, 9vw, 118px) !important;
+  height: clamp(104px, 9vw, 118px) !important;
+  margin: 0 0 clamp(16px, 2.6vh, 26px) !important;
+  object-fit: contain !important;
+  object-position: center !important;
+  mix-blend-mode: lighten !important;
+  clip-path: none !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+.release-splash-overlay.update-build .release-splash-mark {
+  width: clamp(104px, 9vw, 118px) !important;
+  height: clamp(104px, 9vw, 118px) !important;
+  margin: 0 0 clamp(16px, 2.6vh, 26px) !important;
+}
+
+.release-splash-latest {
+  color: var(--axiom-final-green) !important;
+  font-size: 15px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.02em !important;
+  text-transform: uppercase !important;
+}
+
+.release-splash-version {
+  position: static !important;
+  inset: auto !important;
+  display: block !important;
+  margin: 4px 0 0 !important;
+  color: #f4f5f2 !important;
+  font-family: "Bebas Neue", sans-serif !important;
+  line-height: 0.9 !important;
+}
+
+.release-splash-version strong {
+  color: #f4f5f2 !important;
+  font-size: clamp(98px, 11vw, 142px) !important;
+  font-weight: 400 !important;
+  letter-spacing: 0.015em !important;
+}
+
+.release-splash-cyan-rule {
+  width: 58px;
+  height: 2px;
+  margin: clamp(16px, 2.4vh, 24px) 0 clamp(16px, 2.7vh, 26px);
+  background: var(--axiom-final-cyan);
+}
+
+.release-splash-statement {
+  margin: 0 !important;
+  color: #f4f5f2 !important;
+  font-family: "Bebas Neue", sans-serif !important;
+  font-size: clamp(50px, 5.2vw, 68px) !important;
+  font-weight: 400 !important;
+  line-height: 0.92 !important;
+  letter-spacing: 0.015em !important;
+  text-transform: uppercase !important;
+}
+
+.release-splash-identity-copy {
+  max-width: 270px !important;
+  margin: clamp(16px, 2.6vh, 26px) 0 0 !important;
+  color: #d0d3d0 !important;
+  font-size: 16px !important;
+  line-height: 1.45 !important;
+}
+
+.release-splash-build {
+  position: absolute !important;
+  left: clamp(32px, 3.5vw, 56px) !important;
+  bottom: 24px !important;
+  margin: 0 !important;
+  color: rgba(255, 255, 255, 0.34) !important;
+  font-size: 9px !important;
+  letter-spacing: 0.14em !important;
+  text-transform: uppercase !important;
+}
+
+.release-splash-content {
+  display: grid !important;
+  grid-template-rows: auto auto minmax(0, 1fr) auto auto !important;
+  min-width: 0 !important;
+  padding: clamp(38px, 5vh, 62px) clamp(38px, 4.8vw, 68px) 28px !important;
+  background: #030403 !important;
+}
+
+.release-splash-headline,
+.release-splash-overlay.update-build .release-splash-headline {
+  margin: 0 !important;
+  color: #f4f5f2 !important;
+  font-family: "Bebas Neue", sans-serif !important;
+  font-size: clamp(62px, 6.2vw, 82px) !important;
+  font-weight: 400 !important;
+  line-height: 0.9 !important;
+  letter-spacing: 0.01em !important;
+  text-transform: uppercase !important;
+}
+
+.release-splash-headline .accent {
+  color: inherit !important;
+}
+
+.release-splash-title,
+.release-splash-overlay.update-build .release-splash-title {
+  max-width: 610px !important;
+  margin: clamp(14px, 2vh, 22px) 0 0 !important;
+  color: #e0e3e0 !important;
+  font-size: clamp(15px, 1.35vw, 18px) !important;
+  line-height: 1.38 !important;
+}
+
+.release-splash-features,
+.release-splash-overlay.update-build .release-splash-features {
+  counter-reset: axiom-update-feature !important;
+  display: grid !important;
+  grid-auto-flow: column !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  grid-template-rows: repeat(4, minmax(0, 1fr)) !important;
+  column-gap: clamp(26px, 3vw, 42px) !important;
+  min-height: 0 !important;
+  margin: clamp(14px, 2vh, 24px) 0 12px !important;
+}
+
+.release-splash-features[data-count="1"],
+.release-splash-features[data-count="2"],
+.release-splash-features[data-count="3"] {
+  grid-auto-flow: row !important;
+  grid-template-columns: 1fr !important;
+  grid-template-rows: repeat(3, minmax(0, 1fr)) !important;
+}
+
+.release-splash-features[data-count="8"],
+.release-splash-features[data-count="9"],
+.release-splash-features[data-count="10"] {
+  grid-template-rows: repeat(5, minmax(0, 1fr)) !important;
+}
+
+/* The update-build selector above is more specific than the count selectors.
+   Repeat the supported count rules at equal specificity so release-note lists
+   never create an implicit third column with zero-width first columns. */
+.release-splash-overlay.update-build .release-splash-features[data-count="1"],
+.release-splash-overlay.update-build .release-splash-features[data-count="2"],
+.release-splash-overlay.update-build .release-splash-features[data-count="3"] {
+  grid-auto-flow: row !important;
+  grid-template-columns: 1fr !important;
+  grid-template-rows: repeat(3, minmax(0, 1fr)) !important;
+}
+
+.release-splash-overlay.update-build .release-splash-features[data-count="8"] {
+  grid-template-rows: repeat(4, minmax(0, 1fr)) !important;
+}
+
+.release-splash-overlay.update-build .release-splash-features[data-count="9"],
+.release-splash-overlay.update-build .release-splash-features[data-count="10"] {
+  grid-template-rows: repeat(5, minmax(0, 1fr)) !important;
+}
+
+.release-splash-features[data-count="11"],
+.release-splash-features[data-count="12"] {
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  grid-template-rows: repeat(4, minmax(0, 1fr)) !important;
+  column-gap: 18px !important;
+}
+
+.release-splash-features[data-count="13"],
+.release-splash-features[data-count="14"],
+.release-splash-features[data-count="15"] {
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  grid-template-rows: repeat(5, minmax(0, 1fr)) !important;
+  column-gap: 18px !important;
+}
+
+.release-splash-feature,
+.release-splash-overlay.update-build .release-splash-feature {
+  counter-increment: axiom-update-feature !important;
+  display: grid !important;
+  grid-template-columns: 64px minmax(0, 1fr) !important;
+  align-content: center !important;
+  gap: 10px !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  padding: 7px 0 9px !important;
+  border: 0 !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.14) !important;
+  background: transparent !important;
+}
+
+.release-splash-feature::before {
+  content: counter(axiom-update-feature, decimal-leading-zero);
+  color: #6f726f;
+  font-family: "Bebas Neue", sans-serif;
+  font-size: clamp(45px, 4.7vw, 62px);
+  line-height: 0.86;
+}
+
+.release-splash-feature-dot {
+  display: none !important;
+}
+
+.release-splash-feature > span {
+  align-self: center !important;
+  min-width: 0 !important;
+}
+
+.release-splash-feature strong,
+.release-splash-overlay.update-build .release-splash-feature strong {
+  display: block !important;
+  overflow: visible !important;
+  color: #f4f5f2 !important;
+  font-family: "Bebas Neue", sans-serif !important;
+  font-size: clamp(20px, 1.75vw, 24px) !important;
+  font-weight: 400 !important;
+  line-height: 1 !important;
+  letter-spacing: 0.01em !important;
+  text-transform: uppercase !important;
+  white-space: normal !important;
+}
+
+.release-splash-feature span:last-child span,
+.release-splash-overlay.update-build .release-splash-feature span:last-child span {
+  display: block !important;
+  margin-top: 3px !important;
+  overflow: visible !important;
+  color: #c9ccc9 !important;
+  font-size: clamp(11px, 1vw, 13px) !important;
+  line-height: 1.26 !important;
+  white-space: normal !important;
+}
+
+.release-splash-features[data-count="11"] .release-splash-feature,
+.release-splash-features[data-count="12"] .release-splash-feature,
+.release-splash-features[data-count="13"] .release-splash-feature,
+.release-splash-features[data-count="14"] .release-splash-feature,
+.release-splash-features[data-count="15"] .release-splash-feature {
+  grid-template-columns: 38px minmax(0, 1fr) !important;
+  gap: 7px !important;
+  padding: 4px 0 5px !important;
+}
+
+.release-splash-features[data-count="11"] .release-splash-feature::before,
+.release-splash-features[data-count="12"] .release-splash-feature::before,
+.release-splash-features[data-count="13"] .release-splash-feature::before,
+.release-splash-features[data-count="14"] .release-splash-feature::before,
+.release-splash-features[data-count="15"] .release-splash-feature::before {
+  font-size: 32px !important;
+}
+
+.release-splash-features[data-count="11"] .release-splash-feature strong,
+.release-splash-features[data-count="12"] .release-splash-feature strong,
+.release-splash-features[data-count="13"] .release-splash-feature strong,
+.release-splash-features[data-count="14"] .release-splash-feature strong,
+.release-splash-features[data-count="15"] .release-splash-feature strong {
+  font-size: 16px !important;
+  line-height: 0.98 !important;
+}
+
+.release-splash-features[data-count="11"] .release-splash-feature span:last-child span,
+.release-splash-features[data-count="12"] .release-splash-feature span:last-child span,
+.release-splash-features[data-count="13"] .release-splash-feature span:last-child span,
+.release-splash-features[data-count="14"] .release-splash-feature span:last-child span,
+.release-splash-features[data-count="15"] .release-splash-feature span:last-child span {
+  margin-top: 2px !important;
+  font-size: 9px !important;
+  line-height: 1.14 !important;
+}
+
+.release-splash-actions {
+  display: block !important;
+  margin: 0 !important;
+}
+
+.release-splash-closing {
+  margin: 0 0 14px !important;
+  color: var(--axiom-final-green) !important;
+  font-family: "Barlow", sans-serif !important;
+  font-size: clamp(13px, 1.15vw, 16px) !important;
+  font-weight: 800 !important;
+  line-height: 1.25 !important;
+  letter-spacing: 0.015em !important;
+}
+
+.release-splash-closing[hidden] {
+  display: none !important;
+}
+
+.release-splash-btn,
+.release-splash-overlay.update-build .release-splash-btn {
+  border-radius: 3px !important;
+}
+
+.release-splash-btn.primary {
+  display: grid !important;
+  place-items: center !important;
+  width: 100% !important;
+  min-height: 58px !important;
+  padding: 0 24px !important;
+  border: 0 !important;
+  background: var(--axiom-final-green) !important;
+  color: #050605 !important;
+  font-family: "Bebas Neue", sans-serif !important;
+  font-size: 31px !important;
+  font-weight: 400 !important;
+  letter-spacing: 0.01em !important;
+  text-transform: uppercase !important;
+}
+
+.release-splash-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 38px;
+  color: var(--axiom-final-green);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.release-splash-btn.secondary {
+  min-height: 34px !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+  color: #f4f5f2 !important;
+  font-size: 13px !important;
+}
+
+/* ---------- Choose Your Set Start ---------- */
+#tab-content-studio:has(#studio-start-view:not(.hidden)) {
+  padding: 0 !important;
+  overflow: hidden !important;
+}
+
+#studio-start-view.command-launch-shell {
+  display: grid !important;
+  grid-template-rows: minmax(250px, 29vh) minmax(250px, 30vh) minmax(160px, 1fr) !important;
+  gap: clamp(10px, 1.4vh, 16px) !important;
+  width: 100% !important;
+  height: calc(100vh - var(--axiom-approved-player)) !important;
+  min-height: 0 !important;
+  padding: clamp(22px, 3.5vh, 38px) clamp(28px, 3vw, 48px) 18px !important;
+  overflow: hidden !important;
+  background: #050605 !important;
+}
+
+#studio-start-view.command-launch-shell.hidden {
+  display: none !important;
+}
+
+#studio-start-view.command-launch-shell::before,
+#studio-start-view.command-launch-shell::after,
+#studio-start-view .command-launch-hero::after,
+#studio-start-view .command-action-card::before,
+#studio-start-view .command-action-card::after {
+  display: none !important;
+}
+
+#studio-start-view .command-launch-hero {
+  position: relative !important;
+  display: grid !important;
+  grid-template-columns: minmax(440px, 0.96fr) minmax(420px, 1.04fr) !important;
+  align-items: center !important;
+  gap: 34px !important;
+  min-height: 0 !important;
+  padding: 0 0 18px !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.26) !important;
+  background: transparent !important;
+}
+
+#studio-start-view .command-launch-hero > div:not(.command-terrain):not(.command-status-readout) {
+  position: relative !important;
+  z-index: 2 !important;
+  max-width: 640px !important;
+}
+
+#studio-start-view .command-terrain {
+  position: relative !important;
+  inset: auto !important;
+  grid-column: 2 !important;
+  grid-row: 1 !important;
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 150px !important;
+  overflow: hidden !important;
+  background:
+    linear-gradient(90deg, #050605 0%, transparent 14%),
+    url("/static/axiom-platform-hero.png") center right / cover no-repeat !important;
+}
+
+#studio-start-view .command-terrain::before,
+#studio-start-view .command-terrain::after,
+#studio-start-view .command-signal-canvas,
+#studio-start-view .command-status-readout {
+  display: none !important;
+}
+
+#studio-start-view .command-eyebrow {
+  margin: 0 0 10px !important;
+  color: #f4f5f2 !important;
+  font-size: 10px !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.14em !important;
+  text-transform: uppercase !important;
+}
+
+#studio-start-view .command-eyebrow::after {
+  content: "";
+  display: inline-block;
+  width: 52px;
+  height: 2px;
+  margin: 0 0 3px 12px;
+  background: var(--axiom-final-green);
+}
+
+#studio-start-view .command-title {
+  margin: 0 !important;
+  color: #f4f5f2 !important;
+  font-family: "Bebas Neue", sans-serif !important;
+  font-size: clamp(60px, 5vw, 72px) !important;
+  font-weight: 400 !important;
+  line-height: 1 !important;
+  letter-spacing: 0.005em !important;
+  white-space: nowrap !important;
+}
+
+#studio-start-view .command-copy {
+  max-width: 610px !important;
+  margin: clamp(14px, 2vh, 22px) 0 0 !important;
+  color: rgba(244, 245, 242, 0.76) !important;
+  font-size: clamp(13px, 1.15vw, 16px) !important;
+  line-height: 1.45 !important;
+}
+
+#studio-start-view .studio-quick-actions {
+  min-height: 0 !important;
+}
+
+#studio-start-view .studio-section-label {
+  display: none !important;
+}
+
+#studio-start-view .command-action-grid {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 0 !important;
+  height: 100% !important;
+  border: 1px solid rgba(255, 255, 255, 0.22) !important;
+}
+
+#studio-start-view .command-action-card,
+#studio-start-view .command-action-card.primary,
+#studio-start-view .command-action-card.secondary {
+  display: grid !important;
+  grid-template-columns: 44px minmax(0, 1fr) auto !important;
+  align-items: center !important;
+  gap: 22px !important;
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 0 !important;
+  padding: clamp(20px, 2.5vw, 34px) !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  text-align: left !important;
+}
+
+#studio-start-view .command-action-card:first-child {
+  background: linear-gradient(110deg, #9cf000, #b9ff23) !important;
+  color: #061000 !important;
+}
+
+#studio-start-view .command-action-card:last-child {
+  border-left: 1px solid rgba(255, 255, 255, 0.2) !important;
+  background: #080a08 !important;
+  color: #f4f5f2 !important;
+}
+
+#studio-start-view .command-action-card:hover,
+#studio-start-view .command-action-card:focus-visible {
+  transform: none !important;
+  filter: brightness(1.04) !important;
+}
+
+#studio-start-view .command-action-icon {
+  width: 38px !important;
+  height: 38px !important;
+  filter: brightness(0) saturate(100%) !important;
+}
+
+#studio-start-view .command-action-card:last-child .command-action-icon {
+  filter: invert(89%) sepia(97%) saturate(2455%) hue-rotate(29deg) brightness(113%) contrast(106%) !important;
+}
+
+#studio-start-view .command-card-copy {
+  display: block !important;
+  min-width: 0 !important;
+}
+
+#studio-start-view .command-card-kicker {
+  display: block !important;
+  margin: 0 0 12px !important;
+  color: inherit !important;
+  font-size: 10px !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.16em !important;
+  text-transform: uppercase !important;
+}
+
+#studio-start-view .command-card-title {
+  display: block !important;
+  margin: 0 0 6px !important;
+  color: inherit !important;
+  font-family: "Bebas Neue", sans-serif !important;
+  font-size: clamp(34px, 3vw, 42px) !important;
+  font-weight: 400 !important;
+  line-height: 1 !important;
+  white-space: nowrap !important;
+}
+
+#studio-start-view .command-card-desc {
+  display: block !important;
+  max-width: 360px !important;
+  color: inherit !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  line-height: 1.35 !important;
+}
+
+#studio-start-view .command-card-guidance {
+  display: grid !important;
+  gap: 6px !important;
+  margin-top: 11px !important;
+  color: inherit !important;
+  font-size: 10px !important;
+  line-height: 1.3 !important;
+}
+
+#studio-start-view .command-card-guidance > span::before {
+  content: "";
+  display: inline-block;
+  width: 5px;
+  height: 5px;
+  margin: 0 8px 1px 0;
+  background: var(--axiom-final-cyan);
+}
+
+#studio-start-view .command-action-card:last-child .command-card-guidance > span::before {
+  background: var(--axiom-final-green);
+}
+
+#studio-start-view .command-card-cta {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 10px !important;
+  min-width: 126px !important;
+  min-height: 42px !important;
+  padding: 0 14px !important;
+  border: 1px solid currentColor !important;
+  border-radius: 4px !important;
+  background: #050605 !important;
+  color: #f4f5f2 !important;
+  font-size: 9px !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.05em !important;
+  text-transform: uppercase !important;
+}
+
+#studio-start-view .command-action-card:last-child .command-card-cta {
+  border-color: rgba(163, 255, 0, 0.66) !important;
+  background: transparent !important;
+  color: var(--axiom-final-green) !important;
+}
+
+#studio-start-view .build-night-panel {
+  display: block !important;
+  min-height: 160px !important;
+  padding: 0 !important;
+  border: 1px solid rgba(255, 255, 255, 0.18) !important;
+  background: #070907 !important;
+}
+
+#studio-start-view .build-night-copy {
+  display: none !important;
+}
+
+#studio-start-view .build-night-grid {
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  height: 100% !important;
+}
+
+#studio-start-view .build-night-card {
+  display: grid !important;
+  grid-template-columns: 30px minmax(0, 1fr) !important;
+  align-items: start !important;
+  gap: 14px !important;
+  min-width: 0 !important;
+  min-height: 100% !important;
+  padding: 24px 18px !important;
+  border: 0 !important;
+  border-right: 1px solid rgba(255, 255, 255, 0.16) !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  text-align: left !important;
+}
+
+#studio-start-view .build-night-card:last-child {
+  border-right: 0 !important;
+}
+
+#studio-start-view .build-night-card:hover,
+#studio-start-view .build-night-card:focus-visible {
+  background: rgba(163, 255, 0, 0.065) !important;
+}
+
+#studio-start-view .build-night-icon {
+  width: 28px !important;
+  height: 28px !important;
+  filter: invert(89%) sepia(97%) saturate(2455%) hue-rotate(29deg) brightness(113%) contrast(106%) !important;
+}
+
+#studio-start-view .build-night-card-copy {
+  display: block !important;
+  min-width: 0 !important;
+}
+
+#studio-start-view .build-night-card strong {
+  display: block !important;
+  color: #f4f5f2 !important;
+  font-family: "Bebas Neue", sans-serif !important;
+  font-size: 17px !important;
+  font-weight: 400 !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.04em !important;
+  text-transform: uppercase !important;
+}
+
+#studio-start-view .build-night-card-copy > span {
+  display: -webkit-box !important;
+  margin-top: 6px !important;
+  overflow: hidden !important;
+  color: rgba(244, 245, 242, 0.66) !important;
+  font-size: 10px !important;
+  line-height: 1.4 !important;
+  text-overflow: ellipsis !important;
+  white-space: normal !important;
+  -webkit-box-orient: vertical !important;
+  -webkit-line-clamp: 3 !important;
+}
+
+#studio-start-view .build-night-card small {
+  display: block !important;
+  margin-top: 10px !important;
+  color: var(--axiom-final-green) !important;
+  font-size: 9px !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.06em !important;
+  text-transform: uppercase !important;
+}
+
+#studio-start-view .build-night-card-copy > .build-night-settings {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 4px !important;
+  margin-top: 10px !important;
+  overflow: visible !important;
+  -webkit-line-clamp: unset !important;
+}
+
+#studio-start-view .build-night-settings b {
+  padding: 4px 6px !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  color: rgba(244, 245, 242, 0.72) !important;
+  font-size: 7px !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.04em !important;
+  line-height: 1 !important;
+  text-transform: uppercase !important;
+}
+
+#studio-start-view .build-night-card-copy > .build-night-start {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  margin-top: 9px !important;
+  overflow: visible !important;
+  color: var(--axiom-final-green) !important;
+  font-size: 9px !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.06em !important;
+  line-height: 1 !important;
+  text-transform: uppercase !important;
+  -webkit-line-clamp: unset !important;
+}
+
+/* ---------- Library ---------- */
+#tab-content-library.library-cockpit {
+  padding: 24px 30px calc(var(--axiom-approved-player) + 12px) !important;
+  background: #050605 !important;
+}
+
+#tab-content-library .library-topbar {
+  min-height: 42px !important;
+  margin-bottom: 14px !important;
+}
+
+#tab-content-library .library-search-shell {
+  min-height: 42px !important;
+}
+
+#tab-content-library .library-search-input {
+  min-height: 42px !important;
+  padding: 0 48px 0 18px !important;
+  border: 1px solid rgba(255, 255, 255, 0.16) !important;
+  border-radius: 4px !important;
+  background: #090b09 !important;
+  box-shadow: none !important;
+  font-size: 11px !important;
+}
+
+#tab-content-library .library-guide-btn {
+  min-width: 78px !important;
+  min-height: 42px !important;
+  padding: 0 18px !important;
+  border: 1px solid rgba(163, 255, 0, 0.72) !important;
+  border-radius: 4px !important;
+  background: #080b08 !important;
+  color: var(--axiom-final-green) !important;
+  box-shadow: none !important;
+  font-family: "Bebas Neue", sans-serif !important;
+  font-size: 20px !important;
+  font-weight: 400 !important;
+}
+
+#tab-content-library .library-control-row {
+  min-height: 42px !important;
+  margin-bottom: 14px !important;
+}
+
+#tab-content-library .library-control-row button {
+  border-radius: 4px !important;
+}
+
+#tab-content-library .library-main-grid {
+  grid-template-columns: minmax(0, 1fr) minmax(300px, 340px) !important;
+  gap: 24px !important;
+  min-height: 0 !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.13) !important;
+}
+
+#tab-content-library .library-results-column {
+  min-height: 0 !important;
+  padding-right: 24px !important;
+  border-right: 1px solid rgba(255, 255, 255, 0.18) !important;
+}
+
+#tab-content-library #search-results {
+  gap: 0 !important;
+  min-height: 0 !important;
+  padding: 0 0 24px !important;
+}
+
+#tab-content-library .library-track-card {
+  grid-template-columns: 62px minmax(210px, 1fr) minmax(74px, 0.23fr) 66px 58px 58px 22px !important;
+  min-height: var(--axiom-approved-row) !important;
+  padding: 10px 10px 10px 12px !important;
+  gap: 12px !important;
+  background: rgba(6, 9, 7, 0.26) !important;
+}
+
+#tab-content-library .library-track-card .library-artwork {
+  width: 58px !important;
+  height: 58px !important;
+}
+
+#tab-content-library .library-track-title {
+  min-width: 0 !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+  font-size: 20px !important;
+  line-height: 1 !important;
+}
+
+#tab-content-library .library-track-artist {
+  min-width: 0 !important;
+  margin-top: 3px !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+  font-size: 13px !important;
+}
+
+#tab-content-library .library-meta-line {
+  margin-top: 5px !important;
+  font-size: 8px !important;
+}
+
+#tab-content-library .library-health-chips {
+  margin-top: 4px !important;
+}
+
+#tab-content-library .library-health-chip {
+  min-height: 14px !important;
+  padding: 1px 6px !important;
+  font-size: 7px !important;
+}
+
+#tab-content-library .library-bpm-value {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-width: 58px !important;
+  min-height: 38px !important;
+  padding: 5px 8px !important;
+  border: 1px solid rgba(255, 255, 255, 0.24) !important;
+  border-radius: 6px !important;
+  font-family: "Bebas Neue", Impact, sans-serif !important;
+  font-size: 24px !important;
+  font-weight: 400 !important;
+  line-height: 1 !important;
+  letter-spacing: 0.02em !important;
+}
+
+#tab-content-library .library-bpm-tools {
+  margin-top: 2px !important;
+}
+
+#tab-content-library .library-bpm-tools button {
+  min-height: 18px !important;
+  padding: 0 4px !important;
+  font-size: 7px !important;
+}
+
+#tab-content-library .library-add-btn {
+  min-width: 54px !important;
+  min-height: 38px !important;
+}
+
+#smart-links-panel.recommendations-panel {
+  padding: 18px 0 18px !important;
+}
+
+#smart-links-panel .recommendations-title {
+  font-size: clamp(34px, 3vw, 46px) !important;
+}
+
+#smart-links-panel .recommendations-controls {
+  gap: 7px !important;
+}
+
+#lib-suggestions-list .recommendation-card {
+  grid-template-columns: 58px minmax(0, 1fr) 26px !important;
+  min-height: var(--axiom-approved-row) !important;
+  padding: 10px 4px 10px 12px !important;
+}
+
+#lib-suggestions-list .recommendation-card .recommendation-artwork,
+#lib-suggestions-list .recommendation-card .artwork-fallback {
+  width: 54px !important;
+  height: 54px !important;
+}
+
+#lib-suggestions-list .recommendation-title {
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+  font-size: 19px !important;
+}
+
+#lib-suggestions-list .recommendation-artist {
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+  font-size: 11px !important;
+}
+
+/* ---------- Studio / manual set builder ---------- */
+#tab-content-studio:has(#studio-active-view:not(.hidden)) {
+  padding: 0 !important;
+  overflow: hidden !important;
+  background: #050605 !important;
+}
+
+#studio-active-view {
+  min-height: 0 !important;
+  background: #050605 !important;
+}
+
+#studio-active-view::before,
+#studio-active-view::after {
+  display: none !important;
+}
+
+#studio-active-view .studio-header {
+  min-height: 108px !important;
+  margin: 0 !important;
+  padding: 20px 28px 17px 34px !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.16) !important;
+  background: #050605 !important;
+}
+
+#studio-active-view .studio-header::before,
+#studio-active-view .studio-header::after {
+  display: none !important;
+}
+
+#studio-active-view .studio-actions button {
+  border-radius: 4px !important;
+}
+
+#studio-set-brief-bar {
+  min-height: 46px !important;
+  margin: 0 !important;
+  padding: 0 20px !important;
+  border: 0 !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15) !important;
+  background: #060806 !important;
+}
+
+#studio-mode-controls {
+  display: flex !important;
+  width: 100% !important;
+  min-height: 64px !important;
+  padding: 0 20px !important;
+  border: 0 !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.11) !important;
+  border-radius: 0 !important;
+  background: #050605 !important;
+  box-shadow: none !important;
+}
+
+#energy-ladder {
+  display: block !important;
+  height: 70px !important;
+  margin: 0 !important;
+  padding: 18px 21px 0 !important;
+  border: 0 !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.13) !important;
+  border-radius: 0 !important;
+  background: #050605 !important;
+  box-shadow: none !important;
+  overflow: hidden !important;
+}
+
+#energy-ladder::before {
+  display: none !important;
+}
+
+#energy-ladder .energy-timeline-track {
+  height: 10px !important;
+  gap: 0 !important;
+}
+
+#energy-ladder .energy-timeline-track::before,
+#energy-ladder .energy-timeline-track::after {
+  display: none !important;
+}
+
+#energy-ladder .energy-block {
+  border-radius: 0 !important;
+  border: 0 !important;
+  border-right: 1px solid rgba(5, 6, 5, 0.65) !important;
+  background: #292c29 !important;
+  box-shadow: none !important;
+  opacity: 1 !important;
+}
+
+#energy-ladder .energy-block:first-child {
+  border-radius: 10px 0 0 10px !important;
+}
+
+#energy-ladder .energy-block:last-child {
+  border-right: 0 !important;
+  border-radius: 0 10px 10px 0 !important;
+}
+
+#energy-ladder .energy-block.energy-Peak {
+  background: var(--axiom-final-green) !important;
+}
+
+#energy-ladder .energy-timeline-labels {
+  gap: 0 !important;
+  margin-top: 10px !important;
+  color: rgba(255, 255, 255, 0.72) !important;
+  font-size: 10px !important;
+  letter-spacing: 0.06em !important;
+}
+
+#energy-ladder .energy-block.active,
+#energy-ladder .energy-block.current {
+  background: var(--axiom-final-green) !important;
+  color: #061000 !important;
+}
+
+#active-playlist-container {
+  min-height: 0 !important;
+  padding: 0 0 calc(var(--axiom-approved-player) + 8px) !important;
+  overflow-y: auto !important;
+}
+
+#active-playlist-container .playlist-row.studio-transition-row {
+  grid-template-columns: 48px minmax(310px, 1fr) minmax(78px, 0.22fr) minmax(78px, 0.2fr) minmax(92px, 0.2fr) 140px 42px !important;
+  min-height: 88px !important;
+  padding: 0 19px 0 14px !important;
+  gap: 12px !important;
+  background: #0a0c0b !important;
+  border-radius: 0 !important;
+}
+
+#active-playlist-container .playlist-row.studio-transition-row:hover:not(.selected):not(.playing-track) {
+  background: #0f120f !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 9px 20px rgba(0, 0, 0, 0.3) !important;
+}
+
+#active-playlist-container .studio-track-artwork {
+  width: 56px !important;
+  height: 56px !important;
+}
+
+#active-playlist-container .studio-row-title {
+  font-size: 22px !important;
+  line-height: 1 !important;
+  letter-spacing: 0.025em !important;
+}
+
+#active-playlist-container .studio-row-artist {
+  font-size: 14px !important;
+}
+
+#active-playlist-container .studio-smart-btn {
+  min-height: 39px !important;
+  border-radius: 5px !important;
+  font-size: 10px !important;
+}
+
+/* ---------- Matching Songs / anchor selection ---------- */
+#replacement-modal.anchor-dj-modal {
+  padding: 18px !important;
+}
+
+#replacement-modal .anchor-dj-shell {
+  height: calc(100vh - 36px) !important;
+  border: 0 !important;
+}
+
+#replacement-modal .anchor-modal-header {
+  min-height: 48px !important;
+  padding: 0 10px !important;
+}
+
+#replacement-modal .anchor-hero-panel {
+  grid-template-columns: 112px 235px minmax(0, 1fr) !important;
+  min-height: 160px !important;
+  padding: 14px !important;
+  border: 1px solid rgba(255, 255, 255, 0.14) !important;
+}
+
+#replacement-modal .anchor-cover-card {
+  width: 100px !important;
+  height: 100px !important;
+  border-radius: 4px !important;
+}
+
+#replacement-modal .anchor-title {
+  font-size: 30px !important;
+  line-height: 0.92 !important;
+}
+
+#replacement-modal .anchor-filter-bar {
+  min-height: 44px !important;
+  padding: 8px 0 !important;
+}
+
+#replacement-modal .anchor-modal-body {
+  grid-template-columns: minmax(0, 1.78fr) minmax(310px, 0.86fr) !important;
+  min-height: 0 !important;
+}
+
+#replacement-modal .anchor-panel-header {
+  min-height: 48px !important;
+  padding: 8px 12px !important;
+}
+
+#replacement-modal .anchor-suggestion-row {
+  min-height: 82px !important;
+  padding: 7px 10px !important;
+}
+
+#replacement-modal .live-transition-panel {
+  min-height: 0 !important;
+}
+
+#replacement-modal .transition-preview-controls {
+  min-height: 96px !important;
+  padding: 14px 18px !important;
+}
+
+/* ---------- Magic Set ---------- */
+body.graph-mode-active #tab-content-studio,
+body.studio-magic-mode #tab-content-studio {
+  padding: 0 !important;
+  overflow: hidden !important;
+  background: #050605 !important;
+}
+
+body.graph-mode-active #studio-active-view,
+body.studio-magic-mode #studio-active-view {
+  padding: 0 0 var(--axiom-approved-player) !important;
+}
+
+body.graph-mode-active #active-playlist-container,
+body.studio-magic-mode #active-playlist-container {
+  display: none !important;
+}
+
+body.graph-mode-active #magic-set-command,
+body.studio-magic-mode #magic-set-command {
+  min-height: 86px !important;
+  padding: 13px 18px !important;
+  background: #050605 !important;
+}
+
+body.graph-mode-active #studio-build-controls,
+body.studio-magic-mode #studio-build-controls {
+  min-height: 76px !important;
+  padding: 10px 18px !important;
+  background: #070907 !important;
+}
+
+body.graph-mode-active .magic-phase-band,
+body.studio-magic-mode .magic-phase-band {
+  min-height: 58px !important;
+  margin: 0 18px !important;
+  border: 1px solid rgba(255, 255, 255, 0.13) !important;
+}
+
+body.graph-mode-active #graph-container,
+body.studio-magic-mode #graph-container {
+  height: calc(100vh - 338px - var(--axiom-approved-player)) !important;
+  min-height: 300px !important;
+  margin: 0 18px !important;
+  padding: 14px 18px 0 !important;
+  overflow: hidden !important;
+  border: 1px solid rgba(255, 255, 255, 0.13) !important;
+  background: #050705 !important;
+}
+
+body.graph-mode-active .magic-chart-footer,
+body.studio-magic-mode .magic-chart-footer {
+  min-height: 50px !important;
+  padding: 8px 12px !important;
+}
+
+/* ---------- Performance ---------- */
+#tab-content-performance {
+  padding: 22px 26px calc(var(--axiom-approved-player) + 10px) !important;
+  background: #050605 !important;
+}
+
+#tab-content-performance > .flex:first-child {
+  min-height: 72px !important;
+  margin-bottom: 12px !important;
+  padding-bottom: 12px !important;
+}
+
+#tab-content-performance h2 {
+  font-size: 52px !important;
+}
+
+#tab-content-performance > .flex:first-child .performance-action {
+  min-height: 38px !important;
+}
+
+.performance-shell {
+  min-height: 0 !important;
+  background: #050605 !important;
+}
+
+.performance-panel {
+  min-height: 0 !important;
+  padding: 18px !important;
+}
+
+.performance-now-track {
+  min-height: 88px !important;
+}
+
+.performance-track-title {
+  font-size: 26px !important;
+}
+
+.performance-suggestions {
+  min-height: 0 !important;
+  overflow-y: auto !important;
+}
+
+.performance-suggestion-card {
+  min-height: 112px !important;
+}
+
+.performance-suggestion-title {
+  font-size: 20px !important;
+}
+
+.performance-suggestion-card.gig-serato {
+  border-left-color: #18d8e8 !important;
+  background: linear-gradient(90deg, rgba(24, 216, 232, 0.12), rgba(24, 216, 232, 0.025)) !important;
+}
+
+.performance-suggestion-card.gig-djay {
+  border-left-color: #ff8a1f !important;
+  background: linear-gradient(90deg, rgba(255, 138, 31, 0.13), rgba(255, 138, 31, 0.025)) !important;
+}
+
+/* Playlists compact rules live in static/css/surfaces/playlists/redesign.css. */
+
+/* ---------- Approved settings and system actions ---------- */
+.settings-shell {
+  max-width: 960px !important;
+  border-radius: 9px !important;
+}
+
+#axiom-modal-card {
+  border-radius: 5px !important;
+}
+
+/*
+ * A duplicated legacy modal rule earlier in the bundled stylesheet uses
+ * `display: none !important`. Restore the approved confirmation surface when
+ * the real action adds `.active`, and return pointer input to its buttons.
+ */
+#axiom-modal-overlay.active {
+  display: flex !important;
+  pointer-events: auto !important;
+}
+
+/* Provider handoff receipts keep one shared layout and a truthful provider colour. */
+.serato-success-overlay {
+  background:
+    radial-gradient(circle at 52% 30%, color-mix(in srgb, var(--axiom-final-cyan) 18%, transparent), transparent 34%),
+    rgba(0, 0, 0, 0.84) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  animation: none !important;
+}
+
+.serato-success-overlay:has(.djay-success) {
+  background:
+    radial-gradient(circle at 52% 30%, color-mix(in srgb, var(--axiom-final-orange) 18%, transparent), transparent 34%),
+    rgba(0, 0, 0, 0.84) !important;
+}
+
+.serato-success-card {
+  --handoff-accent: var(--axiom-final-cyan);
+  width: min(640px, calc(100vw - 48px)) !important;
+  max-height: calc(100vh - 48px);
+  overflow: auto !important;
+  border-color: color-mix(in srgb, var(--handoff-accent) 52%, transparent) !important;
+  border-radius: 9px !important;
+  background: #0c100e !important;
+  isolation: isolate !important;
+  contain: paint !important;
+  animation: none !important;
+  transform: none !important;
+  box-shadow:
+    0 30px 90px rgba(0, 0, 0, 0.72),
+    0 0 42px color-mix(in srgb, var(--handoff-accent) 14%, transparent) !important;
+}
+
+.serato-success-card.djay-success {
+  --handoff-accent: var(--axiom-final-orange);
+}
+
+.serato-success-card::before {
+  inset: 0 0 auto !important;
+  height: 3px !important;
+  background: linear-gradient(90deg, transparent, var(--handoff-accent), transparent) !important;
+  filter: none !important;
+  opacity: 1 !important;
+}
+
+.serato-success-card::after {
+  display: none !important;
+}
+
+.serato-success-content {
+  padding: 30px !important;
+  background: #0c100e !important;
+}
+
+.serato-success-header {
+  grid-template-columns: 58px minmax(0, 1fr) !important;
+  gap: 16px !important;
+  padding-bottom: 18px !important;
+}
+
+.serato-success-mark {
+  width: 58px !important;
+  height: 58px !important;
+  border-radius: 50% !important;
+  background: color-mix(in srgb, var(--handoff-accent) 12%, #0c100e) !important;
+  color: var(--handoff-accent) !important;
+  box-shadow: 0 0 34px color-mix(in srgb, var(--handoff-accent) 44%, transparent) !important;
+}
+
+.serato-success-title {
+  font-size: 44px !important;
+  line-height: 0.95 !important;
+}
+
+.serato-success-copy {
+  margin-top: 9px !important;
+  font-size: 11px !important;
+}
+
+.serato-success-kicker,
+.serato-success-stat strong,
+.serato-success-detail span {
+  color: var(--handoff-accent) !important;
+}
+
+.serato-success-stats {
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: 9px !important;
+  margin: 17px 0 !important;
+}
+
+.serato-success-stat {
+  min-height: 72px !important;
+  padding: 12px !important;
+  border-radius: 4px !important;
+}
+
+.serato-success-stat strong {
+  font-size: 24px !important;
+}
+
+.serato-success-stat span {
+  margin-top: 6px !important;
+  font-size: 8px !important;
+}
+
+.serato-success-details {
+  gap: 7px !important;
+  margin-bottom: 14px !important;
+}
+
+.serato-success-detail {
+  grid-template-columns: 94px minmax(0, 1fr) !important;
+  padding: 9px 11px !important;
+  border-color: color-mix(in srgb, var(--handoff-accent) 18%, transparent) !important;
+  border-radius: 4px !important;
+}
+
+.serato-success-note {
+  margin-bottom: 16px !important;
+  padding: 10px 12px !important;
+  border-radius: 4px !important;
+  background: color-mix(in srgb, var(--handoff-accent) 8%, transparent) !important;
+  font-size: 10px !important;
+}
+
+.serato-success-note svg path {
+  stroke: var(--handoff-accent) !important;
+}
+
+.serato-success-btn.primary {
+  border-color: var(--handoff-accent) !important;
+  background: var(--handoff-accent) !important;
+  color: #050805 !important;
+  box-shadow: 0 0 28px color-mix(in srgb, var(--handoff-accent) 24%, transparent) !important;
+}
+
+.serato-success-btn {
+  min-width: 142px !important;
+  min-height: 42px !important;
+  padding: 11px 16px !important;
+  border-radius: 4px !important;
+  font-size: 9px !important;
+}
+
+.serato-success-close {
+  border-radius: 4px !important;
+}
+
+.serato-success-close:hover {
+  border-color: color-mix(in srgb, var(--handoff-accent) 55%, transparent) !important;
+  color: var(--handoff-accent) !important;
+}
+
+/* ---------- Compact-height safeguards ---------- */
+@media (max-height: 780px) {
+  :root {
+    --axiom-approved-player: 106px;
+    --axiom-approved-row: 82px;
+  }
+
+  .release-splash-brand {
+    padding-top: 26px !important;
+    padding-bottom: 24px !important;
+  }
+
+  .release-splash-mark {
+    width: 104px !important;
+    height: 104px !important;
+    margin-bottom: 8px !important;
+  }
+
+  .release-splash-overlay.update-build .release-splash-mark {
+    width: 104px !important;
+    height: 104px !important;
+    margin-bottom: 8px !important;
+  }
+
+  .release-splash-version strong {
+    font-size: 92px !important;
+  }
+
+  .release-splash-cyan-rule {
+    margin-top: 10px !important;
+    margin-bottom: 12px !important;
+  }
+
+  .release-splash-statement {
+    font-size: 48px !important;
+  }
+
+  .release-splash-identity-copy {
+    margin-top: 12px !important;
+    font-size: 13px !important;
+  }
+
+  .release-splash-content {
+    padding-top: 28px !important;
+    padding-bottom: 18px !important;
+  }
+
+  .release-splash-headline,
+  .release-splash-overlay.update-build .release-splash-headline {
+    font-size: 58px !important;
+  }
+
+  .release-splash-title,
+  .release-splash-overlay.update-build .release-splash-title {
+    margin-top: 10px !important;
+    font-size: 14px !important;
+  }
+
+  .release-splash-features,
+  .release-splash-overlay.update-build .release-splash-features {
+    margin-top: 8px !important;
+    margin-bottom: 7px !important;
+  }
+
+  .release-splash-feature,
+  .release-splash-overlay.update-build .release-splash-feature {
+    grid-template-columns: 46px minmax(0, 1fr) !important;
+    padding: 3px 0 4px !important;
+  }
+
+  .release-splash-feature::before {
+    font-size: 38px !important;
+  }
+
+  .release-splash-feature strong,
+  .release-splash-overlay.update-build .release-splash-feature strong {
+    font-size: 19px !important;
+  }
+
+  .release-splash-feature span:last-child span,
+  .release-splash-overlay.update-build .release-splash-feature span:last-child span {
+    font-size: 10px !important;
+  }
+
+  .release-splash-btn.primary {
+    min-height: 46px !important;
+    font-size: 25px !important;
+  }
+
+  .release-splash-footer {
+    min-height: 30px !important;
+    font-size: 10px !important;
+  }
+
+  #studio-start-view.command-launch-shell {
+    grid-template-rows: 168px minmax(188px, 1fr) 84px !important;
+    padding-top: 18px !important;
+  }
+
+  #studio-start-view .command-title {
+    font-size: 59px !important;
+  }
+
+  #studio-start-view .command-card-title {
+    font-size: 36px !important;
+  }
+
+  #studio-start-view .command-card-guidance {
+    display: none !important;
+  }
+
+  #studio-start-view .command-action-card,
+  #studio-start-view .command-action-card.primary,
+  #studio-start-view .command-action-card.secondary {
+    padding: 18px 22px !important;
+  }
+
+  #tab-content-library.library-cockpit {
+    padding-top: 18px !important;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Library information lanes
+   Mission fit, track metadata, and Health state are separate decisions. Give
+   each one a stable row so packaged-window density cannot stack the labels.
+   -------------------------------------------------------------------------- */
+#tab-content-library.library-cockpit #search-results
+  .library-track-card.axiom-focus-deck-row {
+  min-height: 120px !important;
+  grid-template-rows: 24px 18px 16px 18px 18px !important;
+  row-gap: 3px !important;
+  padding-top: 8px !important;
+  padding-bottom: 8px !important;
+}
+
+#tab-content-library.library-cockpit #search-results
+  .library-track-card.axiom-focus-deck-row:is(.selected, .playing-track, .library-track-playing) {
+  min-height: 128px !important;
+  grid-template-rows: 28px 18px 16px 18px 18px !important;
+}
+
+#tab-content-library.library-cockpit #search-results
+  .library-track-card.axiom-focus-deck-row :is(
+    .library-fit-row,
+    .library-meta-line,
+    .library-health-chips
+  ) {
+  display: flex !important;
+  align-items: center !important;
+  align-self: center !important;
+  min-height: 16px !important;
+  margin: 0 !important;
+  overflow: visible !important;
+  white-space: nowrap !important;
+}
+
+#tab-content-library.library-cockpit #search-results
+  .library-track-card.axiom-focus-deck-row .library-fit-row {
+  gap: 6px !important;
+  padding-bottom: 1px !important;
+}
+
+#tab-content-library.library-cockpit #search-results
+  .library-track-card.axiom-focus-deck-row .library-meta-line {
+  gap: 8px !important;
+}
+
+#tab-content-library.library-cockpit #search-results
+  .library-track-card.axiom-focus-deck-row .library-health-chips {
+  gap: 6px !important;
+  padding-top: 1px !important;
+}

@@ -1,0 +1,18 @@
+<style id="library-setup-active-group-position-final-v15">
+  /* All three Setup groups share one interaction model. Grid auto-placement
+     previously made only the first DOM item (Vibe) open at the top. Promote
+     whichever group is active so Room and Range expand in the same position. */
+  html body.library-setup-open
+    #tab-content-library.library-cockpit#tab-content-library
+    #library-brief-lens[data-library-brief-panel="setup"]
+    .library-brief-control-grid > .library-setup-control-group {
+    order: 0 !important;
+  }
+
+  html body.library-setup-open
+    #tab-content-library.library-cockpit#tab-content-library
+    #library-brief-lens[data-library-brief-panel="setup"]
+    .library-brief-control-grid > .library-setup-control-group[open] {
+    order: -1 !important;
+  }
+</style>

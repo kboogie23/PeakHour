@@ -1,0 +1,256 @@
+.daw-fx-dialog { background:#1c211e;color:#e8ece8;border:1px solid #69746b;border-radius:6px;padding:20px;width:400px;max-width:90vw;max-height:calc(100dvh - 32px);overflow-y:auto;box-sizing:border-box; }
+/* These dialogs keep a dark surface in Day; global Day text rules must not bleed in. */
+body.light-mode.studio-daw-mode-active :is(#daw-fx-editor,#daw-creative-tools) :is(h2,h3) {
+  color:#f2f7ef!important;
+  -webkit-text-fill-color:#f2f7ef!important;
+}
+body.light-mode.studio-daw-mode-active :is(#daw-fx-editor,#daw-creative-tools) button,
+body.light-mode.studio-daw-mode-active :is(#daw-fx-editor,#daw-creative-tools) button:is(:hover,:focus,:active,:disabled) {
+  background:#253029!important;
+  color:#edf3ec!important;
+  -webkit-text-fill-color:#edf3ec!important;
+  border-color:#718076!important;
+}
+body.light-mode.studio-daw-mode-active #daw-fx-editor button[aria-pressed="true"],
+body.light-mode.studio-daw-mode-active #daw-fx-editor button[aria-pressed="true"]:is(:hover,:focus,:active,:disabled) {
+  background:#a3ff00!important;
+  color:#071005!important;
+  -webkit-text-fill-color:#071005!important;
+  border-color:#a3ff00!important;
+}
+body.studio-daw-mode-active dialog::backdrop { background:rgba(0,0,0,.68);backdrop-filter:blur(8px); }
+body.studio-daw-mode-active :is(.daw-fx-dialog,.daw-native-effect-dialog,#daw-master-limiter-dialog,#daw-export-dialog,#daw-record-dialog,#daw-fx-tail-dialog,#daw-grid-editor,#daw-marker-dialog,#daw-save-dialog,#daw-draft-dialog,#daw-project-files-dialog,#daw-assets-dialog,#daw-key-sync-error,#daw-set-choice,#daw-parameter-automation) {
+  color:#edf3ec;
+  border:1px solid rgba(142,84,255,.58);
+  border-radius:7px;
+  background:
+    radial-gradient(circle at 0 0,rgba(142,84,255,.16),transparent 38%),
+    linear-gradient(180deg,#161c1b,#0a0d0d 78%);
+  box-shadow:
+    0 28px 80px rgba(0,0,0,.72),
+    inset 0 1px 0 rgba(255,255,255,.06),
+    inset 0 0 0 1px rgba(163,255,0,.045);
+  font-family:Barlow,sans-serif;
+}
+body.studio-daw-mode-active :is(.daw-fx-dialog,.daw-native-effect-dialog,#daw-master-limiter-dialog,#daw-export-dialog,#daw-record-dialog,#daw-fx-tail-dialog,#daw-grid-editor,#daw-marker-dialog,#daw-save-dialog,#daw-draft-dialog,#daw-project-files-dialog,#daw-assets-dialog,#daw-key-sync-error,#daw-set-choice,#daw-parameter-automation) :is(h2,h3) {
+  margin-top:0;
+  color:#f2f7ef;
+  font-family:'Bebas Neue',Barlow,sans-serif;
+  font-weight:900;
+  letter-spacing:.045em;
+  text-transform:uppercase;
+}
+body.studio-daw-mode-active :is(.daw-fx-dialog,.daw-native-effect-dialog,#daw-master-limiter-dialog,#daw-export-dialog,#daw-record-dialog,#daw-fx-tail-dialog,#daw-grid-editor,#daw-marker-dialog,#daw-save-dialog,#daw-draft-dialog,#daw-project-files-dialog,#daw-assets-dialog,#daw-key-sync-error,#daw-set-choice,#daw-parameter-automation) :is(p,label,summary,output,small,select,input) {
+  color:#d4ddd7;
+}
+body.studio-daw-mode-active :is(.daw-fx-dialog,.daw-native-effect-dialog,#daw-master-limiter-dialog,#daw-export-dialog,#daw-record-dialog,#daw-fx-tail-dialog,#daw-grid-editor,#daw-marker-dialog,#daw-save-dialog,#daw-draft-dialog,#daw-project-files-dialog,#daw-assets-dialog,#daw-key-sync-error,#daw-set-choice,#daw-parameter-automation) :is(input:not([type="checkbox"]):not([type="range"]),select,textarea) {
+  min-height:36px;
+  border:1px solid rgba(255,255,255,.15);
+  border-radius:4px;
+  background:#080c0c;
+  color:#edf3ec;
+}
+body.studio-daw-mode-active :is(.daw-fx-dialog,.daw-native-effect-dialog,#daw-master-limiter-dialog,#daw-export-dialog,#daw-record-dialog,#daw-fx-tail-dialog,#daw-grid-editor,#daw-marker-dialog,#daw-save-dialog,#daw-draft-dialog,#daw-project-files-dialog,#daw-assets-dialog,#daw-key-sync-error,#daw-set-choice,#daw-parameter-automation) input[type="range"] {
+  accent-color:var(--accent);
+}
+body.studio-daw-mode-active :is(.daw-fx-dialog,.daw-native-effect-dialog,#daw-master-limiter-dialog,#daw-export-dialog,#daw-record-dialog,#daw-fx-tail-dialog,#daw-grid-editor,#daw-marker-dialog,#daw-save-dialog,#daw-draft-dialog,#daw-project-files-dialog,#daw-assets-dialog,#daw-key-sync-error,#daw-set-choice,#daw-parameter-automation) button {
+  min-height:36px;
+  border:1px solid rgba(163,255,0,.72);
+  border-radius:4px;
+  background:var(--accent);
+  color:#071005;
+  font:900 12px Barlow,sans-serif;
+  letter-spacing:.04em;
+  text-transform:uppercase;
+}
+body.studio-daw-mode-active :is(.daw-fx-dialog,.daw-native-effect-dialog,#daw-master-limiter-dialog,#daw-export-dialog,#daw-record-dialog,#daw-fx-tail-dialog,#daw-grid-editor,#daw-marker-dialog,#daw-save-dialog,#daw-draft-dialog,#daw-project-files-dialog,#daw-assets-dialog,#daw-key-sync-error,#daw-set-choice,#daw-parameter-automation) button:not([type="submit"]):not([aria-pressed="true"]):not([data-render]):not([data-daw-set-mode]) {
+  background:rgba(255,255,255,.035);
+  border-color:rgba(255,255,255,.16);
+  color:#edf3ec;
+}
+body.studio-daw-mode-active :is(.daw-fx-dialog,.daw-native-effect-dialog,#daw-master-limiter-dialog,#daw-export-dialog,#daw-record-dialog,#daw-fx-tail-dialog,#daw-grid-editor,#daw-marker-dialog,#daw-save-dialog,#daw-draft-dialog,#daw-project-files-dialog,#daw-assets-dialog,#daw-key-sync-error,#daw-set-choice,#daw-parameter-automation) button:hover {
+  border-color:var(--accent);
+  box-shadow:0 0 18px rgba(163,255,0,.16);
+}
+#daw-master-limiter-dialog { width:420px;background:#101610;color:#edf3e9; }
+body.studio-daw-mode-active #daw-master-limiter-dialog h2 { font:26px/1.1 'Bebas Neue',sans-serif;color:#edf3e9;letter-spacing:0; }
+#daw-master-limiter-dialog .daw-limiter-help { font:14px/1.45 Barlow,sans-serif;color:#bfcabd; }
+#daw-master-limiter-dialog .daw-limiter-amount { display:flex;align-items:center;justify-content:center;gap:24px;margin:24px 0; }
+/* Keep the rotary slider independent of shared dialog command-button styles. */
+body.studio-daw-mode-active #daw-master-limiter-dialog.daw-fx-dialog .daw-limiter-amount button[name="amount"][role="slider"] {
+  appearance:none;position:relative;box-sizing:border-box;width:104px;height:104px;min-width:104px;min-height:104px;
+  flex:0 0 104px;padding:0;border:5px solid #53625d;border-radius:50%;
+  background:radial-gradient(circle at 45% 35%,#36413f,#17201e 72%);box-shadow:inset 0 0 0 2px #0b100e,0 3px 8px #0006;
+  touch-action:none;cursor:ns-resize;
+}
+body.studio-daw-mode-active #daw-master-limiter-dialog.daw-fx-dialog .daw-limiter-amount button[name="amount"][role="slider"]:hover { border-color:#84958b; }
+body.studio-daw-mode-active #daw-master-limiter-dialog:has([name="enabled"]:checked) .daw-limiter-amount button[name="amount"][role="slider"] { border-color:var(--accent); }
+#daw-master-limiter-dialog:has([name="enabled"]:not(:checked)) [name="amount"] i::before { background:#aab5ae; }
+#daw-master-limiter-dialog .daw-limiter-enable { justify-content:flex-end;flex-direction:row-reverse;gap:10px;padding:12px 0;border-bottom:1px solid #354132; }
+#daw-master-limiter-dialog input[name="enabled"] { appearance:auto;accent-color:var(--accent);width:18px;height:18px;margin:0;flex:0 0 18px; }
+#daw-master-limiter-dialog [name="amount"] i { position:absolute;inset:8px;transform:rotate(var(--amount-angle,-135deg));pointer-events:none; }
+#daw-master-limiter-dialog [name="amount"] i::before { content:'';position:absolute;top:0;left:calc(50% - 2px);width:4px;height:22px;background:var(--accent);border-radius:2px; }
+#daw-master-limiter-dialog .daw-limiter-amount strong { display:block;font:20px 'Bebas Neue',sans-serif; }
+#daw-master-limiter-dialog [data-amount-value] { display:block;font:32px 'Bebas Neue',sans-serif; }
+#daw-master-limiter-dialog [data-drive-value] { font:13px Barlow,sans-serif;color:#bfcabd; }
+#daw-master-limiter-dialog .daw-limiter-meters { display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;padding:16px 0;border-block:1px solid #354132;margin-bottom:12px; }
+#daw-master-limiter-dialog .daw-limiter-meters > div { display:grid;min-width:0;gap:8px;font:14px Barlow,sans-serif; }
+#daw-master-limiter-dialog .daw-limiter-meters output { font-variant-numeric:tabular-nums;min-height:20px;white-space:nowrap; }
+#daw-master-limiter-dialog meter { width:100%;height:16px; }
+#daw-master-limiter-dialog meter::-webkit-meter-bar { background:#080d07;border:1px solid #354132; }
+#daw-master-limiter-dialog meter::-webkit-meter-optimum-value { background:var(--accent); }
+#daw-master-limiter-dialog summary { cursor:pointer;font:16px 'Bebas Neue',sans-serif; }
+#daw-master-limiter-dialog button:focus-visible { outline:2px solid var(--accent);outline-offset:3px; }
+#daw-master-limiter-dialog footer button,#daw-master-limiter[data-enabled="true"] { background:var(--accent)!important;color:#071005!important; }
+#daw-master-limiter-dialog footer button[data-preview] { background:#222d29!important;color:#edf3e9!important; }
+#daw-master-limiter-dialog footer { flex-wrap:wrap; }
+#daw-master-limiter-dialog details > label { font-size:14px; }
+#daw-master-limiter-dialog summary { padding:8px 0; }
+body.light-mode #daw-master-limiter-dialog { background:#f0f4ec;color:#071005;border-color:#687561; }
+body.light-mode #daw-master-limiter-dialog h2,body.light-mode #daw-master-limiter-dialog .daw-limiter-help,body.light-mode #daw-master-limiter-dialog [data-drive-value] { color:#071005; }
+body.light-mode #daw-master-limiter-dialog input { background:#fff;color:#071005; }
+#daw-fx-editor { overflow:hidden; }
+#daw-fx-editor form { display:flex;flex-direction:column;max-height:calc(100dvh - 74px);margin:0; }
+#daw-fx-editor .daw-fx-fields > label { flex-wrap:wrap;row-gap:5px;padding-bottom:10px;border-bottom:1px solid #39463c; }
+#daw-fx-editor .daw-fx-control-help { flex-basis:100%;font:13px/1.4 Barlow,sans-serif;color:#bac7be; }
+#daw-fx-editor .daw-fx-fields > label:focus-within .daw-fx-control-help { color:#e8ece8; }
+#daw-fx-editor .daw-fx-quick-context { margin:0 0 10px;color:#bac7be;font:14px/1.4 Barlow,sans-serif; }
+#daw-fx-editor .daw-fx-advanced > summary { cursor:pointer;padding:12px 0;font:600 14px Barlow,sans-serif;color:#e8ece8; }
+#daw-fx-editor .daw-fx-master-limiter-callout { display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 14px;padding:12px;border:1px solid rgba(233,199,103,.38);border-radius:4px;background:#16170f;color:#edf3e9; }
+#daw-fx-editor .daw-fx-master-limiter-callout div { display:grid;gap:3px;min-width:0; }
+#daw-fx-editor .daw-fx-master-limiter-callout strong { font:18px 'Bebas Neue',Barlow,sans-serif;color:#f0f6e8;letter-spacing:0; }
+#daw-fx-editor .daw-fx-master-limiter-callout small { color:#cfd7ca;font:13px/1.35 Barlow,sans-serif; }
+#daw-fx-editor .daw-fx-master-limiter-callout button { flex:0 0 auto;background:#e9c767!important;color:#071005!important;border:1px solid #e9c767!important; }
+.daw-enhance-compare { display:flex;flex-wrap:wrap;gap:8px;margin:10px 0; }
+.daw-enhance-compare button { flex:1;min-height:36px;background:#26312a;border:1px solid #59645c;color:#e8ece8;font:600 14px Barlow,sans-serif; }
+.daw-enhance-compare button:first-child { flex-basis:100%; }
+.daw-enhance-compare button[aria-pressed="true"] { background:var(--accent);color:#071005;border-color:var(--accent); }
+#daw-fx-editor .daw-enhance-compare button[aria-pressed="false"] { background:#26312a !important;color:#e8ece8 !important;border-color:#68766d !important; }
+.daw-enhance-compare button:disabled { opacity:.5;cursor:default; }
+.daw-enhance-compare output { flex-basis:100%;font:13px/1.4 Barlow,sans-serif;color:#bac7be; }
+#daw-fx-editor input[name="wet"][type="range"] { flex:1;min-width:90px;accent-color:var(--accent); }
+.studio-daw-context-menu > strong { display:block;padding:8px 10px;color:#bac7be;font:600 13px Barlow,sans-serif; }
+#daw-fx-editor .daw-fx-bar-presets { display:flex;flex-wrap:wrap;gap:6px;flex-basis:100%; }
+#daw-fx-editor .daw-fx-bar-presets button { flex:1;min-width:34px;padding:7px 5px;border:1px solid #59645c;border-radius:3px;background:#090d0a;color:#e8ece8;font:600 14px Barlow,sans-serif;cursor:pointer; }
+#daw-fx-editor .daw-fx-bar-presets button[aria-pressed="true"] { background:var(--accent);color:#071005;border-color:var(--accent); }
+#daw-fx-editor .daw-fx-bar-presets button:focus-visible { outline:2px solid var(--accent);outline-offset:2px; }
+.daw-gate-editor { border-top:1px solid #39463c;padding-top:8px; }
+.daw-gate-editor small { display:block;color:#bac7be;font:13px/1.4 Barlow,sans-serif;margin:8px 0; }
+.daw-sweep-source { border-top:1px solid #39463c;padding-top:8px; }
+.daw-sweep-source small { display:block;color:#bac7be;font:13px/1.4 Barlow,sans-serif;margin:8px 0; }
+.daw-sweep-source p { overflow-wrap:anywhere; }
+.daw-sweep-source button { margin:0 6px 8px 0; }
+.daw-gate-steps { display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:4px; }
+.daw-fx-dialog .daw-gate-steps button { padding:9px 2px;border:1px solid #59645c;background:#090d0a;color:#e8ece8;cursor:pointer; }
+.daw-fx-dialog .daw-gate-steps button[aria-pressed="true"] { background:var(--accent);color:#071005;border-color:var(--accent); }
+.daw-fx-dialog .daw-fx-fields { min-height:0;overflow-y:auto; }
+.daw-fx-dialog h2,.daw-fx-dialog footer { flex-shrink:0; }
+.daw-fx-dialog h2 { font-size:18px;margin:0 0 16px; }
+.daw-fx-dialog label { display:flex;align-items:center;justify-content:space-between;gap:12px;margin:10px 0; }
+.daw-fx-dialog [hidden] { display:none; }
+.daw-fx-dialog input,.daw-fx-dialog select { background:#090d0a;color:#e8ece8;border:1px solid #59645c;width:150px;max-width:50%;min-width:0;padding:5px;box-sizing:border-box; }
+.daw-fx-dialog input[type="checkbox"] { width:auto; }
+#daw-record-dialog meter { width:150px;max-width:50%;height:12px; }
+#daw-record-dialog meter::-webkit-meter-bar { background:#090d0a;border:1px solid #59645c;border-radius:3px; }
+#daw-record-dialog meter::-webkit-meter-optimum-value { background:var(--accent); }
+.daw-fx-dialog select { width:210px;max-width:70%;font-size:14px; }
+.daw-fx-dialog footer { display:flex;justify-content:flex-end;gap:12px;margin-top:16px; }
+.daw-fx-dialog button { padding:6px 12px;background:var(--accent);color:#071005; }
+.daw-export-ending { margin:12px 0;padding:12px;border:1px solid #bc8d43;border-radius:4px;background:#211c13;color:#f4eee3; }
+.daw-export-ending h3 { font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:.04em;margin:0 0 8px; }
+.daw-export-ending p { font-size:14px;line-height:1.4;overflow-wrap:anywhere;margin:8px 0; }
+.daw-export-ending-actions { display:flex;flex-wrap:wrap;gap:8px;margin:12px 0; }
+.daw-export-ending button { font-size:13px; }
+.daw-export-ending label { font-size:14px;justify-content:flex-start; }
+.daw-enhance-reduction { flex-shrink:0;padding-bottom:12px;border-bottom:1px solid #39463c;margin-bottom:8px; }
+.daw-enhance-reduction h3 { font-size:12px;margin:0 0 6px;color:#c4cdc7; }
+.daw-enhance-reduction-bands { display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);gap:12px; }
+.daw-enhance-reduction-bands > div { display:grid;grid-template-rows:18px 10px 18px;gap:3px;min-width:0;font-size:12px; }
+.daw-enhance-reduction meter { width:100%;height:10px;accent-color:var(--accent); }
+.daw-enhance-reduction meter::-webkit-meter-bar { background:#0a100b;border:1px solid #48534b;border-radius:0; }
+.daw-enhance-reduction meter::-webkit-meter-optimum-value { background:var(--accent); }
+.daw-enhance-reduction output { font-variant-numeric:tabular-nums;white-space:nowrap; }
+.daw-enhance-reduction [data-quick-match] { margin-top:8px;font-size:12px; }
+.daw-enhance-reduction [data-quick-match]:disabled { opacity:.45;cursor:default; }
+.daw-enhance-reduction .daw-enhance-match-status { display:block;white-space:normal;overflow-wrap:anywhere;font-size:12px;max-height:54px;overflow:auto; }
+#daw-export-dialog { width:min(640px,92vw); }
+#daw-export-dialog .daw-export-range { display:grid;gap:10px;margin:12px 0;padding:12px;border:1px solid #425041;background:#111713; }
+#daw-export-dialog .daw-export-range > div:first-child { display:flex;align-items:baseline;justify-content:space-between;gap:12px; }
+#daw-export-dialog .daw-export-range strong { font-family:'Bebas Neue',sans-serif;font-size:18px;color:#f1f5ef; }
+#daw-export-dialog .daw-export-range small { color:#aeb8b1;text-align:right;overflow-wrap:anywhere; }
+#daw-export-dialog .daw-export-range-grid { display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px; }
+#daw-export-dialog .daw-export-range-grid label { display:grid;grid-template-columns:34px minmax(0,1fr);align-items:center;gap:8px;margin:0;font-family:'Bebas Neue',sans-serif;color:var(--accent); }
+#daw-export-dialog .daw-export-range-grid input { width:100%;max-width:none;text-align:center;font-variant-numeric:tabular-nums; }
+#daw-export-dialog .daw-export-range-actions { display:grid;grid-template-columns:42px 42px repeat(2,minmax(0,1fr));gap:8px; }
+#daw-export-dialog .daw-export-range-actions button { min-height:34px;font-size:13px; }
+#daw-export-dialog .daw-export-range-actions [data-export-set-in],
+#daw-export-dialog .daw-export-range-actions [data-export-set-out] { font-size:18px;line-height:1; }
+#daw-export-dialog [data-export-metadata] { display:grid;grid-template-columns:1fr;gap:10px;margin:12px 0; }
+#daw-export-dialog [data-export-metadata] label { display:grid;grid-template-columns:96px minmax(0,1fr);align-items:center;gap:12px;margin:0; }
+#daw-export-dialog [data-export-metadata] :is(input,select) { width:100%;max-width:none; }
+#daw-export-dialog [data-export-filename-preview] { display:block;padding-left:108px;color:#aeb8b1;font-size:12px;overflow-wrap:anywhere; }
+#daw-export-dialog [data-export-destination] { font-size:12px;color:#bac7be;margin:0 0 16px; }
+#daw-export-dialog details { border-bottom:1px solid #39463c;padding-bottom:12px;margin-bottom:16px; }
+#daw-export-dialog summary { cursor:pointer;font-size:14px; }
+#daw-export-dialog output { display:block;overflow-wrap:anywhere;margin:12px 0;font-size:14px; }
+#daw-export-dialog audio { display:block;width:100%;height:54px;margin-top:12px;color-scheme:dark; }
+#daw-export-dialog audio[hidden] { display:none; }
+#daw-export-dialog footer { flex-wrap:wrap;gap:8px; }
+#daw-export-dialog footer button { min-height:36px; }
+#daw-export-dialog [data-close],#daw-export-dialog [data-save-render] { background:#26312a;color:#e8ece8;border:1px solid #59645c; }
+#daw-export-dialog button:disabled { opacity:.45;cursor:default; }
+@media (max-width:560px) {
+  #daw-export-dialog .daw-export-range > div:first-child { display:grid; }
+  #daw-export-dialog .daw-export-range small { text-align:left; }
+  #daw-export-dialog .daw-export-range-actions { grid-template-columns:42px 42px 1fr; }
+  #daw-export-dialog .daw-export-range-actions [data-export-full-range] { grid-column:3; }
+  #daw-export-dialog [data-export-metadata] label { grid-template-columns:1fr;gap:6px; }
+  #daw-export-dialog [data-export-filename-preview] { padding-left:0; }
+}
+#daw-midi-controls { max-height:85vh;overflow:auto;box-sizing:border-box; }
+#daw-midi-controls select { min-width:0;max-width:65%; }
+#daw-midi-controls footer { flex-wrap:wrap; }
+#daw-midi-controls-button[aria-pressed="true"] { background:var(--accent);color:#071005; }
+#daw-automation-mode { width:70px;min-width:70px;background:#111712;color:#e8ece8;border:1px solid #515a52; }
+#studio-daw-shell #daw-automation-mode:has(option[value="latch"]:checked) { border-color:#ed7979!important; }
+#studio-daw-shell #daw-automation-mode[data-recording="true"] { background:#8e2525!important;color:#fff!important;border-color:#f29292!important; }
+.daw-native-effect-dialog { width:540px;max-height:85vh;overflow:auto; }
+.daw-native-effect-dialog p { overflow-wrap:anywhere;margin:8px 0; }
+.daw-native-effect-dialog select { flex:1;min-width:0;max-width:360px; }
+.daw-native-effect-dialog [data-parameters] { border-top:1px solid #59645c;margin-top:16px; }
+.daw-native-effect-dialog .daw-native-parameter { display:grid;grid-template-columns:minmax(0,1fr) 100px 72px;gap:10px; }
+.daw-native-parameter span,.daw-native-parameter small { overflow-wrap:anywhere; }
+.daw-native-parameter input { width:100%;min-width:0;box-sizing:border-box; }
+.daw-native-parameter input[type="checkbox"] { width:18px;justify-self:end; }
+.daw-native-effect-dialog output { display:block;overflow-wrap:anywhere;margin-top:12px; }
+.daw-native-effect-dialog button:disabled { opacity:.45; }
+.daw-native-effect-dialog footer { flex-wrap:wrap; }
+#daw-parameter-automation { box-sizing:border-box;background:#141a17;color:#e8ece8;border:1px solid #69746b;border-radius:6px;padding:16px;width:720px;max-width:95vw;max-height:90vh;overflow:auto; }
+#daw-parameter-automation form { display:flex;flex-direction:column;gap:10px;min-width:0; }
+#daw-parameter-automation h2 { font-size:18px;margin:0; }
+#daw-parameter-automation p { margin:0;overflow-wrap:anywhere; }
+#daw-parameter-automation canvas { width:100%;height:180px;background:#080d0a;touch-action:none;cursor:crosshair;flex-shrink:0; }
+#daw-parameter-automation input,#daw-parameter-automation select { min-width:0;max-width:100%;padding:6px;background:#090d0a;color:#e8ece8;border:1px solid #59645c; }
+#daw-parameter-automation input[type=checkbox] { accent-color:var(--accent);margin-right:8px; }
+#daw-parameter-automation .daw-automation-points { max-height:240px;overflow:auto; }
+#daw-parameter-automation .daw-automation-point { display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,1fr) 70px;gap:8px;margin-bottom:6px;align-items:center;font-size:12px; }
+#daw-parameter-automation footer { display:flex;flex-wrap:wrap;justify-content:flex-end;gap:8px; }
+#daw-parameter-automation button { padding:6px 10px;background:var(--accent);color:#071005;border-radius:3px; }
+#daw-parameter-automation [role=alert] { color:#ffb6b6; }
+.daw-fx-region { background:#18313b!important;border:1px solid #559ab4!important;overflow:hidden;cursor:grab;touch-action:none; }
+.daw-fx-region:active { cursor:grabbing; }
+.daw-fx-region:has(.daw-echo-timing) { container-type:inline-size; }
+.daw-echo-timing { position:absolute;bottom:3px;left:10px;right:10px;display:flex;align-items:center;justify-content:space-between;gap:3px;z-index:7; }
+.daw-echo-timing button { padding:0;flex:0 0 22px;height:22px;border:1px solid #77aabd;border-radius:3px;background:#102329;color:#e8ece8;font:16px/1 Barlow,sans-serif;cursor:pointer; }
+.daw-echo-timing button:disabled { opacity:.35;cursor:default; }
+.daw-echo-timing button:focus-visible { outline:2px solid var(--accent); }
+.daw-echo-timing output { color:#e8ece8;font:11px/1.2 Barlow,sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis; }
+@container (max-width:100px) { .daw-echo-timing output { display:none; } }
+.daw-fx-tail { position:absolute;right:0;top:0;height:100%;background:repeating-linear-gradient(135deg,#91c8d644 0 3px,transparent 3px 8px);border-left:1px dashed #91c8d6;pointer-events:none; }
+.daw-fx-resize { position:absolute;top:25%;height:50%;width:8px;transform:translateX(-50%);padding:0;border:1px solid #a8cbd6;border-radius:2px;background:#102329;cursor:ew-resize;z-index:6;touch-action:none; }
+.daw-fx-resize.tail { top:65%;height:30%;background:#91c8d6; }
+.daw-fx-commands { display:flex;position:relative;gap:4px;flex-wrap:wrap; }
+body.studio-daw-mode-active .studio-daw-lane .daw-fx-region { top:calc(var(--layer-index,0) * var(--layer-height) + 8px);height:calc(var(--layer-height) - 16px); }
+.daw-fx-commands button { background:#101917;color:#cbdace;font:11px Barlow,sans-serif;padding:2px 4px; }
+/* Tape Stop uses its own controls; keep the shared limiter callout hidden. */
+.daw-fx-master-limiter-callout[hidden] { display: none !important; }

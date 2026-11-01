@@ -1,0 +1,14 @@
+<style id="library-closed-set-prep-options-row-final-v11">
+  /* The utility wrapper becomes display: contents while Setup is closed, so
+     pin this control to the established top action row rather than allowing
+     CSS grid auto-placement to push it underneath the other controls. */
+  html body:not(.library-setup-open)
+    #tab-content-library.library-cockpit#tab-content-library
+    #library-brief-lens[data-library-brief-panel="closed"]
+    #library-setup-utility-bar > #library-brief-lane-dropdown {
+    grid-column: 2 !important;
+    grid-row: 1 !important;
+    align-self: center !important;
+    margin: 0 !important;
+  }
+</style>

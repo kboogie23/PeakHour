@@ -1,0 +1,1007 @@
+### _mac_process_running args ()
+7432           0 RESUME                   0
+
+7433           2 LOAD_GLOBAL              1 (NULL + bool)
+              12 LOAD_GLOBAL              3 (NULL + _mac_process_snapshot)
+              22 LOAD_FAST                0 (names)
+              24 CALL_FUNCTION_EX         0
+              26 LOAD_ATTR                5 (NULL|self + get)
+              46 LOAD_CONST               1 ('running')
+              48 CALL                     1
+              56 CALL                     1
+              64 RETURN_VALUE
+### _require_dj_apps_closed_for_beatgrid_doctor args ('action',)
+7480           0 RESUME                   0
+
+7481           2 LOAD_GLOBAL              1 (NULL + _running_dj_publish_apps)
+              12 CALL                     0
+              20 STORE_FAST               1 (running)
+
+7482          22 LOAD_FAST                1 (running)
+              24 POP_JUMP_IF_TRUE        32 (to 90)
+              26 LOAD_GLOBAL              2 (sys)
+              36 LOAD_ATTR                4 (platform)
+              56 LOAD_CONST               1 ('darwin')
+              58 COMPARE_OP              40 (==)
+              62 POP_JUMP_IF_FALSE       13 (to 90)
+
+7483          64 LOAD_CONST               2 (0)
+              66 LOAD_CONST               3 (('running_dj_apps',))
+              68 IMPORT_NAME              3 (utils.djay_play_count_publish)
+              70 IMPORT_FROM              4 (running_dj_apps)
+              72 STORE_FAST               2 (running_dj_apps)
+              74 POP_TOP
+
+7484          76 PUSH_NULL
+              78 LOAD_FAST                2 (running_dj_apps)
+              80 CALL                     0
+              88 STORE_FAST               1 (running)
+
+7485     >>   90 LOAD_FAST                1 (running)
+              92 POP_JUMP_IF_FALSE       13 (to 120)
+
+7486          94 LOAD_GLOBAL             11 (NULL + DjAppsMustQuitError)
+
+7487         104 LOAD_FAST                0 (action)
+
+7488         106 LOAD_FAST                1 (running)
+
+7489         108 LOAD_CONST               4 ('AXIOM will not scan, prepare, or publish beatgrids while DJ software is running.')
+
+7486         110 CALL                     3
+             118 RAISE_VARARGS            1
+
+7485     >>  120 RETURN_CONST             0 (None)
+### _write_serato_crate args ('playlist', 'name')
+21700           0 RESUME                   0
+
+21710           2 LOAD_GLOBAL              1 (NULL + native_export_access)
+               12 CALL                     0
+               20 STORE_FAST               5 (access)
+
+21711          22 LOAD_FAST                5 (access)
+               24 POP_JUMP_IF_NONE        16 (to 58)
+               26 LOAD_FAST                5 (access)
+               28 LOAD_ATTR                3 (NULL|self + root)
+               48 CALL                     0
+               56 JUMP_FORWARD             5 (to 68)
+          >>   58 LOAD_GLOBAL              4 (SERATO_LIBRARY_DIR)
+          >>   68 STORE_FAST               6 (library_dir)
+
+21712          70 LOAD_GLOBAL              6 (os)
+               80 LOAD_ATTR                8 (path)
+              100 LOAD_ATTR               11 (NULL|self + join)
+              120 LOAD_FAST                6 (library_dir)
+              122 LOAD_CONST               2 ('root.sqlite')
+              124 CALL                     2
+              132 STORE_FAST               7 (granted_modern_database)
+
+21713         134 LOAD_FAST                5 (access)
+              136 POP_JUMP_IF_NONE        32 (to 202)
+              138 LOAD_GLOBAL              6 (os)
+              148 LOAD_ATTR                8 (path)
+              168 LOAD_ATTR               11 (NULL|self + join)
+              188 LOAD_FAST                6 (library_dir)
+              190 LOAD_CONST               3 ('Subcrates')
+              192 CALL                     2
+              200 JUMP_FORWARD             5 (to 212)
+          >>  202 LOAD_GLOBAL             12 (SERATO_SUBCRATES_DIR)
+          >>  212 STORE_FAST               8 (subcrates_dir)
+
+21714         214 LOAD_FAST                5 (access)
+              216 POP_JUMP_IF_NONE        32 (to 282)
+              218 LOAD_GLOBAL              6 (os)
+              228 LOAD_ATTR                8 (path)
+              248 LOAD_ATTR               11 (NULL|self + join)
+              268 LOAD_FAST                6 (library_dir)
+              270 LOAD_CONST               4 ('Reports')
+              272 CALL                     2
+              280 JUMP_FORWARD             5 (to 292)
+          >>  282 LOAD_GLOBAL             14 (SERATO_REPORTS_DIR)
+          >>  292 STORE_FAST               9 (reports_dir)
+
+21715         294 LOAD_FAST                5 (access)
+              296 POP_JUMP_IF_NONE        32 (to 362)
+              298 LOAD_GLOBAL              6 (os)
+              308 LOAD_ATTR                8 (path)
+              328 LOAD_ATTR               11 (NULL|self + join)
+              348 LOAD_FAST                6 (library_dir)
+              350 LOAD_CONST               5 ('Export Backups')
+              352 CALL                     2
+              360 JUMP_FORWARD             5 (to 372)
+          >>  362 LOAD_GLOBAL             16 (SERATO_BACKUPS_DIR)
+          >>  372 STORE_FAST              10 (backups_dir)
+
+21716         374 LOAD_GLOBAL              6 (os)
+              384 LOAD_ATTR                8 (path)
+              404 LOAD_ATTR               19 (NULL|self + isdir)
+              424 LOAD_FAST                6 (library_dir)
+              426 CALL                     1
+              434 POP_JUMP_IF_TRUE        14 (to 464)
+
+21717         436 LOAD_GLOBAL             21 (NULL + FileNotFoundError)
+              446 LOAD_CONST               6 ('Serato folder not found: ')
+              448 LOAD_FAST                6 (library_dir)
+              450 FORMAT_VALUE             0
+              452 BUILD_STRING             2
+              454 CALL                     1
+              462 RAISE_VARARGS            1
+
+21718     >>  464 LOAD_GLOBAL             23 (NULL + _mac_process_running)
+              474 LOAD_CONST               7 ('Serato DJ Pro')
+              476 LOAD_CONST               8 ('Serato DJ')
+              478 LOAD_CONST               9 ('Serato DJ Lite')
+              480 CALL                     3
+              488 POP_JUMP_IF_FALSE       11 (to 512)
+
+21719         490 LOAD_GLOBAL             25 (NULL + SeratoMustQuitError)
+
+21720         500 LOAD_CONST              10 ('Fully quit Serato DJ Pro or Serato DJ Lite, then run this export again. Serato can discard crate files written while it is open.')
+
+21719         502 CALL                     1
+              510 RAISE_VARARGS            1
+
+21724     >>  512 LOAD_CONST               1 (None)
+              514 STORE_FAST              11 (modern_database)
+
+21725         516 LOAD_FAST                2 (register_modern)
+              518 POP_JUMP_IF_FALSE       92 (to 704)
+
+21726         520 LOAD_FAST                5 (access)
+              522 POP_JUMP_IF_NONE        34 (to 592)
+              524 LOAD_GLOBAL              6 (os)
+              534 LOAD_ATTR                8 (path)
+              554 LOAD_ATTR               27 (NULL|self + isfile)
+              574 LOAD_FAST                7 (granted_modern_database)
+              576 CALL                     1
+              584 POP_JUMP_IF_FALSE        3 (to 592)
+
+21727         586 LOAD_FAST                7 (granted_modern_database)
+              588 STORE_FAST              11 (modern_database)
+              590 JUMP_FORWARD            56 (to 704)
+
+21728     >>  592 LOAD_FAST                5 (access)
+              594 POP_JUMP_IF_NONE        11 (to 618)
+
+21735         596 LOAD_GLOBAL             29 (NULL + SeratoExportPermissionRequired)
+
+21736         606 LOAD_CONST              11 ("Allow Serato's active Library folder once so AXIOM can add this playlist.")
+
+21735         608 CALL                     1
+              616 RAISE_VARARGS            1
+
+21738     >>  618 LOAD_FAST                5 (access)
+              620 POP_JUMP_IF_NOT_NONE    41 (to 704)
+              622 LOAD_GLOBAL              6 (os)
+              632 LOAD_ATTR                8 (path)
+              652 LOAD_ATTR               27 (NULL|self + isfile)
+              672 LOAD_GLOBAL             30 (SERATO_MODERN_LIBRARY_DB)
+              682 CALL                     1
+              690 POP_JUMP_IF_FALSE        6 (to 704)
+
+21739         692 LOAD_GLOBAL             30 (SERATO_MODERN_LIBRARY_DB)
+              702 STORE_FAST              11 (modern_database)
+
+21741     >>  704 LOAD_FAST               11 (modern_database)
+              706 POP_JUMP_IF_NONE        85 (to 878)
+
+21742         708 LOAD_CONST              12 (0)
+              710 LOAD_CONST              13 (('export_serato_playlist',))
+              712 IMPORT_NAME             16 (utils.serato_playlist_export)
+              714 IMPORT_FROM             17 (export_serato_playlist)
+              716 STORE_FAST              12 (export_serato_playlist)
+              718 POP_TOP
+
+21743         720 NOP
+
+21744         722 PUSH_NULL
+              724 LOAD_FAST               12 (export_serato_playlist)
+
+21745         726 LOAD_FAST               11 (modern_database)
+              728 LOAD_FAST                0 (playlist)
+              730 LOAD_FAST                4 (path_parts)
+              732 POP_JUMP_IF_NONE         2 (to 738)
+              734 LOAD_FAST                1 (name)
+              736 JUMP_FORWARD            26 (to 790)
+          >>  738 LOAD_GLOBAL             37 (NULL + _safe_serato_crate_name)
+              748 LOAD_FAST                1 (name)
+              750 CALL                     1
+              758 LOAD_ATTR               39 (NULL|self + replace)
+              778 LOAD_CONST              14 ('%%')
+              780 LOAD_CONST              15 (' - ')
+              782 CALL                     2
+
+21746     >>  790 LOAD_GLOBAL              6 (os)
+              800 LOAD_ATTR                8 (path)
+              820 LOAD_ATTR               11 (NULL|self + join)
+              840 LOAD_GLOBAL             40 (AXIOM_INTERNAL_EXPORTS_DIR)
+              850 LOAD_CONST              16 ('Serato')
+              852 LOAD_CONST              17 ('Playlist Backups')
+              854 CALL                     3
+
+21747         862 LOAD_FAST                3 (transfer_key)
+              864 LOAD_FAST                4 (path_parts)
+
+21744         866 KW_NAMES                18 (('transfer_key', 'path_parts'))
+              868 CALL                     6
+              876 RETURN_VALUE
+
+21753     >>  878 LOAD_FAST                4 (path_parts)
+              880 POP_JUMP_IF_NONE        18 (to 918)
+
+21754         882 LOAD_CONST              12 (0)
+              884 LOAD_CONST              19 (('export_legacy_hierarchy',))
+              886 IMPORT_NAME             24 (utils.serato_playlist_hierarchy)
+              888 IMPORT_FROM             25 (export_legacy_hierarchy)
+              890 STORE_FAST              14 (export_legacy_hierarchy)
+              892 POP_TOP
+
+21755         894 NOP
+
+21756         896 PUSH_NULL
+              898 LOAD_FAST               14 (export_legacy_hierarchy)
+              900 LOAD_FAST                0 (playlist)
+              902 LOAD_FAST                4 (path_parts)
+              904 LOAD_FAST                8 (subcrates_dir)
+              906 LOAD_FAST               10 (backups_dir)
+              908 CALL                     4
+              916 RETURN_VALUE
+
+21762     >>  918 LOAD_CONST              12 (0)
+              920 LOAD_CONST              20 (('Crate',))
+              922 IMPORT_NAME             26 (serato_tools.crate)
+              924 IMPORT_FROM             27 (Crate)
+              926 STORE_FAST              15 (Crate)
+              928 POP_TOP
+
+21764         930 LOAD_GLOBAL              7 (NULL + os)
+              940 LOAD_ATTR               56 (makedirs)
+              960 LOAD_FAST                8 (subcrates_dir)
+              962 LOAD_CONST              21 (True)
+              964 KW_NAMES                22 (('exist_ok',))
+              966 CALL                     2
+              974 POP_TOP
+
+21765         976 LOAD_GLOBAL              7 (NULL + os)
+              986 LOAD_ATTR               56 (makedirs)
+             1006 LOAD_FAST                9 (reports_dir)
+             1008 LOAD_CONST              21 (True)
+             1010 KW_NAMES                22 (('exist_ok',))
+             1012 CALL                     2
+             1020 POP_TOP
+
+21766        1022 LOAD_GLOBAL              7 (NULL + os)
+             1032 LOAD_ATTR               56 (makedirs)
+             1052 LOAD_FAST               10 (backups_dir)
+             1054 LOAD_CONST              21 (True)
+             1056 KW_NAMES                22 (('exist_ok',))
+             1058 CALL                     2
+             1066 POP_TOP
+
+21768        1068 LOAD_GLOBAL             59 (NULL + datetime)
+             1078 LOAD_ATTR               60 (now)
+             1098 CALL                     0
+             1106 LOAD_ATTR               63 (NULL|self + strftime)
+             1126 LOAD_CONST              23 ('%Y%m%d_%H%M%S')
+             1128 CALL                     1
+             1136 STORE_FAST              16 (timestamp)
+
+21769        1138 LOAD_GLOBAL             65 (NULL + _serato_studio_crate_name)
+             1148 LOAD_FAST                1 (name)
+             1150 CALL                     1
+             1158 STORE_FAST              17 (safe_name)
+
+21770        1160 LOAD_GLOBAL             37 (NULL + _safe_serato_crate_name)
+             1170 LOAD_FAST                1 (name)
+             1172 CALL                     1
+             1180 STORE_FAST              18 (visible_name)
+
+21771        1182 LOAD_GLOBAL              6 (os)
+             1192 LOAD_ATTR                8 (path)
+             1212 LOAD_ATTR               11 (NULL|self + join)
+             1232 LOAD_FAST                8 (subcrates_dir)
+             1234 LOAD_GLOBAL             37 (NULL + _safe_serato_crate_name)
+             1244 LOAD_FAST               17 (safe_name)
+             1246 CALL                     1
+             1254 FORMAT_VALUE             0
+             1256 LOAD_CONST              24 ('.crate')
+             1258 BUILD_STRING             2
+             1260 CALL                     2
+             1268 STORE_FAST              19 (crate_path)
+
+21772        1270 LOAD_GLOBAL              6 (os)
+             1280 LOAD_ATTR                8 (path)
+             1300 LOAD_ATTR               11 (NULL|self + join)
+             1320 LOAD_FAST                8 (subcrates_dir)
+             1322 LOAD_GLOBAL             37 (NULL + _safe_serato_crate_name)
+             1332 LOAD_FAST               18 (visible_name)
+             1334 CALL                     1
+             1342 FORMAT_VALUE             0
+             1344 LOAD_CONST              24 ('.crate')
+             1346 BUILD_STRING             2
+             1348 CALL                     2
+             1356 STORE_FAST              20 (visible_crate_path)
+
+21773        1358 LOAD_FAST               20 (visible_crate_path)
+             1360 LOAD_FAST               19 (crate_path)
+             1362 COMPARE_OP              55 (!=)
+             1366 STORE_FAST              21 (write_visible_copy)
+
+21774        1368 LOAD_GLOBAL              6 (os)
+             1378 LOAD_ATTR                8 (path)
+             1398 LOAD_ATTR               11 (NULL|self + join)
+             1418 LOAD_FAST                9 (reports_dir)
+             1420 LOAD_FAST               17 (safe_name)
+             1422 FORMAT_VALUE             0
+             1424 LOAD_CONST              25 ('_')
+             1426 LOAD_FAST               16 (timestamp)
+             1428 FORMAT_VALUE             0
+             1430 LOAD_CONST              26 ('_serato_crate_report.csv')
+             1432 BUILD_STRING             4
+             1434 CALL                     2
+             1442 STORE_FAST              22 (report_path)
+
+21775        1444 LOAD_CONST              27 ('')
+             1446 STORE_FAST              23 (backup_path)
+
+21776        1448 LOAD_CONST              27 ('')
+             1450 STORE_FAST              24 (visible_backup_path)
+
+21778        1452 LOAD_FAST                5 (access)
+             1454 POP_JUMP_IF_NONE       225 (to 1906)
+
+21781        1456 LOAD_FAST               19 (crate_path)
+             1458 LOAD_FAST               20 (visible_crate_path)
+             1460 LOAD_FAST               22 (report_path)
+
+21782        1462 LOAD_GLOBAL              6 (os)
+             1472 LOAD_ATTR                8 (path)
+             1492 LOAD_ATTR               11 (NULL|self + join)
+             1512 LOAD_FAST               10 (backups_dir)
+             1514 LOAD_FAST               17 (safe_name)
+             1516 FORMAT_VALUE             0
+             1518 LOAD_CONST              25 ('_')
+             1520 LOAD_FAST               16 (timestamp)
+             1522 FORMAT_VALUE             0
+             1524 LOAD_CONST              28 ('.crate.bak')
+             1526 BUILD_STRING             4
+             1528 CALL                     2
+
+21783        1536 LOAD_GLOBAL              6 (os)
+             1546 LOAD_ATTR                8 (path)
+             1566 LOAD_ATTR               11 (NULL|self + join)
+             1586 LOAD_FAST               10 (backups_dir)
+             1588 LOAD_FAST               18 (visible_name)
+             1590 FORMAT_VALUE             0
+             1592 LOAD_CONST              25 ('_')
+             1594 LOAD_FAST               16 (timestamp)
+             1596 FORMAT_VALUE             0
+             1598 LOAD_CONST              28 ('.crate.bak')
+             1600 BUILD_STRING             4
+             1602 CALL                     2
+
+21781        1610 BUILD_TUPLE              5
+             1612 GET_ITER
+          >> 1614 FOR_ITER               143 (to 1904)
+             1618 STORE_FAST              25 (output_path)
+
+21784        1620 LOAD_GLOBAL              6 (os)
+             1630 LOAD_ATTR                8 (path)
+             1650 LOAD_ATTR               67 (NULL|self + lexists)
+             1670 LOAD_FAST               25 (output_path)
+             1672 CALL                     1
+             1680 POP_JUMP_IF_TRUE         1 (to 1684)
+             1682 JUMP_BACKWARD           35 (to 1614)
+
+21785     >> 1684 LOAD_GLOBAL              6 (os)
+             1694 LOAD_ATTR                8 (path)
+             1714 LOAD_ATTR               69 (NULL|self + islink)
+             1734 LOAD_FAST               25 (output_path)
+             1736 CALL                     1
+             1744 POP_JUMP_IF_TRUE        68 (to 1882)
+             1746 LOAD_GLOBAL              6 (os)
+             1756 LOAD_ATTR                8 (path)
+             1776 LOAD_ATTR               27 (NULL|self + isfile)
+             1796 LOAD_FAST               25 (output_path)
+             1798 CALL                     1
+             1806 POP_JUMP_IF_FALSE       37 (to 1882)
+
+21786        1808 LOAD_GLOBAL              7 (NULL + os)
+             1818 LOAD_ATTR               70 (stat)
+             1838 LOAD_FAST               25 (output_path)
+             1840 LOAD_CONST              29 (False)
+             1842 KW_NAMES                30 (('follow_symlinks',))
+             1844 CALL                     2
+             1852 LOAD_ATTR               72 (st_nlink)
+             1872 LOAD_CONST              31 (1)
+             1874 COMPARE_OP              55 (!=)
+             1878 POP_JUMP_IF_TRUE         1 (to 1882)
+             1880 JUMP_BACKWARD          134 (to 1614)
+
+21788     >> 1882 LOAD_GLOBAL             75 (NULL + ValueError)
+             1892 LOAD_CONST              32 ('Serato export stopped: an output is a link or is not a regular file.')
+             1894 CALL                     1
+             1902 RAISE_VARARGS            1
+
+21781     >> 1904 END_FOR
+
+21790     >> 1906 LOAD_GLOBAL              6 (os)
+             1916 LOAD_ATTR                8 (path)
+             1936 LOAD_ATTR               77 (NULL|self + exists)
+             1956 LOAD_FAST               19 (crate_path)
+             1958 CALL                     1
+             1966 POP_JUMP_IF_FALSE       60 (to 2088)
+
+21791        1968 LOAD_GLOBAL              6 (os)
+             1978 LOAD_ATTR                8 (path)
+             1998 LOAD_ATTR               11 (NULL|self + join)
+             2018 LOAD_FAST               10 (backups_dir)
+             2020 LOAD_FAST               17 (safe_name)
+             2022 FORMAT_VALUE             0
+             2024 LOAD_CONST              25 ('_')
+             2026 LOAD_FAST               16 (timestamp)
+             2028 FORMAT_VALUE             0
+             2030 LOAD_CONST              28 ('.crate.bak')
+             2032 BUILD_STRING             4
+             2034 CALL                     2
+             2042 STORE_FAST              23 (backup_path)
+
+21792        2044 LOAD_GLOBAL             79 (NULL + shutil)
+             2054 LOAD_ATTR               80 (copy2)
+             2074 LOAD_FAST               19 (crate_path)
+             2076 LOAD_FAST               23 (backup_path)
+             2078 CALL                     2
+             2086 POP_TOP
+
+21793     >> 2088 LOAD_FAST               21 (write_visible_copy)
+             2090 POP_JUMP_IF_FALSE       91 (to 2274)
+             2092 LOAD_GLOBAL              6 (os)
+             2102 LOAD_ATTR                8 (path)
+             2122 LOAD_ATTR               77 (NULL|self + exists)
+             2142 LOAD_FAST               20 (visible_crate_path)
+             2144 CALL                     1
+             2152 POP_JUMP_IF_FALSE       60 (to 2274)
+
+21794        2154 LOAD_GLOBAL              6 (os)
+             2164 LOAD_ATTR                8 (path)
+             2184 LOAD_ATTR               11 (NULL|self + join)
+             2204 LOAD_FAST               10 (backups_dir)
+             2206 LOAD_FAST               18 (visible_name)
+             2208 FORMAT_VALUE             0
+             2210 LOAD_CONST              25 ('_')
+             2212 LOAD_FAST               16 (timestamp)
+             2214 FORMAT_VALUE             0
+             2216 LOAD_CONST              28 ('.crate.bak')
+             2218 BUILD_STRING             4
+             2220 CALL                     2
+             2228 STORE_FAST              24 (visible_backup_path)
+
+21795        2230 LOAD_GLOBAL             79 (NULL + shutil)
+             2240 LOAD_ATTR               80 (copy2)
+             2260 LOAD_FAST               20 (visible_crate_path)
+             2262 LOAD_FAST               24 (visible_backup_path)
+             2264 CALL                     2
+             2272 POP_TOP
+
+21797     >> 2274 LOAD_CONST              12 (0)
+             2276 STORE_FAST              26 (exported_count)
+
+21798        2278 LOAD_CONST              12 (0)
+             2280 STORE_FAST              27 (missing_count)
+
+21799        2282 LOAD_CONST              12 (0)
+             2284 STORE_FAST              28 (duplicate_count)
+
+21800        2286 LOAD_GLOBAL             83 (NULL + set)
+             2296 CALL                     0
+             2304 STORE_FAST              29 (seen_paths)
+
+21801        2306 BUILD_LIST               0
+             2308 STORE_FAST              30 (report_rows)
+
+21802        2310 BUILD_LIST               0
+             2312 STORE_FAST              31 (exported_paths)
+
+21804        2314 LOAD_GLOBAL             85 (NULL + enumerate)
+             2324 LOAD_FAST                0 (playlist)
+             2326 LOAD_CONST              31 (1)
+             2328 KW_NAMES                33 (('start',))
+             2330 CALL                     2
+             2338 GET_ITER
+          >> 2340 EXTENDED_ARG             1
+             2342 FOR_ITER               390 (to 3126)
+             2346 UNPACK_SEQUENCE          2
+             2350 STORE_FAST              32 (idx)
+             2352 STORE_FAST              33 (track)
+
+21805        2354 LOAD_GLOBAL             47 (NULL + str)
+             2364 LOAD_FAST               33 (track)
+             2366 LOAD_ATTR               87 (NULL|self + get)
+             2386 LOAD_CONST              34 ('path')
+             2388 CALL                     1
+             2396 COPY                     1
+             2398 POP_JUMP_IF_TRUE         2 (to 2404)
+             2400 POP_TOP
+             2402 LOAD_CONST              27 ('')
+          >> 2404 CALL                     1
+             2412 LOAD_ATTR               89 (NULL|self + strip)
+             2432 CALL                     0
+             2440 STORE_FAST              34 (raw_path)
+
+21806        2442 LOAD_FAST               34 (raw_path)
+             2444 POP_JUMP_IF_FALSE       89 (to 2624)
+             2446 LOAD_GLOBAL              6 (os)
+             2456 LOAD_ATTR                8 (path)
+             2476 LOAD_ATTR               91 (NULL|self + abspath)
+             2496 LOAD_GLOBAL              6 (os)
+             2506 LOAD_ATTR                8 (path)
+             2526 LOAD_ATTR               93 (NULL|self + expandvars)
+             2546 LOAD_GLOBAL              6 (os)
+             2556 LOAD_ATTR                8 (path)
+             2576 LOAD_ATTR               95 (NULL|self + expanduser)
+             2596 LOAD_FAST               34 (raw_path)
+             2598 CALL                     1
+             2606 CALL                     1
+             2614 CALL                     1
+             2622 JUMP_FORWARD             1 (to 2626)
+          >> 2624 LOAD_CONST              27 ('')
+          >> 2626 STORE_FAST              35 (normalized_path)
+
+21807        2628 LOAD_GLOBAL             97 (NULL + bool)
+             2638 LOAD_FAST               35 (normalized_path)
+             2640 COPY                     1
+             2642 POP_JUMP_IF_FALSE       31 (to 2706)
+             2644 POP_TOP
+             2646 LOAD_GLOBAL              6 (os)
+             2656 LOAD_ATTR                8 (path)
+             2676 LOAD_ATTR               27 (NULL|self + isfile)
+             2696 LOAD_FAST               35 (normalized_path)
+             2698 CALL                     1
+          >> 2706 CALL                     1
+             2714 STORE_FAST              36 (exists)
+
+21808        2716 LOAD_CONST              35 ('exported')
+             2718 STORE_FAST              37 (status)
+
+21810        2720 LOAD_FAST               36 (exists)
+             2722 POP_JUMP_IF_TRUE         8 (to 2740)
+
+21811        2724 LOAD_FAST               27 (missing_count)
+             2726 LOAD_CONST              31 (1)
+             2728 BINARY_OP               13 (+=)
+             2732 STORE_FAST              27 (missing_count)
+
+21812        2734 LOAD_CONST              36 ('missing_skipped')
+             2736 STORE_FAST              37 (status)
+             2738 JUMP_FORWARD            68 (to 2876)
+
+21814     >> 2740 LOAD_FAST               15 (Crate)
+             2742 LOAD_ATTR               99 (NULL|self + get_relative_path)
+             2762 LOAD_FAST               35 (normalized_path)
+             2764 CALL                     1
+             2772 STORE_FAST              38 (relative_path)
+
+21815        2774 LOAD_FAST               38 (relative_path)
+             2776 LOAD_FAST               29 (seen_paths)
+             2778 CONTAINS_OP              0
+             2780 POP_JUMP_IF_FALSE        8 (to 2798)
+
+21816        2782 LOAD_FAST               28 (duplicate_count)
+             2784 LOAD_CONST              31 (1)
+             2786 BINARY_OP               13 (+=)
+             2790 STORE_FAST              28 (duplicate_count)
+
+21817        2792 LOAD_CONST              37 ('duplicate_skipped')
+             2794 STORE_FAST              37 (status)
+             2796 JUMP_FORWARD            39 (to 2876)
+
+21819     >> 2798 LOAD_FAST               29 (seen_paths)
+             2800 LOAD_ATTR              101 (NULL|self + add)
+             2820 LOAD_FAST               38 (relative_path)
+             2822 CALL                     1
+             2830 POP_TOP
+
+21820        2832 LOAD_FAST               31 (exported_paths)
+             2834 LOAD_ATTR              103 (NULL|self + append)
+             2854 LOAD_FAST               35 (normalized_path)
+             2856 CALL                     1
+             2864 POP_TOP
+
+21821        2866 LOAD_FAST               26 (exported_count)
+             2868 LOAD_CONST              31 (1)
+             2870 BINARY_OP               13 (+=)
+             2874 STORE_FAST              26 (exported_count)
+
+21823     >> 2876 LOAD_FAST               30 (report_rows)
+             2878 LOAD_ATTR              103 (NULL|self + append)
+
+21824        2898 LOAD_FAST               32 (idx)
+
+21825        2900 LOAD_FAST               33 (track)
+             2902 LOAD_ATTR               87 (NULL|self + get)
+             2922 LOAD_CONST              38 ('title')
+             2924 CALL                     1
+             2932 COPY                     1
+             2934 POP_JUMP_IF_TRUE        21 (to 2978)
+             2936 POP_TOP
+             2938 LOAD_FAST               33 (track)
+             2940 LOAD_ATTR               87 (NULL|self + get)
+             2960 LOAD_CONST              39 ('filename')
+             2962 CALL                     1
+             2970 COPY                     1
+             2972 POP_JUMP_IF_TRUE         2 (to 2978)
+             2974 POP_TOP
+             2976 LOAD_CONST              27 ('')
+
+21826     >> 2978 LOAD_FAST               33 (track)
+             2980 LOAD_ATTR               87 (NULL|self + get)
+             3000 LOAD_CONST              40 ('artist')
+             3002 CALL                     1
+             3010 COPY                     1
+             3012 POP_JUMP_IF_TRUE         2 (to 3018)
+             3014 POP_TOP
+             3016 LOAD_CONST              27 ('')
+
+21827     >> 3018 LOAD_GLOBAL            105 (NULL + coerce_release_year)
+             3028 LOAD_FAST               33 (track)
+             3030 LOAD_ATTR               87 (NULL|self + get)
+             3050 LOAD_CONST              41 ('year')
+             3052 CALL                     1
+             3060 CALL                     1
+             3068 COPY                     1
+             3070 POP_JUMP_IF_TRUE         2 (to 3076)
+             3072 POP_TOP
+             3074 LOAD_CONST              27 ('')
+
+21828     >> 3076 LOAD_GLOBAL            107 (NULL + get_track_era)
+             3086 LOAD_FAST               33 (track)
+             3088 CALL                     1
+
+21829        3096 LOAD_FAST               35 (normalized_path)
+             3098 COPY                     1
+             3100 POP_JUMP_IF_TRUE         2 (to 3106)
+             3102 POP_TOP
+             3104 LOAD_FAST               34 (raw_path)
+
+21830     >> 3106 LOAD_FAST               37 (status)
+
+21823        3108 LOAD_CONST              42 (('index', 'title', 'artist', 'year', 'era', 'path', 'status'))
+             3110 BUILD_CONST_KEY_MAP      7
+             3112 CALL                     1
+             3120 POP_TOP
+             3122 EXTENDED_ARG             1
+             3124 JUMP_BACKWARD          393 (to 2340)
+
+21804     >> 3126 END_FOR
+
+21833        3128 LOAD_FAST               31 (exported_paths)
+             3130 POP_JUMP_IF_TRUE        11 (to 3154)
+
+21834        3132 LOAD_GLOBAL             75 (NULL + ValueError)
+             3142 LOAD_CONST              43 ('No available tracks to export. No existing crate was replaced.')
+             3144 CALL                     1
+             3152 RAISE_VARARGS            1
+
+21835     >> 3154 LOAD_GLOBAL            109 (NULL + _save_serato_crate_file)
+             3164 LOAD_FAST               15 (Crate)
+             3166 LOAD_FAST               31 (exported_paths)
+             3168 LOAD_FAST               19 (crate_path)
+             3170 CALL                     3
+             3178 STORE_FAST              39 (verified_count)
+
+21836        3180 LOAD_CONST              12 (0)
+             3182 STORE_FAST              40 (visible_verified_count)
+
+21837        3184 LOAD_FAST               21 (write_visible_copy)
+             3186 POP_JUMP_IF_FALSE       13 (to 3214)
+
+21838        3188 LOAD_GLOBAL            109 (NULL + _save_serato_crate_file)
+             3198 LOAD_FAST               15 (Crate)
+             3200 LOAD_FAST               31 (exported_paths)
+             3202 LOAD_FAST               20 (visible_crate_path)
+             3204 CALL                     3
+             3212 STORE_FAST              40 (visible_verified_count)
+
+21840     >> 3214 LOAD_GLOBAL              6 (os)
+             3224 LOAD_ATTR                8 (path)
+             3244 LOAD_ATTR               27 (NULL|self + isfile)
+             3264 LOAD_FAST               19 (crate_path)
+             3266 CALL                     1
+             3274 STORE_FAST              41 (crate_exists)
+
+21841        3276 LOAD_GLOBAL             97 (NULL + bool)
+             3286 LOAD_FAST               21 (write_visible_copy)
+             3288 UNARY_NOT
+             3290 COPY                     1
+             3292 POP_JUMP_IF_TRUE        31 (to 3356)
+             3294 POP_TOP
+             3296 LOAD_GLOBAL              6 (os)
+             3306 LOAD_ATTR                8 (path)
+             3326 LOAD_ATTR               27 (NULL|self + isfile)
+             3346 LOAD_FAST               20 (visible_crate_path)
+             3348 CALL                     1
+          >> 3356 CALL                     1
+             3364 STORE_FAST              42 (visible_crate_exists)
+
+21842        3366 LOAD_GLOBAL             97 (NULL + bool)
+
+21843        3376 LOAD_FAST               41 (crate_exists)
+             3378 COPY                     1
+             3380 POP_JUMP_IF_FALSE       21 (to 3424)
+             3382 POP_TOP
+
+21844        3384 LOAD_FAST               42 (visible_crate_exists)
+
+21843        3386 COPY                     1
+             3388 POP_JUMP_IF_FALSE       17 (to 3424)
+             3390 POP_TOP
+
+21845        3392 LOAD_FAST               39 (verified_count)
+             3394 LOAD_FAST               26 (exported_count)
+             3396 COMPARE_OP              40 (==)
+
+21843        3400 COPY                     1
+             3402 POP_JUMP_IF_FALSE       10 (to 3424)
+             3404 POP_TOP
+
+21846        3406 LOAD_FAST               21 (write_visible_copy)
+             3408 UNARY_NOT
+             3410 COPY                     1
+             3412 POP_JUMP_IF_TRUE         5 (to 3424)
+             3414 POP_TOP
+             3416 LOAD_FAST               40 (visible_verified_count)
+             3418 LOAD_FAST               26 (exported_count)
+             3420 COMPARE_OP              40 (==)
+
+21842     >> 3424 CALL                     1
+             3432 STORE_FAST              43 (delivery_verified)
+
+21848        3434 LOAD_FAST               43 (delivery_verified)
+             3436 POP_JUMP_IF_TRUE        11 (to 3460)
+
+21849        3438 LOAD_GLOBAL            111 (NULL + IOError)
+             3448 LOAD_CONST              44 ('AXIOM could not verify the finished Serato crate on disk.')
+             3450 CALL                     1
+             3458 RAISE_VARARGS            1
+
+21851     >> 3460 LOAD_GLOBAL            113 (NULL + open)
+             3470 LOAD_FAST               22 (report_path)
+             3472 LOAD_CONST              45 ('w')
+             3474 LOAD_CONST              46 ('utf-8')
+             3476 LOAD_CONST              27 ('')
+             3478 KW_NAMES                47 (('encoding', 'newline'))
+             3480 CALL                     4
+             3488 BEFORE_WITH
+             3490 STORE_FAST              44 (f)
+
+21852        3492 LOAD_GLOBAL            115 (NULL + csv)
+             3502 LOAD_ATTR              116 (DictWriter)
+             3522 LOAD_FAST               44 (f)
+             3524 BUILD_LIST               0
+             3526 LOAD_CONST              42 (('index', 'title', 'artist', 'year', 'era', 'path', 'status'))
+             3528 LIST_EXTEND              1
+             3530 KW_NAMES                48 (('fieldnames',))
+             3532 CALL                     2
+             3540 STORE_FAST              45 (writer)
+
+21853        3542 LOAD_FAST               45 (writer)
+             3544 LOAD_ATTR              119 (NULL|self + writeheader)
+             3564 CALL                     0
+             3572 POP_TOP
+
+21854        3574 LOAD_FAST               45 (writer)
+             3576 LOAD_ATTR              121 (NULL|self + writerows)
+             3596 LOAD_FAST               30 (report_rows)
+             3598 CALL                     1
+             3606 POP_TOP
+
+21851        3608 LOAD_CONST               1 (None)
+             3610 LOAD_CONST               1 (None)
+             3612 LOAD_CONST               1 (None)
+             3614 CALL                     2
+             3622 POP_TOP
+
+21856     >> 3624 BUILD_MAP                0
+
+21857        3626 LOAD_CONST              49 ('success')
+             3628 LOAD_CONST              21 (True)
+
+21856        3630 MAP_ADD                  1
+
+21858        3632 LOAD_CONST              50 ('message')
+             3634 LOAD_CONST              51 ('Serato crate file saved. Source audio remains untouched.')
+
+21856        3636 MAP_ADD                  1
+
+21859        3638 LOAD_CONST              52 ('destination_app_verified')
+             3640 LOAD_CONST              29 (False)
+
+21856        3642 MAP_ADD                  1
+
+21860        3644 LOAD_CONST              53 ('serato_library_registered')
+             3646 LOAD_CONST              29 (False)
+
+21856        3648 MAP_ADD                  1
+
+21861        3650 LOAD_CONST              54 ('crate_path')
+             3652 LOAD_FAST               19 (crate_path)
+
+21856        3654 MAP_ADD                  1
+
+21862        3656 LOAD_CONST              55 ('top_level_crate_path')
+             3658 LOAD_FAST               21 (write_visible_copy)
+             3660 POP_JUMP_IF_FALSE        2 (to 3666)
+             3662 LOAD_FAST               20 (visible_crate_path)
+             3664 JUMP_FORWARD             1 (to 3668)
+          >> 3666 LOAD_CONST              27 ('')
+
+21856     >> 3668 MAP_ADD                  1
+
+21863        3670 LOAD_CONST              56 ('backup_path')
+             3672 LOAD_FAST               23 (backup_path)
+
+21856        3674 MAP_ADD                  1
+
+21864        3676 LOAD_CONST              57 ('top_level_backup_path')
+             3678 LOAD_FAST               24 (visible_backup_path)
+
+21856        3680 MAP_ADD                  1
+
+21865        3682 LOAD_CONST              58 ('report_path')
+             3684 LOAD_FAST               22 (report_path)
+
+21856        3686 MAP_ADD                  1
+
+21866        3688 LOAD_CONST              59 ('serato_subcrates_dir')
+             3690 LOAD_FAST                8 (subcrates_dir)
+
+21856        3692 MAP_ADD                  1
+
+21867        3694 LOAD_CONST              60 ('serato_lookup')
+             3696 LOAD_GLOBAL            122 (SERATO_STUDIO_CRATE_ROOT)
+             3706 FORMAT_VALUE             0
+             3708 LOAD_CONST              61 (' > ')
+             3710 LOAD_FAST               18 (visible_name)
+             3712 FORMAT_VALUE             0
+             3714 BUILD_STRING             3
+             3716 BUILD_LIST               1
+             3718 LOAD_FAST               21 (write_visible_copy)
+             3720 POP_JUMP_IF_FALSE        3 (to 3728)
+             3722 LOAD_FAST               18 (visible_name)
+             3724 BUILD_LIST               1
+             3726 JUMP_FORWARD             1 (to 3730)
+          >> 3728 BUILD_LIST               0
+          >> 3730 BINARY_OP                0 (+)
+
+21856        3734 MAP_ADD                  1
+
+21868        3736 LOAD_CONST              62 ('serato_restart_hint')
+             3738 LOAD_CONST              63 ('Serato was closed during export and can now open the verified crate safely.')
+
+21856        3740 MAP_ADD                  1
+
+21869        3742 LOAD_CONST              64 ('total_tracks')
+             3744 LOAD_GLOBAL            125 (NULL + len)
+             3754 LOAD_FAST                0 (playlist)
+             3756 CALL                     1
+
+21856        3764 MAP_ADD                  1
+
+21870        3766 LOAD_CONST              65 ('exported_tracks')
+             3768 LOAD_FAST               26 (exported_count)
+
+21856        3770 MAP_ADD                  1
+
+21871        3772 LOAD_CONST              66 ('verified_crate_tracks')
+             3774 LOAD_FAST               39 (verified_count)
+
+21856        3776 MAP_ADD                  1
+
+21872        3778 LOAD_CONST              67 ('verified_top_level_crate_tracks')
+             3780 LOAD_FAST               40 (visible_verified_count)
+
+21856        3782 MAP_ADD                  1
+
+21873        3784 LOAD_CONST              68 ('crate_exists')
+             3786 LOAD_FAST               41 (crate_exists)
+
+21856        3788 MAP_ADD                  1
+
+21874        3790 LOAD_FAST               42 (visible_crate_exists)
+
+21875        3792 LOAD_FAST               43 (delivery_verified)
+
+21876        3794 LOAD_CONST              29 (False)
+
+21877        3796 LOAD_FAST               27 (missing_count)
+
+21878        3798 LOAD_FAST               28 (duplicate_count)
+
+21856        3800 LOAD_CONST              69 (('top_level_crate_exists', 'delivery_verified', 'serato_running', 'missing_tracks', 'duplicate_tracks'))
+             3802 BUILD_CONST_KEY_MAP      5
+             3804 DICT_UPDATE              1
+             3806 RETURN_VALUE
+          >> 3808 PUSH_EXC_INFO
+
+21748        3810 LOAD_GLOBAL             42 (RuntimeError)
+             3820 CHECK_EXC_MATCH
+             3822 POP_JUMP_IF_FALSE       38 (to 3900)
+             3824 STORE_FAST              13 (exc)
+
+21749        3826 LOAD_GLOBAL             45 (NULL + _is_dj_software_open_runtime_error)
+             3836 LOAD_FAST               13 (exc)
+             3838 CALL                     1
+             3846 POP_JUMP_IF_FALSE       21 (to 3890)
+
+21750        3848 LOAD_GLOBAL             25 (NULL + SeratoMustQuitError)
+             3858 LOAD_GLOBAL             47 (NULL + str)
+             3868 LOAD_FAST               13 (exc)
+             3870 CALL                     1
+             3878 CALL                     1
+             3886 LOAD_FAST               13 (exc)
+             3888 RAISE_VARARGS            2
+
+21751     >> 3890 RAISE_VARARGS            0
+          >> 3892 LOAD_CONST               1 (None)
+             3894 STORE_FAST              13 (exc)
+             3896 DELETE_FAST             13 (exc)
+             3898 RERAISE                  1
+
+21748     >> 3900 RERAISE                  0
+          >> 3902 COPY                     3
+             3904 POP_EXCEPT
+             3906 RERAISE                  1
+          >> 3908 PUSH_EXC_INFO
+
+21757        3910 LOAD_GLOBAL             42 (RuntimeError)
+             3920 CHECK_EXC_MATCH
+             3922 POP_JUMP_IF_FALSE       38 (to 4000)
+             3924 STORE_FAST              13 (exc)
+
+21758        3926 LOAD_GLOBAL             45 (NULL + _is_dj_software_open_runtime_error)
+             3936 LOAD_FAST               13 (exc)
+             3938 CALL                     1
+             3946 POP_JUMP_IF_FALSE       21 (to 3990)
+
+21759        3948 LOAD_GLOBAL             25 (NULL + SeratoMustQuitError)
+             3958 LOAD_GLOBAL             47 (NULL + str)
+             3968 LOAD_FAST               13 (exc)
+             3970 CALL                     1
+             3978 CALL                     1
+             3986 LOAD_FAST               13 (exc)
+             3988 RAISE_VARARGS            2
+
+21760     >> 3990 RAISE_VARARGS            0
+          >> 3992 LOAD_CONST               1 (None)
+             3994 STORE_FAST              13 (exc)
+             3996 DELETE_FAST             13 (exc)
+             3998 RERAISE                  1
+
+21757     >> 4000 RERAISE                  0
+          >> 4002 COPY                     3
+             4004 POP_EXCEPT
+             4006 RERAISE                  1
+
+21851     >> 4008 PUSH_EXC_INFO
+             4010 WITH_EXCEPT_START
+             4012 POP_JUMP_IF_TRUE         1 (to 4016)
+             4014 RERAISE                  2
+          >> 4016 POP_TOP
+             4018 POP_EXCEPT
+             4020 POP_TOP
+             4022 POP_TOP
+             4024 JUMP_BACKWARD          201 (to 3624)
+          >> 4026 COPY                     3
+             4028 POP_EXCEPT
+             4030 RERAISE                  1
+ExceptionTable:
+  722 to 874 -> 3808 [0]
+  896 to 914 -> 3908 [0]
+  3490 to 3606 -> 4008 [1] lasti
+  3808 to 3824 -> 3902 [1] lasti
+  3826 to 3890 -> 3892 [1] lasti
+  3892 to 3900 -> 3902 [1] lasti
+  3908 to 3924 -> 4002 [1] lasti
+  3926 to 3990 -> 3992 [1] lasti
+  3992 to 4000 -> 4002 [1] lasti
+  4008 to 4016 -> 4026 [3] lasti

@@ -1,0 +1,81 @@
+/* Saved sets share the Record Vault handoff language without touching DAW layout. */
+html body .vault-playlist { --vault-provider:#a3ff00; }
+html body .vault-playlist .vault-export-card { background:#0d110e!important; }
+html body .vault-playlist .playlist-vault-title { font:400 44px/1.06 'Bebas Neue',sans-serif!important; color:#f4f5f2!important; margin:0 0 16px!important; }
+.playlist-vault-note { color:#aeb8ab; font:13px/1.5 'Barlow',sans-serif; margin:16px 0 28px; }
+html body .vault-playlist .playlist-vault-art img { width:100%; left:0; }
+html body #tab-content-playlists { --playlist-ink:#f4f5f2; --playlist-muted:#a5b0a2; --playlist-line:#343c32; --playlist-panel:#101310; --playlist-accent:#a3ff00; background:#070807!important; }
+html body #tab-content-playlists > .flex:first-child { gap:18px; align-items:center; flex-wrap:wrap; }
+html body #tab-content-playlists > .flex:first-child p { color:var(--playlist-muted)!important; margin:0 0 7px!important; font:600 10px 'Barlow',sans-serif; letter-spacing:2px; }
+html body #tab-content-playlists h2 { font-size:52px!important; color:var(--playlist-ink)!important; }
+html body #tab-content-playlists .playlist-toolbar-actions { flex-wrap:wrap; }
+html body #tab-content-playlists .playlist-toolbar-actions button { padding:12px 18px; min-height:44px; background:var(--playlist-panel); border:1px solid var(--playlist-line); color:var(--playlist-ink); font-size:17px!important; }
+html body #tab-content-playlists .playlist-toolbar-actions button:first-child { background:var(--playlist-accent)!important; color:#071005!important; border-color:var(--playlist-accent)!important; }
+html body #tab-content-playlists .playlists-shell { gap:16px!important; border:0; background:transparent!important; grid-template-columns:300px minmax(0,1fr)!important; }
+html body #tab-content-playlists .playlists-shell > aside,html body #tab-content-playlists .playlists-shell > section { background:var(--playlist-panel)!important; border:1px solid var(--playlist-line)!important; border-radius:6px!important; overflow:hidden; }
+html body #tab-content-playlists .playlists-shell > aside > :first-child,html body #tab-content-playlists .playlists-shell > section > :first-child { min-height:82px!important; padding:16px!important; border-color:var(--playlist-line)!important; }
+html body #tab-content-playlists #playlist-listen-title { font-size:36px!important; line-height:1.1; color:var(--playlist-ink)!important; white-space:normal; overflow-wrap:anywhere; }
+html body #tab-content-playlists #playlist-listen-title + button { flex:none; }
+html body #tab-content-playlists #playlist-listen-kicker { color:var(--playlist-muted)!important; font:600 10px 'Barlow',sans-serif; letter-spacing:1px; margin-bottom:9px; }
+html body #tab-content-playlists #saved-playlists-list { padding:10px!important; }
+html body #tab-content-playlists #saved-playlists-list .playlist-crate-wrapper { border:0!important; margin-bottom:10px!important; }
+html body #tab-content-playlists #saved-playlists-list .playlist-crate-row { min-height:0!important; border:1px solid var(--playlist-line)!important; border-radius:4px!important; padding:14px!important; background:#0a0d0a!important; }
+.playlist-crate-heading { display:flex; align-items:center; gap:12px; min-width:0; }
+.playlist-crate-art { width:62px; height:62px; object-fit:contain; flex:none; }
+html body #tab-content-playlists #saved-playlists-list .playlist-crate-title { font-size:23px!important; white-space:normal; overflow-wrap:anywhere; line-height:1.1; color:var(--playlist-ink)!important; }
+html body #tab-content-playlists .playlist-crate-actions { flex-direction:row; align-items:center; justify-content:flex-start; flex-wrap:wrap; gap:7px; margin-top:13px; }
+html body #tab-content-playlists .playlist-crate-actions button { min-height:32px; font:16px 'Bebas Neue',sans-serif!important; padding:7px 10px; border:1px solid var(--playlist-line); }
+html body #tab-content-playlists #saved-playlists-list .playlist-crate-row.active { background:#17220e!important; border-color:var(--playlist-accent)!important; color:var(--playlist-ink)!important; box-shadow:inset 3px 0 var(--playlist-accent)!important; }
+html body #tab-content-playlists #saved-playlists-list .playlist-crate-row.active p { color:var(--playlist-ink)!important; }
+html body #tab-content-playlists #saved-playlists-list .playlist-crate-row.active .playlist-quiet-action { color:var(--playlist-muted)!important; }
+html body #tab-content-playlists #saved-playlists-list .playlist-crate-row .playlist-edit-cta { background:var(--playlist-accent)!important; color:#071005!important; border-color:var(--playlist-accent)!important; box-shadow:none!important; }
+html body #tab-content-playlists .playlist-listen-row { border-color:var(--playlist-line)!important; }
+html body #tab-content-playlists .playlist-listen-row:hover,html body #tab-content-playlists .playlist-listen-row.playing-track { background:#1a2116!important; }
+html body #tab-content-playlists .playlist-track-title { font-size:21px!important; color:var(--playlist-ink)!important; }
+html body #tab-content-playlists .playlist-track-info { display:flex; gap:12px; align-items:center; min-width:0; }
+.playlist-track-cover { width:42px; height:42px; object-fit:cover; border-radius:3px; flex:none; }
+html body #tab-content-playlists .playlist-empty-state { min-height:100%; border:0; color:var(--playlist-muted); padding:30px; }
+.playlist-empty-state img { width:180px; height:180px; object-fit:contain; margin:0 auto 18px; }
+html body #tab-content-playlists button:focus-visible,html body #tab-content-playlists [role=button]:focus-visible { outline:2px solid var(--playlist-accent); outline-offset:3px; }
+html body.light-mode #tab-content-playlists { --playlist-ink:#07111f; --playlist-muted:#40516a; --playlist-line:#c5d0df; --playlist-panel:#f4f7fc; --playlist-accent:#0047ab; background:#fff!important; }
+html body.light-mode #tab-content-playlists #saved-playlists-list .playlist-crate-row { background:#fff!important; }
+html body.light-mode #tab-content-playlists #saved-playlists-list .playlist-crate-row.active { background:#e7eef9!important; }
+html body.light-mode #tab-content-playlists .playlist-toolbar-actions button:first-child,html body.light-mode #tab-content-playlists #saved-playlists-list .playlist-crate-row .playlist-edit-cta { color:#fff!important; }
+html body.light-mode #tab-content-playlists .playlist-listen-row:hover,html body.light-mode #tab-content-playlists .playlist-listen-row.playing-track { background:#e7eef9!important; }
+@media(max-width:1180px) {
+ html body #tab-content-playlists .playlists-shell { grid-template-columns:1fr!important; grid-template-rows:205px minmax(230px,1fr); overflow:auto; }
+ html body #tab-content-playlists #saved-playlists-list { display:flex; overflow-x:auto!important; overflow-y:hidden!important; max-height:none; gap:10px; }
+ html body #tab-content-playlists #saved-playlists-list .playlist-crate-wrapper { width:260px; min-width:260px; margin:0!important; }
+ html body #tab-content-playlists .playlists-shell > aside > :first-child { min-height:44px!important; padding:8px 16px!important; }
+ html body #tab-content-playlists .playlist-crate-art { width:44px; height:44px; }
+ html body #tab-content-playlists #playlist-listen-tracks .playlist-listen-row { padding:12px!important; gap:8px; }
+}
+@media(prefers-reduced-motion:reduce) { .playlist-crate-wrapper { transition:none!important; } }
+
+html body .vault-playlist .vault-brand > span { max-width:none; }
+html body #tab-content-playlists #playlist-listen-tracks .playlist-listen-grid { grid-template-columns:44px minmax(0,1fr) 54px 38px 46px; gap:12px!important; }
+html body #tab-content-playlists .playlist-track-title { white-space:normal!important; line-height:1.2; overflow-wrap:anywhere; }
+html body #tab-content-playlists .playlist-crate-actions .delete { color:#e7a4a6!important; }
+html body.light-mode #tab-content-playlists .playlist-crate-actions .delete { color:#a22732!important; }
+@media(max-width:1180px) { html body #tab-content-playlists #playlist-listen-tracks .playlist-listen-grid { grid-template-columns:42px minmax(0,1fr) 52px 36px; gap:8px!important; } }
+
+/* Selected Day Mode crates retain dark labels on their pale blue surface. */
+html body.light-mode #tab-content-playlists #saved-playlists-list .playlist-crate-row.active :is(p,span,.playlist-quiet-action) { color:var(--playlist-ink)!important; background:transparent!important; }
+html body.light-mode #tab-content-playlists #saved-playlists-list .playlist-crate-row.active .playlist-edit-cta { background:#0047ab!important; color:#fff!important; border-color:#0047ab!important; }
+html body.light-mode #tab-content-playlists :is(p,#saved-playlists-count,#playlist-listen-total) { background:transparent!important; }
+html body.light-mode #tab-content-playlists #playlist-listen-tracks .playlist-listen-row > div { background:transparent!important; }
+
+html body #tab-content-playlists .playlist-crate-actions button { min-width:0!important; }
+html body #tab-content-playlists .playlist-export-cta {
+  background:var(--playlist-panel)!important; color:var(--playlist-ink)!important;
+  -webkit-text-fill-color:var(--playlist-ink)!important; border:1px solid var(--playlist-accent)!important;
+  padding:7px 10px; min-height:32px; flex:none; font:16px 'Bebas Neue',sans-serif!important;
+}
+html body .playlist-export-choice .axiom-dialog-btn.primary,
+html body .playlist-export-choice .axiom-dialog-btn.primary:is(:hover,:focus,:active,:disabled) {
+  background:#a3ff00!important; color:#071005!important; -webkit-text-fill-color:#071005!important;
+}
+@media(max-width:1180px) {
+ html body #tab-content-playlists .playlist-crate-actions { gap:4px; flex-wrap:nowrap; }
+ html body #tab-content-playlists .playlist-crate-actions button { padding:6px!important; font-size:14px!important; }
+}

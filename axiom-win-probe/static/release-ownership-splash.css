@@ -1,0 +1,150 @@
+.release-splash-overlay.update-build .release-splash-brand {
+  overflow-y: auto !important;
+  overscroll-behavior: contain;
+  scrollbar-color: #5d753d #10130e;
+}
+
+.release-splash-overlay .release-draft-edit-link {
+  position: absolute;
+  top: 14px;
+  right: 18px;
+  z-index: 2;
+  padding: 9px 14px;
+  border: 1px solid #a3ff00;
+  border-radius: 3px;
+  background: #a3ff00;
+  color: #071005;
+  font: 800 12px Arial, sans-serif;
+  text-decoration: none;
+}
+
+.release-splash-overlay .release-draft-edit-link:focus-visible {
+  outline: 2px solid #f4f5f2;
+  outline-offset: 3px;
+}
+
+.release-splash-business {
+  width: 100%;
+  margin-top: 18px;
+  border-top: 1px solid #394434;
+}
+
+.release-splash-business[hidden] { display: none; }
+
+.release-splash-business-item {
+  border-bottom: 1px solid #394434;
+  color: #f4f5f2;
+}
+
+.release-splash-business-item summary {
+  padding: 11px 2px;
+  color: #a3ff00;
+  font: 700 15px "Bebas Neue", sans-serif;
+  cursor: pointer;
+}
+
+.release-splash-business-item summary:focus-visible {
+  outline: 2px solid #a3ff00;
+  outline-offset: -2px;
+}
+
+.release-splash-business-item div { padding: 0 2px 12px; }
+.release-splash-business-item strong { display: block; color: #f4f5f2; font-size: 12px; line-height: 1.4; }
+.release-splash-business-item p { margin: 8px 0 0; color: #bec9b6; font-size: 12px; line-height: 1.45; }
+
+.release-splash-overlay.update-build .release-splash-build {
+  position: static !important;
+  margin-top: 20px !important;
+}
+
+/* Preserve the textured logo in any Day Mode welcome fallback. Flattening
+   the opaque Pro image with brightness(0) turns it into a solid square. */
+html body.light-mode #release-splash.release-splash-overlay.active .release-splash-mark {
+  filter: hue-rotate(140deg) saturate(.9) brightness(.96)
+    drop-shadow(0 0 10px rgba(0, 71, 171, .22)) !important;
+  mix-blend-mode: normal !important;
+}
+
+/* Owner request: Pro's welcome always presents in Night Mode. These rules
+   isolate only this overlay; Day Mode and its saved preference stay intact. */
+html body.light-mode #release-splash.release-splash-overlay.release-splash-pro-night.active:is(.update-build, .release-splash-overlay) {
+  --accent: #a3ff00;
+  --axiom-final-green: #a3ff00;
+  --axiom-final-cyan: #00d9ff;
+  color-scheme: dark;
+}
+html body.light-mode #release-splash.release-splash-overlay.release-splash-pro-night.active:is(.update-build, .release-splash-overlay) .release-splash-shell {
+  border-color: rgba(255, 255, 255, .18) !important;
+  background: #030403 !important;
+  color: #f4f5f2 !important;
+  box-shadow: 0 28px 80px rgba(0, 0, 0, .68) !important;
+}
+html body.light-mode #release-splash.release-splash-overlay.release-splash-pro-night.active:is(.update-build, .release-splash-overlay) .release-splash-brand {
+  border-color: rgba(255, 255, 255, .34) !important;
+  background: radial-gradient(circle at 30% 25%, rgba(163, 255, 0, .065), transparent 34%), #030403 !important;
+  color: #f4f5f2 !important;
+}
+html body.light-mode #release-splash.release-splash-overlay.release-splash-pro-night.active:is(.update-build, .release-splash-overlay) .release-splash-content,
+html body.light-mode #release-splash.release-splash-overlay.release-splash-pro-night.active:is(.update-build, .release-splash-overlay) .release-splash-actions,
+html body.light-mode #release-splash.release-splash-overlay.release-splash-pro-night.active:is(.update-build, .release-splash-overlay) .release-splash-footer {
+  background: #030403 !important;
+  color: #f4f5f2 !important;
+  border-color: rgba(255, 255, 255, .14) !important;
+}
+html body.light-mode #release-splash.release-splash-overlay.release-splash-pro-night.active:is(.update-build, .release-splash-overlay) .release-splash-mark {
+  filter: hue-rotate(20deg) saturate(.9) brightness(.96)
+    drop-shadow(0 0 10px rgba(163, 255, 0, .46))
+    drop-shadow(0 0 24px rgba(163, 255, 0, .22)) !important;
+  mix-blend-mode: normal !important;
+}
+html body.light-mode #release-splash.release-splash-overlay.release-splash-pro-night.active:is(.update-build, .release-splash-overlay) :is(.release-splash-version, .release-splash-version strong, .release-splash-statement, .release-splash-headline, .release-splash-feature strong, .release-splash-disclosure summary) {
+  color: #f4f5f2 !important;
+  -webkit-text-fill-color: #f4f5f2 !important;
+}
+html body.light-mode #release-splash.release-splash-overlay.release-splash-pro-night.active:is(.update-build, .release-splash-overlay) .release-splash-identity-copy {
+  color: #d0d3d0 !important;
+  -webkit-text-fill-color: #d0d3d0 !important;
+}
+html body.light-mode #release-splash.release-splash-overlay.release-splash-pro-night.active:is(.update-build, .release-splash-overlay) :is(.release-splash-title, .release-splash-feature > span > span, .release-splash-brief, .release-splash-detail) {
+  color: #c9ccc9 !important;
+  -webkit-text-fill-color: #c9ccc9 !important;
+}
+html body.light-mode #release-splash.release-splash-overlay.release-splash-pro-night.active:is(.update-build, .release-splash-overlay) :is(.release-splash-latest, .release-splash-business-item summary) {
+  color: #a3ff00 !important;
+  -webkit-text-fill-color: #a3ff00 !important;
+}
+html body.light-mode #release-splash.release-splash-overlay.release-splash-pro-night.active:is(.update-build, .release-splash-overlay) .release-splash-feature {
+  border-bottom-color: rgba(255, 255, 255, .14) !important;
+  background: transparent !important;
+  color: #f4f5f2 !important;
+  -webkit-text-fill-color: #f4f5f2 !important;
+}
+html body.light-mode #release-splash.release-splash-overlay.release-splash-pro-night.active:is(.update-build, .release-splash-overlay).update-build .release-splash-feature::before {
+  background: #a3ff00 !important;
+  color: #a3ff00 !important;
+}
+html body.light-mode #release-splash.release-splash-overlay.release-splash-pro-night.active:is(.update-build, .release-splash-overlay) .release-splash-btn.primary {
+  border-color: #a9b0a7 !important;
+  background: linear-gradient(180deg, #202521 0%, #0a0d0a 48%, #030503 72%, #171d15 100%) !important;
+  color: #f7faf4 !important;
+  -webkit-text-fill-color: #f7faf4 !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.85), inset 0 -2px 0 rgba(163,255,0,.56),
+    0 0 0 2px #242b22, 0 0 0 4px rgba(163,255,0,.55),
+    0 9px 26px rgba(0,0,0,.7), 0 0 20px rgba(163,255,0,.17) !important;
+}
+html body.light-mode #release-splash.release-splash-overlay.release-splash-pro-night.active:is(.update-build, .release-splash-overlay) .release-splash-btn.primary:hover,
+html body.light-mode #release-splash.release-splash-overlay.release-splash-pro-night.active:is(.update-build, .release-splash-overlay) .release-splash-btn.primary:focus-visible {
+  border-color: #b8ff40 !important;
+  background: #a3ff00 !important;
+  color: #071005 !important;
+  -webkit-text-fill-color: #071005 !important;
+  box-shadow: 0 0 0 2px #1f2818, 0 0 0 4px #a3ff00, 0 0 28px rgba(163,255,0,.48) !important;
+}
+html body.light-mode #release-splash.release-splash-overlay.release-splash-pro-night.active:is(.update-build, .release-splash-overlay) .release-splash-studio-item strong {
+  color: #f4f5f2 !important;
+  -webkit-text-fill-color: #f4f5f2 !important;
+}
+html body.light-mode #release-splash.release-splash-overlay.release-splash-pro-night.active:is(.update-build, .release-splash-overlay) :is(.release-splash-studio-item summary span, .release-splash-studio-item p) {
+  color: #b9c0b9 !important;
+  -webkit-text-fill-color: #b9c0b9 !important;
+}

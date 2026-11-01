@@ -1,0 +1,84 @@
+<style id="studio-help-collapsed-reveal-v1">
+  /* Match the approved Library Help treatment: a quiet question mark at rest,
+     expanding to the full Help label only when the user shows intent. */
+  html body #studio-active-view#studio-active-view
+    .studio-header .studio-actions
+    #btn-studio-guide.studio-help-btn.axiom-help-btn {
+    position: relative !important;
+    width: 42px !important;
+    min-width: 42px !important;
+    max-width: 42px !important;
+    height: 42px !important;
+    min-height: 42px !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    border: 1px solid var(--accent) !important;
+    border-radius: 8px !important;
+    background: var(--accent) !important;
+    color: #071005 !important;
+    transition: width 180ms ease, max-width 180ms ease, height 180ms ease,
+      border-radius 180ms ease, background-color 180ms ease !important;
+  }
+
+  html body #studio-active-view#studio-active-view
+    .studio-header .studio-actions
+    #btn-studio-guide.studio-help-btn.axiom-help-btn:is(:hover, :focus-visible) {
+    width: 96px !important;
+    min-width: 96px !important;
+    max-width: 96px !important;
+    height: 48px !important;
+    min-height: 48px !important;
+    border-color: var(--accent) !important;
+    border-radius: 8px !important;
+    background: var(--accent) !important;
+    color: #071005 !important;
+  }
+
+  html body #studio-active-view#studio-active-view
+    .studio-header .studio-actions
+    #btn-studio-guide#btn-studio-guide > .studio-help-compact-mark,
+  html body #studio-active-view#studio-active-view
+    .studio-header .studio-actions
+    #btn-studio-guide#btn-studio-guide > .studio-help-expanded-label {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    color: #071005 !important;
+    font-family: 'Bebas Neue', Impact, sans-serif !important;
+    font-size: 18px !important;
+    font-weight: 400 !important;
+    line-height: 1 !important;
+    transition: opacity 130ms ease, transform 180ms ease;
+  }
+
+  #btn-studio-guide#btn-studio-guide > .studio-help-compact-mark {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  #btn-studio-guide#btn-studio-guide > .studio-help-expanded-label {
+    opacity: 0;
+    transform: translateX(6px);
+  }
+
+  #btn-studio-guide#btn-studio-guide:is(:hover, :focus-visible) > .studio-help-compact-mark {
+    opacity: 0;
+    transform: translateX(-6px);
+  }
+
+  #btn-studio-guide#btn-studio-guide:is(:hover, :focus-visible) > .studio-help-expanded-label {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html body #studio-active-view#studio-active-view
+      .studio-header .studio-actions
+      #btn-studio-guide.studio-help-btn.axiom-help-btn,
+    #btn-studio-guide#btn-studio-guide > .studio-help-compact-mark,
+    #btn-studio-guide#btn-studio-guide > .studio-help-expanded-label {
+      transition: none !important;
+    }
+  }
+</style>

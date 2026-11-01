@@ -1,0 +1,20 @@
+# Recreated on each PC (see README): Python runtime and its packages
+/python/
+/axiom-win-env/
+# Built output (Setup.exe, zip, staged copy)
+/dist/
+# Test data: copies of the owner's music, DJ databases, browser profiles, sandboxes
+/fixtures/
+/probe-home/
+# The original macOS AXIOM PRO package and its extracted files (large; kept on the PC only)
+/axiom_package/
+/axiom_extracted/
+/axiom_bytecode/
+# Scratch and caches
+/tmp*/
+__pycache__/
+*.pyc.tmp
+/axiom-win-probe/data/theme-cache/
+*.log
+*.partial
+*.tmp

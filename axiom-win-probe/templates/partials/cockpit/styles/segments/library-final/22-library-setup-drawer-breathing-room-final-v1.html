@@ -1,0 +1,78 @@
+<style id="library-setup-drawer-breathing-room-final-v1">
+  /* Keep the Vibe, Room, and Range flyouts visually clear of their lower edge.
+     This final rule also releases the legacy fixed 82px field height that made
+     the compact drawers clip their own controls. */
+  html body.library-setup-open
+    #tab-content-library.library-cockpit#tab-content-library
+    #library-brief-lens[data-library-brief-panel="setup"]
+    #library-brief-settings:not(.hidden)
+    .library-brief-control-grid > .library-setup-control-group[open]
+    > .library-setup-control-group-fields {
+    min-height: 62px !important;
+    height: auto !important;
+    max-height: none !important;
+    padding: 6px 10px 7px !important;
+    gap: 10px !important;
+    overflow: visible !important;
+  }
+
+  html body.library-setup-open
+    #tab-content-library.library-cockpit#tab-content-library
+    #library-brief-lens#library-brief-lens[data-library-brief-panel="setup"]
+    #library-brief-settings:not(.hidden)
+    .library-brief-control-grid > .library-setup-control-group[open]
+    > .library-setup-control-group-fields > .library-bpm-filter-wrap {
+    grid-template-columns: 84px minmax(0, 1fr) !important;
+    grid-template-rows: 44px !important;
+    gap: 10px !important;
+    min-height: 44px !important;
+    height: 44px !important;
+    max-height: 44px !important;
+    padding: 0 12px !important;
+    overflow: visible !important;
+  }
+
+  html body.library-setup-open
+    #tab-content-library.library-cockpit#tab-content-library
+    #library-brief-lens#library-brief-lens[data-library-brief-panel="setup"]
+    #library-brief-settings:not(.hidden)
+    .library-brief-control-grid > .library-setup-control-group[open]
+    > .library-setup-control-group-fields > .library-bpm-filter-wrap > span:first-child {
+    font-family: 'Barlow', sans-serif !important;
+    font-size: 11px !important;
+    line-height: 44px !important;
+    font-weight: 950 !important;
+    letter-spacing: .14em !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+    white-space: nowrap !important;
+  }
+
+  html body.library-setup-open
+    #tab-content-library.library-cockpit#tab-content-library
+    #library-brief-lens#library-brief-lens[data-library-brief-panel="setup"]
+    #library-brief-settings:not(.hidden)
+    .library-brief-control-grid > .library-setup-control-group[open]
+    > .library-setup-control-group-fields select.library-brief-select {
+    height: 44px !important;
+    min-height: 44px !important;
+    max-height: 44px !important;
+    padding: 0 14px !important;
+    font-family: 'Bebas Neue', Impact, sans-serif !important;
+    font-size: 16px !important;
+    line-height: 44px !important;
+    letter-spacing: .06em !important;
+  }
+
+  html body.library-setup-open:not(.library-matching-songs-disabled)
+    #tab-content-library.library-cockpit#tab-content-library
+    #library-brief-lens#library-brief-lens[data-library-brief-panel="setup"]
+    #library-brief-settings:not(.hidden)
+    .library-brief-control-grid > .library-setup-control-group[open]
+    > .library-setup-control-group-fields > .library-bpm-filter-wrap {
+    min-height: 44px !important;
+    height: 44px !important;
+    max-height: 44px !important;
+    padding: 0 12px !important;
+  }
+</style>

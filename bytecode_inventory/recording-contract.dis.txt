@@ -1,0 +1,1511 @@
+
+### SetRecordingManager.status
+1084           0 RESUME                   0
+
+1085           2 LOAD_FAST                0 (self)
+               4 LOAD_ATTR                0 (_lock)
+              24 BEFORE_WITH
+              26 POP_TOP
+
+1087          28 LOAD_FAST                0 (self)
+              30 LOAD_ATTR                3 (NULL|self + _check_unexpected_exit)
+              50 LOAD_FAST                0 (self)
+              52 LOAD_ATTR                4 (_process)
+              72 CALL                     1
+              80 POP_TOP
+
+1088          82 LOAD_GLOBAL              7 (NULL + dict)
+              92 LOAD_FAST                0 (self)
+              94 LOAD_ATTR                8 (_state)
+             114 CALL                     1
+             122 STORE_FAST               1 (payload)
+
+1089         124 LOAD_FAST                1 (payload)
+             126 LOAD_ATTR               11 (NULL|self + get)
+             146 LOAD_CONST               1 ('recording')
+             148 CALL                     1
+             156 POP_JUMP_IF_FALSE       65 (to 288)
+             158 LOAD_FAST                1 (payload)
+             160 LOAD_ATTR               11 (NULL|self + get)
+             180 LOAD_CONST               2 ('started_monotonic')
+             182 CALL                     1
+             190 POP_JUMP_IF_FALSE       48 (to 288)
+
+1090         192 LOAD_GLOBAL             13 (NULL + max)
+             202 LOAD_CONST               3 (0)
+             204 LOAD_GLOBAL             15 (NULL + int)
+             214 LOAD_GLOBAL             17 (NULL + time)
+             224 LOAD_ATTR               18 (monotonic)
+             244 CALL                     0
+             252 LOAD_FAST                1 (payload)
+             254 LOAD_CONST               2 ('started_monotonic')
+             256 BINARY_SUBSCR
+             260 BINARY_OP               10 (-)
+             264 CALL                     1
+             272 CALL                     2
+             280 LOAD_FAST                1 (payload)
+             282 LOAD_CONST               4 ('elapsed_seconds')
+             284 STORE_SUBSCR
+
+1091     >>  288 LOAD_FAST                1 (payload)
+             290 LOAD_ATTR               21 (NULL|self + pop)
+             310 LOAD_CONST               2 ('started_monotonic')
+             312 LOAD_CONST               0 (None)
+             314 CALL                     2
+             322 POP_TOP
+
+1092         324 LOAD_GLOBAL             23 (NULL + bool)
+             334 LOAD_FAST                0 (self)
+             336 LOAD_ATTR               25 (NULL|self + ffmpeg_path)
+             356 CALL                     0
+             364 COPY                     1
+             366 POP_JUMP_IF_TRUE        16 (to 400)
+             368 POP_TOP
+             370 LOAD_FAST                0 (self)
+             372 LOAD_ATTR               27 (NULL|self + system_audio_helper_path)
+             392 CALL                     0
+         >>  400 CALL                     1
+             408 LOAD_FAST                1 (payload)
+             410 LOAD_CONST               5 ('available')
+             412 STORE_SUBSCR
+
+1093         416 LOAD_FAST                0 (self)
+             418 LOAD_ATTR               28 (desktop_dir)
+             438 LOAD_FAST                1 (payload)
+             440 LOAD_CONST               6 ('save_directory')
+             442 STORE_SUBSCR
+
+1094         446 LOAD_FAST                1 (payload)
+
+1085         448 SWAP                     2
+             450 LOAD_CONST               0 (None)
+             452 LOAD_CONST               0 (None)
+             454 LOAD_CONST               0 (None)
+             456 CALL                     2
+             464 POP_TOP
+             466 RETURN_VALUE
+         >>  468 PUSH_EXC_INFO
+             470 WITH_EXCEPT_START
+             472 POP_JUMP_IF_TRUE         1 (to 476)
+             474 RERAISE                  2
+         >>  476 POP_TOP
+             478 POP_EXCEPT
+             480 POP_TOP
+             482 POP_TOP
+             484 RETURN_CONST             0 (None)
+         >>  486 COPY                     3
+             488 POP_EXCEPT
+             490 RERAISE                  1
+ExceptionTable:
+  26 to 446 -> 468 [1] lasti
+  468 to 476 -> 486 [3] lasti
+
+### SetRecordingManager._new_paths
+867           0 RESUME                   0
+
+868           2 LOAD_GLOBAL              1 (NULL + os)
+             12 LOAD_ATTR                2 (makedirs)
+             32 LOAD_FAST                0 (self)
+             34 LOAD_ATTR                4 (desktop_dir)
+             54 LOAD_CONST               1 (True)
+             56 KW_NAMES                 2 (('exist_ok',))
+             58 CALL                     2
+             66 POP_TOP
+
+869          68 LOAD_GLOBAL              7 (NULL + datetime)
+             78 LOAD_ATTR                8 (now)
+             98 CALL                     0
+            106 LOAD_ATTR               11 (NULL|self + strftime)
+            126 LOAD_CONST               3 ('%Y-%m-%d %I-%M-%S %p')
+            128 CALL                     1
+            136 LOAD_ATTR               13 (NULL|self + replace)
+            156 LOAD_CONST               4 (' 0')
+            158 LOAD_CONST               5 (' ')
+            160 CALL                     2
+            168 STORE_FAST               2 (stamp)
+
+870         170 LOAD_CONST               6 ('AXIOM Set � ')
+            172 LOAD_FAST                2 (stamp)
+            174 FORMAT_VALUE             0
+            176 BUILD_STRING             2
+            178 STORE_FAST               3 (base)
+
+871         180 LOAD_CONST               7 (1)
+            182 STORE_FAST               4 (suffix)
+
+872         184 NOP
+
+873     >>  186 LOAD_FAST                4 (suffix)
+            188 LOAD_CONST               7 (1)
+            190 COMPARE_OP              40 (==)
+            194 POP_JUMP_IF_FALSE        2 (to 200)
+            196 LOAD_FAST                3 (base)
+            198 JUMP_FORWARD             7 (to 214)
+        >>  200 LOAD_FAST                3 (base)
+            202 FORMAT_VALUE             0
+            204 LOAD_CONST               8 (' (')
+            206 LOAD_FAST                4 (suffix)
+            208 FORMAT_VALUE             0
+            210 LOAD_CONST               9 (')')
+            212 BUILD_STRING             4
+        >>  214 STORE_FAST               5 (candidate)
+
+874         216 LOAD_GLOBAL              0 (os)
+            226 LOAD_ATTR               14 (path)
+            246 LOAD_ATTR               17 (NULL|self + join)
+            266 LOAD_FAST                0 (self)
+            268 LOAD_ATTR                4 (desktop_dir)
+            288 LOAD_FAST                5 (candidate)
+            290 FORMAT_VALUE             0
+            292 LOAD_CONST              10 ('.')
+            294 LOAD_FAST                1 (output_format)
+            296 FORMAT_VALUE             0
+            298 BUILD_STRING             3
+            300 CALL                     2
+            308 STORE_FAST               6 (output_path)
+
+875         310 LOAD_GLOBAL              0 (os)
+            320 LOAD_ATTR               14 (path)
+            340 LOAD_ATTR               17 (NULL|self + join)
+            360 LOAD_FAST                0 (self)
+            362 LOAD_ATTR                4 (desktop_dir)
+            382 LOAD_CONST              10 ('.')
+            384 LOAD_FAST                5 (candidate)
+            386 FORMAT_VALUE             0
+            388 LOAD_CONST              11 ('.recording.wav')
+            390 BUILD_STRING             3
+            392 CALL                     2
+            400 STORE_FAST               7 (temp_wav)
+
+876         402 LOAD_GLOBAL              0 (os)
+            412 LOAD_ATTR               14 (path)
+            432 LOAD_ATTR               19 (NULL|self + exists)
+            452 LOAD_FAST                6 (output_path)
+            454 CALL                     1
+            462 POP_JUMP_IF_TRUE        35 (to 534)
+            464 LOAD_GLOBAL              0 (os)
+            474 LOAD_ATTR               14 (path)
+            494 LOAD_ATTR               19 (NULL|self + exists)
+            514 LOAD_FAST                7 (temp_wav)
+            516 CALL                     1
+            524 POP_JUMP_IF_TRUE         4 (to 534)
+
+877         526 LOAD_FAST                7 (temp_wav)
+            528 LOAD_FAST                6 (output_path)
+            530 BUILD_TUPLE              2
+            532 RETURN_VALUE
+
+878     >>  534 LOAD_FAST                4 (suffix)
+            536 LOAD_CONST               7 (1)
+            538 BINARY_OP               13 (+=)
+            542 STORE_FAST               4 (suffix)
+
+872         544 JUMP_BACKWARD          180 (to 186)
+
+### SetRecordingManager.sources
+              0 MAKE_CELL               24 (app_preferred)
+
+606           2 RESUME                   0
+
+607           4 LOAD_FAST                0 (self)
+              6 LOAD_ATTR                1 (NULL|self + load_settings)
+             26 CALL                     0
+             34 STORE_FAST               3 (settings)
+
+608          36 LOAD_FAST                0 (self)
+             38 LOAD_ATTR                3 (NULL|self + _provider_key)
+             58 LOAD_FAST                1 (provider)
+             60 COPY                     1
+             62 POP_JUMP_IF_TRUE        17 (to 98)
+             64 POP_TOP
+             66 LOAD_FAST                3 (settings)
+             68 LOAD_ATTR                5 (NULL|self + get)
+             88 LOAD_CONST               1 ('provider')
+             90 CALL                     1
+        >>   98 CALL                     1
+            106 STORE_FAST               4 (provider_key)
+
+609         108 LOAD_GLOBAL              7 (NULL + str)
+            118 LOAD_FAST                2 (source_mode)
+            120 COPY                     1
+            122 POP_JUMP_IF_TRUE        17 (to 158)
+            124 POP_TOP
+            126 LOAD_FAST                3 (settings)
+            128 LOAD_ATTR                5 (NULL|self + get)
+            148 LOAD_CONST               2 ('source_mode')
+            150 CALL                     1
+        >>  158 CALL                     1
+            166 LOAD_ATTR                9 (NULL|self + lower)
+            186 CALL                     0
+            194 LOAD_CONST               3 ('device')
+            196 COMPARE_OP              40 (==)
+            200 POP_JUMP_IF_FALSE        2 (to 206)
+            202 LOAD_CONST               3 ('device')
+            204 JUMP_FORWARD             1 (to 208)
+        >>  206 LOAD_CONST               4 ('application')
+        >>  208 STORE_FAST               5 (mode)
+
+617         210 LOAD_FAST                5 (mode)
+            212 LOAD_CONST               4 ('application')
+            214 COMPARE_OP              40 (==)
+            218 POP_JUMP_IF_FALSE       17 (to 254)
+
+616         220 LOAD_FAST                0 (self)
+            222 LOAD_ATTR               11 (NULL|self + applications)
+            242 LOAD_FAST                4 (provider_key)
+            244 CALL                     1
+            252 JUMP_FORWARD             6 (to 266)
+
+618     >>  254 LOAD_CONST               5 (False)
+            256 BUILD_LIST               0
+            258 LOAD_CONST               5 (False)
+            260 LOAD_CONST               6 ('')
+            262 LOAD_CONST               7 (('success', 'applications', 'permission_required', 'error'))
+            264 BUILD_CONST_KEY_MAP      4
+
+615     >>  266 STORE_FAST               6 (app_payload)
+
+622         268 LOAD_FAST                5 (mode)
+            270 LOAD_CONST               3 ('device')
+            272 COMPARE_OP              40 (==)
+            276 POP_JUMP_IF_FALSE       17 (to 312)
+
+621         278 LOAD_FAST                0 (self)
+            280 LOAD_ATTR               13 (NULL|self + devices)
+            300 LOAD_FAST                4 (provider_key)
+            302 CALL                     1
+            310 JUMP_FORWARD             5 (to 322)
+
+623     >>  312 LOAD_CONST               5 (False)
+            314 BUILD_LIST               0
+            316 LOAD_CONST               6 ('')
+            318 LOAD_CONST               8 (('success', 'devices', 'error'))
+            320 BUILD_CONST_KEY_MAP      3
+
+620     >>  322 STORE_FAST               7 (device_payload)
+
+625         324 LOAD_FAST                6 (app_payload)
+            326 LOAD_ATTR                5 (NULL|self + get)
+            346 LOAD_CONST               9 ('applications')
+            348 CALL                     1
+            356 COPY                     1
+            358 POP_JUMP_IF_TRUE         2 (to 364)
+            360 POP_TOP
+            362 BUILD_LIST               0
+        >>  364 STORE_FAST               8 (applications)
+
+627         366 LOAD_FAST                7 (device_payload)
+            368 LOAD_ATTR                5 (NULL|self + get)
+            388 LOAD_CONST              10 ('devices')
+            390 CALL                     1
+            398 COPY                     1
+            400 POP_JUMP_IF_TRUE         2 (to 406)
+            402 POP_TOP
+            404 BUILD_LIST               0
+        >>  406 GET_ITER
+
+626         408 LOAD_FAST_AND_CLEAR      9 (item)
+            410 SWAP                     2
+            412 BUILD_LIST               0
+            414 SWAP                     2
+
+627     >>  416 FOR_ITER                53 (to 526)
+            420 STORE_FAST               9 (item)
+
+628         422 LOAD_GLOBAL             14 (MICROPHONE_RE)
+            432 LOAD_ATTR               17 (NULL|self + search)
+            452 LOAD_GLOBAL              7 (NULL + str)
+            462 LOAD_FAST                9 (item)
+            464 LOAD_ATTR                5 (NULL|self + get)
+            484 LOAD_CONST              11 ('name')
+            486 CALL                     1
+            494 COPY                     1
+            496 POP_JUMP_IF_TRUE         2 (to 502)
+            498 POP_TOP
+            500 LOAD_CONST               6 ('')
+        >>  502 CALL                     1
+            510 CALL                     1
+            518 POP_JUMP_IF_TRUE         2 (to 524)
+
+627         520 LOAD_FAST                9 (item)
+            522 LIST_APPEND              2
+        >>  524 JUMP_BACKWARD           55 (to 416)
+        >>  526 END_FOR
+
+626         528 STORE_FAST              10 (all_devices)
+            530 STORE_FAST               9 (item)
+
+633         532 LOAD_FAST                5 (mode)
+            534 LOAD_CONST               3 ('device')
+            536 COMPARE_OP              40 (==)
+            540 POP_JUMP_IF_FALSE       19 (to 580)
+
+630         542 LOAD_GLOBAL             19 (NULL + next)
+
+631         552 LOAD_CONST              12 (<code object <genexpr> at 0x0000029F66DFD590, file "recording.py", line 631>)
+            554 MAKE_FUNCTION            0
+            556 LOAD_FAST               10 (all_devices)
+            558 GET_ITER
+            560 CALL                     0
+
+632         568 LOAD_CONST               0 (None)
+
+630         570 CALL                     2
+            578 JUMP_FORWARD            15 (to 610)
+
+633     >>  580 LOAD_FAST                0 (self)
+            582 LOAD_ATTR               21 (NULL|self + broadcast_device)
+            602 CALL                     0
+
+630     >>  610 STORE_FAST              11 (broadcast_device)
+
+634         612 LOAD_FAST                0 (self)
+            614 LOAD_ATTR               23 (NULL|self + broadcast_driver_state)
+            634 LOAD_FAST               11 (broadcast_device)
+            636 CALL                     1
+            644 STORE_FAST              12 (broadcast_state)
+
+636         646 LOAD_FAST               10 (all_devices)
+            648 GET_ITER
+
+635         650 LOAD_FAST_AND_CLEAR      9 (item)
+            652 SWAP                     2
+            654 BUILD_LIST               0
+            656 SWAP                     2
+
+636     >>  658 FOR_ITER                41 (to 744)
+            662 STORE_FAST               9 (item)
+
+637         664 LOAD_GLOBAL              7 (NULL + str)
+            674 LOAD_FAST                9 (item)
+            676 LOAD_ATTR                5 (NULL|self + get)
+            696 LOAD_CONST              13 ('uid')
+            698 CALL                     1
+            706 COPY                     1
+            708 POP_JUMP_IF_TRUE         2 (to 714)
+            710 POP_TOP
+            712 LOAD_CONST               6 ('')
+        >>  714 CALL                     1
+            722 LOAD_GLOBAL             24 (AXIOM_BROADCAST_DEVICE_UID)
+            732 COMPARE_OP              55 (!=)
+            736 POP_JUMP_IF_FALSE        2 (to 742)
+
+636         738 LOAD_FAST                9 (item)
+            740 LIST_APPEND              2
+        >>  742 JUMP_BACKWARD           43 (to 658)
+        >>  744 END_FOR
+
+635         746 STORE_FAST              13 (devices)
+            748 STORE_FAST               9 (item)
+
+639         750 LOAD_FAST                3 (settings)
+            752 LOAD_ATTR                5 (NULL|self + get)
+            772 LOAD_CONST              14 ('application_bundle_ids')
+            774 CALL                     1
+            782 COPY                     1
+            784 POP_JUMP_IF_TRUE         2 (to 790)
+            786 POP_TOP
+            788 BUILD_MAP                0
+        >>  790 LOAD_ATTR                5 (NULL|self + get)
+            810 LOAD_FAST                4 (provider_key)
+            812 LOAD_CONST               6 ('')
+            814 CALL                     2
+            822 STORE_DEREF             24 (app_preferred)
+
+640         824 LOAD_GLOBAL             19 (NULL + next)
+            834 LOAD_CLOSURE            24 (app_preferred)
+            836 BUILD_TUPLE              1
+            838 LOAD_CONST              15 (<code object <genexpr> at 0x0000029F66E0DF00, file "recording.py", line 640>)
+            840 MAKE_FUNCTION            8 (closure)
+            842 LOAD_FAST                8 (applications)
+            844 GET_ITER
+            846 CALL                     0
+            854 LOAD_CONST               0 (None)
+            856 CALL                     2
+            864 STORE_FAST              14 (selected_app)
+
+641         866 LOAD_FAST               14 (selected_app)
+            868 POP_JUMP_IF_TRUE         7 (to 884)
+            870 LOAD_FAST                8 (applications)
+            872 POP_JUMP_IF_FALSE        5 (to 884)
+
+642         874 LOAD_FAST                8 (applications)
+            876 LOAD_CONST              16 (0)
+            878 BINARY_SUBSCR
+            882 STORE_FAST              14 (selected_app)
+
+643     >>  884 LOAD_FAST                3 (settings)
+            886 LOAD_ATTR                5 (NULL|self + get)
+            906 LOAD_CONST              17 ('device_names')
+            908 CALL                     1
+            916 COPY                     1
+            918 POP_JUMP_IF_TRUE         2 (to 924)
+            920 POP_TOP
+            922 BUILD_MAP                0
+        >>  924 LOAD_ATTR                5 (NULL|self + get)
+            944 LOAD_FAST                4 (provider_key)
+            946 LOAD_CONST               6 ('')
+            948 CALL                     2
+            956 STORE_FAST              15 (device_preferred)
+
+644         958 LOAD_FAST                0 (self)
+            960 LOAD_ATTR               27 (NULL|self + _select_device)
+            980 LOAD_FAST               13 (devices)
+            982 LOAD_FAST               15 (device_preferred)
+            984 LOAD_FAST                4 (provider_key)
+            986 CALL                     3
+            994 STORE_FAST              16 (selected_device)
+
+645         996 LOAD_FAST                5 (mode)
+            998 LOAD_CONST               4 ('application')
+           1000 COMPARE_OP              40 (==)
+           1004 POP_JUMP_IF_FALSE      119 (to 1244)
+
+646        1006 LOAD_FAST               14 (selected_app)
+           1008 POP_JUMP_IF_FALSE       18 (to 1046)
+           1010 LOAD_FAST               14 (selected_app)
+           1012 LOAD_ATTR                5 (NULL|self + get)
+           1032 LOAD_CONST              18 ('bundle_id')
+           1034 LOAD_CONST               6 ('')
+           1036 CALL                     2
+           1044 JUMP_FORWARD             1 (to 1048)
+        >> 1046 LOAD_CONST               6 ('')
+        >> 1048 STORE_FAST              17 (selected_id)
+
+647        1050 LOAD_FAST               14 (selected_app)
+           1052 POP_JUMP_IF_FALSE       18 (to 1090)
+           1054 LOAD_FAST               14 (selected_app)
+           1056 LOAD_ATTR                5 (NULL|self + get)
+           1076 LOAD_CONST              11 ('name')
+           1078 LOAD_CONST               6 ('')
+           1080 CALL                     2
+           1088 JUMP_FORWARD             1 (to 1092)
+        >> 1090 LOAD_CONST               6 ('')
+        >> 1092 STORE_FAST              18 (selected_label)
+
+648        1094 LOAD_GLOBAL             29 (NULL + bool)
+           1104 LOAD_FAST               14 (selected_app)
+           1106 COPY                     1
+           1108 POP_JUMP_IF_FALSE       17 (to 1144)
+           1110 POP_TOP
+           1112 LOAD_FAST                6 (app_payload)
+           1114 LOAD_ATTR                5 (NULL|self + get)
+           1134 LOAD_CONST              19 ('success')
+           1136 CALL                     1
+        >> 1144 CALL                     1
+           1152 STORE_FAST              19 (ready)
+
+649        1154 LOAD_FAST               19 (ready)
+           1156 POP_JUMP_IF_FALSE        2 (to 1162)
+           1158 LOAD_CONST               6 ('')
+           1160 JUMP_FORWARD            39 (to 1240)
+        >> 1162 LOAD_FAST                6 (app_payload)
+           1164 LOAD_ATTR                5 (NULL|self + get)
+           1184 LOAD_CONST              20 ('error')
+           1186 CALL                     1
+           1194 COPY                     1
+           1196 POP_JUMP_IF_TRUE        21 (to 1240)
+           1198 POP_TOP
+           1200 LOAD_CONST              21 ('Open ')
+           1202 LOAD_FAST                0 (self)
+           1204 LOAD_ATTR               31 (NULL|self + _provider_label)
+           1224 LOAD_FAST                4 (provider_key)
+           1226 CALL                     1
+           1234 FORMAT_VALUE             0
+           1236 LOAD_CONST              22 (' before recording.')
+           1238 BUILD_STRING             3
+        >> 1240 STORE_FAST              20 (error)
+           1242 JUMP_FORWARD            41 (to 1326)
+
+651     >> 1244 LOAD_FAST               16 (selected_device)
+           1246 POP_JUMP_IF_FALSE       18 (to 1284)
+           1248 LOAD_FAST               16 (selected_device)
+           1250 LOAD_ATTR                5 (NULL|self + get)
+           1270 LOAD_CONST              11 ('name')
+           1272 LOAD_CONST               6 ('')
+           1274 CALL                     2
+           1282 JUMP_FORWARD             1 (to 1286)
+        >> 1284 LOAD_CONST               6 ('')
+        >> 1286 STORE_FAST              17 (selected_id)
+
+652        1288 LOAD_FAST               17 (selected_id)
+           1290 STORE_FAST              18 (selected_label)
+
+653        1292 LOAD_GLOBAL             29 (NULL + bool)
+           1302 LOAD_FAST               16 (selected_device)
+           1304 CALL                     1
+           1312 STORE_FAST              19 (ready)
+
+654        1314 LOAD_FAST               19 (ready)
+           1316 POP_JUMP_IF_FALSE        2 (to 1322)
+           1318 LOAD_CONST               6 ('')
+           1320 JUMP_FORWARD             1 (to 1324)
+        >> 1322 LOAD_CONST              23 ('Connect a controller Record, Mix or Master output. AXIOM will not use the MacBook microphone.')
+        >> 1324 STORE_FAST              20 (error)
+
+655     >> 1326 LOAD_FAST                5 (mode)
+           1328 LOAD_CONST               3 ('device')
+           1330 COMPARE_OP              40 (==)
+           1334 POP_JUMP_IF_FALSE       20 (to 1376)
+           1336 LOAD_FAST               16 (selected_device)
+           1338 POP_JUMP_IF_FALSE       18 (to 1376)
+           1340 LOAD_FAST                0 (self)
+           1342 LOAD_ATTR               33 (NULL|self + _capture_profile)
+           1362 LOAD_FAST               16 (selected_device)
+           1364 LOAD_FAST                3 (settings)
+           1366 CALL                     2
+           1374 JUMP_FORWARD             1 (to 1378)
+        >> 1376 BUILD_MAP                0
+        >> 1378 STORE_FAST              21 (capture_profile)
+
+656        1380 LOAD_GLOBAL              7 (NULL + str)
+           1390 LOAD_FAST               21 (capture_profile)
+           1392 LOAD_ATTR                5 (NULL|self + get)
+           1412 LOAD_CONST              24 ('channel_label')
+           1414 CALL                     1
+           1422 COPY                     1
+           1424 POP_JUMP_IF_TRUE         2 (to 1430)
+           1426 POP_TOP
+           1428 LOAD_CONST               6 ('')
+        >> 1430 CALL                     1
+           1438 STORE_FAST              22 (capture_channel_label)
+
+657        1440 LOAD_GLOBAL             29 (NULL + bool)
+           1450 LOAD_FAST               21 (capture_profile)
+           1452 COPY                     1
+           1454 POP_JUMP_IF_FALSE       18 (to 1492)
+           1456 POP_TOP
+           1458 LOAD_FAST               21 (capture_profile)
+           1460 LOAD_ATTR                5 (NULL|self + get)
+           1480 LOAD_CONST              25 ('confirmed')
+           1482 CALL                     1
+           1490 UNARY_NOT
+        >> 1492 CALL                     1
+           1500 STORE_FAST              23 (calibration_required)
+
+658        1502 LOAD_FAST                5 (mode)
+           1504 LOAD_CONST               3 ('device')
+           1506 COMPARE_OP              40 (==)
+           1510 POP_JUMP_IF_FALSE        6 (to 1524)
+           1512 LOAD_FAST               23 (calibration_required)
+           1514 POP_JUMP_IF_FALSE        4 (to 1524)
+
+659        1516 LOAD_CONST               5 (False)
+           1518 STORE_FAST              19 (ready)
+
+660        1520 LOAD_CONST              26 ("Choose, test, and confirm the controller's Mix, Record, or Master stereo pair before recording.")
+           1522 STORE_FAST              20 (error)
+
+661     >> 1524 BUILD_MAP                0
+
+662        1526 LOAD_CONST              19 ('success')
+           1528 LOAD_CONST              27 (True)
+
+661        1530 MAP_ADD                  1
+
+663        1532 LOAD_CONST               1 ('provider')
+           1534 LOAD_FAST                4 (provider_key)
+
+661        1536 MAP_ADD                  1
+
+664        1538 LOAD_CONST               2 ('source_mode')
+           1540 LOAD_FAST                5 (mode)
+
+661        1542 MAP_ADD                  1
+
+665        1544 LOAD_CONST              28 ('selected_source_id')
+           1546 LOAD_FAST               17 (selected_id)
+
+661        1548 MAP_ADD                  1
+
+666        1550 LOAD_CONST              29 ('selected_source_label')
+           1552 LOAD_FAST               18 (selected_label)
+
+661        1554 MAP_ADD                  1
+
+667        1556 LOAD_CONST              30 ('capture_channel_label')
+           1558 LOAD_FAST               22 (capture_channel_label)
+
+661        1560 MAP_ADD                  1
+
+668        1562 LOAD_CONST              31 ('capture_profile')
+           1564 LOAD_FAST               21 (capture_profile)
+
+661        1566 MAP_ADD                  1
+
+669        1568 LOAD_CONST              32 ('calibration_required')
+           1570 LOAD_FAST               23 (calibration_required)
+
+661        1572 MAP_ADD                  1
+
+670        1574 LOAD_CONST              33 ('broadcast_available')
+           1576 LOAD_GLOBAL             29 (NULL + bool)
+           1586 LOAD_FAST               11 (broadcast_device)
+           1588 CALL                     1
+
+661        1596 MAP_ADD                  1
+
+671        1598 LOAD_CONST              34 ('broadcast_status')
+           1600 LOAD_FAST               12 (broadcast_state)
+           1602 LOAD_CONST              35 ('status')
+           1604 BINARY_SUBSCR
+
+661        1608 MAP_ADD                  1
+
+672        1610 LOAD_CONST              36 ('broadcast_driver_installed')
+           1612 LOAD_FAST               12 (broadcast_state)
+           1614 LOAD_CONST              37 ('installed')
+           1616 BINARY_SUBSCR
+
+661        1620 MAP_ADD                  1
+
+673        1622 LOAD_CONST              38 ('broadcast_restart_required')
+           1624 LOAD_FAST               12 (broadcast_state)
+           1626 LOAD_CONST              39 ('restart_required')
+           1628 BINARY_SUBSCR
+
+661        1632 MAP_ADD                  1
+
+674        1634 LOAD_CONST              40 ('broadcast_enabled')
+           1636 LOAD_GLOBAL             29 (NULL + bool)
+           1646 LOAD_FAST                3 (settings)
+           1648 LOAD_ATTR                5 (NULL|self + get)
+           1668 LOAD_CONST              40 ('broadcast_enabled')
+           1670 CALL                     1
+           1678 COPY                     1
+           1680 POP_JUMP_IF_FALSE        2 (to 1686)
+           1682 POP_TOP
+           1684 LOAD_FAST               11 (broadcast_device)
+        >> 1686 CALL                     1
+
+661        1694 MAP_ADD                  1
+
+675        1696 LOAD_CONST              41 ('broadcast_device_name')
+           1698 LOAD_GLOBAL              7 (NULL + str)
+           1708 LOAD_FAST               11 (broadcast_device)
+           1710 COPY                     1
+           1712 POP_JUMP_IF_TRUE         2 (to 1718)
+           1714 POP_TOP
+           1716 BUILD_MAP                0
+        >> 1718 LOAD_ATTR                5 (NULL|self + get)
+           1738 LOAD_CONST              11 ('name')
+           1740 CALL                     1
+           1748 COPY                     1
+           1750 POP_JUMP_IF_TRUE         2 (to 1756)
+           1752 POP_TOP
+           1754 LOAD_CONST              42 ('AXIOM Broadcast')
+        >> 1756 CALL                     1
+
+661        1764 MAP_ADD                  1
+
+676        1766 LOAD_CONST              43 ('ready')
+           1768 LOAD_FAST               19 (ready)
+
+661        1770 MAP_ADD                  1
+
+677        1772 LOAD_CONST              44 ('permission_required')
+           1774 LOAD_GLOBAL             29 (NULL + bool)
+           1784 LOAD_FAST                6 (app_payload)
+           1786 LOAD_ATTR                5 (NULL|self + get)
+           1806 LOAD_CONST              44 ('permission_required')
+           1808 CALL                     1
+           1816 CALL                     1
+
+661        1824 MAP_ADD                  1
+
+678        1826 LOAD_CONST               9 ('applications')
+           1828 LOAD_FAST                8 (applications)
+
+661        1830 MAP_ADD                  1
+
+679        1832 LOAD_FAST               13 (devices)
+
+680        1834 LOAD_FAST                3 (settings)
+           1836 LOAD_ATTR                5 (NULL|self + get)
+           1856 LOAD_CONST              45 ('format')
+           1858 LOAD_CONST              46 ('wav')
+           1860 CALL                     2
+
+681        1868 LOAD_FAST                0 (self)
+           1870 LOAD_ATTR               34 (desktop_dir)
+
+682        1890 LOAD_CONST              27 (True)
+
+683        1892 LOAD_FAST               20 (error)
+
+684        1894 LOAD_CONST              27 (True)
+
+661        1896 LOAD_CONST              47 (('devices', 'format', 'save_directory', 'offline', 'error', 'source_audio_untouched'))
+           1898 BUILD_CONST_KEY_MAP      6
+           1900 DICT_UPDATE              1
+           1902 RETURN_VALUE
+        >> 1904 SWAP                     2
+           1906 POP_TOP
+
+626        1908 SWAP                     2
+           1910 STORE_FAST               9 (item)
+           1912 RERAISE                  0
+        >> 1914 SWAP                     2
+           1916 POP_TOP
+
+635        1918 SWAP                     2
+           1920 STORE_FAST               9 (item)
+           1922 RERAISE                  0
+ExceptionTable:
+  412 to 526 -> 1904 [2]
+  654 to 744 -> 1914 [2]
+
+Disassembly of <code object <genexpr> at 0x0000029F66DFD590, file "recording.py", line 631>:
+631           0 RETURN_GENERATOR
+              2 POP_TOP
+              4 RESUME                   0
+              6 LOAD_FAST                0 (.0)
+        >>    8 FOR_ITER                44 (to 100)
+             12 STORE_FAST               1 (item)
+             14 LOAD_GLOBAL              1 (NULL + str)
+             24 LOAD_FAST                1 (item)
+             26 LOAD_ATTR                3 (NULL|self + get)
+             46 LOAD_CONST               0 ('uid')
+             48 CALL                     1
+             56 COPY                     1
+             58 POP_JUMP_IF_TRUE         2 (to 64)
+             60 POP_TOP
+             62 LOAD_CONST               1 ('')
+        >>   64 CALL                     1
+             72 LOAD_GLOBAL              4 (AXIOM_BROADCAST_DEVICE_UID)
+             82 COMPARE_OP              40 (==)
+             86 POP_JUMP_IF_TRUE         1 (to 90)
+             88 JUMP_BACKWARD           41 (to 8)
+        >>   90 LOAD_FAST                1 (item)
+             92 YIELD_VALUE              1
+             94 RESUME                   1
+             96 POP_TOP
+             98 JUMP_BACKWARD           46 (to 8)
+        >>  100 END_FOR
+            102 RETURN_CONST             2 (None)
+        >>  104 CALL_INTRINSIC_1         3 (INTRINSIC_STOPITERATION_ERROR)
+            106 RERAISE                  1
+ExceptionTable:
+  4 to 86 -> 104 [0] lasti
+  90 to 102 -> 104 [0] lasti
+
+Disassembly of <code object <genexpr> at 0x0000029F66E0DF00, file "recording.py", line 640>:
+              0 COPY_FREE_VARS           1
+
+640           2 RETURN_GENERATOR
+              4 POP_TOP
+              6 RESUME                   0
+              8 LOAD_FAST                0 (.0)
+        >>   10 FOR_ITER                27 (to 68)
+             14 STORE_FAST               1 (item)
+             16 LOAD_FAST                1 (item)
+             18 LOAD_ATTR                1 (NULL|self + get)
+             38 LOAD_CONST               0 ('bundle_id')
+             40 CALL                     1
+             48 LOAD_DEREF               2 (app_preferred)
+             50 COMPARE_OP              40 (==)
+             54 POP_JUMP_IF_TRUE         1 (to 58)
+             56 JUMP_BACKWARD           24 (to 10)
+        >>   58 LOAD_FAST                1 (item)
+             60 YIELD_VALUE              1
+             62 RESUME                   1
+             64 POP_TOP
+             66 JUMP_BACKWARD           29 (to 10)
+        >>   68 END_FOR
+             70 RETURN_CONST             1 (None)
+        >>   72 CALL_INTRINSIC_1         3 (INTRINSIC_STOPITERATION_ERROR)
+             74 RERAISE                  1
+ExceptionTable:
+  6 to 54 -> 72 [0] lasti
+  58 to 70 -> 72 [0] lasti
+
+### SetRecordingManager.save_settings
+283           0 RESUME                   0
+
+284           2 LOAD_FAST                0 (self)
+              4 LOAD_ATTR                0 (_lock)
+             24 BEFORE_WITH
+             26 POP_TOP
+
+285          28 LOAD_FAST                0 (self)
+             30 LOAD_ATTR                3 (NULL|self + load_settings)
+             50 CALL                     0
+             58 STORE_FAST               2 (settings)
+
+286          60 LOAD_CONST               1 ('record_gain_db')
+             62 LOAD_FAST                1 (updates)
+             64 CONTAINS_OP              0
+             66 POP_JUMP_IF_FALSE       74 (to 216)
+
+287          68 LOAD_GLOBAL              5 (NULL + float)
+             78 LOAD_FAST                1 (updates)
+             80 LOAD_CONST               1 ('record_gain_db')
+             82 BINARY_SUBSCR
+             86 CALL                     1
+             94 STORE_FAST               3 (gain)
+
+288          96 LOAD_GLOBAL              7 (NULL + math)
+            106 LOAD_ATTR                8 (isfinite)
+            126 LOAD_FAST                3 (gain)
+            128 CALL                     1
+            136 POP_JUMP_IF_FALSE       23 (to 184)
+            138 LOAD_CONST               2 (-24)
+            140 LOAD_FAST                3 (gain)
+            142 SWAP                     2
+            144 COPY                     2
+            146 COMPARE_OP              26 (<=)
+            150 POP_JUMP_IF_FALSE       15 (to 182)
+            152 LOAD_CONST               3 (0)
+            154 COMPARE_OP              26 (<=)
+            158 POP_JUMP_IF_TRUE        23 (to 206)
+
+289         160 LOAD_GLOBAL             11 (NULL + ValueError)
+            170 LOAD_CONST               4 ('Recording level must be between -24 and 0 dB.')
+            172 CALL                     1
+            180 RAISE_VARARGS            1
+
+288     >>  182 POP_TOP
+
+289     >>  184 LOAD_GLOBAL             11 (NULL + ValueError)
+            194 LOAD_CONST               4 ('Recording level must be between -24 and 0 dB.')
+            196 CALL                     1
+            204 RAISE_VARARGS            1
+
+290     >>  206 LOAD_FAST                3 (gain)
+            208 LOAD_FAST                2 (settings)
+            210 LOAD_CONST               1 ('record_gain_db')
+            212 STORE_SUBSCR
+
+291     >>  216 LOAD_FAST                0 (self)
+            218 LOAD_ATTR               13 (NULL|self + _provider_key)
+            238 LOAD_FAST                1 (updates)
+            240 LOAD_ATTR               15 (NULL|self + get)
+            260 LOAD_CONST               5 ('provider')
+            262 LOAD_FAST                2 (settings)
+            264 LOAD_ATTR               15 (NULL|self + get)
+            284 LOAD_CONST               5 ('provider')
+            286 CALL                     1
+            294 CALL                     2
+            302 CALL                     1
+            310 STORE_FAST               4 (provider)
+
+292         312 LOAD_FAST                4 (provider)
+            314 LOAD_FAST                2 (settings)
+            316 LOAD_CONST               5 ('provider')
+            318 STORE_SUBSCR
+
+293         322 LOAD_CONST               6 ('device_name')
+            324 LOAD_FAST                1 (updates)
+            326 CONTAINS_OP              0
+            328 POP_JUMP_IF_FALSE       61 (to 452)
+
+294         330 LOAD_GLOBAL             17 (NULL + str)
+            340 LOAD_FAST                1 (updates)
+            342 LOAD_ATTR               15 (NULL|self + get)
+            362 LOAD_CONST               6 ('device_name')
+            364 CALL                     1
+            372 COPY                     1
+            374 POP_JUMP_IF_TRUE         2 (to 380)
+            376 POP_TOP
+            378 LOAD_CONST               7 ('')
+        >>  380 CALL                     1
+            388 LOAD_ATTR               19 (NULL|self + strip)
+            408 CALL                     0
+            416 LOAD_CONST               0 (None)
+            418 LOAD_CONST               8 (240)
+            420 BINARY_SLICE
+            422 LOAD_FAST                2 (settings)
+            424 LOAD_CONST               6 ('device_name')
+            426 STORE_SUBSCR
+
+295         430 LOAD_FAST                2 (settings)
+            432 LOAD_CONST               6 ('device_name')
+            434 BINARY_SUBSCR
+            438 LOAD_FAST                2 (settings)
+            440 LOAD_CONST               9 ('device_names')
+            442 BINARY_SUBSCR
+            446 LOAD_FAST                4 (provider)
+            448 STORE_SUBSCR
+
+296     >>  452 LOAD_CONST              10 ('format')
+            454 LOAD_FAST                1 (updates)
+            456 CONTAINS_OP              0
+            458 POP_JUMP_IF_FALSE       50 (to 560)
+
+297         460 LOAD_GLOBAL             17 (NULL + str)
+            470 LOAD_FAST                1 (updates)
+            472 LOAD_ATTR               15 (NULL|self + get)
+            492 LOAD_CONST              10 ('format')
+            494 CALL                     1
+            502 CALL                     1
+            510 LOAD_ATTR               21 (NULL|self + lower)
+            530 CALL                     0
+            538 LOAD_CONST              11 ('mp3')
+            540 COMPARE_OP              40 (==)
+            544 POP_JUMP_IF_FALSE        2 (to 550)
+            546 LOAD_CONST              11 ('mp3')
+            548 JUMP_FORWARD             1 (to 552)
+        >>  550 LOAD_CONST              12 ('wav')
+        >>  552 LOAD_FAST                2 (settings)
+            554 LOAD_CONST              10 ('format')
+            556 STORE_SUBSCR
+
+298     >>  560 LOAD_CONST              13 ('source_mode')
+            562 LOAD_FAST                1 (updates)
+            564 CONTAINS_OP              0
+            566 POP_JUMP_IF_FALSE       50 (to 668)
+
+299         568 LOAD_GLOBAL             17 (NULL + str)
+            578 LOAD_FAST                1 (updates)
+            580 LOAD_ATTR               15 (NULL|self + get)
+            600 LOAD_CONST              13 ('source_mode')
+            602 CALL                     1
+            610 CALL                     1
+            618 LOAD_ATTR               21 (NULL|self + lower)
+            638 CALL                     0
+            646 LOAD_CONST              14 ('device')
+            648 COMPARE_OP              40 (==)
+            652 POP_JUMP_IF_FALSE        2 (to 658)
+            654 LOAD_CONST              14 ('device')
+            656 JUMP_FORWARD             1 (to 660)
+        >>  658 LOAD_CONST              15 ('application')
+        >>  660 LOAD_FAST                2 (settings)
+            662 LOAD_CONST              13 ('source_mode')
+            664 STORE_SUBSCR
+
+300     >>  668 LOAD_CONST              16 ('broadcast_enabled')
+            670 LOAD_FAST                1 (updates)
+            672 CONTAINS_OP              0
+            674 POP_JUMP_IF_FALSE       29 (to 734)
+
+301         676 LOAD_GLOBAL             23 (NULL + bool)
+            686 LOAD_FAST                1 (updates)
+            688 LOAD_ATTR               15 (NULL|self + get)
+            708 LOAD_CONST              16 ('broadcast_enabled')
+            710 CALL                     1
+            718 CALL                     1
+            726 LOAD_FAST                2 (settings)
+            728 LOAD_CONST              16 ('broadcast_enabled')
+            730 STORE_SUBSCR
+
+302     >>  734 LOAD_CONST              17 ('application_bundle_id')
+            736 LOAD_FAST                1 (updates)
+            738 CONTAINS_OP              0
+            740 POP_JUMP_IF_FALSE       53 (to 848)
+
+303         742 LOAD_GLOBAL             17 (NULL + str)
+            752 LOAD_FAST                1 (updates)
+            754 LOAD_ATTR               15 (NULL|self + get)
+            774 LOAD_CONST              17 ('application_bundle_id')
+            776 CALL                     1
+            784 COPY                     1
+            786 POP_JUMP_IF_TRUE         2 (to 792)
+            788 POP_TOP
+            790 LOAD_CONST               7 ('')
+        >>  792 CALL                     1
+            800 LOAD_ATTR               19 (NULL|self + strip)
+            820 CALL                     0
+            828 LOAD_CONST               0 (None)
+            830 LOAD_CONST               8 (240)
+            832 BINARY_SLICE
+            834 LOAD_FAST                2 (settings)
+            836 LOAD_CONST              18 ('application_bundle_ids')
+            838 BINARY_SUBSCR
+            842 LOAD_FAST                4 (provider)
+            844 STORE_SUBSCR
+
+304     >>  848 LOAD_CONST              19 ('device_capture_pair')
+            850 LOAD_FAST                1 (updates)
+            852 CONTAINS_OP              0
+            854 POP_JUMP_IF_FALSE      255 (to 1366)
+            856 LOAD_GLOBAL             25 (NULL + isinstance)
+            866 LOAD_FAST                1 (updates)
+            868 LOAD_ATTR               15 (NULL|self + get)
+            888 LOAD_CONST              19 ('device_capture_pair')
+            890 CALL                     1
+            898 LOAD_GLOBAL             26 (dict)
+            908 CALL                     2
+            916 POP_JUMP_IF_FALSE      224 (to 1366)
+
+305         918 LOAD_FAST                1 (updates)
+            920 LOAD_CONST              19 ('device_capture_pair')
+            922 BINARY_SUBSCR
+            926 STORE_FAST               5 (pair)
+
+306         928 LOAD_GLOBAL             17 (NULL + str)
+            938 LOAD_FAST                5 (pair)
+            940 LOAD_ATTR               15 (NULL|self + get)
+            960 LOAD_CONST              20 ('device_key')
+            962 CALL                     1
+            970 COPY                     1
+            972 POP_JUMP_IF_TRUE         2 (to 978)
+            974 POP_TOP
+            976 LOAD_CONST               7 ('')
+        >>  978 CALL                     1
+            986 LOAD_ATTR               19 (NULL|self + strip)
+           1006 CALL                     0
+           1014 LOAD_CONST               0 (None)
+           1016 LOAD_CONST              21 (512)
+           1018 BINARY_SLICE
+           1020 STORE_FAST               6 (device_key)
+
+307        1022 NOP
+
+308        1024 LOAD_GLOBAL             29 (NULL + int)
+           1034 LOAD_FAST                5 (pair)
+           1036 LOAD_ATTR               15 (NULL|self + get)
+           1056 LOAD_CONST              22 ('left_channel')
+           1058 LOAD_CONST              23 (-1)
+           1060 CALL                     2
+           1068 CALL                     1
+           1076 STORE_FAST               7 (left)
+
+309        1078 LOAD_GLOBAL             29 (NULL + int)
+           1088 LOAD_FAST                5 (pair)
+           1090 LOAD_ATTR               15 (NULL|self + get)
+           1110 LOAD_CONST              24 ('right_channel')
+           1112 LOAD_CONST              23 (-1)
+           1114 CALL                     2
+           1122 CALL                     1
+           1130 STORE_FAST               8 (right)
+
+312     >> 1132 LOAD_FAST                6 (device_key)
+           1134 POP_JUMP_IF_FALSE      115 (to 1366)
+           1136 LOAD_FAST                7 (left)
+           1138 LOAD_CONST               3 (0)
+           1140 COMPARE_OP              92 (>=)
+           1144 POP_JUMP_IF_FALSE      110 (to 1366)
+           1146 LOAD_FAST                8 (right)
+           1148 LOAD_FAST                7 (left)
+           1150 LOAD_CONST              26 (1)
+           1152 BINARY_OP                0 (+)
+           1156 COMPARE_OP              40 (==)
+           1160 POP_JUMP_IF_FALSE      102 (to 1366)
+
+314        1162 LOAD_FAST                7 (left)
+
+315        1164 LOAD_FAST                8 (right)
+
+316        1166 LOAD_GLOBAL             17 (NULL + str)
+           1176 LOAD_FAST                5 (pair)
+           1178 LOAD_ATTR               15 (NULL|self + get)
+           1198 LOAD_CONST              27 ('channel_label')
+           1200 CALL                     1
+           1208 COPY                     1
+           1210 POP_JUMP_IF_TRUE        14 (to 1240)
+           1212 POP_TOP
+           1214 LOAD_CONST              28 ('Channels ')
+           1216 LOAD_FAST                7 (left)
+           1218 LOAD_CONST              26 (1)
+           1220 BINARY_OP                0 (+)
+           1224 FORMAT_VALUE             0
+           1226 LOAD_CONST              29 ('/')
+           1228 LOAD_FAST                8 (right)
+           1230 LOAD_CONST              26 (1)
+           1232 BINARY_OP                0 (+)
+           1236 FORMAT_VALUE             0
+           1238 BUILD_STRING             4
+        >> 1240 CALL                     1
+           1248 LOAD_CONST               0 (None)
+           1250 LOAD_CONST              30 (120)
+           1252 BINARY_SLICE
+
+317        1254 LOAD_GLOBAL             33 (NULL + datetime)
+           1264 LOAD_ATTR               34 (now)
+           1284 CALL                     0
+           1292 LOAD_ATTR               37 (NULL|self + astimezone)
+           1312 CALL                     0
+           1320 LOAD_ATTR               39 (NULL|self + isoformat)
+           1340 CALL                     0
+
+313        1348 LOAD_CONST              31 (('left_channel', 'right_channel', 'channel_label', 'confirmed_at'))
+           1350 BUILD_CONST_KEY_MAP      4
+           1352 LOAD_FAST                2 (settings)
+           1354 LOAD_CONST              32 ('device_capture_pairs')
+           1356 BINARY_SUBSCR
+           1360 LOAD_FAST                6 (device_key)
+           1362 STORE_SUBSCR
+
+319     >> 1366 LOAD_GLOBAL             41 (NULL + os)
+           1376 LOAD_ATTR               42 (makedirs)
+           1396 LOAD_GLOBAL             40 (os)
+           1406 LOAD_ATTR               44 (path)
+           1426 LOAD_ATTR               47 (NULL|self + dirname)
+           1446 LOAD_FAST                0 (self)
+           1448 LOAD_ATTR               48 (settings_path)
+           1468 CALL                     1
+           1476 LOAD_CONST              33 (True)
+           1478 KW_NAMES                34 (('exist_ok',))
+           1480 CALL                     2
+           1488 POP_TOP
+
+320        1490 LOAD_FAST                0 (self)
+           1492 LOAD_ATTR               48 (settings_path)
+           1512 FORMAT_VALUE             0
+           1514 LOAD_CONST              35 ('.tmp')
+           1516 BUILD_STRING             2
+           1518 STORE_FAST               9 (temp_path)
+
+321        1520 LOAD_GLOBAL             51 (NULL + open)
+           1530 LOAD_FAST                9 (temp_path)
+           1532 LOAD_CONST              36 ('w')
+           1534 LOAD_CONST              37 ('utf-8')
+           1536 KW_NAMES                38 (('encoding',))
+           1538 CALL                     3
+           1546 BEFORE_WITH
+           1548 STORE_FAST              10 (handle)
+
+322        1550 LOAD_GLOBAL             53 (NULL + json)
+           1560 LOAD_ATTR               54 (dump)
+           1580 LOAD_FAST                2 (settings)
+           1582 LOAD_FAST               10 (handle)
+           1584 LOAD_CONST              39 (2)
+           1586 KW_NAMES                40 (('indent',))
+           1588 CALL                     3
+           1596 POP_TOP
+
+323        1598 LOAD_FAST               10 (handle)
+           1600 LOAD_ATTR               57 (NULL|self + write)
+           1620 LOAD_CONST              41 ('\n')
+           1622 CALL                     1
+           1630 POP_TOP
+
+321        1632 LOAD_CONST               0 (None)
+           1634 LOAD_CONST               0 (None)
+           1636 LOAD_CONST               0 (None)
+           1638 CALL                     2
+           1646 POP_TOP
+
+324     >> 1648 LOAD_GLOBAL             41 (NULL + os)
+           1658 LOAD_ATTR               58 (replace)
+           1678 LOAD_FAST                9 (temp_path)
+           1680 LOAD_FAST                0 (self)
+           1682 LOAD_ATTR               48 (settings_path)
+           1702 CALL                     2
+           1710 POP_TOP
+
+325        1712 LOAD_FAST                2 (settings)
+
+284        1714 SWAP                     2
+           1716 LOAD_CONST               0 (None)
+           1718 LOAD_CONST               0 (None)
+           1720 LOAD_CONST               0 (None)
+           1722 CALL                     2
+           1730 POP_TOP
+           1732 RETURN_VALUE
+        >> 1734 PUSH_EXC_INFO
+
+310        1736 LOAD_GLOBAL             30 (TypeError)
+           1746 LOAD_GLOBAL             10 (ValueError)
+           1756 BUILD_TUPLE              2
+           1758 CHECK_EXC_MATCH
+           1760 POP_JUMP_IF_FALSE        9 (to 1780)
+           1762 POP_TOP
+
+311        1764 LOAD_CONST              25 ((-1, -1))
+           1766 UNPACK_SEQUENCE          2
+           1770 STORE_FAST               7 (left)
+           1772 STORE_FAST               8 (right)
+           1774 POP_EXCEPT
+           1776 EXTENDED_ARG             1
+           1778 JUMP_BACKWARD          324 (to 1132)
+
+310     >> 1780 RERAISE                  0
+        >> 1782 COPY                     3
+           1784 POP_EXCEPT
+           1786 RERAISE                  1
+
+321     >> 1788 PUSH_EXC_INFO
+           1790 WITH_EXCEPT_START
+           1792 POP_JUMP_IF_TRUE         1 (to 1796)
+           1794 RERAISE                  2
+        >> 1796 POP_TOP
+           1798 POP_EXCEPT
+           1800 POP_TOP
+           1802 POP_TOP
+           1804 JUMP_BACKWARD           79 (to 1648)
+        >> 1806 COPY                     3
+           1808 POP_EXCEPT
+           1810 RERAISE                  1
+
+284     >> 1812 PUSH_EXC_INFO
+           1814 WITH_EXCEPT_START
+           1816 POP_JUMP_IF_TRUE         1 (to 1820)
+           1818 RERAISE                  2
+        >> 1820 POP_TOP
+           1822 POP_EXCEPT
+           1824 POP_TOP
+           1826 POP_TOP
+           1828 RETURN_CONST             0 (None)
+        >> 1830 COPY                     3
+           1832 POP_EXCEPT
+           1834 RERAISE                  1
+ExceptionTable:
+  26 to 1020 -> 1812 [1] lasti
+  1024 to 1130 -> 1734 [1]
+  1132 to 1546 -> 1812 [1] lasti
+  1548 to 1630 -> 1788 [2] lasti
+  1632 to 1712 -> 1812 [1] lasti
+  1734 to 1772 -> 1782 [2] lasti
+  1774 to 1778 -> 1812 [1] lasti
+  1780 to 1780 -> 1782 [2] lasti
+  1782 to 1786 -> 1812 [1] lasti
+  1788 to 1796 -> 1806 [4] lasti
+  1798 to 1810 -> 1812 [1] lasti
+  1812 to 1820 -> 1830 [3] lasti
+
+### api_performance_recording_stop
+19749           0 RESUME                   0
+
+19751           2 NOP
+
+19752           4 LOAD_GLOBAL              0 (SET_RECORDING_MANAGER)
+               14 LOAD_ATTR                3 (NULL|self + stop)
+               34 CALL                     0
+               42 STORE_FAST               0 (payload)
+
+19753          44 LOAD_GLOBAL              5 (NULL + jsonify)
+               54 LOAD_CONST               1 ('success')
+               56 LOAD_FAST                0 (payload)
+               58 LOAD_ATTR                7 (NULL|self + get)
+               78 LOAD_CONST               2 ('status')
+               80 CALL                     1
+               88 LOAD_CONST               3 ('saved')
+               90 COMPARE_OP              40 (==)
+               94 BUILD_MAP                1
+               96 LOAD_FAST                0 (payload)
+               98 DICT_UPDATE              1
+              100 CALL                     1
+              108 LOAD_FAST                0 (payload)
+              110 LOAD_ATTR                7 (NULL|self + get)
+              130 LOAD_CONST               2 ('status')
+              132 CALL                     1
+              140 LOAD_CONST               3 ('saved')
+              142 COMPARE_OP              40 (==)
+              146 POP_JUMP_IF_FALSE        3 (to 154)
+              148 LOAD_CONST               4 (200)
+              150 BUILD_TUPLE              2
+              152 RETURN_VALUE
+          >>  154 LOAD_CONST               5 (500)
+              156 BUILD_TUPLE              2
+              158 RETURN_VALUE
+          >>  160 PUSH_EXC_INFO
+
+19754         162 LOAD_GLOBAL              8 (RuntimeError)
+              172 CHECK_EXC_MATCH
+              174 POP_JUMP_IF_FALSE       55 (to 286)
+              176 STORE_FAST               1 (exc)
+
+19755         178 LOAD_GLOBAL              5 (NULL + jsonify)
+              188 LOAD_CONST               6 (False)
+              190 LOAD_GLOBAL             11 (NULL + str)
+              200 LOAD_FAST                1 (exc)
+              202 CALL                     1
+              210 LOAD_CONST               7 (('success', 'error'))
+              212 BUILD_CONST_KEY_MAP      2
+              214 LOAD_GLOBAL              0 (SET_RECORDING_MANAGER)
+              224 LOAD_ATTR               13 (NULL|self + status)
+              244 CALL                     0
+              252 DICT_UPDATE              1
+              254 CALL                     1
+              262 LOAD_CONST               8 (409)
+              264 BUILD_TUPLE              2
+              266 SWAP                     2
+              268 POP_EXCEPT
+              270 LOAD_CONST               0 (None)
+              272 STORE_FAST               1 (exc)
+              274 DELETE_FAST              1 (exc)
+              276 RETURN_VALUE
+          >>  278 LOAD_CONST               0 (None)
+              280 STORE_FAST               1 (exc)
+              282 DELETE_FAST              1 (exc)
+              284 RERAISE                  1
+
+19756     >>  286 LOAD_GLOBAL             14 (Exception)
+              296 CHECK_EXC_MATCH
+              298 POP_JUMP_IF_FALSE       86 (to 472)
+              300 STORE_FAST               1 (exc)
+
+19757         302 LOAD_GLOBAL             16 (app)
+              312 LOAD_ATTR               18 (logger)
+              332 LOAD_ATTR               21 (NULL|self + exception)
+              352 LOAD_CONST               9 ('Set recording could not stop')
+              354 CALL                     1
+              362 POP_TOP
+
+19758         364 LOAD_GLOBAL              5 (NULL + jsonify)
+              374 LOAD_CONST               6 (False)
+              376 LOAD_GLOBAL             11 (NULL + str)
+              386 LOAD_FAST                1 (exc)
+              388 CALL                     1
+              396 LOAD_CONST               7 (('success', 'error'))
+              398 BUILD_CONST_KEY_MAP      2
+              400 LOAD_GLOBAL              0 (SET_RECORDING_MANAGER)
+              410 LOAD_ATTR               13 (NULL|self + status)
+              430 CALL                     0
+              438 DICT_UPDATE              1
+              440 CALL                     1
+              448 LOAD_CONST               5 (500)
+              450 BUILD_TUPLE              2
+              452 SWAP                     2
+              454 POP_EXCEPT
+              456 LOAD_CONST               0 (None)
+              458 STORE_FAST               1 (exc)
+              460 DELETE_FAST              1 (exc)
+              462 RETURN_VALUE
+          >>  464 LOAD_CONST               0 (None)
+              466 STORE_FAST               1 (exc)
+              468 DELETE_FAST              1 (exc)
+              470 RERAISE                  1
+
+19756     >>  472 RERAISE                  0
+          >>  474 COPY                     3
+              476 POP_EXCEPT
+              478 RERAISE                  1
+ExceptionTable:
+  4 to 150 -> 160 [0]
+  154 to 156 -> 160 [0]
+  160 to 176 -> 474 [1] lasti
+  178 to 264 -> 278 [1] lasti
+  266 to 266 -> 474 [1] lasti
+  278 to 300 -> 474 [1] lasti
+  302 to 450 -> 464 [1] lasti
+  452 to 452 -> 474 [1] lasti
+  464 to 472 -> 474 [1] lasti
+
+### api_performance_recording_start
+19733           0 RESUME                   0
+
+19735           2 NOP
+
+19736           4 LOAD_GLOBAL              1 (NULL + request)
+               14 LOAD_ATTR                2 (get_json)
+               34 LOAD_CONST               1 (True)
+               36 KW_NAMES                 2 (('silent',))
+               38 CALL                     1
+               46 COPY                     1
+               48 POP_JUMP_IF_TRUE         2 (to 54)
+               50 POP_TOP
+               52 BUILD_MAP                0
+          >>   54 STORE_FAST               0 (data)
+
+19737          56 LOAD_GLOBAL              5 (NULL + jsonify)
+               66 LOAD_CONST               3 ('success')
+               68 LOAD_CONST               1 (True)
+               70 BUILD_MAP                1
+               72 LOAD_GLOBAL              6 (SET_RECORDING_MANAGER)
+               82 LOAD_ATTR                9 (NULL|self + start)
+
+19738         102 LOAD_FAST                0 (data)
+              104 LOAD_ATTR               11 (NULL|self + get)
+              124 LOAD_CONST               4 ('provider')
+              126 CALL                     1
+              134 COPY                     1
+              136 POP_JUMP_IF_TRUE         2 (to 142)
+              138 POP_TOP
+              140 LOAD_CONST               5 ('')
+
+19739     >>  142 LOAD_FAST                0 (data)
+              144 LOAD_ATTR               11 (NULL|self + get)
+              164 LOAD_CONST               6 ('source_mode')
+              166 CALL                     1
+              174 COPY                     1
+              176 POP_JUMP_IF_TRUE         2 (to 182)
+              178 POP_TOP
+              180 LOAD_CONST               5 ('')
+
+19740     >>  182 LOAD_FAST                0 (data)
+              184 LOAD_ATTR               11 (NULL|self + get)
+              204 LOAD_CONST               7 ('source_id')
+              206 CALL                     1
+              214 COPY                     1
+              216 POP_JUMP_IF_TRUE         2 (to 222)
+              218 POP_TOP
+              220 LOAD_CONST               5 ('')
+
+19737     >>  222 CALL                     3
+              230 DICT_UPDATE              1
+              232 CALL                     1
+              240 RETURN_VALUE
+          >>  242 PUSH_EXC_INFO
+
+19742         244 LOAD_GLOBAL             12 (RuntimeError)
+              254 CHECK_EXC_MATCH
+              256 POP_JUMP_IF_FALSE       55 (to 368)
+              258 STORE_FAST               1 (exc)
+
+19743         260 LOAD_GLOBAL              5 (NULL + jsonify)
+              270 LOAD_CONST               8 (False)
+              272 LOAD_GLOBAL             15 (NULL + str)
+              282 LOAD_FAST                1 (exc)
+              284 CALL                     1
+              292 LOAD_CONST               9 (('success', 'error'))
+              294 BUILD_CONST_KEY_MAP      2
+              296 LOAD_GLOBAL              6 (SET_RECORDING_MANAGER)
+              306 LOAD_ATTR               17 (NULL|self + status)
+              326 CALL                     0
+              334 DICT_UPDATE              1
+              336 CALL                     1
+              344 LOAD_CONST              10 (409)
+              346 BUILD_TUPLE              2
+              348 SWAP                     2
+              350 POP_EXCEPT
+              352 LOAD_CONST               0 (None)
+              354 STORE_FAST               1 (exc)
+              356 DELETE_FAST              1 (exc)
+              358 RETURN_VALUE
+          >>  360 LOAD_CONST               0 (None)
+              362 STORE_FAST               1 (exc)
+              364 DELETE_FAST              1 (exc)
+              366 RERAISE                  1
+
+19744     >>  368 LOAD_GLOBAL             18 (Exception)
+              378 CHECK_EXC_MATCH
+              380 POP_JUMP_IF_FALSE       86 (to 554)
+              382 STORE_FAST               1 (exc)
+
+19745         384 LOAD_GLOBAL             20 (app)
+              394 LOAD_ATTR               22 (logger)
+              414 LOAD_ATTR               25 (NULL|self + exception)
+              434 LOAD_CONST              11 ('Set recording could not start')
+              436 CALL                     1
+              444 POP_TOP
+
+19746         446 LOAD_GLOBAL              5 (NULL + jsonify)
+              456 LOAD_CONST               8 (False)
+              458 LOAD_GLOBAL             15 (NULL + str)
+              468 LOAD_FAST                1 (exc)
+              470 CALL                     1
+              478 LOAD_CONST               9 (('success', 'error'))
+              480 BUILD_CONST_KEY_MAP      2
+              482 LOAD_GLOBAL              6 (SET_RECORDING_MANAGER)
+              492 LOAD_ATTR               17 (NULL|self + status)
+              512 CALL                     0
+              520 DICT_UPDATE              1
+              522 CALL                     1
+              530 LOAD_CONST              12 (500)
+              532 BUILD_TUPLE              2
+              534 SWAP                     2
+              536 POP_EXCEPT
+              538 LOAD_CONST               0 (None)
+              540 STORE_FAST               1 (exc)
+              542 DELETE_FAST              1 (exc)
+              544 RETURN_VALUE
+          >>  546 LOAD_CONST               0 (None)
+              548 STORE_FAST               1 (exc)
+              550 DELETE_FAST              1 (exc)
+              552 RERAISE                  1
+
+19744     >>  554 RERAISE                  0
+          >>  556 COPY                     3
+              558 POP_EXCEPT
+              560 RERAISE                  1
+ExceptionTable:
+  4 to 238 -> 242 [0]
+  242 to 258 -> 556 [1] lasti
+  260 to 346 -> 360 [1] lasti
+  348 to 348 -> 556 [1] lasti
+  360 to 382 -> 556 [1] lasti
+  384 to 532 -> 546 [1] lasti
+  534 to 534 -> 556 [1] lasti
+  546 to 554 -> 556 [1] lasti

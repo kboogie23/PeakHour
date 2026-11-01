@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <link rel="icon" href="/favicon.ico">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PEAK HOUR Coach Prompt</title>
+  <script src="/static/js/shared/windows-rename.js?v=7"></script>
+  <script src="/static/js/shared/windows-hide-mac.js?v=3"></script>
+  <link href="/static/windows-fonts.css?v=1" rel="stylesheet">
+  <style>
+    :root { color-scheme: dark; --accent:#a3ff00; }
+    * { box-sizing: border-box; }
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      overflow: hidden;
+      background: transparent;
+      color: #fff;
+      font-family: "Barlow", ui-sans-serif, system-ui, sans-serif;
+    }
+    .coach-prompt {
+      position: absolute;
+      inset: 8px;
+      display: grid;
+      align-content: center;
+      min-width: 0;
+      padding: 12px 14px;
+      overflow: auto;
+      border: 1px solid #586166;
+      border-left: 4px solid var(--accent);
+      border-radius: 9px;
+      background: #101617;
+      box-shadow: 0 12px 28px rgba(0, 0, 0, .38);
+      opacity: 0;
+      transform: translateX(14px);
+      transition: opacity .22s ease, transform .22s ease;
+    }
+    .coach-prompt.visible { opacity: 1; transform: translateX(0); }
+    .coach-prompt small,
+    .coach-prompt strong,
+    .coach-prompt span { display: block; min-width: 0; }
+    .coach-prompt small {
+      color: var(--accent);
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+    }
+    .coach-prompt strong {
+      margin-top: 5px;
+      color: #fff;
+      font: 400 24px/1.05 "Bebas Neue", sans-serif;
+      letter-spacing: .02em;
+      text-transform: uppercase;
+      padding-right: 15px;
+      overflow-wrap: break-word;
+    }
+    .coach-prompt span {
+      margin-top: 6px;
+      color: #c2cbce;
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 1.35;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .coach-prompt { transition: none; }
+    }
+    [hidden]{display:none!important}
+    #coach-dismiss{position:absolute;right:7px;top:5px;width:28px;height:28px;background:transparent;color:#d5dcdf;border:0;border-radius:4px;font-size:21px;cursor:pointer}
+    #coach-dismiss:hover{background:#303b40;color:#fff}
+    #coach-dismiss:focus-visible{outline:2px solid var(--accent)}
+    #coach-song{margin-top:12px;padding:11px 12px;border:1px solid #687174;border-radius:6px;background:#3c4144 url('/static/textures/axiom-brushed-gunmetal-steel.png') center/auto 100%;cursor:grab;user-select:none}
+    #coach-song strong{font-size:27px;white-space:normal;padding-right:0}#coach-song span{font:400 13px/1.25 Arial,sans-serif;color:#e3e7e8;text-transform:uppercase}#coach-song small{margin-top:9px;color:#e3e7e8;font:600 12px Barlow;letter-spacing:0}
+    #coach-song footer{border-top:1px solid #a3ff0040;margin-top:10px;padding-top:8px;font:600 11px Barlow;color:var(--accent);text-transform:uppercase}
+    .coach-prompt.has-track{align-content:start}
+    .coach-prompt.has-track>small{display:none}.coach-prompt.has-track>#coach-title{font:400 20px/1.05 'Bebas Neue',sans-serif;color:var(--accent);letter-spacing:.03em;padding-right:22px}
+    .coach-prompt.has-track>#coach-detail{font:400 12px/1.4 Barlow,sans-serif;color:#c2cbce}
+    /* Local review presents the exact native popup dimensions, without a timer. */
+    body.coach-review{background:#080b0b;overflow:auto;padding:24px 12px}
+    .coach-review-controls{max-width:420px;margin:0 auto 26px;color:#9ca9af;font:400 12px/1.4 Barlow,sans-serif;text-align:center}
+    .coach-review-controls p{margin:0 0 12px}
+    .coach-review-controls button{padding:8px 12px;margin:2px;border:1px solid #586166;border-radius:5px;background:#263034;color:#f3f5f0;font:600 12px Barlow,sans-serif;cursor:pointer}
+    .coach-review-controls button[aria-pressed="true"]{background:var(--accent);color:#071005;border-color:var(--accent)}
+    body.coach-review .coach-prompt{position:relative;inset:auto;width:298px;height:112px;margin:auto;max-width:100%;box-shadow:none}
+    body.coach-review .coach-prompt.has-track{width:324px;height:244px}
+    body.coach-review #coach-song{cursor:default;user-select:text}
+  </style>
+</head>
+<body>
+  <nav id="coach-review-controls" class="coach-review-controls" aria-label="Sample coach messages" hidden>
+    <p>COACH PREVIEW · SAMPLE MESSAGES</p>
+    <button type="button" data-coach-preview="familiar">Familiar pairing</button>
+    <button type="button" data-coach-preview="discovery">Discovery</button>
+    <button type="button" data-coach-preview="reminder">Set reminder</button>
+  </nav>
+  <article id="coach-prompt" class="coach-prompt" aria-live="polite">
+    <button id="coach-dismiss" aria-label="Dismiss coach message">×</button><small>Quiet Coach</small>
+    <strong id="coach-title"></strong>
+    <span id="coach-detail"></span>
+    <article id="coach-song" draggable="true" tabindex="0" hidden></article>
+  </article>
+  <script src="/static/js/live-assist-coach-prompt.js"></script>
+</body>
+</html>

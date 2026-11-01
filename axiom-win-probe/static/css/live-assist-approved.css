@@ -1,0 +1,1152 @@
+:root{--accent:#a3ff00}
+.record-maybe-pair{grid-row:1;grid-column:1;display:grid;grid-template-columns:1fr 1fr;gap:6px;min-width:0}
+#maybe-button{position:relative;border:1px solid #50514d;border-radius:7px;background:#292a27;display:flex;align-items:center;justify-content:center;gap:5px;padding:0;min-width:0;height:44px}
+#maybe-button[aria-expanded="true"]{border-color:#ff8a1f;background:#38291d}
+#maybe-button .thinking{font-family:'Apple Color Emoji',sans-serif!important;font-size:20px;line-height:1}
+#maybe-count{font-size:10px;color:#ffad63}
+#set-record-button{width:100%;padding:0!important}
+#set-record-button.recording .set-record-live{display:grid;grid-template-columns:auto auto;justify-content:center;align-content:center;gap:2px 4px;width:auto;max-width:100%;line-height:1}
+#set-record-button .set-record-meter{height:12px;gap:1px}
+#set-record-button .set-record-meter i{width:2px;max-height:12px}
+#set-record-button[data-signal="healthy"] .set-record-meter i.active{background:var(--accent,#a3ff00)}
+#set-record-button .set-record-live b{font-size:9px;letter-spacing:0}
+#set-record-button .set-record-live time{grid-column:1 / -1;min-width:0;font-size:10px;line-height:1.2;letter-spacing:0;text-align:center}
+body[data-popup-style="matching-songs"] .track::before{display:none!important;content:none!important}
+.song-add{width:40px;height:40px;min-width:40px;min-height:40px;padding:0;display:grid;place-items:center;border:1px solid rgba(255,138,31,.6);border-radius:3px;background:transparent;color:#ffad63}
+.song-add img{width:16px;height:16px;filter:invert(77%) sepia(46%) saturate(940%) hue-rotate(331deg) brightness(106%)}
+.song-add:hover,.song-add[aria-expanded="true"]{border-color:#ffad63;background:#4b321d}
+.song-add:focus-visible,#maybe-button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+#maybe-drawer{flex:0 0 auto;min-height:0;border:1px solid #ff8a1f77;border-radius:7px;background:#24221d;padding:7px;margin-bottom:8px}
+#maybe-drawer>header{display:flex;gap:6px;align-items:center;margin-bottom:6px}
+#maybe-drawer>header button{font-size:12px;padding:5px 8px;min-height:27px;border-radius:4px;color:#b7b8b1}
+#maybe-drawer>header button[aria-pressed="true"]{color:#ffad63;border-color:#ff8a1f88;background:#392b20}
+#maybe-drawer>header button span{margin-left:5px}
+#maybe-emoji-button{display:inline-flex;align-items:center;gap:5px;border:1px solid rgba(163,255,0,.44)!important;background:rgba(163,255,0,.08)!important;color:#ecffd2!important}
+#maybe-emoji-button span{font-family:'Apple Color Emoji',sans-serif!important;font-size:15px;line-height:1}
+#maybe-emoji-button:is(:hover,:focus-visible),#maybe-emoji-button[aria-expanded="true"]{border-color:var(--accent)!important;background:var(--accent)!important;color:#071005!important;box-shadow:0 0 16px rgba(163,255,0,.22)!important}
+#maybe-emoji-button:is(:hover,:focus-visible) span,#maybe-emoji-button[aria-expanded="true"] span{color:#071005!important}
+.maybe-emoji-menu{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;margin:0 0 8px;padding:8px;border:1px solid rgba(163,255,0,.52);border-radius:7px;background:#12170f;box-shadow:0 10px 24px rgba(0,0,0,.5),0 0 18px rgba(163,255,0,.13)}
+.maybe-emoji-menu[hidden]{display:none!important}
+.maybe-emoji-menu button{display:grid;place-items:center;min-height:34px;padding:0;border:1px solid rgba(163,255,0,.34);border-radius:6px;background:rgba(163,255,0,.06);color:#ecffd2;font-family:'Apple Color Emoji',sans-serif!important;font-size:20px;line-height:1;transition:transform .14s ease,border-color .14s ease,background .14s ease,box-shadow .14s ease}
+.maybe-emoji-menu button:is(:hover,:focus-visible){position:relative;z-index:2;transform:scale(1.28);border-color:var(--accent);background:var(--accent);box-shadow:0 12px 24px rgba(0,0,0,.5),0 0 24px rgba(163,255,0,.34)}
+.maybe-emoji-menu button[aria-pressed="true"]{border-color:#ff8a1f;background:#3b2a18;box-shadow:inset 0 0 0 1px rgba(255,138,31,.18)}
+#close-maybe{margin-left:auto;width:27px;padding:4px!important}
+#close-maybe img{width:13px;filter:invert(1)}
+#saved-list{display:grid;gap:5px;max-height:124px;overflow:auto}
+.saved-song{display:flex;align-items:center;gap:8px;background:#2b251e;border:1px solid #ff8a1f44;border-left:3px solid #d87a27;border-radius:5px;padding:7px 8px;min-width:0}
+.saved-song>div{flex:1;min-width:0}.saved-song strong{display:block;font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.saved-song small{font-size:9px;color:#c8bcaf}.saved-song button{padding:3px;width:23px;min-height:23px;border:0;background:transparent}.saved-song button img{width:12px;filter:invert(.7)}
+.record-level-control{display:flex;align-items:center;gap:8px;min-width:0}
+.record-level-control label{color:#aaa89f;font-size:9px;letter-spacing:.04em;white-space:nowrap}
+.record-level-control output{display:block;color:#ffad63;font-size:13px;margin-top:1px}
+.record-level-knob{position:relative;width:36px;height:36px;flex-shrink:0;border:1px solid #59574f;border-radius:50%;background:radial-gradient(circle at 35% 25%,#42443d,#1c1d19 70%);box-shadow:inset 0 0 0 3px #151612,0 2px 4px #0008}
+.record-level-pointer{position:absolute;inset:4px;transform:rotate(var(--level-angle));pointer-events:none}
+.record-level-pointer::before{content:"";position:absolute;left:calc(50% - 1px);top:1px;width:2px;height:8px;border-radius:2px;background:#ffad63}
+#record-level{position:absolute;inset:0;width:100%;height:100%;margin:0;opacity:0;cursor:ns-resize;touch-action:none}
+.record-level-knob:focus-within{outline:2px solid var(--accent);outline-offset:3px}
+#clean-only-button[aria-pressed="false"]{background:#ff4860!important;border-color:#ff4860!important;color:#150306!important;box-shadow:0 0 12px #ff486033!important}
+#clean-only-button[aria-pressed="false"]:hover{background:linear-gradient(135deg,rgba(255,138,31,.16),rgba(255,95,132,.08))!important;border-color:rgba(255,138,31,.56)!important;color:rgba(255,190,125,.96)!important;box-shadow:inset 0 0 0 1px rgba(255,138,31,.08)!important}
+#clean-only-button[aria-pressed="true"]{background:var(--accent)!important;border-color:var(--accent)!important;color:#071005!important;box-shadow:0 0 12px rgba(163,255,0,.2)!important}
+#clean-only-button[aria-pressed="true"]:hover{background:#292f20!important;border-color:#657c35!important;color:#f4f6ef!important;box-shadow:none!important}
+[hidden]{display:none!important}
+body[data-popup-style="matching-songs"] .bpmbar,.bpmbar{grid-template-columns:minmax(118px,1.8fr) repeat(3,minmax(0,1fr))!important}
+.record-maybe-pair{grid-column:1!important;grid-row:1!important}
+.record-maybe-pair #set-record-button{grid-area:auto!important;height:44px!important}
+#set-record-button .set-record-idle b{display:none!important}
+#half-button{grid-column:2!important;grid-row:1!important}#double-button{grid-column:3!important;grid-row:1!important}
+.bpmbar .refresh-control{grid-column:4!important;grid-row:1!important;display:block!important}
+#assist-anchor-refresh{width:100%;height:44px;background:var(--accent,#a3ff00)!important;color:#071005!important;border:1px solid var(--accent,#a3ff00)!important;border-radius:7px;font-size:13px!important;white-space:nowrap}
+#gig-profile-button{grid-column:1/4!important;grid-row:2!important;font-size:13px!important;min-width:0!important;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#assist-only-selected{grid-column:4!important;grid-row:2!important}
+.assist-now-playing>div{min-width:0;flex:1}
+.assist-now-playing{position:relative}
+body .assist-now-playing #assist-anchor-action{display:block;width:100%;height:auto;flex:1;min-width:0;text-align:left!important;background:transparent!important;border:0!important;box-shadow:none!important;padding:0!important;cursor:pointer;white-space:normal}
+#assist-anchor-action:focus-visible{outline:2px solid var(--accent);outline-offset:6px}
+#assist-anchor-action>*{width:100%;text-align:left!important}
+#assist-anchor-action:hover #assist-anchor-title{text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:5px}
+body .assist-now-playing.selected{
+  outline:0!important;
+  border-color:var(--accent,#a3ff00)!important;
+  background:linear-gradient(135deg,rgba(163,255,0,.16),rgba(6,14,10,.97))!important;
+  box-shadow:0 0 0 2px rgba(163,255,0,.92),0 0 22px rgba(163,255,0,.28),inset 4px 0 0 var(--accent,#a3ff00)!important;
+}
+body .assist-now-playing.selected::after{
+  content:"Selected";
+  position:absolute;
+  top:9px;
+  right:72px;
+  z-index:3;
+  pointer-events:none;
+  padding:5px 7px;
+  border-radius:4px;
+  background:var(--accent,#a3ff00);
+  color:#071005;
+  box-shadow:0 0 16px rgba(163,255,0,.36);
+  font:800 10px/1 Barlow,sans-serif!important;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+}
+body .assist-now-playing.selected #assist-anchor-title{
+  color:#fff!important;
+  text-shadow:0 0 14px rgba(163,255,0,.24);
+}
+body #gig-profile-sources :is(.gig-profile-branch-head,.gig-profile-leaf){min-height:48px;font:600 14px/1.3 Barlow,sans-serif;gap:9px}
+body #gig-profile-sources :is(.gig-profile-branch-head,.gig-profile-leaf) strong{font:600 14px/1.3 Barlow,sans-serif!important;text-transform:none;white-space:normal;overflow-wrap:anywhere}
+body #gig-profile-sources :is(.gig-profile-branch-head,.gig-profile-leaf) small{font:400 10px/1.3 Barlow,sans-serif!important;text-transform:none}
+body #gig-profile-sources input{appearance:auto!important;-webkit-appearance:checkbox!important;min-height:17px!important;width:17px!important;height:17px!important;padding:0!important;accent-color:var(--accent)}
+#gig-profile-sources label{display:block}
+.gig-profile-branch[open]>summary>.gig-profile-branch-head::before{transform:rotate(90deg)}
+#refresh-button.deck-tempo{display:flex!important;flex-direction:column;align-items:flex-end;justify-content:center;gap:6px;min-width:54px;flex-shrink:0;border:1px solid transparent!important;background:transparent!important;padding:4px!important;height:auto!important;box-shadow:none!important}
+#refresh-button.deck-tempo strong{font:400 29px/1 'Bebas Neue',sans-serif!important;color:#f4f6ef!important}
+#refresh-button.deck-tempo span{font-size:8px!important;letter-spacing:.08em!important;color:#ffad63!important;border-bottom:1px dotted #ffad63}
+#refresh-button.deck-tempo:hover{border-color:#ffad6377!important}
+body[data-popup-style="matching-songs"] .track{display:flex!important;align-items:center;gap:14px!important}
+.track-copy{flex:1;min-width:0}.track-fit{flex:0 0 24px!important;margin:0!important;padding:0!important}
+.track-reject{display:block!important;position:static!important;background:transparent!important;min-width:24px!important;min-height:28px!important;color:#bcb9b2!important;font-size:22px!important}
+.song-add{font:400 29px Barlow,sans-serif!important;color:#ffad63!important;flex-shrink:0}
+#maybe-drawer>header strong{color:#ffad63;font-size:14px}#maybe-drawer>header button{margin-left:auto}
+.saved-song{cursor:grab}.saved-song button{color:#bcb9b2;font-size:20px}
+#gig-profile-menu{position:static!important;inset:auto!important;width:100%!important;max-height:none!important;flex:1;min-height:0;display:flex;flex-direction:column;background:#252820!important;box-shadow:none!important;margin:0!important}
+.results:has(#gig-profile-menu:not([hidden])) #list,.results:has(#gig-profile-menu:not([hidden])) #maybe-drawer{display:none!important}
+.gig-profile-sources{flex:1;min-height:0;overflow:auto}.gig-profile-menu-head,.gig-profile-menu-foot{flex-shrink:0}
+.gig-profile-menu-foot #gig-profile-apply{background:var(--accent);color:#071005;border-color:var(--accent)}
+.set-record-fields{grid-template-columns:minmax(0,1fr) 118px 64px!important}.set-record-fields label{min-width:0}
+.set-record-drawer-actions{flex-wrap:wrap;gap:8px}.set-record-action-group{margin-left:auto}
+#energy-button.active,#new-button.active{background:var(--accent)!important;color:#071005!important;border-color:var(--accent)!important}
+#energy-button:not(.active),#new-button:not(.active){background:#191b17!important;color:#d9dcd4!important;border-color:#45483e!important;box-shadow:none!important}
+.coach-set-reminder{grid-column:1/-1;display:flex;justify-content:space-between;align-items:center;gap:10px;color:#c6cfbb;font-size:11px}
+.coach-set-reminder select{background:#1a2016;color:#e7eddf;border:1px solid #52613e;border-radius:4px;padding:5px}
+.assist-drag-ghost{position:fixed;left:-1000px;top:0;background:var(--accent);color:#071005;padding:10px 14px;border-radius:6px;font:700 14px Barlow,sans-serif!important}
+
+.assist-now-playing,body[data-popup-style="matching-songs"] .assist-now-playing{grid-template-columns:minmax(0,1fr) 62px!important}
+#refresh-button.deck-tempo{width:62px!important;min-width:0!important}
+.track-reject{border:0!important;box-shadow:none!important}
+
+.gig-profile-tools{flex:0 0 auto;font-size:11px;color:#a5ad9a}.gig-profile-tools>summary{cursor:pointer;padding:3px 0}.gig-profile-menu-foot{display:flex;flex-wrap:wrap;align-items:center;gap:8px!important}.gig-profile-menu-foot>button{margin-left:auto}.gig-profile-menu-foot>details{width:100%;order:3}.gig-profile-menu-foot>details>div{display:flex;flex-wrap:wrap;gap:5px}
+.assist-playlist-row{display:flex;align-items:center;gap:14px;border-bottom:1px solid #ffffff12;padding:13px 3px;cursor:pointer}.assist-playlist-row input{accent-color:var(--accent);width:17px;height:17px}.assist-playlist-row span{min-width:0}.assist-playlist-row strong{display:block;font:600 15px Barlow,sans-serif!important;color:#f4f6ef}.assist-playlist-row small{font:400 11px Barlow,sans-serif!important;color:#bac5ad}
+
+/* The list takes the remaining space; Apply always has its own visible row. */
+#gig-profile-menu{display:flex!important;height:100%!important;max-height:100%!important;gap:6px!important}
+#gig-profile-menu .gig-profile-menu-head,#gig-profile-menu .gig-profile-menu-foot{display:flex!important;flex:0 0 auto;gap:6px!important;background:transparent!important}
+#gig-profile-menu .gig-profile-menu-head{padding:0!important;min-height:28px}
+#gig-profile-menu .gig-profile-menu-head>strong{flex:1}
+
+#gig-profile-menu .gig-profile-menu-foot{padding-top:6px!important;flex-wrap:wrap}
+#gig-profile-menu .gig-profile-menu-foot>details{flex:0 0 100%;order:3}
+#gig-profile-sources{flex:1 1 0!important;min-height:0!important;padding:0 4px!important;border:0!important;background:transparent!important}
+#gig-profile-menu .assist-playlist-row input{min-height:17px!important;min-width:17px!important;appearance:auto}
+#gig-profile-menu #gig-profile-refresh{font-size:12px!important;min-height:32px!important;background:#342a1e!important;border-color:#9b672e!important;color:#ffad63!important}
+#gig-profile-apply{font-size:13px!important;min-height:32px!important;background:var(--accent)!important;color:#071005!important;border-color:var(--accent)!important}
+#gig-profile-menu #gig-profile-close{font-size:11px!important;min-height:28px!important;padding:5px 8px!important}
+#gig-profile-menu .assist-playlist-row input{appearance:none!important;-webkit-appearance:none!important;width:17px!important;height:17px!important;padding:0!important;border:1px solid #737969!important;border-radius:3px!important;background:#30362a!important;display:grid;place-items:center;flex:0 0 17px}
+#gig-profile-menu .assist-playlist-row input:checked{background:var(--accent)!important;border-color:var(--accent)!important}
+#gig-profile-menu .assist-playlist-row input:checked::before{content:"";width:5px;height:9px;border:solid #071005;border-width:0 2px 2px 0;transform:translateY(-1px) rotate(45deg)}
+.set-record-fields select{appearance:none;-webkit-appearance:none}
+
+/* One header in the existing toolbar; playlist names own the drawer. */
+.bpmbar #gig-profile-close{display:none!important;grid-column:4!important;grid-row:2!important;font-size:11px!important;padding:0 5px!important;white-space:nowrap}
+body:has(#gig-profile-menu:not([hidden])) .bpmbar #gig-profile-close{display:block!important}
+body:has(#gig-profile-menu:not([hidden])) #assist-only-selected{display:none!important}
+body #gig-profile-menu{position:relative!important;padding:8px!important;border-radius:8px!important;overflow:hidden!important;gap:8px!important}
+body #gig-profile-menu .assist-playlist-toolbar{min-height:34px!important;height:34px!important;border:0!important;flex-wrap:nowrap!important}
+body #gig-profile-menu #gig-profile-search{flex:1 1 0;width:0;min-width:0;font:400 14px Barlow,sans-serif!important;height:34px!important;letter-spacing:0;text-transform:none}
+body #gig-profile-menu #gig-profile-refresh{flex:0 0 auto;font:600 13px Barlow,sans-serif!important;padding:0 10px!important}
+#assist-playlist-settings{flex:0 0 auto}
+#assist-playlist-settings>summary{display:flex;align-items:center;justify-content:center;list-style:none;cursor:pointer;height:34px;padding:0 9px;border:1px solid #505548;border-radius:6px;color:#c9d0c1;font:600 12px Barlow,sans-serif}
+#assist-playlist-settings>summary::-webkit-details-marker{display:none}
+#assist-playlist-settings[open]>summary{border-color:var(--accent);color:var(--accent);background:#1b2314}
+.assist-playlist-settings-panel{position:absolute;z-index:5;inset:50px 8px 50px;background:#1b1e18;border:1px solid #647347;border-radius:7px;box-shadow:0 8px 25px #0009;padding:12px;overflow:auto}
+body #gig-profile-menu .gig-profile-preset-row{flex-wrap:wrap;padding:0 0 12px!important;gap:8px!important}
+body #gig-profile-menu .gig-profile-preset-field{flex:1 0 100%;min-width:0}
+body #gig-profile-menu .gig-profile-profile-select{width:100%;font:500 14px Barlow,sans-serif!important}
+body #gig-profile-menu .assist-playlist-settings-panel button{font:600 12px Barlow,sans-serif!important;height:34px!important}
+.assist-playlist-option-buttons{display:flex;flex-wrap:wrap;gap:8px;padding-top:12px;border-top:1px solid #ffffff20}
+body #gig-profile-menu .assist-playlist-row{display:flex!important;min-height:58px;gap:12px;padding:10px 4px!important;border-bottom:1px solid #ffffff16;box-sizing:border-box}
+body #gig-profile-menu .assist-playlist-row>span{flex:1;min-width:0}
+body #gig-profile-menu .assist-playlist-row strong{font:600 15px/1.25 Barlow,sans-serif!important;text-transform:none!important;white-space:normal!important;overflow-wrap:anywhere;color:#f4f6ef!important;letter-spacing:0!important}
+body #gig-profile-menu .assist-playlist-row small{display:block;font:400 11px/1.35 Barlow,sans-serif!important;text-transform:none;white-space:normal;overflow-wrap:anywhere;margin-top:3px;color:#aebaa3!important}
+body #gig-profile-menu .assist-playlist-row:has(input:checked){background:rgba(163,255,0,.05)}
+body #gig-profile-menu .assist-playlist-row.is-unmatched{opacity:.6;cursor:default}
+body #gig-profile-menu .gig-profile-menu-foot{min-height:36px!important;flex-wrap:nowrap!important;gap:8px!important}
+body #gig-profile-menu #gig-profile-selection-count{font:500 12px Barlow,sans-serif!important;text-transform:none!important;color:#bac5ad!important}
+body #gig-profile-menu .gig-profile-empty{
+  display:grid!important;
+  place-items:center!important;
+  gap:7px!important;
+  min-height:110px!important;
+  margin:10px!important;
+  padding:18px 16px!important;
+  border:1px solid rgba(163,255,0,.22)!important;
+  border-radius:7px!important;
+  background:rgba(7,11,9,.58)!important;
+  color:#eef6e7!important;
+  font:500 13px/1.45 Barlow,sans-serif!important;
+  letter-spacing:0!important;
+  text-align:center!important;
+  text-transform:none!important;
+  white-space:normal!important;
+}
+body #gig-profile-menu .gig-profile-empty strong{
+  display:block!important;
+  max-width:28ch!important;
+  color:#f7fff0!important;
+  font:700 14px/1.3 Barlow,sans-serif!important;
+  letter-spacing:0!important;
+  text-transform:none!important;
+}
+body #gig-profile-menu .gig-profile-empty span{
+  display:block!important;
+  max-width:31ch!important;
+  color:#c6d4bd!important;
+  font:500 12px/1.45 Barlow,sans-serif!important;
+  letter-spacing:0!important;
+  text-transform:none!important;
+}
+
+body #gig-profile-menu[hidden]{display:none!important}
+body #gig-profile-menu [hidden]{display:none!important}
+
+/* Playlist mode borrows the existing performance controls for search. */
+.bpmbar #gig-profile-search,.bpmbar #gig-profile-refresh{display:none!important}
+body:has(#gig-profile-menu:not([hidden])) .record-maybe-pair,
+body:has(#gig-profile-menu:not([hidden])) #half-button,
+body:has(#gig-profile-menu:not([hidden])) #double-button,
+body:has(#gig-profile-menu:not([hidden])) .bpmbar .refresh-control{display:none!important}
+body:has(#gig-profile-menu:not([hidden])) .bpmbar #gig-profile-search{display:block!important;grid-column:1/4!important;grid-row:1!important;width:100%;min-width:0;height:44px!important;box-sizing:border-box;font:400 15px Barlow,sans-serif!important;letter-spacing:0;text-transform:none;padding:0 12px!important;background:#12150f!important;border:1px solid #596846!important;border-radius:7px;color:#f4f6ef!important}
+body:has(#gig-profile-menu:not([hidden])) .bpmbar #gig-profile-refresh{display:block!important;grid-column:4!important;grid-row:1!important;height:44px!important;min-width:0;padding:0 6px!important;font:600 13px Barlow,sans-serif!important;background:var(--accent)!important;color:#071005!important;border:1px solid var(--accent)!important;border-radius:7px}
+body #gig-profile-menu .assist-playlist-settings-panel{inset:8px 8px 50px}
+body #gig-profile-menu #assist-playlist-settings{order:0;flex:0 0 auto;width:auto}
+body #gig-profile-menu .gig-profile-menu-foot>button{margin-left:auto}
+body #gig-profile-menu #gig-profile-reverse{display:flex;align-items:center;justify-content:center;flex:0 0 34px;width:34px;min-width:34px;height:34px;min-height:34px;margin-left:0;padding:0;border:1px solid #505548;border-radius:6px;background:transparent;color:#c9d0c1;box-shadow:none}
+body #gig-profile-menu #gig-profile-reverse[aria-pressed="true"]{border-color:var(--accent);color:var(--accent);background:#1b2314}
+
+body .bpmbar #gig-profile-close{width:100%!important;min-width:0!important;box-sizing:border-box;font-size:10px!important;overflow:hidden}
+body .bpmbar #gig-profile-search::placeholder{font:400 14px Barlow,sans-serif!important;color:#a9b39f!important;text-transform:none!important;letter-spacing:0!important}
+
+body:has(#gig-profile-menu:not([hidden])) .bpmbar{grid-template-columns:minmax(0,1fr) 100px!important;column-gap:10px!important;row-gap:10px!important;padding:2px!important;box-sizing:border-box}
+body:has(#gig-profile-menu:not([hidden])) .bpmbar #gig-profile-search{grid-column:1!important}
+body:has(#gig-profile-menu:not([hidden])) .bpmbar #gig-profile-refresh{grid-column:2!important;grid-row:2!important;height:34px!important;min-height:34px!important;padding:0 3px!important;font:400 16px 'Bebas Neue',sans-serif!important;letter-spacing:0!important;white-space:nowrap!important;background:#292f23!important;border-color:#505d3d!important;color:#dce4d1!important;box-shadow:none!important}
+body:has(#gig-profile-menu:not([hidden])) .bpmbar #gig-profile-button{grid-column:1!important;min-height:34px!important;height:34px!important;padding:0 10px!important}
+body:has(#gig-profile-menu:not([hidden])) .bpmbar #gig-profile-close{grid-column:2!important;grid-row:1!important;min-height:44px!important;height:44px!important;padding:0 8px!important;font:400 16px 'Bebas Neue',sans-serif!important;background:var(--accent)!important;border-color:var(--accent)!important;color:#071005!important;box-shadow:none!important}
+
+body #gig-profile-menu .gig-profile-menu-foot{position:static!important}
+
+/* Calm, aligned settings rows, with status separated from the action label. */
+body #gig-profile-menu .assist-playlist-settings-panel{display:flex!important;flex-direction:column!important;flex-wrap:nowrap!important;justify-content:flex-start!important;align-items:stretch!important;gap:10px!important;padding:12px!important;background:#1b1e18!important;border-color:#434b37!important;box-shadow:none!important}
+body #gig-profile-menu .assist-playlist-settings-panel>*{flex:0 0 auto!important;margin:0!important}
+body #gig-profile-menu .gig-profile-preset-row{display:grid!important;grid-template-columns:1fr 1fr!important;grid-template-rows:auto auto!important;gap:6px!important;padding:0!important;border:0!important;min-height:0!important}
+body #gig-profile-menu .gig-profile-preset-field{display:block!important;grid-column:1/-1!important;min-width:0!important}
+body #gig-profile-menu .gig-profile-field-label{display:block!important;font:600 10px/1.3 Barlow,sans-serif!important;letter-spacing:.08em!important;color:#aeb89f!important;margin:0 0 5px!important;text-transform:uppercase!important}
+body #gig-profile-menu .gig-profile-profile-select{height:32px!important;min-height:32px!important;border-color:#404839!important;background:#11150e!important;font:500 13px Barlow,sans-serif!important}
+body #gig-profile-menu .assist-playlist-settings-panel button{min-height:30px!important;height:30px!important;border:1px solid #434c37!important;border-radius:5px!important;box-shadow:none!important;background:#242a1e!important;color:#dde5d4!important;font:600 12px Barlow,sans-serif!important;text-transform:none!important;letter-spacing:0!important;line-height:1.2!important;white-space:normal!important;padding:0 10px!important}
+body #gig-profile-menu .assist-playlist-settings-panel button:disabled{opacity:.4!important}
+body #gig-profile-menu .assist-playlist-option-buttons{display:grid!important;grid-template-columns:1fr!important;gap:0!important;padding:4px 0!important;border-top:1px solid #ffffff15!important;border-bottom:1px solid #ffffff15!important}
+body #gig-profile-menu .assist-playlist-option-buttons>button{display:flex!important;align-items:center!important;justify-content:space-between!important;width:100%!important;min-height:34px!important;height:34px!important;background:transparent!important;border:0!important;border-radius:0!important;padding:0!important;text-align:left!important;color:#e2e8d9!important}
+body #gig-profile-menu .assist-playlist-option-buttons>button::after{content:attr(data-state);display:grid;place-items:center;min-width:34px;height:22px;border-radius:4px;background:#303629;color:#aeb8a2;font:600 11px Barlow,sans-serif!important}
+body #gig-profile-menu .assist-playlist-option-buttons>button[aria-pressed="true"]::after{background:var(--accent);color:#071005}
+body #gig-profile-menu .assist-playlist-option-buttons>button:hover{color:var(--accent)!important}
+body #gig-profile-menu .assist-playlist-bulk-actions{display:grid!important;grid-template-columns:1fr 1fr!important;gap:6px!important}
+body #gig-profile-menu .gig-profile-save-panel:not([hidden]){display:grid!important;grid-template-columns:1fr 1fr!important;gap:6px!important;padding:0!important;background:transparent!important;border:0!important}
+body #gig-profile-menu #gig-profile-name{grid-column:1/-1!important;font:400 13px Barlow,sans-serif!important}
+
+/* Playlist Options must stay readable in the detached Live Assist pop-out.
+   The footer is a control strip; the settings panel opens upward from it so
+   compact window heights cannot squash the preset/options rows. */
+body[data-popup-style="matching-songs"] #gig-profile-menu {
+  overflow: visible!important;
+}
+
+body[data-popup-style="matching-songs"] #gig-profile-menu .gig-profile-menu-foot {
+  display: grid!important;
+  grid-template-columns: minmax(0, 1fr) minmax(70px, 82px) 34px minmax(116px, 148px)!important;
+  align-items: center!important;
+  gap: 8px!important;
+  min-height: 44px!important;
+  flex-wrap: nowrap!important;
+  position: relative!important;
+  z-index: 12!important;
+}
+
+body[data-popup-style="matching-songs"] #gig-profile-menu #gig-profile-selection-count {
+  min-width: 0!important;
+  overflow: hidden!important;
+  text-overflow: ellipsis!important;
+  white-space: nowrap!important;
+}
+
+body[data-popup-style="matching-songs"] #gig-profile-menu #assist-playlist-settings {
+  grid-column: 2!important;
+  width: 100%!important;
+  min-width: 0!important;
+}
+
+body[data-popup-style="matching-songs"] #gig-profile-menu #assist-playlist-settings > summary {
+  width: 100%!important;
+  min-width: 0!important;
+  height: 38px!important;
+  box-sizing: border-box!important;
+  overflow: hidden!important;
+  text-overflow: ellipsis!important;
+  white-space: nowrap!important;
+}
+
+body[data-popup-style="matching-songs"] #gig-profile-menu #gig-profile-reverse {
+  grid-column: 3!important;
+}
+
+body[data-popup-style="matching-songs"] #gig-profile-menu #gig-profile-apply {
+  grid-column: 4!important;
+  width: 100%!important;
+  min-width: 0!important;
+}
+
+body[data-popup-style="matching-songs"] #gig-profile-menu .assist-playlist-settings-panel {
+  inset: auto 0 calc(100% + 8px) 0!important;
+  min-height: 230px!important;
+  max-height: min(360px, calc(100vh - 190px))!important;
+  overflow: auto!important;
+  z-index: 40!important;
+  box-shadow: 0 18px 42px rgba(0,0,0,.72), 0 0 0 1px rgba(163,255,0,.08)!important;
+}
+
+body[data-popup-style="matching-songs"] #gig-profile-menu .assist-playlist-option-buttons > button {
+  min-height: 40px!important;
+  height: 40px!important;
+}
+
+/* Open Maybe Next reserves the remaining space for readable saved songs. */
+body:not(.recording-drawer-open) .results:has(#maybe-drawer:not([hidden])):not(:has(#gig-profile-menu:not([hidden]))){display:flex!important;flex-direction:column!important;gap:8px!important;min-height:0!important}
+body .results #maybe-drawer:not([hidden]){display:flex!important;flex-direction:column!important;flex:1 1 0!important;min-height:0!important;margin:0!important;padding:10px!important;overflow:hidden}
+body #maybe-drawer>header{flex:0 0 auto;min-height:26px;margin-bottom:8px;gap:8px}
+body #maybe-drawer>header strong{font-size:17px!important}
+body #maybe-drawer #saved-list{display:flex!important;flex-direction:column!important;flex:1 1 0!important;min-height:0!important;max-height:none!important;gap:8px;overflow:auto;padding-right:2px}
+body #maybe-drawer .saved-song{flex:0 0 auto;min-height:70px;box-sizing:border-box;padding:10px 12px;gap:10px}
+body #maybe-drawer .saved-song>div{flex:1;min-width:0}
+body #maybe-drawer .saved-song strong{font:600 16px/1.25 Barlow,sans-serif!important;white-space:normal!important;overflow-wrap:anywhere;text-transform:uppercase!important;color:#f4f6ef!important}
+body #maybe-drawer .saved-song small{display:block;font:400 12px/1.4 Barlow,sans-serif!important;margin-top:5px;color:#c7bcad!important;white-space:normal;text-transform:uppercase!important}
+body #maybe-drawer .saved-song button{flex:0 0 28px;width:28px;min-height:32px;font:400 23px Barlow,sans-serif!important;padding:0!important}
+body:not(.recording-drawer-open) .results:has(#maybe-drawer:not([hidden])):not(:has(#gig-profile-menu:not([hidden]))) #list{display:block!important;flex:0 0 88px!important;min-height:0!important;max-height:88px!important;overflow:hidden!important}
+body:not(.recording-drawer-open) .results:has(#maybe-drawer:not([hidden])):not(:has(#gig-profile-menu:not([hidden]))) #list>.track{height:88px!important;min-height:0!important;box-sizing:border-box;margin:0!important}
+body:not(.recording-drawer-open) .results:has(#maybe-drawer:not([hidden])):not(:has(#gig-profile-menu:not([hidden]))) #list:has(.track.selected)>.track:not(.selected),
+body:not(.recording-drawer-open) .results:has(#maybe-drawer:not([hidden])):not(:has(#gig-profile-menu:not([hidden]))) #list:not(:has(.track.selected))>.track:not(:first-child){display:none!important}
+body:not(.recording-drawer-open) .results:has(#maybe-drawer:not([hidden])):not(:has(#gig-profile-menu:not([hidden]))) #list>.empty{min-height:0!important;padding:12px!important}
+
+#assist-anchor-refresh{display:flex!important;align-items:center;justify-content:center;gap:6px;padding:0 6px!important}
+#assist-anchor-refresh img{display:block!important;width:20px!important;height:20px!important;flex:0 0 20px;filter:brightness(0)}
+
+body #gig-profile-menu #gig-profile-apply{flex:0 0 148px!important;width:148px!important;min-height:38px!important;height:38px!important;padding:0 12px!important;font:400 18px 'Bebas Neue',sans-serif!important;letter-spacing:0!important;color:#071005!important}
+
+body .bpmbar #assist-only-selected{font:700 10px/1 Barlow,sans-serif!important;text-transform:uppercase!important;letter-spacing:0!important;padding:0 5px!important;white-space:nowrap}
+
+body .song-add{transition:transform 180ms ease,border-radius 180ms ease,background-color 180ms ease,border-color 180ms ease,color 180ms ease}
+body .song-add.is-kept{background:var(--accent,#a3ff00)!important;border-color:var(--accent,#a3ff00)!important;color:#071005!important;font-size:20px!important;border-radius:50%!important;transform:scale(.6)}
+@media(prefers-reduced-motion:reduce){body .song-add{transition:none}}
+body .song-add.is-kept:hover{background:#b7ff38!important;border-color:#b7ff38!important;color:#071005!important}
+body .saved-song:focus{outline:2px solid var(--accent);outline-offset:-2px}
+body #maybe-drawer #saved-list.is-drop-target{outline:2px dashed var(--accent);outline-offset:-2px;background:var(--accent)12}
+.assist-request-hint{display:block;margin-top:8px;color:#c7bcad;font:12px/1.4 Barlow,sans-serif}
+
+/* Final Live Assist pop-up control state fix.
+   These controls are available in the floating window, so they should not look
+   disabled. Disabled suggestion refinements remain grey below. */
+body[data-popup-style="matching-songs"] :is(
+  #half-button,
+  #double-button,
+  #assist-only-selected,
+  #gig-profile-button
+):not(:disabled):not([aria-disabled="true"]) {
+  border-color: rgba(163,255,0,.68)!important;
+  background: rgba(163,255,0,.12)!important;
+  color: #ecffd2!important;
+  box-shadow: inset 0 0 0 1px rgba(163,255,0,.1)!important;
+  opacity: 1!important;
+}
+
+body[data-popup-style="matching-songs"] :is(
+  #half-button,
+  #double-button,
+  #assist-only-selected,
+  #gig-profile-button
+):not(:disabled):not([aria-disabled="true"]):is(:hover,:focus-visible) {
+  border-color: var(--accent)!important;
+  background: rgba(163,255,0,.18)!important;
+  color: #fff!important;
+}
+
+body[data-popup-style="matching-songs"] :is(
+  #assist-only-selected[aria-pressed="true"],
+  #half-button.active,
+  #double-button.active
+):not(:disabled):not([aria-disabled="true"]) {
+  border-color: var(--accent)!important;
+  background: var(--accent)!important;
+  color: #071005!important;
+}
+
+body[data-popup-style="matching-songs"] :is(
+  #old-button,
+  #like-button,
+  #energy-button,
+  #new-button,
+  #genre-flip-button,
+  #genre-button,
+  #more-era-button,
+  #more-genre-button
+):is(:disabled,[aria-disabled="true"]) {
+  border-color: rgba(244,247,239,.1)!important;
+  background: rgba(244,247,239,.035)!important;
+  color: rgba(244,247,239,.28)!important;
+  box-shadow: none!important;
+  opacity: .62!important;
+}
+
+/* Too Old and More Like This should keep their Live Assist button styling even
+   before a recommendation is selected. The disabled attribute still protects
+   behavior, but the controls should not visually disappear. */
+body[data-popup-style="matching-songs"] :is(#old-button,#like-button) {
+  appearance: none!important;
+  -webkit-appearance: none!important;
+  border-color: rgba(163,255,0,.46)!important;
+  background: rgba(163,255,0,.075)!important;
+  background-color: rgba(163,255,0,.075)!important;
+  color: rgba(236,255,210,.84)!important;
+  box-shadow: inset 0 0 0 1px rgba(163,255,0,.075)!important;
+  opacity: .9!important;
+}
+
+body[data-popup-style="matching-songs"] :is(#old-button,#like-button):not(:disabled):not([aria-disabled="true"]):is(:hover,:focus-visible) {
+  border-color: var(--accent)!important;
+  background: rgba(163,255,0,.16)!important;
+  color: #fff!important;
+}
+
+body[data-popup-style="matching-songs"] :is(#old-button.active,#like-button.active):not(:disabled):not([aria-disabled="true"]) {
+  border-color: var(--accent)!important;
+  background: var(--accent)!important;
+  color: #071005!important;
+}
+
+/* Playlist drawer in the Live Assist pop-up has its own later layout rules.
+   Keep active drawer actions readable and green; only unavailable refine
+   buttons should fade out. */
+body:not(.assist-owner-layout)[data-popup-style="matching-songs"]:has(#gig-profile-menu:not([hidden])) :is(
+  #gig-profile-refresh,
+  #gig-profile-close,
+  #gig-profile-apply
+):not(:disabled):not([aria-disabled="true"]) {
+  border-color: var(--accent)!important;
+  background: var(--accent)!important;
+  color: #071005!important;
+  box-shadow: 0 0 14px rgba(163,255,0,.2)!important;
+  opacity: 1!important;
+}
+
+body:not(.assist-owner-layout)[data-popup-style="matching-songs"]:has(#gig-profile-menu:not([hidden])) :is(
+  #assist-playlist-settings > summary,
+  #gig-profile-reverse
+):not(:disabled):not([aria-disabled="true"]) {
+  border-color: rgba(163,255,0,.72)!important;
+  background: rgba(163,255,0,.1)!important;
+  color: var(--accent)!important;
+  box-shadow: inset 0 0 0 1px rgba(163,255,0,.08)!important;
+  opacity: 1!important;
+}
+
+body:not(.assist-owner-layout)[data-popup-style="matching-songs"]:has(#gig-profile-menu:not([hidden])) :is(
+  #gig-profile-refresh,
+  #gig-profile-close,
+  #gig-profile-apply,
+  #assist-playlist-settings > summary,
+  #gig-profile-reverse
+):not(:disabled):not([aria-disabled="true"]):is(:hover,:focus-visible) {
+  filter: brightness(1.08);
+}
+
+body[data-popup-style="matching-songs"] :is(#old-button,#like-button):is(:disabled,[aria-disabled="true"]) {
+  border-color: rgba(163,255,0,.68)!important;
+  background: rgba(163,255,0,.12)!important;
+  color: rgb(236,255,210)!important;
+  box-shadow: inset 0 0 0 1px rgba(163,255,0,.1)!important;
+  opacity: 1!important;
+}
+
+body:not(.assist-owner-layout)[data-popup-style="matching-songs"]:has(#gig-profile-menu:not([hidden])) .bpmbar :is(
+  #gig-profile-refresh,
+  #gig-profile-close
+):not(:disabled):not([aria-disabled="true"]) {
+  border-color: #a3ff00!important;
+  background: #a3ff00!important;
+  color: #071005!important;
+  box-shadow: 0 0 14px rgba(163,255,0,.2)!important;
+  opacity: 1!important;
+}
+
+/* Separate selectors keep older WebKit from giving toolbar buttons the
+   three-ID specificity of the Apply button and overriding the steel style. */
+body:not(.assist-owner-layout)[data-popup-style="matching-songs"]:has(#gig-profile-menu:not([hidden])) #gig-profile-menu #gig-profile-apply:not(:disabled):not([aria-disabled="true"]) {
+  border-color: #a3ff00!important;
+  background: #a3ff00!important;
+  color: #071005!important;
+  box-shadow: 0 0 14px rgba(163,255,0,.2)!important;
+  opacity: 1!important;
+}
+
+body:not(.assist-owner-layout)[data-popup-style="matching-songs"]:has(#gig-profile-menu:not([hidden])) #gig-profile-menu :is(
+  #assist-playlist-settings > summary,
+  #gig-profile-reverse
+):not(:disabled):not([aria-disabled="true"]) {
+  border-color: rgba(163,255,0,.72)!important;
+  background: rgba(163,255,0,.1)!important;
+  color: #a3ff00!important;
+  box-shadow: inset 0 0 0 1px rgba(163,255,0,.08)!important;
+  opacity: 1!important;
+}
+
+/* More Like This options need to stay readable inside the compact pop-up.
+   Give each control a larger hover/focus state so short labels are easy to
+   read without changing the protected disabled behavior. */
+body[data-popup-style="matching-songs"] #more-like-menu {
+  width: min(100%, 294px)!important;
+  padding: 10px!important;
+  gap: 7px!important;
+  border: 1px solid rgba(244,247,239,.22)!important;
+  border-radius: 8px!important;
+  background: linear-gradient(180deg, rgba(14,20,15,.98), rgba(7,11,9,.98))!important;
+  box-shadow: 0 18px 40px rgba(0,0,0,.72), 0 0 18px rgba(0,0,0,.24)!important;
+  color: #f4f7ef!important;
+  z-index: 30!important;
+}
+
+body[data-popup-style="matching-songs"] #more-like-menu,
+body[data-popup-style="matching-songs"] #more-like-menu button,
+body[data-popup-style="matching-songs"] #more-like-menu select,
+body[data-popup-style="matching-songs"] #more-like-menu span,
+body[data-popup-style="matching-songs"] #more-like-menu b,
+body[data-popup-style="matching-songs"] #more-like-menu label {
+  color: #f4f7ef!important;
+  text-shadow: none!important;
+}
+
+body[data-popup-style="matching-songs"] #more-like-menu .coach-insights-toggle,
+body[data-popup-style="matching-songs"] #more-like-menu .coach-set-reminder,
+body[data-popup-style="matching-songs"] #more-like-menu > button {
+  min-height: 38px!important;
+  border: 1px solid rgba(244,247,239,.16)!important;
+  border-radius: 6px!important;
+  background: rgba(244,247,239,.045)!important;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.025)!important;
+  opacity: 1!important;
+  transition: transform .14s ease, border-color .14s ease, background .14s ease, box-shadow .14s ease, color .14s ease!important;
+}
+
+body[data-popup-style="matching-songs"] #more-like-menu .coach-insights-toggle,
+body[data-popup-style="matching-songs"] #more-like-menu > button {
+  font-size: 12px!important;
+  letter-spacing: .05em!important;
+}
+
+body[data-popup-style="matching-songs"] #more-like-menu :is(
+  #energy-button,
+  #new-button,
+  #genre-flip-button,
+  #genre-button,
+  #more-era-button,
+  #more-genre-button
+):is(:disabled,[aria-disabled="true"]) {
+  border-color: rgba(244,247,239,.11)!important;
+  background: rgba(244,247,239,.032)!important;
+  color: rgba(244,247,239,.48)!important;
+  box-shadow: none!important;
+  opacity: .88!important;
+}
+
+body[data-popup-style="matching-songs"] #more-like-menu :is(
+  .coach-insights-toggle,
+  .coach-set-reminder,
+  button,
+  select
+):is(:hover,:focus-visible,:focus-within) {
+  position: relative!important;
+  z-index: 2!important;
+  transform: translateY(-2px) scale(1.08)!important;
+  border-color: #a3ff00!important;
+  background: #a3ff00!important;
+  color: #071005!important;
+  box-shadow: 0 12px 26px rgba(0,0,0,.58), 0 0 24px rgba(163,255,0,.34)!important;
+}
+
+body[data-popup-style="matching-songs"] #more-like-menu :is(
+  .coach-insights-toggle,
+  .coach-set-reminder,
+  button,
+  select
+):is(:hover,:focus-visible,:focus-within) :is(span,b) {
+  color: #071005!important;
+}
+
+body[data-popup-style="matching-songs"] #more-like-menu .coach-set-reminder select {
+  min-width: 0;
+  max-width: 55%;
+  min-height: 28px!important;
+  border-color: rgba(244,247,239,.2)!important;
+  background: rgba(7,11,9,.92)!important;
+  color: #f4f7ef!important;
+}
+
+body[data-popup-style="matching-songs"] #more-like-menu .coach-set-reminder {
+  box-sizing: border-box;
+  min-width: 0;
+  padding: 5px 8px;
+  gap: 8px;
+}
+
+body[data-popup-style="matching-songs"] #more-like-menu .coach-set-reminder:is(:hover,:focus-visible,:focus-within),
+body[data-popup-style="matching-songs"] #more-like-menu .coach-set-reminder select:is(:hover,:focus-visible,:focus-within) {
+  transform: none!important;
+}
+
+body[data-popup-style="matching-songs"] #more-like-menu .coach-set-reminder:is(:hover,:focus-within) select {
+  border-color: #071005!important;
+  background: #071005!important;
+  color: #a3ff00!important;
+}
+
+body .results #maybe-drawer:has(#maybe-emoji-menu:not([hidden])) {
+  overflow: visible!important;
+  position: relative!important;
+  z-index: 32!important;
+}
+
+body .results #maybe-drawer:has(#maybe-emoji-menu:not([hidden])) #saved-list {
+  opacity: .18!important;
+}
+
+body #maybe-drawer #maybe-emoji-menu:not([hidden]) {
+  position: absolute!important;
+  left: 10px!important;
+  right: 10px!important;
+  top: 44px!important;
+  z-index: 36!important;
+}
+
+body[data-popup-style="matching-songs"] #clean-only-button[aria-pressed="true"] {
+  border-color: #a3ff00!important;
+  background: #a3ff00!important;
+  color: #071005!important;
+  box-shadow: 0 0 18px rgba(163,255,0,.28)!important;
+  opacity: 1!important;
+}
+
+body[data-popup-style="matching-songs"] #clean-only-button[aria-pressed="false"] {
+  border-color: #ff4860!important;
+  background: #ff4860!important;
+  color: #150306!important;
+  box-shadow: 0 0 14px rgba(255,72,96,.24)!important;
+  opacity: 1!important;
+}
+
+/* Final colour contract for the Live Assist action deck. Provider tone can
+   frame source surfaces, but an active action/filter must always read as
+   AXIOM green with dark text. */
+body[data-popup-style="matching-songs"] :is(
+  #half-button.active,
+  #double-button.active,
+  #assist-only-selected[aria-pressed="true"],
+  #old-button.active,
+  #like-button.active,
+  .more-like-plus[aria-expanded="true"],
+  #energy-button.active,
+  #new-button.active,
+  #genre-flip-button.active,
+  #genre-button.active,
+  #more-era-button.active,
+  #more-genre-button.active
+),
+body[data-popup-style="matching-songs"].provider-djay :is(
+  #half-button.active,
+  #double-button.active,
+  #assist-only-selected[aria-pressed="true"],
+  #old-button.active,
+  #like-button.active,
+  .more-like-plus[aria-expanded="true"],
+  #energy-button.active,
+  #new-button.active,
+  #genre-flip-button.active,
+  #genre-button.active,
+  #more-era-button.active,
+  #more-genre-button.active
+),
+body[data-popup-style="matching-songs"].provider-serato :is(
+  #half-button.active,
+  #double-button.active,
+  #assist-only-selected[aria-pressed="true"],
+  #old-button.active,
+  #like-button.active,
+  .more-like-plus[aria-expanded="true"],
+  #energy-button.active,
+  #new-button.active,
+  #genre-flip-button.active,
+  #genre-button.active,
+  #more-era-button.active,
+  #more-genre-button.active
+) {
+  border-color: #a3ff00!important;
+  background: #a3ff00!important;
+  color: #071005!important;
+  box-shadow: 0 0 18px rgba(163,255,0,.28), inset 0 0 0 1px rgba(7,16,5,.08)!important;
+  opacity: 1!important;
+}
+
+body[data-popup-style="matching-songs"] :is(
+  #half-button.active,
+  #double-button.active,
+  #assist-only-selected[aria-pressed="true"],
+  #old-button.active,
+  #like-button.active,
+  .more-like-plus[aria-expanded="true"],
+  #energy-button.active,
+  #new-button.active,
+  #genre-flip-button.active,
+  #genre-button.active,
+  #more-era-button.active,
+  #more-genre-button.active
+) :is(span,b,img),
+body[data-popup-style="matching-songs"].provider-djay :is(
+  #half-button.active,
+  #double-button.active,
+  #assist-only-selected[aria-pressed="true"],
+  #old-button.active,
+  #like-button.active,
+  .more-like-plus[aria-expanded="true"],
+  #energy-button.active,
+  #new-button.active,
+  #genre-flip-button.active,
+  #genre-button.active,
+  #more-era-button.active,
+  #more-genre-button.active
+) :is(span,b,img),
+body[data-popup-style="matching-songs"].provider-serato :is(
+  #half-button.active,
+  #double-button.active,
+  #assist-only-selected[aria-pressed="true"],
+  #old-button.active,
+  #like-button.active,
+  .more-like-plus[aria-expanded="true"],
+  #energy-button.active,
+  #new-button.active,
+  #genre-flip-button.active,
+  #genre-button.active,
+  #more-era-button.active,
+  #more-genre-button.active
+) :is(span,b,img) {
+  color: #071005!important;
+  filter: brightness(0)!important;
+  text-shadow: none!important;
+}
+
+body[data-popup-style="matching-songs"] :is(
+  #half-button,
+  #double-button,
+  #assist-only-selected,
+  #old-button,
+  #like-button,
+  .more-like-plus,
+  #energy-button,
+  #new-button,
+  #genre-flip-button,
+  #genre-button,
+  #more-era-button,
+  #more-genre-button
+):is(:disabled,[aria-disabled="true"]):not(.active):not([aria-pressed="true"]):not([aria-expanded="true"]) {
+  border-color: rgba(244,247,239,.12)!important;
+  background: rgba(244,247,239,.04)!important;
+  color: rgba(244,247,239,.38)!important;
+  box-shadow: none!important;
+  opacity: .72!important;
+}
+
+/* Owner-visible fix: Too Old and More Like This are filters. When they are
+   selected they must read like the green More button, even if the button is
+   momentarily disabled while the filter refresh is being processed. */
+html body[data-popup-style="matching-songs"] #old-button.active,
+html body[data-popup-style="matching-songs"] #like-button.active,
+html body[data-popup-style="matching-songs"].provider-djay #old-button.active,
+html body[data-popup-style="matching-songs"].provider-djay #like-button.active,
+html body[data-popup-style="matching-songs"].provider-serato #old-button.active,
+html body[data-popup-style="matching-songs"].provider-serato #like-button.active,
+html body[data-popup-style="matching-songs"] #old-button.active:disabled,
+html body[data-popup-style="matching-songs"] #like-button.active:disabled,
+html body[data-popup-style="matching-songs"] #old-button.active[aria-disabled="true"],
+html body[data-popup-style="matching-songs"] #like-button.active[aria-disabled="true"] {
+  appearance: none!important;
+  -webkit-appearance: none!important;
+  border-color: #a3ff00!important;
+  border: 1px solid #a3ff00!important;
+  background: #a3ff00!important;
+  background-color: #a3ff00!important;
+  color: #071005!important;
+  box-shadow: inset 0 0 0 999px #a3ff00, 0 0 18px rgba(163,255,0,.28), inset 0 0 0 1px rgba(7,16,5,.08)!important;
+  opacity: 1!important;
+  text-shadow: none!important;
+  filter: none!important;
+}
+
+html body[data-popup-style="matching-songs"] #like-plus-button[aria-expanded="true"],
+html body[data-popup-style="matching-songs"].provider-djay #like-plus-button[aria-expanded="true"],
+html body[data-popup-style="matching-songs"].provider-serato #like-plus-button[aria-expanded="true"] {
+  border-color: #a3ff00!important;
+  background: #a3ff00!important;
+  color: #071005!important;
+  box-shadow: 0 0 18px rgba(163,255,0,.28), inset 0 0 0 1px rgba(7,16,5,.08)!important;
+  opacity: 1!important;
+  filter: none!important;
+}
+
+html body[data-popup-style="matching-songs"] #like-plus-button[aria-expanded="true"] span {
+  color: #071005!important;
+  text-shadow: none!important;
+  filter: none!important;
+}
+
+#old-button.active,
+#like-button.active {
+  appearance: none!important;
+  -webkit-appearance: none!important;
+  border-color: #a3ff00!important;
+  border: 1px solid #a3ff00!important;
+  background: #a3ff00!important;
+  background-color: #a3ff00!important;
+  color: #071005!important;
+  box-shadow: inset 0 0 0 999px #a3ff00, 0 0 18px rgba(163,255,0,.28), inset 0 0 0 1px rgba(7,16,5,.08)!important;
+  opacity: 1!important;
+  text-shadow: none!important;
+  filter: none!important;
+}
+
+html body[data-popup-style="matching-songs"] #old-button.active {
+  appearance: none!important;
+  -webkit-appearance: none!important;
+  border-color: #a3ff00!important;
+  background: #a3ff00!important;
+  background-color: #a3ff00!important;
+  color: #071005!important;
+  box-shadow: 0 0 18px rgba(163,255,0,.28), inset 0 0 0 1px rgba(7,16,5,.08)!important;
+  opacity: 1!important;
+  text-shadow: none!important;
+  filter: none!important;
+}
+
+html body[data-popup-style="matching-songs"] #like-button.active {
+  appearance: none!important;
+  -webkit-appearance: none!important;
+  border-color: #a3ff00!important;
+  background: #a3ff00!important;
+  background-color: #a3ff00!important;
+  color: #071005!important;
+  box-shadow: 0 0 18px rgba(163,255,0,.28), inset 0 0 0 1px rgba(7,16,5,.08)!important;
+  opacity: 1!important;
+  text-shadow: none!important;
+  filter: none!important;
+}
+
+/* Detached Live Assist final popup fixes: Options is a real overlay, not a
+   compressed footer child, and tempo actions keep the same selected colour as
+   the rest of Performance Mode. */
+html body[data-popup-style="matching-songs"] #gig-profile-menu {
+  overflow: visible!important;
+}
+
+html body[data-popup-style="matching-songs"] #gig-profile-menu .gig-profile-menu-foot {
+  display: grid!important;
+  grid-template-columns: minmax(0, 1fr) minmax(80px, 96px) 38px minmax(124px, 154px)!important;
+  align-items: center!important;
+  gap: 8px!important;
+  min-height: 46px!important;
+  position: relative!important;
+  z-index: 30!important;
+}
+
+html body[data-popup-style="matching-songs"] #gig-profile-menu #assist-playlist-settings {
+  position: static!important;
+  min-width: 0!important;
+  width: 100%!important;
+}
+
+html body[data-popup-style="matching-songs"] #gig-profile-menu #assist-playlist-settings > summary {
+  width: 100%!important;
+  min-width: 0!important;
+}
+
+html body[data-popup-style="matching-songs"] #gig-profile-menu .assist-playlist-settings-panel {
+  position: absolute!important;
+  left: 0!important;
+  right: 0!important;
+  bottom: calc(100% + 10px)!important;
+  top: auto!important;
+  width: auto!important;
+  height: min(320px, calc(100vh - 132px))!important;
+  min-height: 0!important;
+  max-height: none!important;
+  overflow: auto!important;
+  box-sizing: border-box!important;
+  z-index: 80!important;
+  padding: 12px!important;
+  border-color: rgba(163,255,0,.34)!important;
+  box-shadow: 0 20px 48px rgba(0,0,0,.78), 0 0 0 1px rgba(163,255,0,.08)!important;
+}
+
+html body[data-popup-style="matching-songs"] #gig-profile-menu .gig-profile-preset-row {
+  grid-template-columns: minmax(0, 1fr) minmax(82px, 1fr)!important;
+}
+
+html body[data-popup-style="matching-songs"] #gig-profile-menu .assist-playlist-settings-panel :is(button, select, input) {
+  min-width: 0!important;
+}
+
+html body[data-popup-style="matching-songs"] #half-button.active,
+html body[data-popup-style="matching-songs"] #double-button.active,
+html body[data-popup-style="matching-songs"] #half-button[aria-pressed="true"],
+html body[data-popup-style="matching-songs"] #double-button[aria-pressed="true"],
+html body[data-popup-style="matching-songs"].provider-djay #half-button.active,
+html body[data-popup-style="matching-songs"].provider-djay #double-button.active,
+html body[data-popup-style="matching-songs"].provider-serato #half-button.active,
+html body[data-popup-style="matching-songs"].provider-serato #double-button.active {
+  appearance: none!important;
+  -webkit-appearance: none!important;
+  border-color: #a3ff00!important;
+  background: #a3ff00!important;
+  background-color: #a3ff00!important;
+  color: #071005!important;
+  box-shadow: 0 0 18px rgba(163,255,0,.28), inset 0 0 0 1px rgba(7,16,5,.08)!important;
+  opacity: 1!important;
+  text-shadow: none!important;
+  filter: none!important;
+}
+
+html body[data-popup-style="matching-songs"]:not(.recording-drawer-open) .results:has(#maybe-drawer:not([hidden])):not(:has(#gig-profile-menu:not([hidden]))) {
+  display: flex!important;
+  flex-direction: column!important;
+  gap: 0!important;
+  min-height: 0!important;
+}
+
+html body[data-popup-style="matching-songs"]:not(.recording-drawer-open) .results:has(#maybe-drawer:not([hidden])):not(:has(#gig-profile-menu:not([hidden]))) #list {
+  display: none!important;
+}
+
+html body[data-popup-style="matching-songs"] .results #maybe-drawer:not([hidden]) {
+  flex: 1 1 auto!important;
+  min-height: 0!important;
+  max-height: none!important;
+  padding: 12px!important;
+  overflow: hidden!important;
+}
+
+html body[data-popup-style="matching-songs"] #maybe-drawer #saved-list {
+  flex: 1 1 auto!important;
+  min-height: 128px!important;
+  max-height: none!important;
+  overflow: auto!important;
+}
+
+html body[data-popup-style="matching-songs"] #maybe-drawer .assist-request-hint {
+  flex: 0 0 auto!important;
+}
+
+html body[data-popup-style="matching-songs"] #gig-profile-menu #gig-profile-apply.is-applying,
+html body[data-popup-style="matching-songs"] #gig-profile-menu #gig-profile-apply:disabled.is-applying {
+  border-color: #a3ff00!important;
+  background: #a3ff00!important;
+  background-color: #a3ff00!important;
+  color: #071005!important;
+  box-shadow: 0 0 18px rgba(163,255,0,.24), inset 0 0 0 1px rgba(7,16,5,.1)!important;
+  opacity: .92!important;
+}
+
+html body[data-popup-style="matching-songs"] #gig-profile-menu #assist-playlist-settings[open] .assist-playlist-settings-panel {
+  position: fixed!important;
+  left: 50%!important;
+  right: auto!important;
+  top: 112px!important;
+  bottom: auto!important;
+  transform: translateX(-50%)!important;
+  width: min(384px, calc(100vw - 24px))!important;
+  height: min(420px, calc(100vh - 188px))!important;
+  min-height: 220px!important;
+  max-height: none!important;
+  overflow: auto!important;
+  z-index: 500!important;
+  box-sizing: border-box!important;
+}
+
+html body[data-popup-style="matching-songs"] #gig-profile-menu .assist-playlist-settings-head {
+  display: flex!important;
+  align-items: center!important;
+  justify-content: space-between!important;
+  gap: 12px!important;
+  position: sticky!important;
+  top: -12px!important;
+  z-index: 1!important;
+  min-height: 36px!important;
+  padding: 0 0 8px!important;
+  border-bottom: 1px solid #434b37!important;
+  background: #1b1e18!important;
+  color: #f0f5e9!important;
+  font: 600 14px Barlow,sans-serif!important;
+}
+
+html body[data-popup-style="matching-songs"] #gig-profile-menu .assist-playlist-settings-head button {
+  flex: 0 0 auto!important;
+  min-width: 64px!important;
+  color: #071005!important;
+  background: #a3ff00!important;
+  border-color: #a3ff00!important;
+}
+
+html body[data-popup-style="matching-songs"] #gig-profile-menu .assist-playlist-settings-panel select,
+html body[data-popup-style="matching-songs"] #gig-profile-menu .assist-playlist-settings-panel input {
+  background: #151b12!important;
+  border-color: #6c844e!important;
+  color: #f0f5e9!important;
+}
+
+html body[data-popup-style="matching-songs"] #gig-profile-menu .assist-playlist-settings-panel :is(
+  #gig-profile-save-cancel,
+  #gig-profile-clear
+) {
+  background: #273421!important;
+  border-color: #87ad56!important;
+  color: #e9ffd2!important;
+}
+
+html body[data-popup-style="matching-songs"] #gig-profile-menu .assist-playlist-settings-panel :is(
+  #gig-profile-load:not(:disabled),
+  #gig-profile-save,
+  #gig-profile-save-confirm,
+  #gig-profile-select-all
+) {
+  background: #a3ff00!important;
+  border-color: #a3ff00!important;
+  color: #071005!important;
+}
+
+html body[data-popup-style="matching-songs"] #gig-profile-menu .assist-playlist-settings-panel button:disabled {
+  background: #262c22!important;
+  border-color: #45543a!important;
+  color: #aebba2!important;
+  opacity: .72!important;
+}
+
+html body[data-popup-style="matching-songs"] #gig-profile-menu .assist-playlist-option-buttons > button {
+  color: #edf4e6!important;
+}
+
+html body[data-popup-style="matching-songs"] #gig-profile-menu .assist-playlist-option-buttons > button[aria-pressed="true"]::after {
+  background: #a3ff00!important;
+  color: #071005!important;
+}
+
+html body[data-popup-style="matching-songs"] #gig-profile-menu .assist-playlist-option-buttons > button[aria-pressed="false"]::after {
+  background: #364033!important;
+  color: #d4dfca!important;
+}
+
+@media (max-height: 650px) {
+  html body[data-popup-style="matching-songs"] #gig-profile-menu #assist-playlist-settings[open] .assist-playlist-settings-panel {
+    top: 74px!important;
+    height: min(420px, calc(100vh - 110px))!important;
+    min-height: 180px!important;
+  }
+}
+
+html body[data-popup-style="matching-songs"] .bpmbar #half-button.active,
+html body[data-popup-style="matching-songs"] .bpmbar #double-button.active,
+html body[data-popup-style="matching-songs"] .bpmbar #half-button[aria-pressed="true"],
+html body[data-popup-style="matching-songs"] .bpmbar #double-button[aria-pressed="true"] {
+  border: 1px solid #a3ff00!important;
+  border-color: #a3ff00!important;
+  background: #a3ff00!important;
+  background-color: #a3ff00!important;
+  color: #071005!important;
+  box-shadow: inset 0 0 0 999px #a3ff00, 0 0 18px rgba(163,255,0,.28)!important;
+  opacity: 1!important;
+}
+
+/* Owner-approved compact popup: same controls, less DJ workspace occupied. */
+html body[data-popup-style="matching-songs"]:not([data-assist-mode="collapsed"]) {
+  padding:0!important;min-height:0!important;height:100vh!important;
+}
+html body[data-popup-style="matching-songs"] .shell {
+  width:100%!important; height:100vh!important; max-height:100vh!important;
+  height:100dvh!important; max-height:100dvh!important;
+  display:flex!important; flex-direction:column!important; gap:6px!important;
+  padding:8px!important; margin:0!important; min-height:0!important;
+}
+html body[data-popup-style="matching-songs"][data-assist-mode="collapsed"] .shell {display:none!important}
+html body[data-popup-style="matching-songs"] .topbar {flex:0 0 auto!important;min-height:30px!important;padding:0 0 5px!important;gap:5px!important}
+html body[data-popup-style="matching-songs"] .topbar h1 {font-size:18px!important;white-space:nowrap!important}
+html body[data-popup-style="matching-songs"] .topbar :is(button,select) {min-height:27px!important;height:27px!important;padding:0 6px!important;font-size:10px!important}
+html body[data-popup-style="matching-songs"] .assist-now-playing {flex:0 0 auto!important;min-height:72px!important;padding:10px!important;gap:6px!important}
+html body[data-popup-style="matching-songs"] #assist-anchor-title {font-size:22px!important;line-height:1.08!important;margin:4px 0!important}
+html body[data-popup-style="matching-songs"] #assist-anchor-meta {font:500 11px/1.3 Barlow,sans-serif!important}
+html body[data-popup-style="matching-songs"] #assist-anchor-source {font-size:10px!important}
+html body[data-popup-style="matching-songs"] #assist-provider-logo {position:absolute;top:7px;right:10px;width:66px;height:14px;object-fit:contain;object-position:right center}
+html body[data-popup-style="matching-songs"] #refresh-button.deck-tempo {padding-top:16px!important}
+html body[data-popup-style="matching-songs"] .bpmbar {flex:0 0 auto!important;gap:5px!important;margin:0!important;padding:0!important;grid-template-columns:minmax(112px,1.6fr) repeat(3,minmax(0,1fr))!important}
+html body[data-popup-style="matching-songs"] .bpmbar :is(button,#set-record-button,#maybe-button,#assist-anchor-refresh) {height:32px!important;min-height:32px!important;padding:0 5px!important;font-size:13px!important;border-radius:6px!important}
+html body[data-popup-style="matching-songs"] .record-maybe-pair {gap:5px!important}
+html body[data-popup-style="matching-songs"] .bpmbar :is(#half-button,#double-button):not(.active):not([aria-pressed="true"]) {background:#292a27!important;color:#f4f6ef!important;-webkit-text-fill-color:#f4f6ef!important;border:1px solid #575b52!important;box-shadow:none!important;text-shadow:none!important}
+html body[data-popup-style="matching-songs"] .bpmbar :is(#half-button,#double-button).active {background:#a3ff00!important;color:#071005!important;-webkit-text-fill-color:#071005!important;border-color:#a3ff00!important}
+html body[data-popup-style="matching-songs"] .results {flex:1 1 0!important;min-height:0!important;overflow:hidden!important;margin:0!important;padding:0!important}
+html body[data-popup-style="matching-songs"] #list {height:100%!important;max-height:none!important;overflow-y:auto!important;padding:0 2px!important}
+html body[data-popup-style="matching-songs"] .track {min-height:64px!important;padding:8px!important;gap:9px!important;margin:5px 0!important}
+html body[data-popup-style="matching-songs"] .track .title {font-size:18px!important;line-height:1.1!important}
+html body[data-popup-style="matching-songs"] .track .artist {font-size:12px!important;line-height:1.2!important}
+html body[data-popup-style="matching-songs"] .song-add {width:32px!important;min-width:32px!important;height:36px!important;padding:0!important}
+html body[data-popup-style="matching-songs"] .assist-source-heading {padding:7px 5px 3px;border-bottom:1px solid #ffffff22;color:#bec1ba;font:400 13px/1 'Bebas Neue',sans-serif;letter-spacing:.05em}
+html body[data-popup-style="matching-songs"] .footer {flex:0 0 auto!important;gap:5px!important;padding-top:4px!important}
+html body[data-popup-style="matching-songs"] .footer button {height:32px!important;min-height:32px!important;padding:0 7px!important;font-size:13px!important}
+html body[data-popup-style="matching-songs"].provider-djay .assist-now-playing {border-color:#ee961f!important;background:#151008!important}
+html body[data-popup-style="matching-songs"].provider-djay :is(#assist-anchor-source,#refresh-button.deck-tempo span) {color:#ffad63!important;-webkit-text-fill-color:#ffad63!important}
+html body[data-popup-style="matching-songs"].provider-serato .assist-now-playing {border-color:#298bdf!important;background:#09121b!important}
+html body[data-popup-style="matching-songs"].provider-serato :is(#assist-anchor-source,#refresh-button.deck-tempo span) {color:#67b7ff!important;-webkit-text-fill-color:#67b7ff!important}
+
+html body[data-popup-style="matching-songs"] .track-title {font-size:18px!important;line-height:1.1!important}
+html body[data-popup-style="matching-songs"] .track-artist {font-size:11px!important;line-height:1.3!important}
+html body[data-popup-style="matching-songs"] .track-meta-part {font-size:10px!important}
+html body[data-popup-style="matching-songs"] .bpmbar #assist-only-selected {font-size:11px!important;padding:0 3px!important;overflow:hidden!important;text-overflow:ellipsis!important}
+html body[data-popup-style="matching-songs"] .actions {flex:0 0 auto!important;gap:5px!important;padding:4px 0 0!important}
+html body[data-popup-style="matching-songs"] .actions button {height:32px!important;min-height:32px!important;padding:0 6px!important;font-size:13px!important}
+
+html body[data-popup-style="matching-songs"] .bpmbar {grid-template-columns:minmax(108px,1.5fr) repeat(2,minmax(0,1fr)) minmax(76px,1.1fr)!important}
+html body[data-popup-style="matching-songs"] .bpmbar #assist-only-selected {font-size:11px!important;letter-spacing:0!important;white-space:nowrap!important;min-width:0!important;width:100%!important;box-sizing:border-box!important}
+
+html body[data-popup-style="matching-songs"] .bpmbar #assist-only-selected {font:400 13px/1 'Bebas Neue',sans-serif!important;text-overflow:clip!important}
+
+html body[data-popup-style="matching-songs"] .actions #clean-only-button {font:400 12px/1 'Bebas Neue',sans-serif!important;white-space:normal!important;padding:0 4px!important}
+html body[data-popup-style="matching-songs"] .topbar>button:last-child {font-size:0!important;width:27px!important;min-width:27px!important;padding:0!important}
+html body[data-popup-style="matching-songs"] .topbar>button:last-child::before {font-size:18px!important}
+html body[data-popup-style="matching-songs"] .track:not(.gig-djay):not(.gig-serato) .song-add {color:#bec1ba!important;border-color:#565b52!important;background:#111512!important}
+html body[data-popup-style="matching-songs"] .track.gig-serato .song-add {color:#67b7ff!important;border-color:#298bdf!important}
+html body[data-popup-style="matching-songs"] .track.gig-djay .song-add {color:#ffad63!important;border-color:#ee961f!important}
+
+/* Native permission updates must never occupy the toolbar's control cells. */
+.assist-mac-access[hidden] {display:none!important}
+.assist-mac-access:not([hidden]) {
+  display:flex;align-items:center;flex:0 0 auto;
+  width:100%;min-width:0;box-sizing:border-box;padding:7px 8px;
+  border:1px solid #485154;border-radius:6px;background:#101617;
+}
+#assist-mac-access-status {
+  flex:1 1 0;min-width:0;margin:0;color:#d9dfd2!important;
+  -webkit-text-fill-color:#d9dfd2!important;
+  font:500 11px/1.35 Barlow,sans-serif!important;
+  text-transform:none!important;letter-spacing:0!important;
+  white-space:normal;word-break:normal;overflow-wrap:break-word;
+}
+.assist-mac-access #assist-search-access {
+  flex:0 0 auto;min-width:76px;min-height:28px;height:28px;margin-left:8px;
+  padding:0 8px;white-space:nowrap;border-radius:4px;
+  background:#a3ff00!important;color:#071005!important;
+  -webkit-text-fill-color:#071005!important;
+  font:400 12px/1 'Bebas Neue',sans-serif!important;
+}

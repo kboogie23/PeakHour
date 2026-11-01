@@ -1,0 +1,1794 @@
+<style id="health-restore-daymode-blue-v1">
+  /* Restore Bin is a light Day Mode workspace, not a dark Health console.
+     Translate its Night Mode lime/white accents into readable blue and ink. */
+  html body.light-mode #tab-content-health-review.health-review-page .health-clean-review {
+    --restore-day-blue: #0047ab;
+    --restore-day-blue-strong: #003f99;
+    --restore-day-blue-soft: #eaf2ff;
+    --restore-day-ink: #07111f;
+    --restore-day-muted: #526173;
+    --restore-day-line: rgba(0, 71, 171, .22);
+  }
+
+  html body.light-mode #tab-content-health-review.health-review-page .health-restore-trust {
+    border-color: rgba(0, 71, 171, .28) !important;
+    background: linear-gradient(105deg, #eaf2ff 0%, #f7faff 58%, #ffffff 100%) !important;
+    box-shadow: 0 12px 30px rgba(28, 64, 120, .08) !important;
+  }
+
+  html body.light-mode #tab-content-health-review.health-review-page .health-restore-trust > div + div {
+    border-color: var(--restore-day-line) !important;
+  }
+
+  html body.light-mode #tab-content-health-review.health-review-page .health-restore-trust img {
+    filter: brightness(0) saturate(100%) invert(22%) sepia(99%) saturate(2459%) hue-rotate(205deg) brightness(79%) contrast(110%) !important;
+    opacity: .9 !important;
+  }
+
+  html body.light-mode #tab-content-health-review.health-review-page .health-restore-trust strong {
+    color: var(--restore-day-ink) !important;
+    -webkit-text-fill-color: var(--restore-day-ink) !important;
+  }
+
+  html body.light-mode #tab-content-health-review.health-review-page .health-restore-trust small {
+    color: var(--restore-day-muted) !important;
+    -webkit-text-fill-color: var(--restore-day-muted) !important;
+  }
+
+  html body.light-mode #tab-content-health-review.health-review-page .health-restore-trust .zero-audio strong {
+    color: var(--restore-day-blue) !important;
+    -webkit-text-fill-color: var(--restore-day-blue) !important;
+  }
+
+  html body.light-mode #tab-content-health-review.health-review-page .health-clean-review-summary {
+    border-color: var(--restore-day-line) !important;
+    background: #ffffff !important;
+    box-shadow: 0 10px 28px rgba(28, 64, 120, .06) !important;
+  }
+
+  html body.light-mode #tab-content-health-review.health-review-page .health-clean-review-stat + .health-clean-review-stat {
+    border-color: var(--restore-day-line) !important;
+  }
+
+  html body.light-mode #tab-content-health-review.health-review-page .health-clean-review-stat span {
+    color: #40516a !important;
+    -webkit-text-fill-color: #40516a !important;
+  }
+
+  html body.light-mode #tab-content-health-review.health-review-page .health-clean-review-stat strong {
+    color: var(--restore-day-ink) !important;
+    -webkit-text-fill-color: var(--restore-day-ink) !important;
+  }
+
+  html body.light-mode #tab-content-health-review.health-review-page .health-clean-review-stat small {
+    color: var(--restore-day-muted) !important;
+    -webkit-text-fill-color: var(--restore-day-muted) !important;
+  }
+
+  html body.light-mode #tab-content-health-review.health-review-page .health-clean-review-stat.ready strong {
+    color: var(--restore-day-blue) !important;
+    -webkit-text-fill-color: var(--restore-day-blue) !important;
+  }
+
+  html body.light-mode #tab-content-health-review.health-review-page .health-clean-review-stat img {
+    filter: brightness(0) saturate(100%) invert(22%) sepia(99%) saturate(2459%) hue-rotate(205deg) brightness(79%) contrast(110%) !important;
+    opacity: .86 !important;
+  }
+
+  html body.light-mode #tab-content-health-review.health-review-page .health-restore-filter-bar {
+    border-color: var(--restore-day-line) !important;
+    background: #ffffff !important;
+  }
+
+  html body.light-mode #tab-content-health-review.health-review-page .health-restore-filter-bar > span {
+    color: #40516a !important;
+    -webkit-text-fill-color: #40516a !important;
+  }
+
+  html body.light-mode #tab-content-health-review.health-review-page .health-restore-filter {
+    border-color: rgba(0, 71, 171, .28) !important;
+    background: #ffffff !important;
+    color: var(--restore-day-blue) !important;
+    -webkit-text-fill-color: var(--restore-day-blue) !important;
+  }
+
+  html body.light-mode #tab-content-health-review.health-review-page .health-restore-filter.active {
+    border-color: var(--restore-day-blue) !important;
+    background: var(--restore-day-blue) !important;
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+    box-shadow: 0 7px 18px rgba(0, 71, 171, .16) !important;
+  }
+
+  html body.light-mode #tab-content-health-review.health-review-page .health-restore-columns {
+    border-color: rgba(0, 71, 171, .3) !important;
+    background: var(--restore-day-blue-soft) !important;
+    color: #40516a !important;
+    -webkit-text-fill-color: #40516a !important;
+  }
+
+  html body.light-mode #tab-content-health-review.health-review-page .health-clean-review-check {
+    accent-color: var(--restore-day-blue) !important;
+  }
+
+  html body.light-mode #tab-content-health-review.health-review-page .health-restore-row {
+    border-color: rgba(0, 71, 171, .18) !important;
+    background: transparent !important;
+  }
+
+  html body.light-mode #tab-content-health-review.health-review-page .health-restore-row:hover {
+    background: rgba(0, 71, 171, .045) !important;
+  }
+
+  html body.light-mode #tab-content-health-review.health-review-page .health-restore-track strong {
+    color: var(--restore-day-ink) !important;
+    -webkit-text-fill-color: var(--restore-day-ink) !important;
+  }
+
+  html body.light-mode #tab-content-health-review.health-review-page :is(
+    .health-restore-track small,
+    .health-restore-source small,
+    .health-restore-reason
+  ) {
+    color: var(--restore-day-muted) !important;
+    -webkit-text-fill-color: var(--restore-day-muted) !important;
+  }
+
+  html body.light-mode #tab-content-health-review.health-review-page :is(
+    .health-restore-source strong,
+    .health-restore-reason b
+  ) {
+    color: var(--restore-day-blue) !important;
+    -webkit-text-fill-color: var(--restore-day-blue) !important;
+  }
+
+  html body.light-mode #tab-content-health-review.health-review-page .health-restore-one {
+    border-color: rgba(0, 71, 171, .38) !important;
+    background: #ffffff !important;
+    color: var(--restore-day-blue) !important;
+    -webkit-text-fill-color: var(--restore-day-blue) !important;
+  }
+
+  html body.light-mode #tab-content-health-review.health-review-page .health-restore-one:is(:hover, :focus-visible) {
+    border-color: var(--restore-day-blue) !important;
+    background: var(--restore-day-blue) !important;
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+    outline: 2px solid rgba(0, 71, 171, .2) !important;
+    outline-offset: 2px !important;
+  }
+
+  html body.light-mode #tab-content-health-review.health-review-page .health-clean-review-actions {
+    border-color: var(--restore-day-line) !important;
+    background: rgba(244, 247, 252, .98) !important;
+    box-shadow: 0 -14px 26px rgba(28, 64, 120, .06) !important;
+  }
+
+  html body.light-mode #tab-content-health-review.health-review-page .health-clean-review-button {
+    border-color: rgba(0, 71, 171, .34) !important;
+    background: #ffffff !important;
+    color: var(--restore-day-blue) !important;
+    -webkit-text-fill-color: var(--restore-day-blue) !important;
+  }
+
+  html body.light-mode #tab-content-health-review.health-review-page .health-clean-review-button:is(:hover, :focus-visible) {
+    border-color: var(--restore-day-blue) !important;
+    background: var(--restore-day-blue-soft) !important;
+    color: var(--restore-day-blue-strong) !important;
+    -webkit-text-fill-color: var(--restore-day-blue-strong) !important;
+  }
+
+  html body.light-mode #tab-content-health-review.health-review-page .health-clean-review-button.primary {
+    border-color: var(--restore-day-blue) !important;
+    background: var(--restore-day-blue) !important;
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+    box-shadow: 0 8px 22px rgba(0, 71, 171, .18) !important;
+  }
+
+  html body.light-mode #tab-content-health-review.health-review-page .health-restore-progress {
+    border-color: var(--restore-day-line) !important;
+    background: #ffffff !important;
+  }
+
+  html body.light-mode #tab-content-health-review.health-review-page .health-restore-progress-head {
+    color: var(--restore-day-ink) !important;
+    -webkit-text-fill-color: var(--restore-day-ink) !important;
+  }
+
+  html body.light-mode #tab-content-health-review.health-review-page .health-restore-progress-track {
+    background: rgba(0, 71, 171, .12) !important;
+  }
+
+  html body.light-mode #tab-content-health-review.health-review-page .health-restore-progress-track span {
+    background: var(--restore-day-blue) !important;
+  }
+
+  html body.light-mode #tab-content-health-review.health-review-page .health-clean-review-receipt {
+    border-color: var(--restore-day-line) !important;
+  }
+
+  html body.light-mode #tab-content-health-review.health-review-page .health-clean-review-receipt-head h3,
+  html body.light-mode #tab-content-health-review.health-review-page .health-restore-receipt-row strong {
+    color: var(--restore-day-ink) !important;
+    -webkit-text-fill-color: var(--restore-day-ink) !important;
+  }
+
+  html body.light-mode #tab-content-health-review.health-review-page :is(
+    .health-clean-review-receipt-head p,
+    .health-restore-receipt-row small,
+    .health-restore-receipt-row span
+  ) {
+    color: var(--restore-day-muted) !important;
+    -webkit-text-fill-color: var(--restore-day-muted) !important;
+  }
+
+  html body.light-mode #tab-content-health-review.health-review-page .health-restore-receipt-row {
+    border-color: rgba(0, 71, 171, .18) !important;
+    background: #ffffff !important;
+  }
+
+  html body.light-mode #tab-content-health-review.health-review-page .health-restore-receipt-row b {
+    color: var(--restore-day-blue) !important;
+    -webkit-text-fill-color: var(--restore-day-blue) !important;
+  }
+</style>
+<style id="health-bpm-missing-badge-type-v1">
+  /* The BPM repair ledger uses display typography for its repeated status
+     badges while retaining the approved badge dimensions and warning colour. */
+  html body #health-inbox-app#health-inbox-app
+    #health-inbox-detail[data-health-detail="missing_bpm"]
+    .health-bpm-ledger-row > .health-detail-badge {
+    font-family: "Bebas Neue", Impact, sans-serif !important;
+    font-size: 14px !important;
+  }
+</style>
+<style id="health-daymode-workflow-integrity-v1">
+  /* The steel chassis is a Night Mode material. In Day Mode it becomes a
+     quiet blue-grey frame so the Health workflow reads as one clean system
+     instead of dark bays surrounding white cards. */
+  html body.light-mode.studio-health-mode #health-inbox-app.health-approved-shell {
+    --health-day-blue: #0047ab;
+    --health-day-blue-strong: #003b8f;
+    --health-day-blue-soft: #edf4ff;
+    --health-day-blue-wash: #f7faff;
+    --health-day-ink: #07111f;
+    --health-day-muted: #53647a;
+    --health-day-line: rgba(0, 71, 171, .2);
+  }
+
+  html body.light-mode.studio-health-mode #health-inbox-app.health-approved-shell .health-steel-chassis {
+    border-color: var(--health-day-line) !important;
+    background-color: #e7eef8 !important;
+    background-image: linear-gradient(180deg, #f5f8fc 0%, #e3ebf6 100%) !important;
+    box-shadow: inset 0 1px 0 #ffffff, 0 14px 32px rgba(28, 64, 120, .1) !important;
+  }
+
+  html body.light-mode.studio-health-mode #health-inbox-app.health-approved-shell .health-steel-chassis > :is(
+    .health-readiness-header,
+    .health-readiness-plan,
+    .health-approved-lanes,
+    .health-new-music-intake,
+    .health-approved-console,
+    .health-approved-set-building,
+    .health-approved-tools,
+    .health-inbox-activity
+  ) {
+    border-color: var(--health-day-line) !important;
+    background-color: #ffffff !important;
+    background-image: none !important;
+    box-shadow: 0 1px 0 rgba(255, 255, 255, .9), 0 5px 14px rgba(28, 64, 120, .055) !important;
+  }
+
+  html body.light-mode.studio-health-mode #health-inbox-app.health-approved-shell .health-steel-workflow-chassis {
+    gap: 10px !important;
+  }
+
+  /* Set Building */
+  html body.light-mode.studio-health-mode #health-inbox-app.health-approved-shell :is(
+    .health-approved-set-summary,
+    .health-approved-set-detail,
+    .health-approved-set-tabs,
+    .health-approved-set-content
+  ) {
+    border-color: var(--health-day-line) !important;
+    background: #ffffff !important;
+    color: var(--health-day-ink) !important;
+    box-shadow: none !important;
+  }
+
+  html body.light-mode.studio-health-mode #health-inbox-app.health-approved-shell .health-approved-set-summary {
+    cursor: pointer !important;
+  }
+
+  html body.light-mode.studio-health-mode #health-inbox-app.health-approved-shell :is(
+    .health-approved-set-title,
+    .health-approved-set-title b,
+    .health-approved-set-category strong,
+    .health-approved-set-content
+  ) {
+    color: var(--health-day-ink) !important;
+    -webkit-text-fill-color: var(--health-day-ink) !important;
+    text-shadow: none !important;
+  }
+
+  html body.light-mode.studio-health-mode #health-inbox-app.health-approved-shell :is(
+    .health-approved-set-collapsed-copy,
+    .health-approved-set-category small
+  ) {
+    color: var(--health-day-muted) !important;
+    -webkit-text-fill-color: var(--health-day-muted) !important;
+  }
+
+  html body.light-mode.studio-health-mode #health-inbox-app.health-approved-shell .health-approved-set-title b,
+  html body.light-mode.studio-health-mode #health-inbox-app.health-approved-shell .health-approved-set-category strong b {
+    color: var(--health-day-blue) !important;
+    -webkit-text-fill-color: var(--health-day-blue) !important;
+  }
+
+  html body.light-mode.studio-health-mode #health-inbox-app.health-approved-shell #health-approved-set-chevron {
+    filter: brightness(0) saturate(100%) invert(22%) sepia(99%) saturate(2459%) hue-rotate(205deg) brightness(79%) contrast(110%) !important;
+  }
+
+  html body.light-mode.studio-health-mode #health-inbox-app.health-approved-shell .health-approved-set-tabs button {
+    border-color: var(--health-day-line) !important;
+    background: var(--health-day-blue-wash) !important;
+    color: var(--health-day-blue) !important;
+    -webkit-text-fill-color: var(--health-day-blue) !important;
+  }
+
+  html body.light-mode.studio-health-mode #health-inbox-app.health-approved-shell .health-approved-set-tabs button:is(.active, :hover, :focus-visible) {
+    border-color: var(--health-day-blue) !important;
+    background: var(--health-day-blue) !important;
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+  }
+
+  /* Health Workspaces */
+  html body.light-mode.studio-health-mode #health-inbox-app.health-approved-shell :is(
+    .health-approved-tools-head,
+    .health-inbox-nav.health-workspace-nav,
+    #health-inbox-detail.health-inbox-detail
+  ) {
+    border-color: var(--health-day-line) !important;
+    background: #ffffff !important;
+    color: var(--health-day-ink) !important;
+    box-shadow: none !important;
+    cursor: default !important;
+  }
+
+  html body.light-mode.studio-health-mode #health-inbox-app.health-approved-shell .health-approved-tools-head {
+    background: var(--health-day-blue-wash) !important;
+  }
+
+  html body.light-mode.studio-health-mode #health-inbox-app.health-approved-shell .health-approved-tools-head strong {
+    color: var(--health-day-ink) !important;
+    -webkit-text-fill-color: var(--health-day-ink) !important;
+  }
+
+  html body.light-mode.studio-health-mode #health-inbox-app.health-approved-shell .health-approved-tools-head small {
+    color: var(--health-day-muted) !important;
+    -webkit-text-fill-color: var(--health-day-muted) !important;
+  }
+
+  html body.light-mode.studio-health-mode #health-inbox-app.health-approved-shell .health-workspace-group {
+    border-bottom-color: var(--health-day-line) !important;
+    background: #ffffff !important;
+    color: var(--health-day-ink) !important;
+    box-shadow: none !important;
+  }
+
+  html body.light-mode.studio-health-mode #health-inbox-app.health-approved-shell .health-workspace-group:is(:hover, :focus-within) {
+    background: var(--health-day-blue-wash) !important;
+  }
+
+  html body.light-mode.studio-health-mode #health-inbox-app.health-approved-shell .health-workspace-group.active {
+    background: var(--health-day-blue-soft) !important;
+  }
+
+  html body.light-mode.studio-health-mode #health-inbox-app.health-approved-shell .health-workspace-group.active::before {
+    background: var(--health-day-blue) !important;
+    box-shadow: none !important;
+  }
+
+  html body.light-mode.studio-health-mode #health-inbox-app.health-approved-shell .health-workspace-number {
+    border-color: rgba(0, 71, 171, .42) !important;
+    background: #ffffff !important;
+    color: var(--health-day-blue) !important;
+    -webkit-text-fill-color: var(--health-day-blue) !important;
+  }
+
+  html body.light-mode.studio-health-mode #health-inbox-app.health-approved-shell .health-workspace-group.active .health-workspace-number {
+    border-color: var(--health-day-blue) !important;
+    background: var(--health-day-blue) !important;
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+  }
+
+  html body.light-mode.studio-health-mode #health-inbox-app.health-approved-shell .health-workspace-copy strong {
+    color: var(--health-day-ink) !important;
+    -webkit-text-fill-color: var(--health-day-ink) !important;
+    text-shadow: none !important;
+  }
+
+  html body.light-mode.studio-health-mode #health-inbox-app.health-approved-shell .health-workspace-copy small {
+    color: var(--health-day-muted) !important;
+    -webkit-text-fill-color: var(--health-day-muted) !important;
+  }
+
+  html body.light-mode.studio-health-mode #health-inbox-app.health-approved-shell .health-workspace-actions button {
+    border-color: rgba(0, 71, 171, .3) !important;
+    background: #ffffff !important;
+    color: var(--health-day-blue) !important;
+    -webkit-text-fill-color: var(--health-day-blue) !important;
+    box-shadow: none !important;
+  }
+
+  html body.light-mode.studio-health-mode #health-inbox-app.health-approved-shell .health-workspace-actions button span {
+    color: var(--health-day-blue) !important;
+    -webkit-text-fill-color: var(--health-day-blue) !important;
+  }
+
+  html body.light-mode.studio-health-mode #health-inbox-app.health-approved-shell .health-workspace-actions button:is(.active, :hover, :focus-visible) {
+    border-color: var(--health-day-blue) !important;
+    background: var(--health-day-blue) !important;
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+    outline: 2px solid rgba(0, 71, 171, .16) !important;
+    outline-offset: 2px !important;
+  }
+
+  html body.light-mode.studio-health-mode #health-inbox-app.health-approved-shell .health-workspace-actions button:is(.active, :hover, :focus-visible) span {
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+  }
+
+  /* Expanded workspace details */
+  html body.light-mode.studio-health-mode #health-inbox-app.health-approved-shell #health-inbox-detail.health-inbox-detail {
+    --bpm-accent: var(--health-day-blue);
+    --bpm-ink: var(--health-day-ink);
+    --bpm-copy: var(--health-day-muted);
+    --bpm-muted: #68768a;
+    --bpm-line: var(--health-day-line);
+    background: #ffffff !important;
+  }
+
+  html body.light-mode.studio-health-mode #health-inbox-app.health-approved-shell #health-inbox-detail :is(
+    .health-detail-title,
+    .health-detail-title span,
+    .health-detail-guidance-card strong,
+    .health-detail-list-row strong,
+    .health-detail-list-row b,
+    .health-detail-footer
+  ) {
+    color: var(--health-day-ink) !important;
+    -webkit-text-fill-color: var(--health-day-ink) !important;
+    text-shadow: none !important;
+  }
+
+  html body.light-mode.studio-health-mode #health-inbox-app.health-approved-shell #health-inbox-detail :is(
+    .health-detail-copy,
+    .health-detail-trust,
+    .health-detail-list-row span,
+    .health-detail-footnote
+  ) {
+    color: var(--health-day-muted) !important;
+    -webkit-text-fill-color: var(--health-day-muted) !important;
+    text-shadow: none !important;
+  }
+
+  html body.light-mode.studio-health-mode #health-inbox-app.health-approved-shell #health-inbox-detail :is(
+    .health-detail-state,
+    .health-detail-guidance-card span
+  ) {
+    color: var(--health-day-blue) !important;
+    -webkit-text-fill-color: var(--health-day-blue) !important;
+  }
+
+  html body.light-mode.studio-health-mode #health-inbox-app.health-approved-shell #health-inbox-detail :is(
+    .health-detail-guidance-card,
+    .health-detail-list-row
+  ) {
+    border-color: var(--health-day-line) !important;
+    background: var(--health-day-blue-wash) !important;
+    box-shadow: none !important;
+  }
+
+  html body.light-mode.studio-health-mode #health-inbox-app.health-approved-shell #health-inbox-detail :is(input, select, textarea) {
+    border-color: rgba(0, 71, 171, .32) !important;
+    background: #ffffff !important;
+    color: var(--health-day-ink) !important;
+    -webkit-text-fill-color: var(--health-day-ink) !important;
+  }
+
+  html body.light-mode.studio-health-mode #health-inbox-app.health-approved-shell #health-inbox-detail .health-detail-action:not(.primary):not(.danger) {
+    border-color: rgba(0, 71, 171, .34) !important;
+    background: #ffffff !important;
+    color: var(--health-day-blue) !important;
+    -webkit-text-fill-color: var(--health-day-blue) !important;
+    box-shadow: none !important;
+  }
+
+  html body.light-mode.studio-health-mode #health-inbox-app.health-approved-shell #health-inbox-detail .health-detail-action.primary {
+    border-color: var(--health-day-blue) !important;
+    background: var(--health-day-blue) !important;
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+    box-shadow: none !important;
+  }
+
+  html body.light-mode.studio-health-mode #health-inbox-app.health-approved-shell .health-inbox-activity {
+    border-color: var(--health-day-line) !important;
+    background: var(--health-day-blue-wash) !important;
+    color: var(--health-day-muted) !important;
+  }
+
+  html body.light-mode.studio-health-mode #health-inbox-app.health-approved-shell .health-inbox-activity strong {
+    color: var(--health-day-blue) !important;
+    -webkit-text-fill-color: var(--health-day-blue) !important;
+  }
+</style>
+<style id="health-daymode-summary-audio-status-v1">
+  /* Day Mode must not inherit the black-steel repair module. Keep its hierarchy
+     while translating the surface to AXIOM blue, white, and dark ink. */
+  html body.light-mode.studio-health-mode
+    #health-inbox-app.health-approved-shell
+    .health-readiness-action-module {
+    border: 1px solid rgba(0, 71, 171, .28) !important;
+    background-image: none !important;
+    background: linear-gradient(135deg, #ffffff 0%, #edf4ff 100%) !important;
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, .92),
+      0 10px 24px rgba(28, 64, 120, .09) !important;
+  }
+
+  html body.light-mode.studio-health-mode
+    #health-inbox-app.health-approved-shell
+    .health-readiness-action-module .health-readiness-badge {
+    border-right: 1px solid rgba(0, 71, 171, .2) !important;
+    background: #eaf2ff !important;
+    color: #405976 !important;
+    -webkit-text-fill-color: #405976 !important;
+  }
+
+  html body.light-mode.studio-health-mode
+    #health-inbox-app.health-approved-shell
+    .health-readiness-action-module .health-readiness-badge strong {
+    color: #0047ab !important;
+    -webkit-text-fill-color: #0047ab !important;
+    text-shadow: none !important;
+  }
+
+  html body.light-mode.studio-health-mode
+    #health-inbox-app.health-approved-shell
+    .health-readiness-action-module .health-readiness-badge small {
+    color: #405976 !important;
+    -webkit-text-fill-color: #405976 !important;
+  }
+
+  html body.light-mode.studio-health-mode
+    #health-inbox-app.health-approved-shell
+    .health-readiness-action-module .health-readiness-live-copy strong {
+    color: #07111f !important;
+    -webkit-text-fill-color: #07111f !important;
+    text-shadow: none !important;
+  }
+
+  html body.light-mode.studio-health-mode
+    #health-inbox-app.health-approved-shell
+    .health-readiness-action-module .health-readiness-live-copy small {
+    color: #0047ab !important;
+    -webkit-text-fill-color: #0047ab !important;
+  }
+
+  html body.light-mode.studio-health-mode
+    #health-inbox-app.health-approved-shell
+    #btn-coreaudio-loud.status-ok .status-icon {
+    background: #0969ff !important;
+    box-shadow:
+      0 0 0 3px rgba(9, 105, 255, .14),
+      0 0 13px 4px rgba(9, 105, 255, .52) !important;
+  }
+</style>
+<style id="library-guide-daymode-blue-v1">
+  /* The Library walkthrough is a reading surface in Day Mode, not a promo
+     banner. Keep the Night Mode lime identity while translating this one guide
+     to AXIOM's blue, white, and dark-ink Day system. */
+  html body.light-mode #library-guide-popover .workflow-card {
+    --guide-day-blue: #0047ab;
+    --guide-day-blue-strong: #00347f;
+    --guide-day-blue-soft: #eaf2ff;
+    --guide-day-ink: #07111f;
+    --guide-day-muted: #526173;
+    --guide-day-line: rgba(0, 71, 171, .22);
+    border: 1px solid rgba(0, 71, 171, .34) !important;
+    border-top: 4px solid var(--guide-day-blue) !important;
+    background:
+      radial-gradient(circle at 92% 4%, rgba(0, 71, 171, .08), transparent 30%),
+      linear-gradient(155deg, #ffffff 0%, #f7faff 64%, #eef4ff 100%) !important;
+    color: var(--guide-day-ink) !important;
+    box-shadow: 0 24px 58px rgba(28, 64, 120, .18), 0 0 0 1px rgba(255, 255, 255, .9) inset !important;
+  }
+
+  html body.light-mode #library-guide-popover :is(.workflow-kicker, .workflow-title) {
+    text-shadow: none !important;
+  }
+
+  html body.light-mode #library-guide-popover .workflow-kicker {
+    color: var(--guide-day-blue) !important;
+    -webkit-text-fill-color: var(--guide-day-blue) !important;
+  }
+
+  html body.light-mode #library-guide-popover .workflow-title {
+    color: var(--guide-day-ink) !important;
+    -webkit-text-fill-color: var(--guide-day-ink) !important;
+  }
+
+  html body.light-mode #library-guide-popover .workflow-item {
+    border: 1px solid var(--guide-day-line) !important;
+    border-left: 3px solid rgba(0, 71, 171, .48) !important;
+    background: rgba(255, 255, 255, .92) !important;
+    color: var(--guide-day-ink) !important;
+    box-shadow: 0 7px 18px rgba(28, 64, 120, .055) !important;
+  }
+
+  html body.light-mode #library-guide-popover .workflow-item:is(:hover, :focus-visible, .active) {
+    border-color: rgba(0, 71, 171, .5) !important;
+    border-left-color: var(--guide-day-blue) !important;
+    background: var(--guide-day-blue-soft) !important;
+    outline: none !important;
+    transform: translateY(-1px);
+  }
+
+  html body.light-mode #library-guide-popover .workflow-item span {
+    border: 1px solid var(--guide-day-blue) !important;
+    background: var(--guide-day-blue) !important;
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+  }
+
+  html body.light-mode #library-guide-popover .workflow-item strong {
+    color: var(--guide-day-ink) !important;
+    -webkit-text-fill-color: var(--guide-day-ink) !important;
+  }
+
+  html body.light-mode #library-guide-popover .workflow-item p {
+    color: var(--guide-day-muted) !important;
+    -webkit-text-fill-color: var(--guide-day-muted) !important;
+  }
+
+  html body.light-mode #library-guide-popover .workflow-start-hint {
+    border-color: rgba(0, 71, 171, .34) !important;
+    background: var(--guide-day-blue-soft) !important;
+    color: var(--guide-day-blue) !important;
+    -webkit-text-fill-color: var(--guide-day-blue) !important;
+  }
+
+  html body.light-mode #library-guide-popover .workflow-close {
+    border-color: rgba(0, 71, 171, .28) !important;
+    background: #ffffff !important;
+    color: var(--guide-day-blue) !important;
+    -webkit-text-fill-color: var(--guide-day-blue) !important;
+    box-shadow: 0 6px 16px rgba(28, 64, 120, .12) !important;
+  }
+
+  html body.light-mode #library-guide-popover .workflow-close:is(:hover, :focus-visible) {
+    border-color: var(--guide-day-blue) !important;
+    background: var(--guide-day-blue-soft) !important;
+    color: var(--guide-day-blue-strong) !important;
+    -webkit-text-fill-color: var(--guide-day-blue-strong) !important;
+    outline: 2px solid rgba(0, 71, 171, .18) !important;
+    outline-offset: 2px !important;
+  }
+
+  html body.light-mode #library-guide-popover .workflow-actions .secondary {
+    border: 1px solid rgba(0, 71, 171, .34) !important;
+    background: #ffffff !important;
+    color: var(--guide-day-blue) !important;
+    -webkit-text-fill-color: var(--guide-day-blue) !important;
+  }
+
+  html body.light-mode #library-guide-popover .workflow-actions .secondary:is(:hover, :focus-visible) {
+    border-color: var(--guide-day-blue) !important;
+    background: var(--guide-day-blue-soft) !important;
+    color: var(--guide-day-blue-strong) !important;
+    -webkit-text-fill-color: var(--guide-day-blue-strong) !important;
+  }
+
+  html body.light-mode #library-guide-popover .workflow-actions .primary {
+    border: 1px solid var(--guide-day-blue) !important;
+    background: var(--guide-day-blue) !important;
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+    box-shadow: 0 8px 20px rgba(0, 71, 171, .2) !important;
+  }
+
+  html body.light-mode #library-guide-popover .workflow-actions .primary:is(:hover, :focus-visible) {
+    border-color: var(--guide-day-blue-strong) !important;
+    background: var(--guide-day-blue-strong) !important;
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+    outline: 2px solid rgba(0, 71, 171, .18) !important;
+    outline-offset: 2px !important;
+  }
+</style>
+<style id="health-inbox-daymode-blue-v1">
+  /* Health Day Mode keeps the Night console structure, but every actionable
+     surface uses AXIOM blue, white, and dark ink. This block is intentionally
+     late so older Health row experiments cannot leak dark cards into Day Mode. */
+  html body.light-mode.studio-health-mode #health-inbox-app.health-approved-shell {
+    --health-day-blue: #0047ab;
+    --health-day-blue-strong: #003f99;
+    --health-day-blue-soft: #eaf2ff;
+    --health-day-ink: #07111f;
+    --health-day-muted: #526173;
+    --health-day-line: rgba(0, 71, 171, .22);
+  }
+
+  html body.light-mode.studio-health-mode #health-inbox-app.health-approved-shell #health-approved-waveform {
+    opacity: .9 !important;
+    filter: brightness(0) saturate(100%) invert(22%) sepia(99%) saturate(2459%) hue-rotate(205deg) brightness(79%) contrast(110%) !important;
+  }
+
+  html body.light-mode.studio-health-mode #health-inbox-app.health-approved-shell
+    #health-inbox-item-missing_bpm.health-repair-center-card {
+    border-color: var(--health-day-line) !important;
+    background: #ffffff !important;
+    color: var(--health-day-ink) !important;
+    box-shadow: none !important;
+  }
+
+  html body.light-mode.studio-health-mode #health-inbox-app.health-approved-shell
+    #health-inbox-item-missing_bpm.health-repair-center-card.active {
+    background: linear-gradient(180deg, #ffffff 0%, var(--health-day-blue-soft) 100%) !important;
+    box-shadow: inset 0 0 0 1px rgba(0, 71, 171, .34) !important;
+  }
+
+  html body.light-mode.studio-health-mode #health-inbox-app.health-approved-shell
+    #health-inbox-item-missing_bpm.health-repair-center-card.active::after {
+    background: var(--health-day-blue) !important;
+  }
+
+  html body.light-mode.studio-health-mode #health-inbox-app.health-approved-shell
+    #health-inbox-item-missing_bpm.health-repair-center-card > strong {
+    color: var(--health-day-blue) !important;
+    -webkit-text-fill-color: var(--health-day-blue) !important;
+  }
+
+  html body.light-mode.studio-health-mode #health-inbox-app.health-approved-shell
+    #health-inbox-item-missing_bpm.health-repair-center-card :is(.health-repair-card-action, .health-repair-card-clear) {
+    border-color: var(--health-day-blue) !important;
+    background: var(--health-day-blue) !important;
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+    box-shadow: none !important;
+  }
+
+  html body.light-mode.studio-health-mode #health-inbox-app#health-inbox-app
+    #health-inbox-detail.health-inbox-detail {
+    border-color: var(--health-day-line) !important;
+    background: #ffffff !important;
+    color: var(--health-day-ink) !important;
+    box-shadow: none !important;
+  }
+
+  html body.light-mode.studio-health-mode #health-inbox-app#health-inbox-app
+    #health-inbox-detail table.health-detail-table tbody tr {
+    border-color: var(--health-day-line) !important;
+    background: linear-gradient(90deg, var(--health-day-blue-soft) 0%, #ffffff 34%, #f8fbff 100%) !important;
+    color: var(--health-day-ink) !important;
+    box-shadow: inset 5px 0 0 var(--health-day-blue), 0 8px 20px rgba(28, 64, 120, .06) !important;
+  }
+
+  html body.light-mode.studio-health-mode #health-inbox-app#health-inbox-app
+    #health-inbox-detail table.health-detail-table tbody td:first-child :is(
+      .health-detail-track-title,
+      strong,
+      .font-black
+    ) {
+    color: var(--health-day-ink) !important;
+    -webkit-text-fill-color: var(--health-day-ink) !important;
+    text-shadow: none !important;
+  }
+
+  html body.light-mode.studio-health-mode #health-inbox-app#health-inbox-app
+    #health-inbox-detail table.health-detail-table tbody :is(
+      .health-detail-track-sub,
+      .health-detail-path,
+      td:nth-child(2)
+    ) {
+    color: var(--health-day-muted) !important;
+    -webkit-text-fill-color: var(--health-day-muted) !important;
+    text-shadow: none !important;
+  }
+
+  html body.light-mode.studio-health-mode #health-inbox-app#health-inbox-app
+    #health-inbox-detail table.health-detail-table .health-detail-badge {
+    border-color: rgba(200, 30, 30, .26) !important;
+    background: #fff1f1 !important;
+    color: #c81e1e !important;
+    -webkit-text-fill-color: #c81e1e !important;
+  }
+
+  html body.light-mode.studio-health-mode #health-inbox-app#health-inbox-app
+    #health-inbox-detail table.health-detail-table tbody td:nth-child(4) > .flex.gap-2 > .flex {
+    border-color: rgba(0, 71, 171, .28) !important;
+    background: #ffffff !important;
+  }
+
+  html body.light-mode.studio-health-mode #health-inbox-app#health-inbox-app
+    #health-inbox-detail table.health-detail-table tbody td:nth-child(4) input {
+    border-color: rgba(0, 71, 171, .34) !important;
+    background: #ffffff !important;
+    color: var(--health-day-ink) !important;
+    -webkit-text-fill-color: var(--health-day-ink) !important;
+    box-shadow: none !important;
+  }
+
+  html body.light-mode.studio-health-mode #health-inbox-app#health-inbox-app
+    #health-inbox-detail table.health-detail-table tbody td:nth-child(4) .health-detail-action.primary {
+    border-color: var(--health-day-blue) !important;
+    background: var(--health-day-blue) !important;
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+    box-shadow: none !important;
+  }
+
+  html body.light-mode.studio-health-mode #health-inbox-app#health-inbox-app
+    #health-inbox-detail table.health-detail-table tbody td:nth-child(4) > .flex.gap-2 > .health-detail-action:not(.primary) {
+    border-color: rgba(0, 71, 171, .34) !important;
+    background: #ffffff !important;
+    color: var(--health-day-blue) !important;
+    -webkit-text-fill-color: var(--health-day-blue) !important;
+    box-shadow: none !important;
+  }
+
+  html body.light-mode.studio-health-mode #health-inbox-app#health-inbox-app
+    #health-inbox-detail table.health-detail-table tbody td:nth-child(4) .health-detail-action:is(:hover, :focus-visible) {
+    border-color: var(--health-day-blue-strong) !important;
+    background: var(--health-day-blue-strong) !important;
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+    outline: 2px solid rgba(0, 71, 171, .18) !important;
+    outline-offset: 2px !important;
+  }
+</style>
+<style id="library-hide-setup-contrast-fix-v1">
+  /* The expanded Setup CTA sits on a solid accent fill. Force its label to
+     remain readable instead of inheriting pale outlined-button text. */
+  html body:not(.light-mode) #tab-content-library.library-cockpit#tab-content-library
+    #library-brief-lens#library-brief-lens[data-library-brief-panel="setup"]
+    #library-brief-collapse#library-brief-collapse {
+    background: var(--accent) !important;
+    border-color: var(--accent) !important;
+    color: #061000 !important;
+    -webkit-text-fill-color: #061000 !important;
+    text-shadow: none !important;
+  }
+
+  /* Day Mode keeps the same expanded action but uses AXIOM's blue action
+     language rather than carrying Night Mode lime into the light surface. */
+  html body.light-mode #tab-content-library.library-cockpit#tab-content-library
+    #library-brief-lens#library-brief-lens[data-library-brief-panel="setup"]
+    #library-brief-collapse#library-brief-collapse {
+    background: #0047ab !important;
+    border-color: #0047ab !important;
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+    text-shadow: none !important;
+  }
+</style>
+<style id="library-native-select-consistency-v1">
+  /* Native WebKit renders menulist controls differently across Intel and Apple
+     Silicon. Keep Library setup and Track Prep selects on AXIOM's own surface. */
+  html body:not(.light-mode) #tab-content-library #library-brief-settings select,
+  html body:not(.light-mode) #tab-content-library #library-preparation-toolbar select {
+    -webkit-appearance: none !important;
+    appearance: none !important;
+    background-color: #071005 !important;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5 6 6.5l5-5' fill='none' stroke='%23a3ff00' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") !important;
+    background-repeat: no-repeat !important;
+    background-position: right 12px center !important;
+    background-size: 12px 8px !important;
+    color: #f4f7ef !important;
+    -webkit-text-fill-color: #f4f7ef !important;
+    padding-right: 36px !important;
+  }
+
+  html body.light-mode #tab-content-library #library-brief-settings select,
+  html body.light-mode #tab-content-library #library-preparation-toolbar select {
+    -webkit-appearance: none !important;
+    appearance: none !important;
+    background-color: #ffffff !important;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5 6 6.5l5-5' fill='none' stroke='%230047ab' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") !important;
+    background-repeat: no-repeat !important;
+    background-position: right 12px center !important;
+    background-size: 12px 8px !important;
+    color: #07152f !important;
+    -webkit-text-fill-color: #07152f !important;
+    padding-right: 36px !important;
+  }
+</style>
+<style id="health-review-back-control-v1">
+  /* Health workspaces need an unmistakable route home without competing with
+     the page title. Use the existing black-steel asset and AXIOM accent rail. */
+  body:not(.light-mode) :is(
+    #tab-content-health-review,
+    #tab-content-duplicates,
+    #tab-content-era-review
+  ) .health-review-back {
+    min-height: 38px !important;
+    padding: 0 14px 0 11px !important;
+    gap: 10px !important;
+    border: 1px solid rgba(163, 255, 0, .48) !important;
+    border-left: 4px solid var(--accent) !important;
+    border-radius: 4px !important;
+    background-color: #080b09 !important;
+    background-image: url('/static/textures/axiom-brushed-black-steel.png') !important;
+    background-repeat: repeat !important;
+    background-size: 720px auto !important;
+    color: #f6f8f4 !important;
+    -webkit-text-fill-color: #f6f8f4 !important;
+    font-size: 12px !important;
+    font-weight: 800 !important;
+    letter-spacing: .065em !important;
+    text-transform: uppercase !important;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, .08), 0 7px 18px rgba(0, 0, 0, .24) !important;
+    transition: border-color 140ms ease, background-color 140ms ease, color 140ms ease, transform 140ms ease !important;
+  }
+
+  body:not(.light-mode) :is(
+    #tab-content-health-review,
+    #tab-content-duplicates,
+    #tab-content-era-review
+  ) .health-review-back:is(:hover, :focus-visible) {
+    border-color: var(--accent) !important;
+    background-color: var(--accent) !important;
+    background-image: none !important;
+    color: #071005 !important;
+    -webkit-text-fill-color: #071005 !important;
+    outline: 2px solid rgba(163, 255, 0, .22) !important;
+    outline-offset: 3px !important;
+    transform: translateY(-1px) !important;
+  }
+
+  body:not(.light-mode) :is(
+    #tab-content-health-review,
+    #tab-content-duplicates,
+    #tab-content-era-review
+  ) .health-review-back img {
+    width: 15px !important;
+    height: 15px !important;
+    opacity: 1 !important;
+    filter: brightness(0) saturate(100%) invert(88%) sepia(94%) saturate(1387%) hue-rotate(29deg) brightness(103%) contrast(103%) !important;
+  }
+
+  body:not(.light-mode) :is(
+    #tab-content-health-review,
+    #tab-content-duplicates,
+    #tab-content-era-review
+  ) .health-review-back:is(:hover, :focus-visible) img {
+    filter: brightness(0) saturate(100%) !important;
+  }
+
+  html body.light-mode :is(
+    #tab-content-health-review,
+    #tab-content-duplicates,
+    #tab-content-era-review
+  ) .health-review-back {
+    min-height: 38px !important;
+    padding: 0 14px 0 11px !important;
+    gap: 10px !important;
+    border: 1px solid rgba(0, 71, 171, .42) !important;
+    border-left: 4px solid #0047ab !important;
+    border-radius: 4px !important;
+    background: #ffffff !important;
+    color: #003f99 !important;
+    -webkit-text-fill-color: #003f99 !important;
+    font-size: 12px !important;
+    font-weight: 800 !important;
+    letter-spacing: .065em !important;
+    text-transform: uppercase !important;
+    box-shadow: 0 7px 18px rgba(28, 64, 120, .12) !important;
+  }
+
+  html body.light-mode :is(
+    #tab-content-health-review,
+    #tab-content-duplicates,
+    #tab-content-era-review
+  ) .health-review-back:is(:hover, :focus-visible) {
+    border-color: #0047ab !important;
+    background: #0047ab !important;
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+    outline: 2px solid rgba(0, 71, 171, .18) !important;
+    outline-offset: 3px !important;
+  }
+</style>
+<style id="health-session-receipt-option1-v1">
+  /* Option 1 — a session-wide AXIOM receipt. The surrounding Health workflow
+     stays intact; only its finished-results bay becomes a scalable ledger. */
+  #health-inbox-app .health-approved-results {
+    min-height: 410px;
+    overflow: hidden;
+    border-color: rgba(255, 255, 255, .2) !important;
+    background:
+      linear-gradient(120deg, rgba(3, 8, 5, .92), rgba(5, 14, 9, .96)),
+      url('/static/textures/axiom-brushed-black-steel.png') !important;
+    background-size: auto, 760px auto !important;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, .055), 0 16px 36px rgba(0, 0, 0, .28);
+  }
+
+  #health-inbox-app .health-session-receipt-head {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(190px, .88fr);
+    gap: 14px;
+    align-items: center;
+    min-height: 108px;
+    padding: 18px 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, .16);
+    background: rgba(0, 0, 0, .34);
+  }
+
+  #health-inbox-app .health-session-receipt-title > span,
+  #health-inbox-app .health-session-receipt-title > strong {
+    display: block;
+  }
+
+  #health-inbox-app .health-session-receipt-title > span {
+    color: var(--accent);
+    font-size: 9px;
+    font-weight: 900;
+    letter-spacing: .13em;
+    text-transform: uppercase;
+  }
+
+  #health-inbox-app .health-session-receipt-title > strong {
+    margin-top: 8px;
+    color: #f5f7f3;
+    font-family: 'Bebas Neue', Impact, sans-serif;
+    font-size: clamp(26px, 2.5vw, 38px);
+    font-weight: 400;
+    line-height: .94;
+    letter-spacing: .02em;
+    text-transform: uppercase;
+  }
+
+  #health-inbox-app .health-session-tier {
+    display: grid;
+    grid-template-columns: 34px minmax(0, 1fr);
+    gap: 5px 11px;
+    align-items: center;
+    min-height: 70px;
+    padding: 11px 13px;
+    border: 1px solid rgba(163, 255, 0, .3);
+    border-radius: 4px;
+    background: rgba(8, 16, 10, .82);
+  }
+
+  #health-inbox-app .health-session-tier > img {
+    grid-row: 1;
+    width: 30px;
+    height: 30px;
+    padding: 6px;
+    border: 1px solid rgba(163, 255, 0, .7);
+    border-radius: 50%;
+    filter: brightness(0) saturate(100%) invert(91%) sepia(92%) saturate(1469%) hue-rotate(25deg) brightness(105%) contrast(104%);
+  }
+
+  #health-inbox-app .health-session-tier span,
+  #health-inbox-app .health-session-tier strong,
+  #health-inbox-app .health-session-tier small {
+    display: block;
+    min-width: 0;
+  }
+
+  #health-inbox-app .health-session-tier strong {
+    color: #f2f5ef;
+    font-family: 'Bebas Neue', Impact, sans-serif;
+    font-size: 18px;
+    font-weight: 400;
+    line-height: .96;
+    letter-spacing: .035em;
+    text-transform: uppercase;
+    white-space: normal;
+  }
+
+  #health-inbox-app .health-session-tier small {
+    margin-top: 4px;
+    color: rgba(237, 245, 234, .64);
+    font-size: 8px;
+    font-weight: 800;
+    letter-spacing: .07em;
+    text-transform: uppercase;
+  }
+
+  #health-inbox-app .health-session-tier i {
+    grid-column: 2;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 4px;
+    height: 6px;
+    margin-top: 2px;
+  }
+
+  #health-inbox-app .health-session-tier i b {
+    border: 1px solid rgba(237, 245, 234, .28);
+    background: rgba(237, 245, 234, .05);
+  }
+
+  #health-inbox-app .health-session-tier[data-tier="1"] i b:nth-child(1),
+  #health-inbox-app .health-session-tier[data-tier="2"] i b:nth-child(-n+2),
+  #health-inbox-app .health-session-tier[data-tier="3"] i b {
+    border-color: var(--accent);
+    background: var(--accent);
+    box-shadow: 0 0 10px rgba(163, 255, 0, .22);
+  }
+
+  #health-inbox-app .health-session-receipt-label {
+    min-height: 48px;
+    padding: 0 18px;
+    border-bottom: 3px solid var(--accent);
+    background: rgba(0, 0, 0, .46);
+    color: var(--accent);
+    font-family: 'Bebas Neue', Impact, sans-serif;
+    font-size: 15px;
+    letter-spacing: .055em;
+  }
+
+  #health-inbox-app .health-session-receipt-label strong {
+    color: inherit;
+    font-size: 16px;
+    font-weight: 400;
+  }
+
+  #health-inbox-app #health-approved-results-panel {
+    padding: 0;
+  }
+
+  #health-inbox-app .health-approved-results:not([data-results-tab="completed"]) #health-approved-results-panel {
+    padding: 16px;
+  }
+
+  #health-inbox-app .health-session-receipt-scroll {
+    max-height: 238px;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-color: var(--accent) rgba(255, 255, 255, .12);
+    scrollbar-width: thin;
+  }
+
+  #health-inbox-app .receipt-expanded .health-session-receipt-scroll {
+    max-height: 520px;
+  }
+
+  #health-inbox-app .health-session-receipt-scroll:focus-visible {
+    outline: 2px solid rgba(163, 255, 0, .45);
+    outline-offset: -2px;
+  }
+
+  #health-inbox-app .health-session-receipt-scroll::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  #health-inbox-app .health-session-receipt-scroll::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, .08);
+  }
+
+  #health-inbox-app .health-session-receipt-scroll::-webkit-scrollbar-thumb {
+    border: 2px solid #07100a;
+    border-radius: 6px;
+    background: var(--accent);
+  }
+
+  #health-inbox-app .health-session-receipt-row {
+    display: grid;
+    grid-template-columns: 28px minmax(110px, .95fr) minmax(62px, .54fr) minmax(126px, 1.25fr) 54px;
+    gap: 10px;
+    align-items: center;
+    min-height: 57px;
+    padding: 9px 14px;
+    border-bottom: 1px solid rgba(255, 255, 255, .11);
+    background: rgba(1, 6, 3, .42);
+  }
+
+  #health-inbox-app .health-session-receipt-row > img {
+    width: 21px;
+    height: 21px;
+    opacity: .56;
+    filter: brightness(0) invert(1);
+  }
+
+  #health-inbox-app .health-session-receipt-row > strong {
+    color: #f2f5ef;
+    font-family: 'Bebas Neue', Impact, sans-serif;
+    font-size: 17px;
+    font-weight: 400;
+    letter-spacing: .035em;
+    text-transform: uppercase;
+  }
+
+  #health-inbox-app .health-session-receipt-row > b {
+    color: var(--accent);
+    font-family: 'Bebas Neue', Impact, sans-serif;
+    font-size: 18px;
+    font-weight: 400;
+    letter-spacing: .03em;
+    text-transform: uppercase;
+  }
+
+  #health-inbox-app .health-session-receipt-row > span {
+    color: rgba(237, 245, 234, .66);
+    font-size: 9px;
+    line-height: 1.35;
+  }
+
+  #health-inbox-app .health-session-receipt-row > time {
+    color: rgba(237, 245, 234, .36);
+    font-size: 8px;
+    text-align: right;
+    text-transform: uppercase;
+  }
+
+  #health-inbox-app .health-session-receipt-empty {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 166px;
+    padding: 24px;
+    text-align: center;
+  }
+
+  #health-inbox-app .health-session-receipt-empty strong {
+    color: #f2f5ef;
+    font-family: 'Bebas Neue', Impact, sans-serif;
+    font-size: 24px;
+    font-weight: 400;
+    text-transform: uppercase;
+  }
+
+  #health-inbox-app .health-session-receipt-empty span {
+    max-width: 420px;
+    margin: 7px auto 0;
+    color: rgba(237, 245, 234, .5);
+    font-size: 9px;
+    line-height: 1.5;
+  }
+
+  #health-inbox-app .health-session-receipt-foot {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    min-height: 64px;
+    border-top: 1px solid rgba(255, 255, 255, .15);
+    background: rgba(7, 15, 9, .88);
+  }
+
+  #health-inbox-app .health-session-receipt-foot > span {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+    padding: 12px 16px;
+  }
+
+  #health-inbox-app .health-session-receipt-foot > span strong {
+    color: var(--accent);
+    font-family: 'Bebas Neue', Impact, sans-serif;
+    font-size: 32px;
+    font-weight: 400;
+    line-height: 1;
+  }
+
+  #health-inbox-app .health-session-receipt-foot > span b {
+    color: #f1f5ef;
+    font-family: 'Bebas Neue', Impact, sans-serif;
+    font-size: 16px;
+    font-weight: 400;
+    letter-spacing: .035em;
+    text-transform: uppercase;
+  }
+
+  #health-inbox-app .health-session-receipt-foot button {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    align-self: stretch;
+    padding: 0 18px;
+    border: 0;
+    border-left: 1px solid rgba(255, 255, 255, .14);
+    background: transparent;
+    color: #25d9ff;
+    font-family: 'Bebas Neue', Impact, sans-serif;
+    font-size: 15px;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+  }
+
+  #health-inbox-app .health-session-receipt-foot button:is(:hover, :focus-visible) {
+    background: rgba(37, 217, 255, .08);
+    color: #78e9ff;
+    outline: 2px solid rgba(37, 217, 255, .35);
+    outline-offset: -3px;
+  }
+
+  #health-inbox-app .health-session-receipt-foot button img {
+    width: 14px;
+    height: 14px;
+    filter: brightness(0) saturate(100%) invert(72%) sepia(79%) saturate(3005%) hue-rotate(150deg) brightness(107%) contrast(105%);
+    transform: rotate(-90deg);
+    transition: transform 160ms ease;
+  }
+
+  #health-inbox-app .receipt-expanded .health-session-receipt-foot button img {
+    transform: rotate(180deg);
+  }
+
+  .axiom-session-celebration {
+    position: fixed;
+    z-index: 100000;
+    top: 64px;
+    right: 12px;
+    left: 12px;
+    display: block;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 180ms ease;
+  }
+
+  .axiom-session-celebration.show {
+    opacity: 1;
+  }
+
+  .axiom-session-celebration[data-placement="sidebar"] {
+    position: relative;
+    z-index: 20;
+    top: auto;
+    right: auto;
+    left: auto;
+    flex: 0 0 auto;
+    width: auto;
+    min-width: 0;
+    margin: clamp(10px, 1.8vh, 18px) 14px 0;
+  }
+
+  .axiom-session-celebration-card {
+    display: grid;
+    grid-template-columns: 44px minmax(0, 1fr);
+    gap: 3px 14px;
+    width: min(430px, 100%);
+    margin: 0 auto;
+    padding: 22px 24px;
+    border: 1px solid rgba(163, 255, 0, .52);
+    border-left: 5px solid var(--accent);
+    border-radius: 4px;
+    background:
+      linear-gradient(120deg, rgba(5, 10, 7, .96), rgba(8, 15, 10, .98)),
+      url('/static/textures/axiom-brushed-black-steel.png');
+    background-size: auto, 760px auto;
+    box-shadow: inset 0 1px rgba(255, 255, 255, .08), 0 24px 70px rgba(0, 0, 0, .65), 0 0 26px rgba(163, 255, 0, .11);
+    transform: translateY(14px) scale(.97);
+    transition: transform 220ms cubic-bezier(.2, .9, .24, 1.18);
+  }
+
+  .axiom-session-celebration[data-placement="sidebar"] .axiom-session-celebration-card {
+    grid-template-columns: 30px minmax(0, 1fr);
+    gap: 2px 10px;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    padding: 12px 13px;
+    border-left-width: 3px;
+    box-shadow: inset 0 1px rgba(255, 255, 255, .08), 0 12px 28px rgba(0, 0, 0, .48), 0 0 18px rgba(163, 255, 0, .1);
+    transform: translateX(-10px) scale(.98);
+  }
+
+  .axiom-session-celebration.show .axiom-session-celebration-card {
+    transform: translateY(0) scale(1);
+  }
+
+  .axiom-session-celebration[data-placement="sidebar"].show .axiom-session-celebration-card {
+    transform: translateX(0) scale(1);
+  }
+
+  .axiom-session-celebration-card > img {
+    grid-row: 1 / span 3;
+    width: 42px;
+    height: 42px;
+    padding: 9px;
+    border: 1px solid var(--accent);
+    border-radius: 50%;
+    filter: brightness(0) saturate(100%) invert(91%) sepia(92%) saturate(1469%) hue-rotate(25deg) brightness(105%) contrast(104%);
+    animation: axiom-session-celebration-glow 700ms ease-in-out both;
+  }
+
+  .axiom-session-celebration[data-placement="sidebar"] .axiom-session-celebration-card > img {
+    width: 30px;
+    height: 30px;
+    padding: 6px;
+  }
+
+  .axiom-session-celebration-card > span {
+    color: var(--accent);
+    font-size: 9px;
+    font-weight: 900;
+    letter-spacing: .13em;
+    text-transform: uppercase;
+  }
+
+  .axiom-session-celebration[data-placement="sidebar"] .axiom-session-celebration-card > span {
+    font-size: 8px;
+    letter-spacing: .12em;
+  }
+
+  .axiom-session-celebration-card > strong {
+    color: #f5f7f3;
+    font-family: 'Bebas Neue', Impact, sans-serif;
+    font-size: 34px;
+    font-weight: 400;
+    line-height: 1;
+    text-transform: uppercase;
+  }
+
+  .axiom-session-celebration[data-placement="sidebar"] .axiom-session-celebration-card > strong {
+    min-width: 0;
+    font-size: 24px;
+    line-height: .96;
+  }
+
+  .axiom-session-celebration-card > small {
+    color: rgba(237, 245, 234, .6);
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: .055em;
+    text-transform: uppercase;
+  }
+
+  .axiom-session-celebration[data-placement="sidebar"] .axiom-session-celebration-card > small {
+    min-width: 0;
+    overflow: hidden;
+    font-size: 8px;
+    line-height: 1.25;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .axiom-session-celebration-card > i {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 5px;
+    height: 6px;
+    margin-top: 13px;
+  }
+
+  .axiom-session-celebration[data-placement="sidebar"] .axiom-session-celebration-card > i {
+    gap: 4px;
+    height: 4px;
+    margin-top: 8px;
+  }
+
+  .axiom-session-celebration-card > i b {
+    border: 1px solid rgba(237, 245, 234, .22);
+    background: rgba(237, 245, 234, .05);
+  }
+
+  .axiom-session-celebration-card > i b.active {
+    border-color: var(--accent);
+    background: var(--accent);
+  }
+
+  @keyframes axiom-session-celebration-glow {
+    0% { box-shadow: 0 0 0 rgba(163, 255, 0, 0); transform: scale(.82); }
+    58% { box-shadow: 0 0 34px rgba(163, 255, 0, .52); transform: scale(1.08); }
+    100% { box-shadow: 0 0 18px rgba(163, 255, 0, .3); transform: scale(1); }
+  }
+
+  html body.light-mode #health-inbox-app .health-approved-results {
+    border-color: rgba(0, 71, 171, .22) !important;
+    background: #ffffff !important;
+    box-shadow: 0 12px 30px rgba(28, 64, 120, .08) !important;
+  }
+
+  html body.light-mode #health-inbox-app .health-session-receipt-head,
+  html body.light-mode #health-inbox-app .health-session-receipt-label,
+  html body.light-mode #health-inbox-app .health-session-receipt-foot {
+    border-color: rgba(0, 71, 171, .18) !important;
+    background: #ffffff !important;
+  }
+
+  html body.light-mode #health-inbox-app .health-session-receipt-title > span,
+  html body.light-mode #health-inbox-app .health-session-tier strong,
+  html body.light-mode #health-inbox-app .health-session-receipt-row > b,
+  html body.light-mode #health-inbox-app .health-session-receipt-foot > span strong,
+  html body.light-mode #health-inbox-app .health-session-receipt-label {
+    color: #0047ab !important;
+    -webkit-text-fill-color: #0047ab !important;
+  }
+
+  html body.light-mode #health-inbox-app .health-session-receipt-title > strong,
+  html body.light-mode #health-inbox-app .health-session-receipt-row > strong,
+  html body.light-mode #health-inbox-app .health-session-receipt-foot > span b,
+  html body.light-mode #health-inbox-app .health-session-receipt-empty strong {
+    color: #07111f !important;
+    -webkit-text-fill-color: #07111f !important;
+  }
+
+  html body.light-mode #health-inbox-app .health-session-tier {
+    border-color: rgba(0, 71, 171, .28) !important;
+    background: #f3f7fd !important;
+  }
+
+  html body.light-mode #health-inbox-app .health-session-tier > img,
+  html body.light-mode #health-inbox-app .health-session-receipt-row > img {
+    filter: brightness(0) saturate(100%) invert(22%) sepia(99%) saturate(2459%) hue-rotate(205deg) brightness(79%) contrast(110%) !important;
+  }
+
+  html body.light-mode #health-inbox-app .health-session-tier small,
+  html body.light-mode #health-inbox-app .health-session-receipt-row > span,
+  html body.light-mode #health-inbox-app .health-session-receipt-row > time,
+  html body.light-mode #health-inbox-app .health-session-receipt-empty span {
+    color: #526173 !important;
+    -webkit-text-fill-color: #526173 !important;
+  }
+
+  html body.light-mode #health-inbox-app .health-session-tier[data-tier="1"] i b:nth-child(1),
+  html body.light-mode #health-inbox-app .health-session-tier[data-tier="2"] i b:nth-child(-n+2),
+  html body.light-mode #health-inbox-app .health-session-tier[data-tier="3"] i b {
+    border-color: #0047ab !important;
+    background: #0047ab !important;
+    box-shadow: none !important;
+  }
+
+  html body.light-mode #health-inbox-app .health-session-receipt-row {
+    border-color: rgba(0, 71, 171, .13) !important;
+    background: #ffffff !important;
+  }
+
+  html body.light-mode #health-inbox-app .health-session-receipt-foot button {
+    border-color: rgba(0, 71, 171, .18) !important;
+    color: #0047ab !important;
+    -webkit-text-fill-color: #0047ab !important;
+  }
+
+  @media (max-width: 1100px) {
+    #health-inbox-app .health-session-receipt-row {
+      grid-template-columns: 28px minmax(130px, .9fr) 78px minmax(160px, 1.2fr) 58px;
+    }
+  }
+
+  @media (max-width: 760px) {
+    #health-inbox-app .health-session-receipt-head {
+      grid-template-columns: 1fr;
+    }
+    #health-inbox-app .health-session-receipt-label {
+      font-size: 12px;
+    }
+    #health-inbox-app .health-session-receipt-row {
+      grid-template-columns: 24px minmax(0, 1fr) auto;
+      gap: 5px 9px;
+    }
+    #health-inbox-app .health-session-receipt-row > img { grid-row: 1 / span 2; }
+    #health-inbox-app .health-session-receipt-row > b { grid-column: 3; grid-row: 1; }
+    #health-inbox-app .health-session-receipt-row > span { grid-column: 2 / -1; }
+    #health-inbox-app .health-session-receipt-row > time { display: none; }
+    #health-inbox-app .health-session-receipt-foot {
+      grid-template-columns: 1fr;
+    }
+    #health-inbox-app .health-session-receipt-foot button {
+      min-height: 48px;
+      justify-content: center;
+      border-top: 1px solid rgba(255, 255, 255, .12);
+      border-left: 0;
+    }
+    .axiom-session-celebration-card {
+      width: min(430px, 100%);
+    }
+  }
+
+  @media (max-height: 780px) and (min-width: 761px) {
+    .axiom-session-celebration[data-placement="sidebar"] {
+      margin: 7px 10px 0;
+    }
+    .axiom-session-celebration[data-placement="sidebar"] .axiom-session-celebration-card {
+      grid-template-columns: 26px minmax(0, 1fr);
+      gap: 1px 8px;
+      padding: 9px 10px;
+    }
+    .axiom-session-celebration[data-placement="sidebar"] .axiom-session-celebration-card > img {
+      width: 26px;
+      height: 26px;
+      padding: 5px;
+    }
+    .axiom-session-celebration[data-placement="sidebar"] .axiom-session-celebration-card > strong {
+      font-size: 20px;
+    }
+    .axiom-session-celebration[data-placement="sidebar"] .axiom-session-celebration-card > small {
+      font-size: 7px;
+    }
+    .axiom-session-celebration[data-placement="sidebar"] .axiom-session-celebration-card > i {
+      margin-top: 6px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .axiom-session-celebration,
+    .axiom-session-celebration-card,
+    .axiom-session-celebration-card > img {
+      animation: none !important;
+      transition: none !important;
+    }
+  }
+</style>
+<style id="health-daymode-live-repair-console-v1">
+  /* The live repair console is a light operational surface in Day Mode. Keep
+     the stage hierarchy, but translate every Night Mode ink and steel layer. */
+  html body.light-mode.studio-health-mode #health-inbox-app#health-inbox-app
+    .health-approved-console .health-approved-working {
+    border-color: rgba(0, 71, 171, .28) !important;
+    background: #ffffff !important;
+    color: #07111f !important;
+    box-shadow: 0 8px 22px rgba(28, 64, 120, .07) !important;
+  }
+
+  html body.light-mode.studio-health-mode #health-inbox-app#health-inbox-app
+    .health-approved-working-intro > strong {
+    color: #07111f !important;
+    -webkit-text-fill-color: #07111f !important;
+    text-shadow: none !important;
+  }
+
+  html body.light-mode.studio-health-mode #health-inbox-app#health-inbox-app
+    .health-approved-working-intro > small {
+    color: #53647a !important;
+    -webkit-text-fill-color: #53647a !important;
+  }
+
+  html body.light-mode.studio-health-mode #health-inbox-app#health-inbox-app
+    .health-approved-live-metrics {
+    border-color: rgba(0, 71, 171, .2) !important;
+    background: #f4f8fd !important;
+    background-image: none !important;
+    box-shadow: inset 0 1px 0 #ffffff !important;
+  }
+
+  html body.light-mode.studio-health-mode #health-inbox-app#health-inbox-app
+    .health-approved-live-metrics > span {
+    border-color: rgba(0, 71, 171, .14) !important;
+    background: transparent !important;
+  }
+
+  html body.light-mode.studio-health-mode #health-inbox-app#health-inbox-app
+    .health-approved-live-metrics :is(.health-approved-live-metrics-label, small) {
+    color: #53647a !important;
+    -webkit-text-fill-color: #53647a !important;
+  }
+
+  html body.light-mode.studio-health-mode #health-inbox-app#health-inbox-app
+    .health-approved-live-metrics strong {
+    color: #0047ab !important;
+    -webkit-text-fill-color: #0047ab !important;
+  }
+
+  html body.light-mode.studio-health-mode #health-inbox-app#health-inbox-app
+    .health-approved-live-metrics > span:nth-of-type(3) strong {
+    color: #20721b !important;
+    -webkit-text-fill-color: #20721b !important;
+  }
+
+  html body.light-mode.studio-health-mode #health-inbox-app#health-inbox-app
+    .health-approved-live-metrics > span:nth-of-type(4) strong {
+    color: #8a5700 !important;
+    -webkit-text-fill-color: #8a5700 !important;
+  }
+
+  html body.light-mode.studio-health-mode #health-inbox-app#health-inbox-app
+    .health-approved-stageboard::before {
+    background: linear-gradient(90deg, #0047ab 0%, #0047ab calc(var(--health-stage, 0) * 25%), rgba(0, 71, 171, .18) calc(var(--health-stage, 0) * 25%), rgba(0, 71, 171, .18) 100%) !important;
+    box-shadow: none !important;
+  }
+
+  html body.light-mode.studio-health-mode #health-inbox-app#health-inbox-app
+    .health-approved-stageboard > span {
+    color: #40516a !important;
+  }
+
+  html body.light-mode.studio-health-mode #health-inbox-app#health-inbox-app
+    .health-approved-stageboard > span::before {
+    border-color: rgba(0, 71, 171, .28) !important;
+    background: #ffffff !important;
+    box-shadow: none !important;
+  }
+
+  html body.light-mode.studio-health-mode #health-inbox-app#health-inbox-app
+    .health-approved-stageboard :is(.done, .active) {
+    color: #0047ab !important;
+  }
+
+  html body.light-mode.studio-health-mode #health-inbox-app#health-inbox-app
+    .health-approved-stageboard :is(.done, .active)::before {
+    border-color: #0047ab !important;
+    background: #ffffff !important;
+    box-shadow: none !important;
+  }
+
+  html body.light-mode.studio-health-mode #health-inbox-app#health-inbox-app
+    .health-approved-stageboard img {
+    filter: brightness(0) saturate(100%) invert(22%) sepia(99%) saturate(2459%) hue-rotate(205deg) brightness(79%) contrast(110%) !important;
+    opacity: .92 !important;
+  }
+
+  html body.light-mode.studio-health-mode #health-inbox-app#health-inbox-app
+    .health-approved-stageboard em {
+    color: #53647a !important;
+    -webkit-text-fill-color: #53647a !important;
+  }
+
+  html body.light-mode.studio-health-mode #health-inbox-app#health-inbox-app
+    .health-approved-current-strip {
+    border-color: rgba(0, 71, 171, .2) !important;
+    background: linear-gradient(90deg, #edf4ff 0%, #ffffff 72%) !important;
+    background-image: linear-gradient(90deg, #edf4ff 0%, #ffffff 72%) !important;
+    box-shadow: inset 4px 0 0 #0047ab !important;
+  }
+
+  html body.light-mode.studio-health-mode #health-inbox-app#health-inbox-app
+    .health-approved-now-track small,
+  html body.light-mode.studio-health-mode #health-inbox-app#health-inbox-app
+    .health-approved-time-block small {
+    color: #53647a !important;
+    -webkit-text-fill-color: #53647a !important;
+  }
+
+  html body.light-mode.studio-health-mode #health-inbox-app#health-inbox-app
+    .health-approved-now-track strong {
+    color: #07111f !important;
+    -webkit-text-fill-color: #07111f !important;
+    text-shadow: none !important;
+  }
+
+  html body.light-mode.studio-health-mode #health-inbox-app#health-inbox-app
+    .health-approved-now-track em {
+    color: #53647a !important;
+    -webkit-text-fill-color: #53647a !important;
+  }
+
+  html body.light-mode.studio-health-mode #health-inbox-app#health-inbox-app
+    .health-approved-time-block {
+    border-color: rgba(0, 71, 171, .16) !important;
+  }
+
+  html body.light-mode.studio-health-mode #health-inbox-app#health-inbox-app
+    .health-approved-time-block strong,
+  html body.light-mode.studio-health-mode #health-inbox-app#health-inbox-app
+    #health-approved-progress-percent {
+    color: #0047ab !important;
+    -webkit-text-fill-color: #0047ab !important;
+  }
+
+  html body.light-mode.studio-health-mode #health-inbox-app#health-inbox-app
+    .health-approved-inline-meter {
+    background: rgba(0, 71, 171, .14) !important;
+  }
+
+  html body.light-mode.studio-health-mode #health-inbox-app#health-inbox-app
+    .health-approved-inline-meter > span {
+    background: #0047ab !important;
+    box-shadow: none !important;
+  }
+
+  html body.light-mode.studio-health-mode #health-inbox-app#health-inbox-app
+    .health-approved-console[data-health-job-state="finished"] .health-approved-current-strip {
+    grid-template-columns: minmax(0, 1fr) 90px !important;
+    gap: 12px !important;
+    overflow: hidden !important;
+  }
+
+  html body.light-mode.studio-health-mode #health-inbox-app#health-inbox-app
+    .health-approved-console[data-health-job-state="finished"] :is(
+      .health-approved-progress-block,
+      .health-approved-time-block.remaining
+    ) {
+    display: none !important;
+  }
+</style>

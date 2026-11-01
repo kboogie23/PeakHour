@@ -1,0 +1,1902 @@
+[
+  {
+    "name": "<module>",
+    "qualname": "<module>",
+    "line": 1,
+    "names": [
+      "__doc__",
+      "__future__",
+      "annotations",
+      "ctypes",
+      "ctypes.util",
+      "json",
+      "os",
+      "sys",
+      "threading",
+      "time",
+      "urllib.parse",
+      "urllib",
+      "urllib.request",
+      "contextlib",
+      "suppress",
+      "typing",
+      "Callable",
+      "_assist_reveal_timers",
+      "_cancel_assist_reveal",
+      "_animate_assist_reveal",
+      "_assist_open_expanded",
+      "_reveal_ready_assist_panel",
+      "getattr",
+      "path",
+      "abspath",
+      "join",
+      "dirname",
+      "__file__",
+      "pardir",
+      "source_root",
+      "insert",
+      "str",
+      "LogFn",
+      "frozenset",
+      "PERFORMANCE_DJ_BUNDLE_IDS",
+      "PERFORMANCE_DJ_BUNDLE_DISPLAY",
+      "_noop_log",
+      "_assist_request_drop_paths",
+      "_release_assist_drag_focus",
+      "_resource_path",
+      "_post_json",
+      "read_selected_year_csv",
+      "trusted_native_message",
+      "native_action_in_edition",
+      "open_native_window",
+      "main",
+      "__name__",
+      "SystemExit"
+    ]
+  },
+  {
+    "name": "_cancel_assist_reveal",
+    "qualname": "_cancel_assist_reveal",
+    "line": 27,
+    "names": [
+      "_assist_reveal_timers",
+      "pop",
+      "int",
+      "windowNumber",
+      "invalidate"
+    ]
+  },
+  {
+    "name": "_animate_assist_reveal",
+    "qualname": "_animate_assist_reveal",
+    "line": 33,
+    "names": [
+      "AppKit",
+      "NSMakePoint",
+      "NSWorkspace",
+      "Foundation",
+      "NSTimer",
+      "_cancel_assist_reveal",
+      "bool",
+      "sharedWorkspace",
+      "accessibilityDisplayShouldReduceMotion",
+      "setAlphaValue_",
+      "frame",
+      "origin",
+      "x",
+      "y",
+      "setFrameOrigin_",
+      "time",
+      "monotonic",
+      "int",
+      "windowNumber",
+      "scheduledTimerWithTimeInterval_repeats_block_",
+      "_assist_reveal_timers"
+    ]
+  },
+  {
+    "name": "tick",
+    "qualname": "_animate_assist_reveal.<locals>.tick",
+    "line": 48,
+    "names": [
+      "_assist_reveal_timers",
+      "get",
+      "invalidate",
+      "min",
+      "time",
+      "monotonic",
+      "setFrameOrigin_",
+      "setAlphaValue_",
+      "_cancel_assist_reveal"
+    ]
+  },
+  {
+    "name": "_assist_open_expanded",
+    "qualname": "_assist_open_expanded",
+    "line": 61,
+    "names": [
+      "bool",
+      "get"
+    ]
+  },
+  {
+    "name": "_reveal_ready_assist_panel",
+    "qualname": "_reveal_ready_assist_panel",
+    "line": 67,
+    "names": [
+      "str",
+      "get",
+      "isVisible",
+      "setIsVisible_",
+      "orderFrontRegardless",
+      "bool",
+      "setAlphaValue_"
+    ]
+  },
+  {
+    "name": "_noop_log",
+    "qualname": "_noop_log",
+    "line": 117,
+    "names": []
+  },
+  {
+    "name": "_assist_request_drop_paths",
+    "qualname": "_assist_request_drop_paths",
+    "line": 121,
+    "names": [
+      "set",
+      "list",
+      "str",
+      "strip",
+      "startswith",
+      "urllib",
+      "parse",
+      "urlsplit",
+      "netloc",
+      "request",
+      "url2pathname",
+      "path",
+      "os",
+      "isabs",
+      "normpath",
+      "basename",
+      "splitext",
+      "lower",
+      "isfile",
+      "append"
+    ]
+  },
+  {
+    "name": "<genexpr>",
+    "qualname": "_assist_request_drop_paths.<locals>.<genexpr>",
+    "line": 124,
+    "names": [
+      "str"
+    ]
+  },
+  {
+    "name": "_release_assist_drag_focus",
+    "qualname": "_release_assist_drag_focus",
+    "line": 144,
+    "names": [
+      "resignKeyWindow",
+      "processIdentifier",
+      "str",
+      "bundleIdentifier",
+      "PERFORMANCE_DJ_BUNDLE_IDS",
+      "isTerminated",
+      "hasattr",
+      "yieldActivationToApplication_",
+      "bool",
+      "activateWithOptions_",
+      "Exception"
+    ]
+  },
+  {
+    "name": "_resource_path",
+    "qualname": "_resource_path",
+    "line": 170,
+    "names": [
+      "os",
+      "path",
+      "abspath",
+      "join",
+      "dirname",
+      "sys",
+      "executable",
+      "exists",
+      "getattr",
+      "str",
+      "__file__"
+    ]
+  },
+  {
+    "name": "_post_json",
+    "qualname": "_post_json",
+    "line": 187,
+    "names": [
+      "rstrip",
+      "json",
+      "dumps",
+      "encode",
+      "urllib",
+      "request",
+      "Request",
+      "urlopen",
+      "close",
+      "Exception"
+    ]
+  },
+  {
+    "name": "read_selected_year_csv",
+    "qualname": "read_selected_year_csv",
+    "line": 202,
+    "names": [
+      "os",
+      "path",
+      "splitext",
+      "lower",
+      "ValueError",
+      "open",
+      "read",
+      "len",
+      "basename",
+      "decode"
+    ]
+  },
+  {
+    "name": "trusted_native_message",
+    "qualname": "trusted_native_message",
+    "line": 214,
+    "names": [
+      "urllib",
+      "parse",
+      "urlsplit",
+      "scheme",
+      "hostname",
+      "username",
+      "password",
+      "frameInfo",
+      "securityOrigin",
+      "bool",
+      "isMainFrame",
+      "str",
+      "protocol",
+      "host",
+      "int",
+      "port",
+      "Exception"
+    ]
+  },
+  {
+    "name": "native_action_in_edition",
+    "qualname": "native_action_in_edition",
+    "line": 232,
+    "names": []
+  },
+  {
+    "name": "open_native_window",
+    "qualname": "open_native_window",
+    "line": 245,
+    "names": [
+      "sys",
+      "platform",
+      "_noop_log",
+      "objc",
+      "Quartz",
+      "CoreFoundation",
+      "CFRunLoopGetCurrent",
+      "CFRunLoopAddSource",
+      "CFRunLoopRemoveSource",
+      "kCFRunLoopCommonModes",
+      "AppKit",
+      "NSApp",
+      "NSAlert",
+      "NSAlertFirstButtonReturn",
+      "NSAlertSecondButtonReturn",
+      "NSApplication",
+      "NSApplicationActivationPolicyRegular",
+      "NSBackingStoreBuffered",
+      "NSColor",
+      "NSCommandKeyMask",
+      "NSDragOperationCopy",
+      "NSDragPboard",
+      "NSFilenamesPboardType",
+      "NSPasteboardURLReadingFileURLsOnlyKey",
+      "NSDraggingItem",
+      "NSEvent",
+      "NSFloatingWindowLevel",
+      "NSImage",
+      "NSFont",
+      "NSBezierPath",
+      "NSFontAttributeName",
+      "NSForegroundColorAttributeName",
+      "NSKeyDownMask",
+      "NSMakeRect",
+      "NSMakeSize",
+      "NSMenu",
+      "NSMenuItem",
+      "NSModalResponseOK",
+      "NSTerminateLater",
+      "NSTerminateNow",
+      "NSOpenPanel",
+      "NSSavePanel",
+      "NSPanel",
+      "NSPasteboard",
+      "NSScreen",
+      "NSShiftKeyMask",
+      "NSTextField",
+      "NSViewHeightSizable",
+      "NSViewWidthSizable",
+      "NSWindow",
+      "NSWindowMiniaturizeButton",
+      "NSWindowCollectionBehaviorCanJoinAllSpaces",
+      "NSWindowCollectionBehaviorFullScreenAuxiliary",
+      "NSWindowCollectionBehaviorFullScreenPrimary",
+      "NSWindowStyleMaskClosable",
+      "NSWindowStyleMaskBorderless",
+      "NSWindowStyleMaskFullScreen",
+      "NSWindowStyleMaskMiniaturizable",
+      "NSWindowStyleMaskNonactivatingPanel",
+      "NSWindowStyleMaskResizable",
+      "NSWindowStyleMaskTitled",
+      "NSWorkspace",
+      "Foundation",
+      "NSDictionary",
+      "NSTimer",
+      "NSObject",
+      "NSProcessInfo",
+      "NSUserDefaults",
+      "NSURL",
+      "NSURLRequest",
+      "WebKit",
+      "WKUserContentController",
+      "WKWebView",
+      "WKWebViewConfiguration",
+      "Exception",
+      "utils.macos_file_access",
+      "restore_native_file_access",
+      "utils.macos_export_access",
+      "restore_native_export_access",
+      "prepare_connected_serato_exports",
+      "axiom_storekit",
+      "StoreKitBridge",
+      "suppress",
+      "str",
+      "standardUserDefaults",
+      "stringForKey_",
+      "strip",
+      "lower",
+      "os",
+      "environ",
+      "get",
+      "ctypes",
+      "cdll",
+      "LoadLibrary",
+      "util",
+      "find_library",
+      "AXIsProcessTrusted",
+      "c_bool",
+      "restype",
+      "argtypes",
+      "protocolNamed",
+      "sharedApplication",
+      "setActivationPolicy_",
+      "mainMenu",
+      "alloc",
+      "initWithTitle_",
+      "setMainMenu_",
+      "next",
+      "itemArray",
+      "initWithTitle_action_keyEquivalent_",
+      "insertItem_atIndex_",
+      "submenu",
+      "setSubmenu_",
+      "addItemWithTitle_action_keyEquivalent_",
+      "setTarget_",
+      "addItem_",
+      "setKeyEquivalentModifierMask_",
+      "separatorItem",
+      "processInfo",
+      "setProcessName_",
+      "_resource_path",
+      "path",
+      "exists",
+      "setApplicationIconImage_",
+      "initWithContentsOfFile_",
+      "initWithContentRect_styleMask_backing_defer_",
+      "setTitle_",
+      "setMinSize_",
+      "setReleasedWhenClosed_",
+      "setCollectionBehavior_",
+      "contentView",
+      "bounds",
+      "setContentView_",
+      "main_webview",
+      "main_window",
+      "init",
+      "setDelegate_",
+      "center",
+      "makeKeyAndOrderFront_",
+      "activateIgnoringOtherApps_",
+      "run",
+      "close",
+      "setAlphaValue_",
+      "setHidesOnDeactivate_",
+      "setBecomesKeyOnlyIfNeeded_",
+      "setLevel_",
+      "setHasShadow_",
+      "setOpaque_",
+      "setBackgroundColor_",
+      "clearColor",
+      "urllib",
+      "parse",
+      "urljoin",
+      "setIgnoresMouseEvents_",
+      "setValue_forKey_",
+      "assist_panel",
+      "assist_webview",
+      "coach_panel",
+      "coach_webview",
+      "toggleFullScreen_",
+      "scheduledTimerWithTimeInterval_target_selector_userInfo_repeats_",
+      "timer",
+      "threading",
+      "Thread",
+      "start",
+      "objectForKey_",
+      "bool",
+      "setBool_forKey_",
+      "synchronize"
+    ]
+  },
+  {
+    "name": "refresh_accessibility_state",
+    "qualname": "open_native_window.<locals>.refresh_accessibility_state",
+    "line": 414,
+    "names": [
+      "suppress",
+      "Exception",
+      "bool"
+    ]
+  },
+  {
+    "name": "resolve_frontmost_bundle_id",
+    "qualname": "open_native_window.<locals>.resolve_frontmost_bundle_id",
+    "line": 424,
+    "names": [
+      "sharedWorkspace",
+      "frontmostApplication",
+      "str",
+      "bundleIdentifier",
+      "Exception"
+    ]
+  },
+  {
+    "name": "resolve_frontmost_provider_name",
+    "qualname": "open_native_window.<locals>.resolve_frontmost_provider_name",
+    "line": 431,
+    "names": [
+      "PERFORMANCE_DJ_BUNDLE_DISPLAY"
+    ]
+  },
+  {
+    "name": "refresh_dj_detector",
+    "qualname": "open_native_window.<locals>.refresh_dj_detector",
+    "line": 436,
+    "names": []
+  },
+  {
+    "name": "open_accessibility_settings",
+    "qualname": "open_native_window.<locals>.open_accessibility_settings",
+    "line": 442,
+    "names": [
+      "AXIsProcessTrustedWithOptions",
+      "ctypes",
+      "c_bool",
+      "restype",
+      "c_void_p",
+      "argtypes",
+      "dictionaryWithObject_forKey_",
+      "pyobjc_id",
+      "Exception",
+      "URLWithString_",
+      "bool",
+      "sharedWorkspace",
+      "openURL_"
+    ]
+  },
+  {
+    "name": "publish_accessibility_state",
+    "qualname": "open_native_window.<locals>.publish_accessibility_state",
+    "line": 460,
+    "names": [
+      "bool",
+      "sys",
+      "executable",
+      "os",
+      "path",
+      "basename",
+      "rsplit",
+      "json",
+      "dumps",
+      "evaluateJavaScript_completionHandler_"
+    ]
+  },
+  {
+    "name": "AxiomAppDelegate",
+    "qualname": "open_native_window.<locals>.AxiomAppDelegate",
+    "line": 489,
+    "names": [
+      "__name__",
+      "__module__",
+      "__qualname__",
+      "main_window",
+      "main_webview",
+      "quit_checkpoint_pending",
+      "applicationShouldTerminate_",
+      "applicationDidBecomeActive_",
+      "applicationShouldTerminateAfterLastWindowClosed_",
+      "applicationShouldHandleReopen_hasVisibleWindows_",
+      "applicationWillTerminate_"
+    ]
+  },
+  {
+    "name": "applicationShouldTerminate_",
+    "qualname": "open_native_window.<locals>.AxiomAppDelegate.applicationShouldTerminate_",
+    "line": 494,
+    "names": [
+      "main_webview",
+      "quit_checkpoint_pending",
+      "scheduledTimerWithTimeInterval_repeats_block_",
+      "evaluateJavaScript_completionHandler_",
+      "Exception",
+      "str"
+    ]
+  },
+  {
+    "name": "finish",
+    "qualname": "open_native_window.<locals>.AxiomAppDelegate.applicationShouldTerminate_.<locals>.finish",
+    "line": 503,
+    "names": [
+      "invalidate",
+      "suppress",
+      "Exception",
+      "main_window",
+      "makeKeyAndOrderFront_",
+      "activateIgnoringOtherApps_",
+      "alloc",
+      "init",
+      "setMessageText_",
+      "setInformativeText_",
+      "addButtonWithTitle_",
+      "setKeyEquivalent_",
+      "runModal",
+      "quit_checkpoint_pending",
+      "replyToApplicationShouldTerminate_"
+    ]
+  },
+  {
+    "name": "<lambda>",
+    "qualname": "open_native_window.<locals>.AxiomAppDelegate.applicationShouldTerminate_.<locals>.<lambda>",
+    "line": 527,
+    "names": []
+  },
+  {
+    "name": "applicationDidBecomeActive_",
+    "qualname": "open_native_window.<locals>.AxiomAppDelegate.applicationDidBecomeActive_",
+    "line": 538,
+    "names": [
+      "get"
+    ]
+  },
+  {
+    "name": "applicationShouldTerminateAfterLastWindowClosed_",
+    "qualname": "open_native_window.<locals>.AxiomAppDelegate.applicationShouldTerminateAfterLastWindowClosed_",
+    "line": 544,
+    "names": []
+  },
+  {
+    "name": "applicationShouldHandleReopen_hasVisibleWindows_",
+    "qualname": "open_native_window.<locals>.AxiomAppDelegate.applicationShouldHandleReopen_hasVisibleWindows_",
+    "line": 547,
+    "names": [
+      "main_window",
+      "suppress",
+      "Exception",
+      "isMiniaturized",
+      "deminiaturize_",
+      "makeKeyAndOrderFront_",
+      "activateIgnoringOtherApps_"
+    ]
+  },
+  {
+    "name": "applicationWillTerminate_",
+    "qualname": "open_native_window.<locals>.AxiomAppDelegate.applicationWillTerminate_",
+    "line": 564,
+    "names": [
+      "_post_json",
+      "close"
+    ]
+  },
+  {
+    "name": "AxiomMainWindowDelegate",
+    "qualname": "open_native_window.<locals>.AxiomMainWindowDelegate",
+    "line": 571,
+    "names": [
+      "__name__",
+      "__module__",
+      "__qualname__",
+      "windowShouldClose_",
+      "windowDidMiniaturize_",
+      "windowDidDeminiaturize_",
+      "windowDidEnterFullScreen_",
+      "windowDidExitFullScreen_"
+    ]
+  },
+  {
+    "name": "windowShouldClose_",
+    "qualname": "open_native_window.<locals>.AxiomMainWindowDelegate.windowShouldClose_",
+    "line": 572,
+    "names": [
+      "_post_json",
+      "styleMask",
+      "toggleFullScreen_",
+      "terminate_",
+      "Exception",
+      "suppress"
+    ]
+  },
+  {
+    "name": "windowDidMiniaturize_",
+    "qualname": "open_native_window.<locals>.AxiomMainWindowDelegate.windowDidMiniaturize_",
+    "line": 592,
+    "names": []
+  },
+  {
+    "name": "windowDidDeminiaturize_",
+    "qualname": "open_native_window.<locals>.AxiomMainWindowDelegate.windowDidDeminiaturize_",
+    "line": 602,
+    "names": []
+  },
+  {
+    "name": "windowDidEnterFullScreen_",
+    "qualname": "open_native_window.<locals>.AxiomMainWindowDelegate.windowDidEnterFullScreen_",
+    "line": 606,
+    "names": [
+      "object",
+      "toggleFullScreen_"
+    ]
+  },
+  {
+    "name": "windowDidExitFullScreen_",
+    "qualname": "open_native_window.<locals>.AxiomMainWindowDelegate.windowDidExitFullScreen_",
+    "line": 610,
+    "names": [
+      "suppress",
+      "Exception",
+      "terminate_",
+      "object",
+      "miniaturize_"
+    ]
+  },
+  {
+    "name": "AxiomAssistWindowDelegate",
+    "qualname": "open_native_window.<locals>.AxiomAssistWindowDelegate",
+    "line": 620,
+    "names": [
+      "__name__",
+      "__module__",
+      "__qualname__",
+      "collapseFromTitlebarButton_",
+      "collapseFromMiniaturize_",
+      "windowShouldMiniaturize_",
+      "windowDidMiniaturize_",
+      "windowDidDeminiaturize_",
+      "windowShouldClose_"
+    ]
+  },
+  {
+    "name": "collapseFromTitlebarButton_",
+    "qualname": "open_native_window.<locals>.AxiomAssistWindowDelegate.collapseFromTitlebarButton_",
+    "line": 621,
+    "names": [
+      "window",
+      "collapseFromMiniaturize_"
+    ]
+  },
+  {
+    "name": "collapseFromMiniaturize_",
+    "qualname": "open_native_window.<locals>.AxiomAssistWindowDelegate.collapseFromMiniaturize_",
+    "line": 627,
+    "names": [
+      "_post_json"
+    ]
+  },
+  {
+    "name": "windowShouldMiniaturize_",
+    "qualname": "open_native_window.<locals>.AxiomAssistWindowDelegate.windowShouldMiniaturize_",
+    "line": 640,
+    "names": [
+      "collapseFromMiniaturize_"
+    ]
+  },
+  {
+    "name": "windowDidMiniaturize_",
+    "qualname": "open_native_window.<locals>.AxiomAssistWindowDelegate.windowDidMiniaturize_",
+    "line": 648,
+    "names": [
+      "object",
+      "deminiaturize_",
+      "Exception"
+    ]
+  },
+  {
+    "name": "windowDidDeminiaturize_",
+    "qualname": "open_native_window.<locals>.AxiomAssistWindowDelegate.windowDidDeminiaturize_",
+    "line": 662,
+    "names": [
+      "object",
+      "get",
+      "collapseFromMiniaturize_"
+    ]
+  },
+  {
+    "name": "windowShouldClose_",
+    "qualname": "open_native_window.<locals>.AxiomAssistWindowDelegate.windowShouldClose_",
+    "line": 673,
+    "names": [
+      "orderOut_",
+      "main_webview",
+      "evaluateJavaScript_completionHandler_",
+      "_post_json"
+    ]
+  },
+  {
+    "name": "AxiomDragWebView",
+    "qualname": "open_native_window.<locals>.AxiomDragWebView",
+    "line": 690,
+    "names": [
+      "__name__",
+      "__module__",
+      "__qualname__",
+      "__doc__",
+      "mouseDown_",
+      "mouseDragged_",
+      "draggingSession_sourceOperationMaskForDraggingContext_",
+      "ignoreModifierKeysForDraggingSession_",
+      "draggingSession_endedAtPoint_operation_"
+    ]
+  },
+  {
+    "name": "mouseDown_",
+    "qualname": "open_native_window.<locals>.AxiomDragWebView.mouseDown_",
+    "line": 696,
+    "names": [
+      "_axiom_drag_previous_dj",
+      "sharedWorkspace",
+      "frontmostApplication",
+      "str",
+      "bundleIdentifier",
+      "PERFORMANCE_DJ_BUNDLE_IDS",
+      "getattr",
+      "_axiom_pending_drag_path",
+      "super",
+      "mouseDown_"
+    ]
+  },
+  {
+    "name": "mouseDragged_",
+    "qualname": "open_native_window.<locals>.AxiomDragWebView.mouseDragged_",
+    "line": 710,
+    "names": [
+      "str",
+      "getattr",
+      "_axiom_pending_drag_path",
+      "os",
+      "path",
+      "isfile",
+      "super",
+      "mouseDragged_",
+      "fileURLWithPath_",
+      "alloc",
+      "initWithPasteboardWriter_",
+      "convertPoint_fromView_",
+      "locationInWindow",
+      "Foundation",
+      "NSString",
+      "splitext",
+      "basename",
+      "boldSystemFontOfSize_",
+      "colorWithCalibratedRed_green_blue_alpha_",
+      "stringWithString_",
+      "min",
+      "max",
+      "sizeWithAttributes_",
+      "width",
+      "initWithSize_",
+      "lockFocus",
+      "set",
+      "bezierPathWithRoundedRect_xRadius_yRadius_",
+      "fill",
+      "drawInRect_withAttributes_",
+      "unlockFocus",
+      "setDraggingFrame_contents_",
+      "x",
+      "y",
+      "beginDraggingSessionWithItems_event_source_",
+      "setAnimatesToStartingPositionsOnCancelOrFail_",
+      "Exception",
+      "evaluateJavaScript_completionHandler_"
+    ]
+  },
+  {
+    "name": "draggingSession_sourceOperationMaskForDraggingContext_",
+    "qualname": "open_native_window.<locals>.AxiomDragWebView.draggingSession_sourceOperationMaskForDraggingContext_",
+    "line": 748,
+    "names": []
+  },
+  {
+    "name": "ignoreModifierKeysForDraggingSession_",
+    "qualname": "open_native_window.<locals>.AxiomDragWebView.ignoreModifierKeysForDraggingSession_",
+    "line": 751,
+    "names": []
+  },
+  {
+    "name": "draggingSession_endedAtPoint_operation_",
+    "qualname": "open_native_window.<locals>.AxiomDragWebView.draggingSession_endedAtPoint_operation_",
+    "line": 754,
+    "names": [
+      "bool",
+      "_release_assist_drag_focus",
+      "sharedWorkspace",
+      "frontmostApplication",
+      "getattr",
+      "os",
+      "getpid",
+      "_axiom_drag_previous_dj",
+      "str",
+      "lower",
+      "evaluateJavaScript_completionHandler_"
+    ]
+  },
+  {
+    "name": "register_javascript_dialog_metadata",
+    "qualname": "open_native_window.<locals>.register_javascript_dialog_metadata",
+    "line": 771,
+    "names": [
+      "_C_NSBOOL",
+      "registerMetaDataForSelector"
+    ]
+  },
+  {
+    "name": "run_javascript_dialog",
+    "qualname": "open_native_window.<locals>.run_javascript_dialog",
+    "line": 788,
+    "names": [
+      "urllib",
+      "parse",
+      "urlsplit",
+      "securityOrigin",
+      "isMainFrame",
+      "scheme",
+      "hostname",
+      "str",
+      "protocol",
+      "host",
+      "int",
+      "port",
+      "alloc",
+      "init",
+      "setMessageText_",
+      "setInformativeText_",
+      "addButtonWithTitle_",
+      "initWithFrame_",
+      "setStringValue_",
+      "setAccessoryView_",
+      "window",
+      "setInitialFirstResponder_",
+      "runModal",
+      "stringValue",
+      "Exception"
+    ]
+  },
+  {
+    "name": "AxiomNativeDialogs",
+    "qualname": "open_native_window.<locals>.AxiomNativeDialogs",
+    "line": 824,
+    "names": [
+      "__name__",
+      "__module__",
+      "__qualname__",
+      "webView_runJavaScriptConfirmPanelWithMessage_initiatedByFrame_completionHandler_",
+      "webView_runJavaScriptTextInputPanelWithPrompt_defaultText_initiatedByFrame_completionHandler_",
+      "webView_runJavaScriptAlertPanelWithMessage_initiatedByFrame_completionHandler_",
+      "webView_runOpenPanelWithParameters_initiatedByFrame_completionHandler_"
+    ]
+  },
+  {
+    "name": "webView_runJavaScriptConfirmPanelWithMessage_initiatedByFrame_completionHandler_",
+    "qualname": "open_native_window.<locals>.AxiomNativeDialogs.webView_runJavaScriptConfirmPanelWithMessage_initiatedByFrame_completionHandler_",
+    "line": 825,
+    "names": []
+  },
+  {
+    "name": "webView_runJavaScriptTextInputPanelWithPrompt_defaultText_initiatedByFrame_completionHandler_",
+    "qualname": "open_native_window.<locals>.AxiomNativeDialogs.webView_runJavaScriptTextInputPanelWithPrompt_defaultText_initiatedByFrame_completionHandler_",
+    "line": 828,
+    "names": []
+  },
+  {
+    "name": "webView_runJavaScriptAlertPanelWithMessage_initiatedByFrame_completionHandler_",
+    "qualname": "open_native_window.<locals>.AxiomNativeDialogs.webView_runJavaScriptAlertPanelWithMessage_initiatedByFrame_completionHandler_",
+    "line": 831,
+    "names": []
+  },
+  {
+    "name": "webView_runOpenPanelWithParameters_initiatedByFrame_completionHandler_",
+    "qualname": "open_native_window.<locals>.AxiomNativeDialogs.webView_runOpenPanelWithParameters_initiatedByFrame_completionHandler_",
+    "line": 835,
+    "names": [
+      "urllib",
+      "parse",
+      "urlsplit",
+      "securityOrigin",
+      "isMainFrame",
+      "scheme",
+      "hostname",
+      "str",
+      "protocol",
+      "host",
+      "int",
+      "port",
+      "openPanel",
+      "setTitle_",
+      "setMessage_",
+      "setPrompt_",
+      "setCanChooseFiles_",
+      "setCanChooseDirectories_",
+      "setAllowsMultipleSelection_",
+      "bool",
+      "allowsMultipleSelection",
+      "setAllowedFileTypes_",
+      "runModal",
+      "URLs",
+      "Exception"
+    ]
+  },
+  {
+    "name": "AxiomNativeBridge",
+    "qualname": "open_native_window.<locals>.AxiomNativeBridge",
+    "line": 866,
+    "names": [
+      "__name__",
+      "__module__",
+      "__qualname__",
+      "webview",
+      "main_webview",
+      "main_window",
+      "assist_panel",
+      "assist_webview",
+      "coach_panel",
+      "coach_webview",
+      "storekit_bridge",
+      "ensureMainWindowVisible_",
+      "restoreMainWindowForManualLiveAssist_",
+      "completeLiveAssistOpen_",
+      "finishLiveAssistMinimize_",
+      "restoreLiveAssistPanelAfterMinimize_",
+      "minimizeMainWindowForLiveAssist_",
+      "recordSmokeJourney_",
+      "recordSmokeStalePoll_",
+      "injectSmokeSuppressedFresh_",
+      "recordSmokeCloseSuppression_",
+      "recordSmokeManualReopen_",
+      "recordSmokeManualMinimize_",
+      "recordSmokeManualMinimizePersists_",
+      "recordSmokeManualExpandAfterMinimize_",
+      "simulateCmdFDjay_",
+      "recordCmdFDjayHidden_",
+      "recordCmdFDjayRestore_",
+      "recordCmdFSeratoHidden_",
+      "recordCmdFSeratoRestore_",
+      "recordCmdFAxiom_",
+      "recordCmdFUnrelated_",
+      "userContentController_didReceiveScriptMessage_"
+    ]
+  },
+  {
+    "name": "ensureMainWindowVisible_",
+    "qualname": "open_native_window.<locals>.AxiomNativeBridge.ensureMainWindowVisible_",
+    "line": 876,
+    "names": [
+      "main_window",
+      "isHidden",
+      "hasattr",
+      "unhideWithoutActivation",
+      "unhide_",
+      "isMiniaturized",
+      "deminiaturize_",
+      "makeKeyAndOrderFront_",
+      "activateIgnoringOtherApps_",
+      "Exception"
+    ]
+  },
+  {
+    "name": "restoreMainWindowForManualLiveAssist_",
+    "qualname": "open_native_window.<locals>.AxiomNativeBridge.restoreMainWindowForManualLiveAssist_",
+    "line": 899,
+    "names": [
+      "ensureMainWindowVisible_",
+      "main_window",
+      "isMiniaturized",
+      "performSelector_withObject_afterDelay_"
+    ]
+  },
+  {
+    "name": "completeLiveAssistOpen_",
+    "qualname": "open_native_window.<locals>.AxiomNativeBridge.completeLiveAssistOpen_",
+    "line": 913,
+    "names": [
+      "get",
+      "bool",
+      "assist_panel",
+      "isVisible",
+      "str",
+      "time",
+      "main_webview",
+      "json",
+      "dumps",
+      "evaluateJavaScript_completionHandler_",
+      "main_window",
+      "minimizeMainWindowForLiveAssist_",
+      "ensureMainWindowVisible_",
+      "performSelector_withObject_afterDelay_"
+    ]
+  },
+  {
+    "name": "finishLiveAssistMinimize_",
+    "qualname": "open_native_window.<locals>.AxiomNativeBridge.finishLiveAssistMinimize_",
+    "line": 979,
+    "names": [
+      "main_window",
+      "isMiniaturized",
+      "restoreLiveAssistPanelAfterMinimize_",
+      "styleMask",
+      "toggleFullScreen_",
+      "miniaturize_",
+      "Exception",
+      "performSelector_withObject_afterDelay_"
+    ]
+  },
+  {
+    "name": "restoreLiveAssistPanelAfterMinimize_",
+    "qualname": "open_native_window.<locals>.AxiomNativeBridge.restoreLiveAssistPanelAfterMinimize_",
+    "line": 1005,
+    "names": [
+      "assist_panel",
+      "main_window",
+      "isMiniaturized",
+      "isHidden",
+      "hasattr",
+      "unhideWithoutActivation",
+      "unhide_",
+      "orderFrontRegardless"
+    ]
+  },
+  {
+    "name": "minimizeMainWindowForLiveAssist_",
+    "qualname": "open_native_window.<locals>.AxiomNativeBridge.minimizeMainWindowForLiveAssist_",
+    "line": 1025,
+    "names": [
+      "main_window",
+      "isMiniaturized",
+      "styleMask",
+      "toggleFullScreen_",
+      "miniaturize_",
+      "Exception",
+      "performSelector_withObject_afterDelay_"
+    ]
+  },
+  {
+    "name": "recordSmokeJourney_",
+    "qualname": "open_native_window.<locals>.AxiomNativeBridge.recordSmokeJourney_",
+    "line": 1050,
+    "names": [
+      "bool",
+      "assist_panel",
+      "isVisible",
+      "main_window",
+      "isMiniaturized",
+      "main_webview",
+      "evaluateJavaScript_completionHandler_",
+      "performSelector_withObject_afterDelay_"
+    ]
+  },
+  {
+    "name": "recordSmokeStalePoll_",
+    "qualname": "open_native_window.<locals>.AxiomNativeBridge.recordSmokeStalePoll_",
+    "line": 1110,
+    "names": [
+      "bool",
+      "assist_panel",
+      "orderOut_",
+      "main_webview",
+      "evaluateJavaScript_completionHandler_",
+      "main_window",
+      "isMiniaturized",
+      "deminiaturize_",
+      "performSelector_withObject_afterDelay_"
+    ]
+  },
+  {
+    "name": "injectSmokeSuppressedFresh_",
+    "qualname": "open_native_window.<locals>.AxiomNativeBridge.injectSmokeSuppressedFresh_",
+    "line": 1141,
+    "names": [
+      "main_webview",
+      "evaluateJavaScript_completionHandler_",
+      "performSelector_withObject_afterDelay_"
+    ]
+  },
+  {
+    "name": "recordSmokeCloseSuppression_",
+    "qualname": "open_native_window.<locals>.AxiomNativeBridge.recordSmokeCloseSuppression_",
+    "line": 1167,
+    "names": [
+      "bool",
+      "main_webview",
+      "evaluateJavaScript_completionHandler_",
+      "performSelector_withObject_afterDelay_"
+    ]
+  },
+  {
+    "name": "recordSmokeManualReopen_",
+    "qualname": "open_native_window.<locals>.AxiomNativeBridge.recordSmokeManualReopen_",
+    "line": 1191,
+    "names": [
+      "bool",
+      "assist_panel",
+      "isVisible",
+      "main_window",
+      "isMiniaturized",
+      "standardWindowButton_",
+      "performClick_",
+      "performSelector_withObject_afterDelay_"
+    ]
+  },
+  {
+    "name": "recordSmokeManualMinimize_",
+    "qualname": "open_native_window.<locals>.AxiomNativeBridge.recordSmokeManualMinimize_",
+    "line": 1242,
+    "names": [
+      "main_webview",
+      "bool",
+      "assist_panel",
+      "isVisible",
+      "isMiniaturized",
+      "main_window",
+      "frame",
+      "screen",
+      "mainScreen",
+      "visibleFrame",
+      "abs",
+      "origin",
+      "x",
+      "size",
+      "width",
+      "y",
+      "evaluateJavaScript_completionHandler_",
+      "performSelector_withObject_afterDelay_"
+    ]
+  },
+  {
+    "name": "recordSmokeManualMinimizePersists_",
+    "qualname": "open_native_window.<locals>.AxiomNativeBridge.recordSmokeManualMinimizePersists_",
+    "line": 1288,
+    "names": [
+      "bool",
+      "assist_panel",
+      "isVisible",
+      "isMiniaturized",
+      "main_window",
+      "assist_webview",
+      "evaluateJavaScript_completionHandler_",
+      "performSelector_withObject_afterDelay_"
+    ]
+  },
+  {
+    "name": "recordSmokeManualExpandAfterMinimize_",
+    "qualname": "open_native_window.<locals>.AxiomNativeBridge.recordSmokeManualExpandAfterMinimize_",
+    "line": 1328,
+    "names": [
+      "bool",
+      "assist_panel",
+      "isVisible",
+      "isMiniaturized",
+      "id",
+      "assist_webview",
+      "performSelector_withObject_afterDelay_"
+    ]
+  },
+  {
+    "name": "simulateCmdFDjay_",
+    "qualname": "open_native_window.<locals>.AxiomNativeBridge.simulateCmdFDjay_",
+    "line": 1357,
+    "names": [
+      "main_webview",
+      "evaluateJavaScript_completionHandler_",
+      "performSelector_withObject_afterDelay_"
+    ]
+  },
+  {
+    "name": "recordCmdFDjayHidden_",
+    "qualname": "open_native_window.<locals>.AxiomNativeBridge.recordCmdFDjayHidden_",
+    "line": 1371,
+    "names": [
+      "bool",
+      "assist_panel",
+      "isVisible",
+      "main_webview",
+      "evaluateJavaScript_completionHandler_",
+      "performSelector_withObject_afterDelay_"
+    ]
+  },
+  {
+    "name": "recordCmdFDjayRestore_",
+    "qualname": "open_native_window.<locals>.AxiomNativeBridge.recordCmdFDjayRestore_",
+    "line": 1411,
+    "names": [
+      "bool",
+      "assist_panel",
+      "isVisible",
+      "main_webview",
+      "evaluateJavaScript_completionHandler_",
+      "performSelector_withObject_afterDelay_"
+    ]
+  },
+  {
+    "name": "recordCmdFSeratoHidden_",
+    "qualname": "open_native_window.<locals>.AxiomNativeBridge.recordCmdFSeratoHidden_",
+    "line": 1443,
+    "names": [
+      "bool",
+      "assist_panel",
+      "isVisible",
+      "main_webview",
+      "evaluateJavaScript_completionHandler_",
+      "performSelector_withObject_afterDelay_"
+    ]
+  },
+  {
+    "name": "recordCmdFSeratoRestore_",
+    "qualname": "open_native_window.<locals>.AxiomNativeBridge.recordCmdFSeratoRestore_",
+    "line": 1482,
+    "names": [
+      "bool",
+      "assist_panel",
+      "isVisible",
+      "main_webview",
+      "evaluateJavaScript_completionHandler_",
+      "performSelector_withObject_afterDelay_"
+    ]
+  },
+  {
+    "name": "recordCmdFAxiom_",
+    "qualname": "open_native_window.<locals>.AxiomNativeBridge.recordCmdFAxiom_",
+    "line": 1514,
+    "names": [
+      "main_webview",
+      "evaluateJavaScript_completionHandler_",
+      "performSelector_withObject_afterDelay_"
+    ]
+  },
+  {
+    "name": "recordCmdFUnrelated_",
+    "qualname": "open_native_window.<locals>.AxiomNativeBridge.recordCmdFUnrelated_",
+    "line": 1534,
+    "names": [
+      "bool",
+      "id",
+      "assist_webview"
+    ]
+  },
+  {
+    "name": "userContentController_didReceiveScriptMessage_",
+    "qualname": "open_native_window.<locals>.AxiomNativeBridge.userContentController_didReceiveScriptMessage_",
+    "line": 1558,
+    "names": [
+      "trusted_native_message",
+      "body",
+      "str",
+      "Exception",
+      "native_action_in_edition",
+      "startswith",
+      "axiom_mix_export",
+      "MixExport",
+      "frameInfo",
+      "securityOrigin",
+      "urllib",
+      "parse",
+      "urlsplit",
+      "webview",
+      "main_webview",
+      "isMainFrame",
+      "hostname",
+      "protocol",
+      "scheme",
+      "host",
+      "int",
+      "port",
+      "ValueError",
+      "len",
+      "studio_daw.runtime",
+      "resolve_audio_tool",
+      "getattr",
+      "savePanel",
+      "setTitle_",
+      "setMessage_",
+      "upper",
+      "setAllowedFileTypes_",
+      "setExtensionHidden_",
+      "setCanCreateDirectories_",
+      "os",
+      "path",
+      "basename",
+      "setNameFieldStringValue_",
+      "_mix_export",
+      "beginSheetModalForWindow_completionHandler_",
+      "main_window",
+      "cancel_",
+      "abort",
+      "get",
+      "append",
+      "PyObjCTools",
+      "AppHelper",
+      "threading",
+      "Thread",
+      "start",
+      "storekit_bridge",
+      "publish_ready",
+      "assist_webview",
+      "evaluateJavaScript_completionHandler_",
+      "json",
+      "dumps",
+      "bool",
+      "completeLiveAssistOpen_",
+      "_reveal_ready_assist_panel",
+      "assist_panel",
+      "_animate_assist_reveal",
+      "time",
+      "request_purchase",
+      "standardUserDefaults",
+      "setBool_forKey_",
+      "synchronize",
+      "_post_json",
+      "suppress",
+      "terminate_",
+      "strip",
+      "urlparse",
+      "netloc",
+      "sharedWorkspace",
+      "openURL_",
+      "URLWithString_",
+      "max",
+      "TypeError",
+      "OverflowError",
+      "ensureMainWindowVisible_",
+      "performSelector_withObject_afterDelay_",
+      "parse_qs",
+      "query",
+      "urlencode",
+      "urljoin",
+      "loadRequest_",
+      "requestWithURL_",
+      "isMiniaturized",
+      "_assist_open_expanded",
+      "lower",
+      "setObject_forKey_",
+      "is_dummy",
+      "simulated_bundle_id",
+      "orderOut_",
+      "makeKeyAndOrderFront_",
+      "makeFirstResponder_",
+      "resignKeyWindow",
+      "orderFrontRegardless",
+      "list",
+      "pasteboardWithName_",
+      "readObjectsForClasses_options_",
+      "extend",
+      "propertyListForType_",
+      "_assist_request_drop_paths",
+      "request",
+      "url2pathname",
+      "abspath",
+      "expanduser",
+      "isfile",
+      "_axiom_drag_title",
+      "_axiom_hover_drag_path",
+      "_axiom_pending_drag_path",
+      "utils.native_playlist_files",
+      "playlist_file_payload",
+      "save_playlist_file",
+      "splitext",
+      "runModal",
+      "URL",
+      "URLForApplicationWithBundleIdentifier_",
+      "openPanel",
+      "setAllowsMultipleSelection_",
+      "utils.macos_export_access",
+      "active_modern_serato_library_root",
+      "join",
+      "setPrompt_",
+      "setDirectoryURL_",
+      "fileURLWithPath_",
+      "isdir",
+      "setCanChooseFiles_",
+      "setCanChooseDirectories_",
+      "URLs",
+      "read_selected_year_csv",
+      "remember",
+      "rstrip",
+      "sep"
+    ]
+  },
+  {
+    "name": "body_value",
+    "qualname": "open_native_window.<locals>.AxiomNativeBridge.userContentController_didReceiveScriptMessage_.<locals>.body_value",
+    "line": 1564,
+    "names": [
+      "hasattr",
+      "objectForKey_",
+      "get",
+      "Exception"
+    ]
+  },
+  {
+    "name": "reply",
+    "qualname": "open_native_window.<locals>.AxiomNativeBridge.userContentController_didReceiveScriptMessage_.<locals>.reply",
+    "line": 1589,
+    "names": [
+      "json",
+      "dumps",
+      "webview",
+      "evaluateJavaScript_completionHandler_"
+    ]
+  },
+  {
+    "name": "selected",
+    "qualname": "open_native_window.<locals>.AxiomNativeBridge.userContentController_didReceiveScriptMessage_.<locals>.selected",
+    "line": 1634,
+    "names": [
+      "getattr",
+      "_mix_export",
+      "str",
+      "URL",
+      "path",
+      "os",
+      "splitext",
+      "lower",
+      "ValueError",
+      "lexists",
+      "int",
+      "Exception"
+    ]
+  },
+  {
+    "name": "finish_export",
+    "qualname": "open_native_window.<locals>.AxiomNativeBridge.userContentController_didReceiveScriptMessage_.<locals>.finish_export",
+    "line": 1686,
+    "names": [
+      "finish",
+      "Exception",
+      "abort",
+      "str",
+      "callAfter"
+    ]
+  },
+  {
+    "name": "completed",
+    "qualname": "open_native_window.<locals>.AxiomNativeBridge.userContentController_didReceiveScriptMessage_.<locals>.finish_export.<locals>.completed",
+    "line": 1693,
+    "names": [
+      "getattr",
+      "_mix_export"
+    ]
+  },
+  {
+    "name": "DummyEvent",
+    "qualname": "open_native_window.<locals>.AxiomNativeBridge.userContentController_didReceiveScriptMessage_.<locals>.DummyEvent",
+    "line": 2020,
+    "names": [
+      "__name__",
+      "__module__",
+      "__qualname__",
+      "modifierFlags",
+      "keyCode"
+    ]
+  },
+  {
+    "name": "modifierFlags",
+    "qualname": "open_native_window.<locals>.AxiomNativeBridge.userContentController_didReceiveScriptMessage_.<locals>.DummyEvent.modifierFlags",
+    "line": 2021,
+    "names": []
+  },
+  {
+    "name": "keyCode",
+    "qualname": "open_native_window.<locals>.AxiomNativeBridge.userContentController_didReceiveScriptMessage_.<locals>.DummyEvent.keyCode",
+    "line": 2023,
+    "names": []
+  },
+  {
+    "name": "<genexpr>",
+    "qualname": "open_native_window.<locals>.AxiomNativeBridge.userContentController_didReceiveScriptMessage_.<locals>.<genexpr>",
+    "line": 2114,
+    "names": [
+      "isFileURL",
+      "str",
+      "path"
+    ]
+  },
+  {
+    "name": "send",
+    "qualname": "open_native_window.<locals>.AxiomNativeBridge.userContentController_didReceiveScriptMessage_.<locals>.send",
+    "line": 2154,
+    "names": [
+      "json",
+      "dumps",
+      "webview",
+      "evaluateJavaScript_completionHandler_"
+    ]
+  },
+  {
+    "name": "choose_connected_export_folder",
+    "qualname": "open_native_window.<locals>.AxiomNativeBridge.userContentController_didReceiveScriptMessage_.<locals>.choose_connected_export_folder",
+    "line": 2280,
+    "names": [
+      "openPanel",
+      "setTitle_",
+      "setMessage_",
+      "setPrompt_",
+      "setCanChooseFiles_",
+      "setCanChooseDirectories_",
+      "setAllowsMultipleSelection_",
+      "setDirectoryURL_",
+      "fileURLWithPath_",
+      "runModal",
+      "URLs",
+      "len"
+    ]
+  },
+  {
+    "name": "make_webview",
+    "qualname": "open_native_window.<locals>.make_webview",
+    "line": 2306,
+    "names": [
+      "alloc",
+      "init",
+      "addScriptMessageHandler_name_",
+      "setUserContentController_",
+      "suppress",
+      "Exception",
+      "preferences",
+      "setJavaScriptCanOpenWindowsAutomatically_",
+      "initWithFrame_configuration_",
+      "webview",
+      "setUIDelegate_",
+      "initWithWebView_log_",
+      "storekit_bridge",
+      "start",
+      "append",
+      "setAutoresizingMask_",
+      "loadRequest_",
+      "requestWithURL_",
+      "URLWithString_"
+    ]
+  },
+  {
+    "name": "<genexpr>",
+    "qualname": "open_native_window.<locals>.<genexpr>",
+    "line": 2339,
+    "names": [
+      "str",
+      "title",
+      "casefold"
+    ]
+  },
+  {
+    "name": "<genexpr>",
+    "qualname": "open_native_window.<locals>.<genexpr>",
+    "line": 2350,
+    "names": [
+      "str",
+      "action"
+    ]
+  },
+  {
+    "name": "<genexpr>",
+    "qualname": "open_native_window.<locals>.<genexpr>",
+    "line": 2357,
+    "names": [
+      "str",
+      "title",
+      "casefold"
+    ]
+  },
+  {
+    "name": "AxiomPerformanceWatchdog",
+    "qualname": "open_native_window.<locals>.AxiomPerformanceWatchdog",
+    "line": 2503,
+    "names": [
+      "__name__",
+      "__module__",
+      "__qualname__",
+      "main_webview",
+      "last_publish_at",
+      "tick_"
+    ]
+  },
+  {
+    "name": "tick_",
+    "qualname": "open_native_window.<locals>.AxiomPerformanceWatchdog.tick_",
+    "line": 2507,
+    "names": [
+      "time",
+      "last_publish_at",
+      "main_webview",
+      "evaluateJavaScript_completionHandler_"
+    ]
+  },
+  {
+    "name": "assist_frame",
+    "qualname": "open_native_window.<locals>.assist_frame",
+    "line": 2521,
+    "names": [
+      "screen",
+      "mainScreen",
+      "visibleFrame",
+      "origin",
+      "x",
+      "size",
+      "width",
+      "y"
+    ]
+  },
+  {
+    "name": "resolve_assist_layout",
+    "qualname": "open_native_window.<locals>.resolve_assist_layout",
+    "line": 2532,
+    "names": [
+      "str",
+      "get",
+      "lower",
+      "screen",
+      "mainScreen",
+      "visibleFrame",
+      "size",
+      "width",
+      "height"
+    ]
+  },
+  {
+    "name": "expanded_assist_geometry",
+    "qualname": "open_native_window.<locals>.expanded_assist_geometry",
+    "line": 2546,
+    "names": [
+      "screen",
+      "mainScreen",
+      "visibleFrame",
+      "min",
+      "size",
+      "width",
+      "height",
+      "str",
+      "get",
+      "max",
+      "round"
+    ]
+  },
+  {
+    "name": "coach_frame",
+    "qualname": "open_native_window.<locals>.coach_frame",
+    "line": 2575,
+    "names": [
+      "screen",
+      "mainScreen",
+      "visibleFrame",
+      "frame",
+      "max",
+      "origin",
+      "x",
+      "y"
+    ]
+  },
+  {
+    "name": "hide_coach_prompt",
+    "qualname": "open_native_window.<locals>.hide_coach_prompt",
+    "line": 2590,
+    "names": [
+      "suppress",
+      "Exception",
+      "evaluateJavaScript_completionHandler_",
+      "orderOut_"
+    ]
+  },
+  {
+    "name": "show_coach_prompt",
+    "qualname": "open_native_window.<locals>.show_coach_prompt",
+    "line": 2598,
+    "names": [
+      "isinstance",
+      "dict",
+      "os",
+      "path",
+      "isabs",
+      "str",
+      "get",
+      "isfile",
+      "json",
+      "dumps",
+      "setFrame_display_",
+      "evaluateJavaScript_completionHandler_",
+      "setIsVisible_",
+      "orderFront_",
+      "orderFrontRegardless"
+    ]
+  },
+  {
+    "name": "set_assist_mode",
+    "qualname": "open_native_window.<locals>.set_assist_mode",
+    "line": 2615,
+    "names": [
+      "bool",
+      "_cancel_assist_reveal",
+      "setAlphaValue_",
+      "get",
+      "isVisible",
+      "orderOut_",
+      "styleMask",
+      "setStyleMask_",
+      "setMinSize_",
+      "setFrame_display_",
+      "setIsVisible_",
+      "orderFrontRegardless",
+      "json",
+      "dumps",
+      "evaluateJavaScript_completionHandler_",
+      "str"
+    ]
+  },
+  {
+    "name": "hide_assist_for_search",
+    "qualname": "open_native_window.<locals>.hide_assist_for_search",
+    "line": 2681,
+    "names": [
+      "int",
+      "time",
+      "bool",
+      "get",
+      "isVisible",
+      "orderOut_",
+      "evaluateJavaScript_completionHandler_",
+      "_post_json"
+    ]
+  },
+  {
+    "name": "wire_assist_titlebar_minimize",
+    "qualname": "open_native_window.<locals>.wire_assist_titlebar_minimize",
+    "line": 2718,
+    "names": [
+      "suppress",
+      "Exception",
+      "standardWindowButton_",
+      "setTarget_",
+      "setAction_"
+    ]
+  },
+  {
+    "name": "heartbeat",
+    "qualname": "open_native_window.<locals>.heartbeat",
+    "line": 2744,
+    "names": [
+      "_post_json",
+      "time",
+      "sleep"
+    ]
+  },
+  {
+    "name": "handle_global_key",
+    "qualname": "open_native_window.<locals>.handle_global_key",
+    "line": 2751,
+    "names": [
+      "kCGEventTapDisabledByTimeout",
+      "kCGEventTapDisabledByUserInput",
+      "get",
+      "CGEventTapEnable",
+      "getattr",
+      "bool",
+      "modifierFlags",
+      "keyCode",
+      "kCGEventKeyDown",
+      "CGEventGetIntegerValueField",
+      "kCGKeyboardEventKeycode",
+      "CGEventGetFlags",
+      "kCGEventFlagMaskCommand",
+      "PERFORMANCE_DJ_BUNDLE_IDS",
+      "time",
+      "isVisible",
+      "Exception"
+    ]
+  },
+  {
+    "name": "dispatch_dummy_event",
+    "qualname": "open_native_window.<locals>.dispatch_dummy_event",
+    "line": 2801,
+    "names": []
+  },
+  {
+    "name": "keyboard_listener_enabled",
+    "qualname": "open_native_window.<locals>.keyboard_listener_enabled",
+    "line": 2806,
+    "names": [
+      "get",
+      "bool",
+      "CGEventTapIsEnabled",
+      "Exception"
+    ]
+  },
+  {
+    "name": "install_key_monitors",
+    "qualname": "open_native_window.<locals>.install_key_monitors",
+    "line": 2815,
+    "names": [
+      "CGEventTapCreate",
+      "kCGSessionEventTap",
+      "kCGHeadInsertEventTap",
+      "kCGEventTapOptionListenOnly",
+      "CGEventMaskBit",
+      "kCGEventKeyDown",
+      "Exception",
+      "CFMachPortCreateRunLoopSource",
+      "CGEventTapEnable",
+      "bool",
+      "time"
+    ]
+  },
+  {
+    "name": "uninstall_key_monitors",
+    "qualname": "open_native_window.<locals>.uninstall_key_monitors",
+    "line": 2859,
+    "names": [
+      "get",
+      "suppress",
+      "Exception",
+      "CGEventTapEnable",
+      "time"
+    ]
+  },
+  {
+    "name": "maintain_performance_keyboard_listener",
+    "qualname": "open_native_window.<locals>.maintain_performance_keyboard_listener",
+    "line": 2878,
+    "names": [
+      "time",
+      "get",
+      "suppress",
+      "Exception",
+      "CGEventTapEnable",
+      "bool"
+    ]
+  },
+  {
+    "name": "main",
+    "qualname": "main",
+    "line": 2974,
+    "names": [
+      "sys",
+      "argv",
+      "open_native_window",
+      "print"
+    ]
+  }
+]

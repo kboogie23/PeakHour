@@ -1,0 +1,35 @@
+<style id="native-webkit-health-live-motion-v1">
+  /* The five stages are a finite receipt for one completed backend result.
+     Nothing here loops independently of a completed Health event. */
+  html body #health-inbox-app.health-approved-shell
+    .health-approved-stageboard[data-completed-presentation="true"] > span img {
+    transition: opacity 120ms ease, transform 120ms ease, filter 120ms ease;
+  }
+
+  html body #health-inbox-app.health-approved-shell
+    .health-approved-stageboard[data-completed-presentation="true"] > span.active img {
+    opacity: 1 !important;
+    transform: scale(1.18);
+    filter: brightness(0) saturate(100%) invert(91%) sepia(92%) saturate(1518%) hue-rotate(24deg) brightness(107%) contrast(104%)
+      drop-shadow(0 0 7px rgba(163,255,0,.78)) !important;
+  }
+
+  html body #health-inbox-app.health-approved-shell
+    .health-approved-stageboard[data-completed-presentation="true"] > span.done img {
+    opacity: 1 !important;
+    transform: scale(1);
+  }
+
+  html body #health-inbox-app.health-approved-shell
+    .health-approved-console[data-health-job-state="active"]
+    #health-approved-inline-bar {
+    min-width: 4px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html body #health-inbox-app.health-approved-shell
+      .health-approved-stageboard[data-completed-presentation="true"] > span img {
+      transition: none !important;
+    }
+  }
+</style>

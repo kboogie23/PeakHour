@@ -1,0 +1,132 @@
+
+
+<style id="library-set-prep-layering-contract-v1">
+  /* The Library results column is a constrained flex stack. Expanded Set Prep
+     panels must own their height instead of shrinking while their children
+     spill over the first track row. */
+  html body #tab-content-library.library-cockpit#tab-content-library .library-results-column #library-brief-lens.library-brief-lens#library-brief-lens[data-library-brief-panel="preparation"] {
+    flex: 0 0 auto !important;
+    min-height: 0 !important;
+    height: auto !important;
+    max-height: none !important;
+    margin: 0 0 8px !important;
+    padding: 8px 12px 10px !important;
+    overflow: hidden !important;
+  }
+
+  /* Setup is a compact drawer above the song list. The fixed desktop height
+     leaves the list in flow, while its own controls scroll on short windows. */
+  html body #tab-content-library.library-cockpit#tab-content-library .library-results-column #library-brief-lens.library-brief-lens#library-brief-lens[data-library-brief-panel="setup"] {
+    display: grid !important;
+    grid-template-rows: auto minmax(0, 1fr) !important;
+    flex: 0 0 auto !important;
+    min-height: 0 !important;
+    height: 390px !important;
+    max-height: min(390px, calc(100% - 12px)) !important;
+    margin: 0 0 12px !important;
+    padding: 14px 16px 16px !important;
+    overflow: hidden !important;
+  }
+
+  html body #tab-content-library.library-cockpit#tab-content-library #library-brief-lens#library-brief-lens[data-library-brief-panel="setup"] #library-brief-topline {
+    display: grid !important;
+    grid-template-columns: minmax(190px, 1fr) 152px 116px 132px !important;
+    align-items: center !important;
+    gap: 10px !important;
+    min-height: 48px !important;
+    height: auto !important;
+    margin: 0 !important;
+    padding: 0 0 10px !important;
+  }
+
+  html body #tab-content-library.library-cockpit#tab-content-library #library-brief-lens#library-brief-lens[data-library-brief-panel="setup"] .library-brief-copy {
+    display: flex !important;
+    grid-column: 1 !important;
+    grid-row: 1 !important;
+    width: auto !important;
+    min-height: 36px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    gap: 14px !important;
+  }
+
+  html body #tab-content-library.library-cockpit#tab-content-library #library-brief-lens#library-brief-lens[data-library-brief-panel="setup"] #library-brief-lane-dropdown {
+    grid-column: 2 !important;
+    grid-row: 1 !important;
+  }
+
+  html body #tab-content-library.library-cockpit#tab-content-library #library-brief-lens#library-brief-lens[data-library-brief-panel="setup"] .library-gap-launch {
+    grid-column: 3 !important;
+    grid-row: 1 !important;
+    width: 116px !important;
+  }
+
+  html body #tab-content-library.library-cockpit#tab-content-library #library-brief-lens#library-brief-lens[data-library-brief-panel="setup"] #library-brief-collapse {
+    position: static !important;
+    grid-column: 4 !important;
+    grid-row: 1 !important;
+    width: 132px !important;
+    min-width: 132px !important;
+    height: 42px !important;
+    min-height: 42px !important;
+    margin: 0 !important;
+    padding: 0 14px !important;
+    transform: none !important;
+  }
+
+  html body #tab-content-library.library-cockpit#tab-content-library #library-brief-lens#library-brief-lens[data-library-brief-panel="setup"] #library-preparation-toggle {
+    display: none !important;
+  }
+
+  html body #tab-content-library.library-cockpit#tab-content-library #library-brief-lens#library-brief-lens[data-library-brief-panel="setup"] > .library-brief-panel {
+    min-height: 0 !important;
+    height: 100% !important;
+    max-height: 100% !important;
+    overflow: hidden !important;
+  }
+
+  html body #tab-content-library.library-cockpit#tab-content-library #library-brief-lens#library-brief-lens[data-library-brief-panel="setup"] #library-brief-settings:not(.hidden) {
+    min-height: 0 !important;
+    height: 100% !important;
+    max-height: 100% !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+  }
+
+  html body #tab-content-library.library-cockpit#tab-content-library #library-brief-lens#library-brief-lens[data-library-brief-panel="setup"] #library-brief-settings:not(.hidden) .library-bpm-filter-wrap {
+    min-height: 82px !important;
+    height: 82px !important;
+    max-height: 82px !important;
+    padding: 10px 12px !important;
+  }
+
+  @media (max-width: 980px) {
+    html body #tab-content-library.library-cockpit#tab-content-library #library-brief-lens#library-brief-lens[data-library-brief-panel="setup"] #library-brief-topline {
+      grid-template-columns: minmax(0, 1fr) 116px 132px !important;
+      row-gap: 8px !important;
+    }
+
+    html body #tab-content-library.library-cockpit#tab-content-library #library-brief-lens#library-brief-lens[data-library-brief-panel="setup"] .library-brief-copy {
+      grid-column: 1 / -1 !important;
+    }
+
+    html body #tab-content-library.library-cockpit#tab-content-library #library-brief-lens#library-brief-lens[data-library-brief-panel="setup"] #library-brief-lane-dropdown,
+    html body #tab-content-library.library-cockpit#tab-content-library #library-brief-lens#library-brief-lens[data-library-brief-panel="setup"] .library-gap-launch,
+    html body #tab-content-library.library-cockpit#tab-content-library #library-brief-lens#library-brief-lens[data-library-brief-panel="setup"] #library-brief-collapse {
+      grid-row: 2 !important;
+    }
+
+    html body #tab-content-library.library-cockpit#tab-content-library #library-brief-lens#library-brief-lens[data-library-brief-panel="setup"] #library-brief-lane-dropdown {
+      grid-column: 1 !important;
+      justify-self: start !important;
+    }
+
+    html body #tab-content-library.library-cockpit#tab-content-library #library-brief-lens#library-brief-lens[data-library-brief-panel="setup"] .library-gap-launch {
+      grid-column: 2 !important;
+    }
+
+    html body #tab-content-library.library-cockpit#tab-content-library #library-brief-lens#library-brief-lens[data-library-brief-panel="setup"] #library-brief-collapse {
+      grid-column: 3 !important;
+    }
+  }
+</style>

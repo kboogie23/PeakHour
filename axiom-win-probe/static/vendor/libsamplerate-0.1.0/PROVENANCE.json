@@ -1,0 +1,18 @@
+{
+  "package": "@axonkit/libsamplerate-js",
+  "version": "0.1.0",
+  "repository": "https://github.com/axonkit/libsamplerate-js",
+  "gitHead": "562f42ae7b9297dbfd311285480cb5a4a360014e",
+  "tarball": "https://registry.npmjs.org/@axonkit/libsamplerate-js/-/libsamplerate-js-0.1.0.tgz",
+  "tarballSha256": "93fedf275402de4fbc736b73da15f660eb360cbe2c00e7cb589327e293b33411",
+  "files": {
+    "dist/wasm/libsamplerate.wasm": "a54bfa453ebc0217c7d3ca38ce3660b61f6bd4d7a6d73edcab61a17e89a780ce",
+    "dist/wasm/libsamplerate.js": "5851dc3813067ec78280d31c236de4b77cf0e044ad7acf5a97c1e535d309bbe5",
+    "COPYING.libsamplerate": "2c1f76ce2effdddb425018405d5690c0b1ab4e6976e35296b0a6db65c5e1a55d"
+  },
+  "licenses": {
+    "wrapper": "MIT, as declared in the original package.json and README.md",
+    "libsamplerate": "BSD-2-Clause; upstream notice retained in COPYING.libsamplerate"
+  },
+  "releaseReview": "The upstream wrapper archive does not contain a standalone license notice. Verify required wrapper attribution before distribution. No installer or public release is authorized."
+}

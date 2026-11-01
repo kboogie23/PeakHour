@@ -1,0 +1,43 @@
+/* PEAK HOUR (Windows): easier-to-read type, loaded instead of desktop-fonts.css.
+   AXIOM's styles name two families everywhere (including inline styles), so the same names
+   point at Windows' own screen fonts here:
+     "Bebas Neue" (thin condensed capitals) -> Bahnschrift SemiBold Condensed, a clear DIN-style
+                  face of almost the same width, so labels and buttons keep their layout.
+     "Barlow"     (body text)               -> Segoe UI, Windows' interface font.
+   The bundled files stay as the fallback on a PC without these fonts. */
+@font-face {
+  font-family: "Bebas Neue";
+  font-style: normal;
+  font-weight: 600;
+  font-stretch: 75%;
+  font-display: swap;
+  src: local("Bahnschrift"), url("./vendor/bebas-neue-5.2.7/files/bebas-neue-latin-400-normal.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Barlow";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: local("Segoe UI"), local("SegoeUI"), url("./vendor/barlow-5.3.0/files/barlow-latin-400-normal.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Barlow";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: local("Segoe UI Semibold"), local("SegoeUI-Semibold"), url("./vendor/barlow-5.3.0/files/barlow-latin-600-normal.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Barlow";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: local("Segoe UI Bold"), local("SegoeUI-Bold"), url("./vendor/barlow-5.3.0/files/barlow-latin-700-normal.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Barlow";
+  font-style: normal;
+  font-weight: 900;
+  font-display: swap;
+  src: local("Segoe UI Black"), local("SegoeUI-Black"), url("./vendor/barlow-5.3.0/files/barlow-latin-900-normal.woff2") format("woff2");
+}

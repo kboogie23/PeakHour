@@ -1,0 +1,183 @@
+<style id="library-setup-dedicated-utility-bar-final-v9">
+  #library-setup-overview[hidden] {
+    display: none !important;
+  }
+
+  html body:not(.library-setup-open)
+    #tab-content-library.library-cockpit#tab-content-library
+    #library-setup-utility-bar {
+    display: contents !important;
+  }
+
+  html body:not(.library-setup-open)
+    #tab-content-library.library-cockpit#tab-content-library
+    #library-setup-utility-bar > :is(.library-setup-health, .library-setup-fit, #library-setup-view-tracks) {
+    display: none !important;
+  }
+
+  html body.library-setup-open
+    #tab-content-library.library-cockpit#tab-content-library
+    .library-results-column > #library-brief-lens[data-library-brief-panel="setup"]
+    > #library-brief-topline {
+    display: block !important;
+    min-height: 36px !important;
+    height: 36px !important;
+    max-height: 36px !important;
+    padding: 0 !important;
+  }
+
+  html body.library-setup-open
+    #tab-content-library.library-cockpit#tab-content-library
+    #library-brief-lens[data-library-brief-panel="setup"]
+    #library-brief-topline > :is(.library-brief-copy, #library-brief-actions-toggle, #library-brief-action-rail) {
+    display: none !important;
+  }
+
+  html body.library-setup-open
+    #tab-content-library.library-cockpit#tab-content-library
+    #library-brief-lens[data-library-brief-panel="setup"]
+    #library-setup-utility-bar.library-setup-utility-bar {
+    display: grid !important;
+    grid-template-columns:
+      minmax(150px, 1.12fr)
+      minmax(112px, .82fr)
+      minmax(68px, .52fr)
+      minmax(90px, .65fr)
+      minmax(126px, .92fr) !important;
+    align-items: center !important;
+    gap: 8px !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    min-height: 36px !important;
+    height: 36px !important;
+    max-height: 36px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: visible !important;
+  }
+
+  html body.library-setup-open
+    #tab-content-library.library-cockpit#tab-content-library
+    #library-setup-utility-bar > #library-brief-lane-dropdown {
+    grid-column: 1 !important;
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  html body.library-setup-open
+    #tab-content-library.library-cockpit#tab-content-library
+    #library-setup-utility-bar > #library-brief-collapse {
+    grid-column: 5 !important;
+    position: static !important;
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  html body.library-setup-open
+    #tab-content-library.library-cockpit#tab-content-library
+    #library-setup-utility-bar > .library-setup-health {
+    grid-column: 3 !important;
+  }
+
+  html body.library-setup-open
+    #tab-content-library.library-cockpit#tab-content-library
+    #library-setup-utility-bar > .library-setup-fit {
+    grid-column: 4 !important;
+  }
+
+  html body.library-setup-open
+    #tab-content-library.library-cockpit#tab-content-library
+    .library-results-column > #library-brief-lens.library-brief-lens#library-brief-lens[data-library-brief-panel="setup"]
+    #library-brief-topline > #library-setup-utility-bar.library-setup-utility-bar
+    > #library-setup-view-tracks {
+    grid-column: 2 !important;
+  }
+
+  html body.library-setup-open
+    #tab-content-library.library-cockpit#tab-content-library
+    #library-setup-utility-bar > :is(#library-brief-lane-dropdown, #library-brief-collapse, .library-setup-health, .library-setup-fit, #library-setup-view-tracks) {
+    align-self: center !important;
+    min-height: 34px !important;
+    height: 34px !important;
+    max-height: 34px !important;
+  }
+
+  html body.library-setup-open:not(.library-matching-songs-disabled)
+    #tab-content-library.library-cockpit#tab-content-library
+    #library-setup-utility-bar.library-setup-utility-bar {
+    grid-template-columns:
+      minmax(120px, 1.08fr)
+      minmax(92px, .78fr)
+      minmax(56px, .48fr)
+      minmax(74px, .61fr)
+      minmax(102px, .86fr) !important;
+    gap: 6px !important;
+  }
+
+  /* The original setup header positioned these controls in separate legacy
+     columns. Pin every utility to the new full-width row so no phantom first
+     column or auto-placement gap can survive the approved compact layout. */
+  html body.library-setup-open
+    #tab-content-library.library-cockpit#tab-content-library
+    .library-results-column > #library-brief-lens.library-brief-lens#library-brief-lens[data-library-brief-panel="setup"]
+    #library-brief-topline > #library-setup-utility-bar.library-setup-utility-bar
+    > #library-brief-lane-dropdown.library-brief-lane-dropdown {
+    grid-column: 1 !important;
+    grid-row: 1 !important;
+    justify-self: stretch !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    margin: 0 !important;
+  }
+
+  html body.library-setup-open
+    #tab-content-library.library-cockpit#tab-content-library
+    .library-results-column > #library-brief-lens.library-brief-lens#library-brief-lens[data-library-brief-panel="setup"]
+    #library-brief-topline > #library-setup-utility-bar.library-setup-utility-bar
+    > #library-brief-collapse.library-brief-collapse {
+    grid-column: 5 !important;
+    grid-row: 1 !important;
+    position: static !important;
+    justify-self: stretch !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 0 12px !important;
+  }
+
+  html body.library-setup-open
+    #tab-content-library.library-cockpit#tab-content-library
+    .library-results-column > #library-brief-lens.library-brief-lens#library-brief-lens[data-library-brief-panel="setup"]
+    #library-brief-topline > #library-setup-utility-bar.library-setup-utility-bar
+    > .library-setup-health {
+    grid-column: 3 !important;
+    grid-row: 1 !important;
+    width: 100% !important;
+  }
+
+  html body.library-setup-open
+    #tab-content-library.library-cockpit#tab-content-library
+    .library-results-column > #library-brief-lens.library-brief-lens#library-brief-lens[data-library-brief-panel="setup"]
+    #library-brief-topline > #library-setup-utility-bar.library-setup-utility-bar
+    > .library-setup-fit {
+    grid-column: 4 !important;
+    grid-row: 1 !important;
+    width: 100% !important;
+  }
+
+  html body.library-setup-open
+    #tab-content-library.library-cockpit#tab-content-library
+    .library-results-column > #library-brief-lens.library-brief-lens#library-brief-lens[data-library-brief-panel="setup"]
+    #library-brief-topline > #library-setup-utility-bar.library-setup-utility-bar
+    > #library-setup-view-tracks {
+    grid-column: 2 !important;
+    grid-row: 1 !important;
+    justify-self: stretch !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    margin: 0 !important;
+  }
+</style>

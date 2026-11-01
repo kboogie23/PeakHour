@@ -1,0 +1,2060 @@
+
+
+html body.light-mode #studio-added-overlay .studio-added-panel {
+  border-color: rgba(0, 71, 171, 0.34) !important;
+  background: linear-gradient(180deg, #f7faff 0%, #ffffff 44%, #eef4ff 100%) !important;
+  color: #07111f !important;
+  box-shadow: 0 28px 74px rgba(7, 17, 31, 0.22) !important;
+}
+
+html body.light-mode #studio-added-overlay :is(.studio-added-kicker, .studio-added-mission span) {
+  color: #0047ab !important;
+  -webkit-text-fill-color: #0047ab !important;
+}
+
+html body.light-mode #studio-added-overlay :is(
+  .studio-added-title,
+  .studio-added-mission,
+  .studio-added-mission strong,
+  .studio-added-count,
+  .studio-added-track strong
+) {
+  color: #07111f !important;
+  -webkit-text-fill-color: #07111f !important;
+  text-shadow: none !important;
+}
+
+html body.light-mode #studio-added-overlay :is(
+  .studio-added-copy,
+  .studio-added-journey,
+  .studio-added-phase,
+  .studio-added-track small
+) {
+  color: #40516a !important;
+  -webkit-text-fill-color: #40516a !important;
+}
+
+html body.light-mode #studio-added-overlay :is(.studio-added-mission-row, .studio-added-track) {
+  border-color: rgba(0, 71, 171, 0.18) !important;
+}
+
+html body.light-mode #studio-added-overlay .studio-added-track {
+  background: #ffffff !important;
+  box-shadow: 0 8px 20px rgba(7, 17, 31, 0.08) !important;
+}
+
+html body.light-mode #studio-added-overlay .studio-added-track.is-new {
+  border-color: #0047ab !important;
+  box-shadow: 0 0 0 2px rgba(0, 71, 171, 0.12), 0 10px 24px rgba(7, 17, 31, 0.10) !important;
+}
+
+html body.light-mode #studio-added-overlay .studio-added-phases::before {
+  background: linear-gradient(90deg, rgba(0, 71, 171, 0.28), #0047ab, #20dff2) !important;
+}
+
+html body.light-mode #studio-added-overlay .studio-added-phase::before {
+  border-color: #ffffff !important;
+  background: #0047ab !important;
+  box-shadow: none !important;
+}
+
+html body.light-mode #studio-added-overlay .studio-added-close {
+  border-color: rgba(0, 71, 171, 0.30) !important;
+  background: #ffffff !important;
+  color: #0047ab !important;
+  box-shadow: none !important;
+}
+
+html body.light-mode #studio-added-overlay .studio-added-view {
+  border-color: #0047ab !important;
+  background: #0047ab !important;
+  color: #ffffff !important;
+  box-shadow: none !important;
+}
+
+html body.light-mode #studio-added-overlay .studio-added-session-hide {
+  border-color: rgba(0, 71, 171, 0.28) !important;
+  background: #ffffff !important;
+  color: #0047ab !important;
+  box-shadow: none !important;
+}
+
+/* Performance interaction states use Day Mode blue/cyan, including hover,
+   selected suggestions and Live Assist status. */
+html body.light-mode #tab-content-performance :is(
+  .performance-suggestion-card.is-priority,
+  .performance-suggestion-card.is-selected,
+  .performance-suggestion-card:hover,
+  .performance-filter-chip.active,
+  .performance-action:hover,
+  .performance-mini-btn:hover,
+  .performance-pick-btn
+) {
+  border-color: rgba(0, 71, 171, 0.46) !important;
+  box-shadow: none !important;
+}
+
+html body.light-mode #tab-content-performance :is(
+  .performance-pick-btn,
+  .performance-action:not(.secondary)
+) {
+  background: #0047ab !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+
+html body.light-mode #tab-content-performance :is(
+  .performance-decision-line strong,
+  .performance-rank,
+  .performance-bpm-readout,
+  .performance-assist-live-dot
+) {
+  color: #0047ab !important;
+  -webkit-text-fill-color: #0047ab !important;
+  text-shadow: none !important;
+  box-shadow: none !important;
+}
+
+/* Health tables and result details previously retained white Night Mode text
+   on white cards. Use dark body copy and preserve red only for destructive
+   status/action signals. */
+html body.light-mode #tab-content-health :is(
+  table,
+  thead,
+  tbody,
+  tr,
+  th,
+  td,
+  td div,
+  .health-section-track-name,
+  .health-section-track-artist,
+  .health-section-last-location,
+  .health-section-empty,
+  .health-section-footnote
+) {
+  color: #07111f !important;
+  -webkit-text-fill-color: #07111f !important;
+  text-shadow: none !important;
+}
+
+html body.light-mode #tab-content-health :is(.text-red-500, .health-danger, [data-health-status="missing"]) {
+  color: #d32636 !important;
+  -webkit-text-fill-color: #d32636 !important;
+}
+
+html body.light-mode #tab-content-health strong[style*="#a3ff00"],
+html body.light-mode #tab-content-health .text-axiom-accent {
+  color: #0047ab !important;
+  -webkit-text-fill-color: #0047ab !important;
+  text-shadow: none !important;
+}
+
+/* Harmonic Route is a distinct Studio mode, not another lime primary action.
+   Preserve its approved resting treatment and use cyan only while selected. */
+html body #studio-active-view #studio-tab-route.active:not(.route-tab-hidden) {
+  border-color: #20dff2 !important;
+  background: #20dff2 !important;
+  color: #ffffff !important;
+  text-shadow: 0 1px 2px rgba(0, 25, 32, 0.42) !important;
+  box-shadow: 0 0 16px rgba(32, 223, 242, 0.24) !important;
+}
+
+/* First Matching Songs visit: teach the anchor through one deliberate action,
+   then let the candidate list arrive as a readable sequence. */
+#replacement-modal.anchor-dj-modal .anchor-reference-details {
+  min-height: 120px;
+}
+
+#smart-list-guide-popover .workflow-item.workflow-item-attention {
+  border-color: rgba(163, 255, 0, 0.76) !important;
+  box-shadow: inset 4px 0 0 #a3ff00, 0 0 24px rgba(163, 255, 0, 0.24);
+  transform-origin: center;
+  animation: axiomAnchorNudge 1.45s ease-in-out infinite;
+}
+
+#smart-list-guide-popover .workflow-close {
+  width: 34px;
+  height: 34px;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: 50%;
+  background: #111411;
+  color: #f1f3f1;
+  font-family: "Barlow", sans-serif;
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 1;
+  box-shadow: none;
+}
+
+#smart-list-guide-popover .workflow-close:hover,
+#smart-list-guide-popover .workflow-close:focus-visible {
+  border-color: #a3ff00;
+  background: #a3ff00;
+  color: #071005;
+  outline: 2px solid rgba(163, 255, 0, 0.72);
+  outline-offset: 2px;
+}
+
+#smart-list-guide-popover .workflow-close:active {
+  border-color: #91e600;
+  background: #91e600;
+  color: #071005;
+  transform: translateY(1px);
+}
+
+#smart-list-guide-popover .workflow-item.workflow-reveal-detail .workflow-detail {
+  animation: axiomWorkflowDetailReveal 360ms cubic-bezier(0.2, 0.78, 0.2, 1) both;
+}
+
+#replacement-modal.anchor-dj-modal.anchor-intro-pending .anchor-reference-details {
+  display: none;
+}
+
+#replacement-modal.anchor-dj-modal.anchor-intro-revealed .anchor-reference-details {
+  animation: axiomAnchorDetailsReveal 540ms cubic-bezier(0.2, 0.76, 0.2, 1) both;
+}
+
+#replacement-modal.anchor-dj-modal .anchor-results-placeholder {
+  display: grid;
+  width: calc(100% - 20px);
+  min-height: 152px;
+  margin: 10px;
+  padding: 24px;
+  place-content: center;
+  gap: 7px;
+  border: 1px dashed rgba(163, 255, 0, 0.36);
+  border-radius: 4px;
+  background: rgba(163, 255, 0, 0.035);
+  color: #f5f7f3;
+  text-align: center;
+  cursor: pointer;
+}
+
+#replacement-modal.anchor-dj-modal .anchor-results-placeholder span,
+#replacement-modal.anchor-dj-modal .anchor-results-placeholder small {
+  font-family: "Barlow", sans-serif;
+  text-transform: uppercase;
+}
+
+#replacement-modal.anchor-dj-modal .anchor-results-placeholder span {
+  color: #a3ff00;
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+}
+
+#replacement-modal.anchor-dj-modal .anchor-results-placeholder strong {
+  font-family: "Bebas Neue", Impact, sans-serif;
+  font-size: 27px;
+  font-weight: 400;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+#replacement-modal.anchor-dj-modal .anchor-results-placeholder small {
+  max-width: 420px;
+  color: rgba(255, 255, 255, 0.52);
+  font-size: 9px;
+  font-weight: 650;
+  line-height: 1.45;
+}
+
+#replacement-modal.anchor-dj-modal .anchor-results-list.anchor-results-entering,
+#replacement-modal.anchor-dj-modal .anchor-suggestions-list.anchor-results-entering {
+  overflow-anchor: none;
+}
+
+#replacement-modal.anchor-dj-modal .anchor-suggestions-list.anchor-results-entering .anchor-result-reveal {
+  animation: axiomMatchingResultArrive 460ms cubic-bezier(0.2, 0.78, 0.2, 1) both;
+  animation-delay: var(--anchor-reveal-delay, 0ms);
+}
+
+@keyframes axiomAnchorNudge {
+  0%, 46%, 100% { transform: translateX(0) rotate(0) scale(1); }
+  55% { transform: translateX(-7px) rotate(-0.8deg) scale(1.008); }
+  64% { transform: translateX(8px) rotate(0.9deg) scale(1.008); }
+  73% { transform: translateX(-6px) rotate(-0.6deg) scale(1.005); }
+  82% { transform: translateX(4px) rotate(0.4deg) scale(1.003); }
+  91% { transform: translateX(-2px) rotate(-0.15deg) scale(1); }
+}
+
+@keyframes axiomWorkflowDetailReveal {
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes axiomAnchorDetailsReveal {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes axiomMatchingResultArrive {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #smart-list-guide-popover .workflow-item.workflow-item-attention,
+  #smart-list-guide-popover .workflow-item.workflow-reveal-detail .workflow-detail,
+  #replacement-modal.anchor-dj-modal.anchor-intro-revealed .anchor-reference-details,
+  #replacement-modal.anchor-dj-modal .anchor-suggestions-list.anchor-results-entering .anchor-result-reveal {
+    animation: none !important;
+  }
+}
+
+/* Final Day Mode cascade lock. Keep expandable sidebar groups in the blue
+   Day palette even when older release selectors appear earlier in the file. */
+html body.light-mode #axiom-sidebar#axiom-sidebar #sidebar-export-group#sidebar-export-group.is-expanded > #tab-btn-export#tab-btn-export,
+html body.light-mode #axiom-sidebar#axiom-sidebar #sidebar-playlists-group#sidebar-playlists-group.is-expanded > #tab-btn-playlists#tab-btn-playlists {
+  border-color: rgba(0, 71, 171, 0.32) !important;
+  border-left-color: #0047ab !important;
+  background: linear-gradient(90deg, rgba(0, 71, 171, 0.13), rgba(37, 99, 235, 0.045)) !important;
+  color: #0047ab !important;
+  box-shadow: inset 5px 0 0 #0047ab !important;
+  text-shadow: none !important;
+}
+
+html body.light-mode #axiom-sidebar#axiom-sidebar #sidebar-export-group.is-expanded > #tab-btn-export :is(span, img),
+html body.light-mode #axiom-sidebar#axiom-sidebar #sidebar-playlists-group.is-expanded > #tab-btn-playlists :is(span, svg, svg *, img) {
+  color: #0047ab !important;
+  -webkit-text-fill-color: #0047ab !important;
+  stroke: currentColor !important;
+  opacity: 1 !important;
+  text-shadow: none !important;
+}
+
+html body.light-mode #axiom-sidebar#axiom-sidebar #sidebar-export-group.is-expanded > #tab-btn-export .axiom-sidebar-nav-icon,
+html body.light-mode #axiom-sidebar#axiom-sidebar #sidebar-playlists-group.is-expanded > #tab-btn-playlists :is(svg, img) {
+  filter: brightness(0) saturate(100%) invert(20%) sepia(99%) saturate(2364%) hue-rotate(205deg) brightness(74%) contrast(112%) !important;
+}
+
+html body.light-mode :focus-visible {
+  outline-color: #0047ab !important;
+}
+
+html body.light-mode #studio-added-overlay img[src*="axiom-mark"] {
+  filter: hue-rotate(168deg) saturate(1.15) brightness(0.72) !important;
+}
+
+/* Day Mode final ownership for shared focus, brand marks, and Health detail
+   text. These must remain below every legacy release rule. */
+html body.light-mode img[src*="axiom-mark"] {
+  filter: hue-rotate(168deg) saturate(1.15) brightness(0.72) !important;
+}
+
+html body.light-mode #axiom-sidebar#axiom-sidebar .axiom-sidebar-nav-item:focus-visible,
+html body.light-mode #main-content-wrapper#main-content-wrapper :focus-visible {
+  outline-color: #0047ab !important;
+}
+
+html body.light-mode #health-inbox-app#health-inbox-app .health-detail-table th,
+html body.light-mode #health-inbox-app#health-inbox-app .health-detail-track-title,
+html body.light-mode #health-inbox-app#health-inbox-app .health-detail-track-sub,
+html body.light-mode #health-inbox-app#health-inbox-app .health-detail-path {
+  color: #07111f !important;
+  -webkit-text-fill-color: #07111f !important;
+  text-shadow: none !important;
+}
+
+html body.light-mode #health-inbox-app#health-inbox-app .health-inbox-activity strong {
+  color: #0047ab !important;
+  -webkit-text-fill-color: #0047ab !important;
+  text-shadow: none !important;
+}
+
+html body.light-mode #health-progress-container#health-progress-container .health-live-headline {
+  border-color: rgba(0, 71, 171, 0.24) !important;
+  background: rgba(0, 71, 171, 0.075) !important;
+  box-shadow: none !important;
+}
+
+html body.light-mode #health-live-headline-status#health-live-headline-status,
+html body.light-mode #health-progress-container#health-progress-container .serato-progress-pill {
+  border-color: #0047ab !important;
+  background: #0047ab !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  box-shadow: 0 0 16px rgba(0, 71, 171, 0.18) !important;
+}
+
+html body.light-mode #health-progress-live-time#health-progress-live-time {
+  color: #334155 !important;
+  -webkit-text-fill-color: #334155 !important;
+}
+
+html body.light-mode #magic-score-label#magic-score-label {
+  color: #0047ab !important;
+  -webkit-text-fill-color: #0047ab !important;
+  text-shadow: none !important;
+}
+/* Library Matching Songs visibility is a user preference. Keep the rail in
+   the DOM so enabling it restores the existing filters and recommendation
+   state, while the Library list receives the complete workspace when hidden. */
+html body.library-matching-songs-disabled #tab-content-library.library-cockpit > .library-main-grid {
+  grid-template-columns: minmax(0, 1fr) !important;
+}
+
+html body.library-matching-songs-disabled #tab-content-library.library-cockpit .library-results-column {
+  padding-right: 0 !important;
+  border-right: 0 !important;
+}
+
+html body.library-matching-songs-disabled #tab-content-library.library-cockpit #smart-links-panel.recommendations-panel {
+  display: none !important;
+}
+
+/* --------------------------------------------------------------------------
+   Axiom Start final layout integrity
+   Keep the mission routes fully inside the cockpit above the fixed player.
+   -------------------------------------------------------------------------- */
+#studio-start-view.command-launch-shell {
+  grid-template-rows: minmax(220px, 27vh) minmax(220px, 25vh) minmax(216px, 1fr) !important;
+}
+
+#studio-start-view .build-night-panel {
+  height: 216px !important;
+  margin-top: 18px !important;
+}
+
+html body:not(.light-mode) #studio-start-view .command-action-card.is-selected .command-card-kicker::before,
+html body:not(.light-mode) #studio-start-view .command-action-card.is-selected .command-card-guidance > span::before {
+  background: #071005 !important;
+  box-shadow: none !important;
+}
+
+@media (max-height: 950px) and (min-height: 781px) {
+  #studio-start-view.command-launch-shell {
+    grid-template-rows: minmax(205px, 25vh) minmax(215px, 25vh) minmax(205px, 1fr) !important;
+    gap: 12px !important;
+    padding-top: 20px !important;
+    padding-bottom: 18px !important;
+  }
+
+  #studio-start-view .build-night-panel {
+    height: 205px !important;
+    margin-top: 8px !important;
+  }
+
+  #studio-start-view .build-night-card {
+    gap: 8px !important;
+    padding: 16px 16px 14px !important;
+  }
+}
+
+@media (max-height: 780px) {
+  body:has(#studio-start-view:not(.hidden)) {
+    --axiom-approved-player: 126px;
+  }
+
+  #studio-start-view.command-launch-shell {
+    grid-template-rows: 170px 210px minmax(124px, 1fr) !important;
+    gap: 10px !important;
+    padding: 14px 24px 12px 30px !important;
+  }
+
+  #studio-start-view .command-launch-hero {
+    padding-bottom: 10px !important;
+  }
+
+  #studio-start-view .command-title {
+    font-size: clamp(46px, 4vw, 58px) !important;
+  }
+
+  #studio-start-view .command-copy {
+    margin-top: 10px !important;
+    font-size: 12px !important;
+    line-height: 1.35 !important;
+  }
+
+  #studio-start-view .command-action-card,
+  #studio-start-view .command-action-card.primary,
+  #studio-start-view .command-action-card.secondary {
+    padding-top: 20px !important;
+    padding-bottom: 20px !important;
+  }
+
+  #studio-start-view .command-card-kicker {
+    margin-bottom: 10px !important;
+  }
+
+  #studio-start-view .command-card-title {
+    font-size: clamp(30px, 2.5vw, 38px) !important;
+  }
+
+  #studio-start-view .command-card-guidance {
+    margin-top: 8px !important;
+  }
+
+  #studio-start-view .build-night-panel {
+    height: 124px !important;
+    margin-top: 0 !important;
+  }
+
+  #studio-start-view .build-night-card {
+    display: grid !important;
+    grid-template-columns: 26px minmax(0, 1fr) !important;
+    align-items: center !important;
+    gap: 10px !important;
+    padding: 12px !important;
+  }
+
+  #studio-start-view .build-night-card-copy {
+    justify-content: center !important;
+  }
+
+  #studio-start-view .build-night-card-copy > span:not(.build-night-start),
+  #studio-start-view .build-night-card-copy > .build-night-settings,
+  #studio-start-view .build-night-card small {
+    display: none !important;
+  }
+
+  #studio-start-view .build-night-card strong {
+    font-size: 18px !important;
+  }
+
+  #studio-start-view .build-night-card-copy > .build-night-start {
+    display: flex !important;
+    margin-top: 4px !important;
+    font-size: 9px !important;
+  }
+}
+
+/* Final Library-row contract. Identity remains calm and readable while fit,
+   metadata, and Health state share one deliberate detail lane. */
+body #search-results .library-track-card,
+body #search-results .library-track-card.playing-track,
+body #search-results .library-track-card.axiom-focus-selected,
+body #search-results .library-track-card.library-track-selected,
+body #search-results .library-track-card.is-selected {
+  min-height: 118px !important;
+}
+
+html body #tab-content-library.library-cockpit #search-results
+  .library-track-card.axiom-focus-deck-row .library-track-main {
+  display: grid !important;
+  grid-column: 2 !important;
+  grid-row: 1 / 6 !important;
+  grid-template-rows: auto auto !important;
+  align-content: center !important;
+  row-gap: 9px !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  padding-block: 9px !important;
+}
+
+html body #tab-content-library.library-cockpit #search-results
+  .library-track-card.axiom-focus-deck-row .library-track-identity {
+  display: grid !important;
+  min-width: 0 !important;
+  gap: 5px !important;
+  align-content: center !important;
+}
+
+html body #tab-content-library.library-cockpit #search-results
+  .library-track-card.axiom-focus-deck-row .library-track-detail-lane {
+  display: flex !important;
+  min-width: 0 !important;
+  align-items: center !important;
+  flex-wrap: wrap !important;
+  gap: 7px 12px !important;
+}
+
+html body #tab-content-library.library-cockpit #search-results
+  .library-track-card.axiom-focus-deck-row .library-track-title,
+html body #tab-content-library.library-cockpit #search-results
+  .library-track-card.axiom-focus-deck-row .library-track-artist,
+html body #tab-content-library.library-cockpit #search-results
+  .library-track-card.axiom-focus-deck-row .library-fit-row,
+html body #tab-content-library.library-cockpit #search-results
+  .library-track-card.axiom-focus-deck-row .library-meta-line,
+html body #tab-content-library.library-cockpit #search-results
+  .library-track-card.axiom-focus-deck-row .library-health-chips {
+  position: relative !important;
+  inset: auto !important;
+  grid-column: auto !important;
+  grid-row: auto !important;
+  min-width: 0 !important;
+  margin: 0 !important;
+  transform: none !important;
+}
+
+html body #tab-content-library.library-cockpit #search-results
+  .library-track-card.axiom-focus-deck-row .library-track-title {
+  align-self: end !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+html body #tab-content-library.library-cockpit #search-results
+  .library-track-card.axiom-focus-deck-row .library-track-artist {
+  align-self: center !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+html body #tab-content-library.library-cockpit #search-results
+  .library-track-card.axiom-focus-deck-row .library-fit-row,
+html body #tab-content-library.library-cockpit #search-results
+  .library-track-card.axiom-focus-deck-row .library-meta-line,
+html body #tab-content-library.library-cockpit #search-results
+  .library-track-card.axiom-focus-deck-row .library-health-chips {
+  display: flex !important;
+  width: auto !important;
+  min-height: 20px !important;
+  align-items: center !important;
+  align-self: center !important;
+  flex: 0 0 auto !important;
+  gap: 7px !important;
+  overflow: visible !important;
+  white-space: nowrap !important;
+}
+
+html body.library-matching-songs-disabled #tab-content-library.library-cockpit #search-results
+  .library-track-card.axiom-focus-deck-row .library-track-main {
+  grid-template-columns: minmax(300px, 1.15fr) minmax(410px, 1fr) !important;
+  grid-template-rows: auto !important;
+  align-items: center !important;
+  column-gap: 28px !important;
+  row-gap: 0 !important;
+}
+
+html body.library-matching-songs-disabled #tab-content-library.library-cockpit #search-results
+  .library-track-card.axiom-focus-deck-row .library-track-detail-lane {
+  justify-content: flex-start !important;
+}
+
+@media (max-width: 1350px) {
+  html body.library-matching-songs-disabled #tab-content-library.library-cockpit #search-results
+    .library-track-card.axiom-focus-deck-row .library-track-main {
+    grid-template-columns: 1fr !important;
+    grid-template-rows: auto auto !important;
+    row-gap: 9px !important;
+  }
+}
+
+body #search-results .library-track-card .library-fit-badge,
+body #search-results .library-track-card .library-health-chip,
+body #search-results .library-track-card .library-dna-chip,
+body #search-results .library-track-card .library-year-chip {
+  flex: 0 0 auto !important;
+  line-height: 18px !important;
+}
+
+/* Approved Help discovery contract: never auto-open a guide. The relevant
+   Help control nudges until the user chooses to open it. */
+@keyframes axiomHelpAttentionNudge {
+  0%, 58%, 100% { transform: translateX(0) rotate(0deg); }
+  64% { transform: translateX(-3px) rotate(-1deg); }
+  70% { transform: translateX(4px) rotate(1.2deg); }
+  76% { transform: translateX(-3px) rotate(-0.8deg); }
+  82% { transform: translateX(2px) rotate(0.5deg); }
+  88% { transform: translateX(0) rotate(0deg); }
+}
+
+#btn-library-guide,
+#btn-studio-guide,
+#btn-matching-guide {
+  animation: none !important;
+}
+
+#btn-library-guide.axiom-help-needs-attention,
+#btn-studio-guide.axiom-help-needs-attention,
+#btn-matching-guide.axiom-help-needs-attention {
+  animation: axiomHelpAttentionNudge 2.4s ease-in-out infinite !important;
+  outline: 1px solid rgba(163, 255, 0, 0.72);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #btn-library-guide.axiom-help-needs-attention,
+  #btn-studio-guide.axiom-help-needs-attention,
+  #btn-matching-guide.axiom-help-needs-attention {
+    animation: none !important;
+    outline: 2px solid #a3ff00;
+    outline-offset: 3px;
+  }
+}
+/* ==========================================================================
+   Core Audio Needs Attention Item
+   ========================================================================== */
+#btn-coreaudio-loud.status-ok .status-icon {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--axiom-final-green);
+  box-shadow: 0 0 8px var(--axiom-final-green);
+}
+#btn-coreaudio-loud.status-ok #coreaudio-status-text {
+  color: var(--axiom-final-green);
+}
+
+#btn-coreaudio-loud.status-error {
+  background: rgba(255, 59, 48, 0.1);
+  border-color: rgba(255, 59, 48, 0.3);
+}
+#btn-coreaudio-loud.status-error #coreaudio-status-text {
+  color: #ff3b30;
+}
+#btn-coreaudio-loud.status-error .status-icon {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #ff3b30;
+  box-shadow: 0 0 12px #ff3b30;
+  animation: pulse-red-dot 1s infinite alternate;
+}
+@keyframes pulse-red-dot {
+  from { opacity: 0.5; }
+  to { opacity: 1; }
+}
+
+/* ==========================================================================
+   GUI overhaul pass 1: shared cockpit foundation
+   ========================================================================== */
+
+:root {
+  --axiom-foundation-bg: #020403;
+  --axiom-foundation-ink: #f3f6ef;
+  --axiom-foundation-panel: #070a08;
+  --axiom-foundation-panel-strong: #0b100d;
+  --axiom-foundation-panel-raised: #101611;
+  --axiom-foundation-line: rgba(224, 238, 221, 0.13);
+  --axiom-foundation-line-strong: rgba(163, 255, 0, 0.36);
+  --axiom-foundation-muted: rgba(243, 246, 239, 0.58);
+  --axiom-foundation-soft: rgba(243, 246, 239, 0.075);
+  --axiom-foundation-focus: 0 0 0 2px rgba(2, 4, 3, 0.94), 0 0 0 4px rgba(163, 255, 0, 0.72);
+  --axiom-foundation-shadow: 0 18px 44px rgba(0, 0, 0, 0.34);
+}
+
+html body {
+  background:
+    linear-gradient(90deg, rgba(163, 255, 0, 0.035) 0 1px, transparent 1px 92px),
+    linear-gradient(0deg, rgba(255, 255, 255, 0.026) 0 1px, transparent 1px 58px),
+    linear-gradient(135deg, #020403 0%, #050705 46%, #020403 100%) !important;
+  color: var(--axiom-foundation-ink) !important;
+  font-feature-settings: "kern" 1, "liga" 1;
+}
+
+body:not(.light-mode) :is(
+  .tab-content,
+  .library-cockpit,
+  .performance-cockpit,
+  #tab-content-studio,
+  #tab-content-playlists,
+  #tab-content-duplicates,
+  #tab-content-health-review
+) {
+  background-color: transparent !important;
+}
+
+body:not(.light-mode) :is(
+  .glass,
+  .settings-shell,
+  .library-topbar,
+  .library-search-shell,
+  .library-results-column,
+  .playlists-shell > aside,
+  .playlists-shell > section,
+  .performance-now-track,
+  .performance-signal-card,
+  .health-priority-panel,
+  .health-cleanup-panel,
+  .health-approved-tools,
+  .update-modal-card,
+  .library-guide-card,
+  #favorites-panel-drawer
+) {
+  border-color: var(--axiom-foundation-line) !important;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.045), transparent 52%),
+    var(--axiom-foundation-panel) !important;
+  box-shadow: var(--axiom-foundation-shadow) !important;
+}
+
+body:not(.light-mode) :is(
+  input,
+  select,
+  textarea,
+  .library-search-input,
+  .license-field,
+  .export-upgrade-email
+) {
+  border-color: rgba(255, 255, 255, 0.16) !important;
+  background: rgba(2, 4, 3, 0.78) !important;
+  color: #f5f8f1 !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.055) !important;
+}
+
+body:not(.light-mode) :is(input, select, textarea)::placeholder {
+  color: rgba(243, 246, 239, 0.42) !important;
+}
+
+body:not(.light-mode) :is(
+  button,
+  a,
+  input,
+  select,
+  textarea,
+  [role="button"],
+  [tabindex]:not([tabindex="-1"])
+):focus-visible {
+  outline: none !important;
+  box-shadow: var(--axiom-foundation-focus) !important;
+}
+
+body:not(.light-mode) :is(
+  .button--primary,
+  .modal-btn-primary,
+  .library-empty-primary,
+  .health-approved-primary,
+  .settings-item-action,
+  .performance-action.primary,
+  .update-modal-btn.primary
+) {
+  border-color: #a3ff00 !important;
+  background: #a3ff00 !important;
+  color: #071005 !important;
+  text-shadow: none !important;
+  box-shadow: 0 0 0 1px rgba(163, 255, 0, 0.22), 0 14px 34px rgba(163, 255, 0, 0.13) !important;
+}
+
+body:not(.light-mode) :is(
+  .button--secondary,
+  .modal-btn-secondary,
+  .library-empty-secondary,
+  .performance-action.secondary,
+  .update-modal-btn.secondary,
+  .refresh-icon-btn,
+  .settings-close,
+  .health-back-studio-btn
+) {
+  border-color: rgba(255, 255, 255, 0.16) !important;
+  background: rgba(255, 255, 255, 0.055) !important;
+  color: rgba(243, 246, 239, 0.76) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05) !important;
+}
+
+body:not(.light-mode) :is(
+  .button--secondary,
+  .modal-btn-secondary,
+  .library-empty-secondary,
+  .performance-action.secondary,
+  .update-modal-btn.secondary,
+  .refresh-icon-btn,
+  .settings-close,
+  .health-back-studio-btn
+):is(:hover, :focus-visible) {
+  border-color: rgba(163, 255, 0, 0.46) !important;
+  background: rgba(163, 255, 0, 0.085) !important;
+  color: #f7fff1 !important;
+}
+
+body:not(.light-mode) #axiom-sidebar.axiom-sidebar {
+  width: 288px !important;
+  border-right-color: rgba(163, 255, 0, 0.12) !important;
+  background:
+    linear-gradient(180deg, rgba(163, 255, 0, 0.055), transparent 31%),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.04), transparent 42%),
+    #030504 !important;
+  box-shadow: 12px 0 40px rgba(0, 0, 0, 0.28) !important;
+}
+
+body:not(.light-mode) #axiom-sidebar .axiom-sidebar-brand-row {
+  padding: 28px 30px 24px !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.075) !important;
+  background: #030504 !important;
+}
+
+body:not(.light-mode) #axiom-start-button.axiom-start-wordmark {
+  color: #f8fff2 !important;
+  letter-spacing: 0.08em !important;
+  text-shadow: 0 0 26px rgba(163, 255, 0, 0.18) !important;
+}
+
+body:not(.light-mode) #axiom-start-button.axiom-start-wordmark .axiom-start-wordmark-edition {
+  color: var(--accent) !important;
+  text-shadow: 0 0 14px rgba(163, 255, 0, 0.34) !important;
+}
+
+body:not(.light-mode) #axiom-sidebar .axiom-sidebar-nav {
+  gap: 4px !important;
+  margin-top: 18px !important;
+}
+
+body:not(.light-mode) #axiom-sidebar .axiom-sidebar-nav-item {
+  min-height: 56px !important;
+  padding-block: 16px !important;
+  border-left-width: 3px !important;
+  color: rgba(243, 246, 239, 0.50) !important;
+  letter-spacing: 0.16em !important;
+}
+
+body:not(.light-mode) #axiom-sidebar .axiom-sidebar-nav-item:is(:hover, :focus-visible) {
+  border-left-color: rgba(163, 255, 0, 0.46) !important;
+  background: rgba(255, 255, 255, 0.055) !important;
+  color: #f3f6ef !important;
+}
+
+body:not(.light-mode) #axiom-sidebar .axiom-sidebar-nav-item[data-nav-state="active"] {
+  border-left-color: #a3ff00 !important;
+  background:
+    linear-gradient(90deg, rgba(163, 255, 0, 0.22), rgba(163, 255, 0, 0.055) 58%, transparent) !important;
+  color: #a3ff00 !important;
+}
+
+body:not(.light-mode) #axiom-sidebar .axiom-sidebar-submenu {
+  margin: 2px 18px 8px 34px !important;
+  border: 1px solid rgba(255, 255, 255, 0.10) !important;
+  background: rgba(2, 4, 3, 0.72) !important;
+  box-shadow: inset 3px 0 0 rgba(163, 255, 0, 0.12) !important;
+}
+
+body:not(.light-mode) #axiom-sidebar .axiom-sidebar-track-dock {
+  margin: 18px !important;
+  border-color: rgba(163, 255, 0, 0.22) !important;
+  background: rgba(163, 255, 0, 0.055) !important;
+}
+
+body:not(.light-mode) :is(.styled-scrollbar, #search-results, #favorites-panel-tracks) {
+  scrollbar-color: rgba(163, 255, 0, 0.46) rgba(255, 255, 255, 0.055);
+}
+
+/* GUI overhaul pass 2: sidebar typography only. */
+body:not(.light-mode) #axiom-sidebar .axiom-sidebar-nav-item {
+  font-family: "Bebas Neue", sans-serif !important;
+  font-size: 20px !important;
+  font-weight: 400 !important;
+  line-height: 1 !important;
+  letter-spacing: 0.075em !important;
+}
+
+body:not(.light-mode) #axiom-sidebar .axiom-sidebar-nav-label,
+body:not(.light-mode) #axiom-sidebar .axiom-sidebar-nav-item > div {
+  align-items: center !important;
+  gap: 20px !important;
+}
+
+body:not(.light-mode) #axiom-sidebar .axiom-sidebar-nav-label > span,
+body:not(.light-mode) #axiom-sidebar .axiom-sidebar-nav-item > div > span:not(#fav-sidebar-badge) {
+  display: inline-flex !important;
+  align-items: center !important;
+  color: rgba(245, 246, 243, 0.86) !important;
+  font-family: "Bebas Neue", sans-serif !important;
+  font-size: 20px !important;
+  font-weight: 400 !important;
+  line-height: 1 !important;
+  letter-spacing: 0.075em !important;
+  text-transform: uppercase !important;
+}
+
+body:not(.light-mode) #axiom-sidebar .axiom-sidebar-nav-item[data-nav-state="active"] .axiom-sidebar-nav-label > span,
+body:not(.light-mode) #axiom-sidebar .axiom-sidebar-nav-item[data-nav-state="active"] > div > span:not(#fav-sidebar-badge) {
+  color: #ffffff !important;
+}
+
+body:not(.light-mode) #axiom-sidebar .axiom-sidebar-counter-menu-btn,
+body:not(.light-mode) #axiom-sidebar .axiom-sidebar-nav-item > span:last-child:not(.axiom-sidebar-nav-label),
+body:not(.light-mode) #axiom-sidebar #fav-sidebar-badge {
+  font-family: "Barlow", sans-serif !important;
+  letter-spacing: 0.08em !important;
+}
+
+/* GUI overhaul pass 2B: selected sidebar signal motion. */
+@keyframes axiomSidebarActiveSweep {
+  0% {
+    opacity: 0;
+    transform: translateX(-120%);
+  }
+  18% {
+    opacity: 0.55;
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(120%);
+  }
+}
+
+@keyframes axiomSidebarSignalPulse {
+  0%, 100% {
+    transform: scale(1);
+    filter: drop-shadow(0 0 7px rgba(163, 255, 0, 0.46));
+  }
+  48% {
+    transform: scale(1.08);
+    filter:
+      drop-shadow(0 0 7px rgba(163, 255, 0, 0.70))
+      drop-shadow(0 0 18px rgba(163, 255, 0, 0.34));
+  }
+}
+
+body:not(.light-mode) #axiom-sidebar .axiom-sidebar-nav-item[data-nav-state="active"] {
+  overflow: hidden !important;
+}
+
+body:not(.light-mode) #axiom-sidebar .axiom-sidebar-nav-item[data-nav-state="active"]::after {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  content: "";
+  pointer-events: none;
+  background: linear-gradient(100deg, transparent 0%, rgba(163, 255, 0, 0.00) 26%, rgba(163, 255, 0, 0.24) 50%, rgba(163, 255, 0, 0.00) 74%, transparent 100%);
+  mix-blend-mode: screen;
+  animation: axiomSidebarActiveSweep 1.15s ease-out both;
+}
+
+body:not(.light-mode) #axiom-sidebar .axiom-sidebar-nav-item[data-nav-state="active"] > *,
+body:not(.light-mode) #axiom-sidebar .axiom-sidebar-nav-group > .axiom-sidebar-nav-item[data-nav-state="active"] > * {
+  position: relative;
+  z-index: 1;
+}
+
+body:not(.light-mode) #axiom-sidebar .axiom-sidebar-nav-item[data-nav-state="active"] :is(svg, img, .axiom-sidebar-nav-icon) {
+  animation: axiomSidebarSignalPulse 2.8s ease-in-out infinite;
+  transform-origin: center;
+  will-change: transform, filter;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body:not(.light-mode) #axiom-sidebar .axiom-sidebar-nav-item[data-nav-state="active"]::after {
+    animation: none !important;
+    opacity: 0 !important;
+  }
+
+  body:not(.light-mode) #axiom-sidebar .axiom-sidebar-nav-item[data-nav-state="active"] :is(svg, img, .axiom-sidebar-nav-icon) {
+    animation: none !important;
+    filter: drop-shadow(0 0 8px rgba(163, 255, 0, 0.54)) !important;
+    transform: none !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html body *,
+  html body *::before,
+  html body *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+
+/* ==========================================================================
+   GUI overhaul pass: Axiom Start polish restoration
+   Preserves the approved Start flow while restoring premium surface depth.
+   ========================================================================== */
+
+body:not(.light-mode) #studio-start-view.command-launch-shell {
+  background:
+    radial-gradient(circle at 12% 8%, rgba(163, 255, 0, 0.09), transparent 28%),
+    radial-gradient(circle at 88% 16%, rgba(0, 229, 255, 0.055), transparent 30%),
+    linear-gradient(180deg, #060906 0%, #040604 46%, #020302 100%) !important;
+}
+
+body:not(.light-mode) #studio-start-view .command-launch-hero {
+  border-bottom-color: rgba(163, 255, 0, 0.22) !important;
+  box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.055) !important;
+}
+
+body:not(.light-mode) #studio-start-view .command-terrain {
+  border: 1px solid rgba(163, 255, 0, 0.16) !important;
+  background:
+    linear-gradient(90deg, rgba(5, 6, 5, 0.98) 0%, rgba(5, 6, 5, 0.48) 18%, rgba(5, 6, 5, 0.1) 52%),
+    url("/static/axiom-platform-hero.png") center right / cover no-repeat !important;
+  box-shadow:
+    0 24px 64px rgba(0, 0, 0, 0.36),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06) !important;
+}
+
+body:not(.light-mode) #studio-start-view .command-eyebrow {
+  color: var(--axiom-final-green) !important;
+  text-shadow: 0 0 18px rgba(163, 255, 0, 0.28) !important;
+}
+
+body:not(.light-mode) #studio-start-view .command-title {
+  text-shadow: 0 18px 40px rgba(0, 0, 0, 0.55) !important;
+}
+
+body:not(.light-mode) #studio-start-view .command-copy {
+  color: rgba(244, 245, 242, 0.82) !important;
+}
+
+body:not(.light-mode) #studio-start-view .command-action-grid {
+  border-color: rgba(163, 255, 0, 0.22) !important;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.035), rgba(163, 255, 0, 0.018)) !important;
+  box-shadow:
+    0 22px 60px rgba(0, 0, 0, 0.34),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06) !important;
+}
+
+#studio-start-view .command-action-card,
+#studio-start-view .command-action-card.primary,
+#studio-start-view .command-action-card.secondary {
+  transition: background 180ms ease, color 180ms ease, filter 180ms ease, transform 180ms ease, box-shadow 180ms ease !important;
+}
+
+body:not(.light-mode) #studio-start-view .command-action-card:first-child,
+body:not(.light-mode) #studio-start-view .command-action-card:last-child,
+body:not(.light-mode) #studio-start-view .command-action-card:not(.is-selected) {
+  background: linear-gradient(135deg, rgba(15, 19, 15, 0.98), rgba(7, 10, 7, 0.98)) !important;
+}
+
+body:not(.light-mode) #studio-start-view .command-action-card.is-selected,
+body:not(.light-mode) #studio-start-view .command-action-card:first-child.is-selected,
+body:not(.light-mode) #studio-start-view .command-action-card:last-child.is-selected {
+  background: linear-gradient(110deg, #9cff00 0%, #b8ff20 52%, #ddff76 100%) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.42),
+    inset 0 -16px 36px rgba(6, 16, 0, 0.12) !important;
+}
+
+#studio-start-view .command-action-card:hover,
+#studio-start-view .command-action-card:focus-visible {
+  transform: translateY(-1px) !important;
+}
+
+body:not(.light-mode) #studio-start-view .command-path-or {
+  border-color: rgba(163, 255, 0, 0.54) !important;
+  background: #050705 !important;
+  box-shadow: 0 0 0 8px rgba(5, 7, 5, 0.92), 0 0 28px rgba(163, 255, 0, 0.18) !important;
+}
+
+body:not(.light-mode) #studio-start-view .command-card-cta,
+body:not(.light-mode) #studio-start-view #btn-upload-csv.command-card-cta {
+  border-color: rgba(163, 255, 0, 0.72) !important;
+  background: rgba(163, 255, 0, 0.055) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06) !important;
+}
+
+body:not(.light-mode) #studio-start-view .command-action-card.is-selected .command-card-cta,
+body:not(.light-mode) #studio-start-view .command-action-card.is-selected #btn-upload-csv.command-card-cta {
+  background: #040604 !important;
+  box-shadow: 0 10px 24px rgba(6, 16, 0, 0.2) !important;
+}
+
+body:not(.light-mode) #studio-start-view .build-night-panel {
+  border-color: rgba(163, 255, 0, 0.2) !important;
+  background:
+    linear-gradient(135deg, rgba(163, 255, 0, 0.035), rgba(255, 255, 255, 0.018) 44%, rgba(0, 229, 255, 0.018)),
+    #070907 !important;
+  box-shadow:
+    0 22px 54px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.055) !important;
+}
+
+body:not(.light-mode) #studio-start-view .build-night-card {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.026), rgba(255, 255, 255, 0)) !important;
+  transition: background 180ms ease, filter 180ms ease, transform 180ms ease !important;
+}
+
+body:not(.light-mode) #studio-start-view .build-night-card:hover,
+body:not(.light-mode) #studio-start-view .build-night-card:focus-visible {
+  background: linear-gradient(180deg, rgba(163, 255, 0, 0.09), rgba(163, 255, 0, 0.025)) !important;
+  transform: translateY(-1px) !important;
+}
+
+body:not(.light-mode) #studio-start-view .build-night-icon {
+  padding: 5px !important;
+  border: 1px solid rgba(163, 255, 0, 0.2) !important;
+  background: rgba(163, 255, 0, 0.06) !important;
+  box-shadow: 0 0 22px rgba(163, 255, 0, 0.14) !important;
+}
+
+body:not(.light-mode) #studio-start-view .build-night-card strong {
+  color: #ffffff !important;
+  text-shadow: 0 10px 28px rgba(0, 0, 0, 0.44) !important;
+}
+
+body:not(.light-mode) #studio-start-view .build-night-settings b {
+  border-color: rgba(163, 255, 0, 0.16) !important;
+  background: rgba(163, 255, 0, 0.035) !important;
+}
+
+body:not(.light-mode) #studio-start-view .build-night-start {
+  text-shadow: 0 0 16px rgba(163, 255, 0, 0.28) !important;
+}
+
+/* GUI overhaul pass: Axiom Start mission-card spacing tune. */
+#studio-start-view.command-launch-shell {
+  padding-bottom: 14px !important;
+}
+
+#studio-start-view .build-night-panel {
+  margin-top: clamp(30px, 3.2vh, 38px) !important;
+  height: calc(100% - 18px) !important;
+}
+
+#studio-start-view .build-night-grid {
+  align-content: start !important;
+  gap: clamp(12px, 1.7vh, 18px) 0 !important;
+  padding-bottom: 3px !important;
+}
+
+#studio-start-view .build-night-card {
+  padding-top: clamp(14px, 1.25vw, 20px) !important;
+  padding-bottom: clamp(8px, 0.75vw, 12px) !important;
+}
+
+#studio-start-view .build-night-card:nth-child(-n + 2) {
+  border-bottom: 0 !important;
+}
+
+@media (max-height: 780px), (max-width: 1180px) {
+  #studio-start-view.command-launch-shell {
+    padding-bottom: 10px !important;
+  }
+
+  #studio-start-view .build-night-panel {
+    margin-top: 24px !important;
+    height: calc(100% - 12px) !important;
+  }
+
+  #studio-start-view .build-night-grid {
+    gap: 0 !important;
+    padding-bottom: 0 !important;
+  }
+
+  #studio-start-view .build-night-card {
+    padding-bottom: 8px !important;
+  }
+}
+
+/* GUI overhaul pass: Axiom Start supporting typography tune.
+   Keep the approved Bebas title typography; clean up everything around it. */
+#studio-start-view .command-eyebrow,
+#studio-start-view .command-copy,
+#studio-start-view .command-card-kicker,
+#studio-start-view .command-card-desc,
+#studio-start-view .command-card-guidance,
+#studio-start-view .command-card-guidance span,
+#studio-start-view .command-card-cta,
+#studio-start-view .command-path-or,
+#studio-start-view .build-night-kicker,
+#studio-start-view .build-night-text,
+#studio-start-view .build-night-card-copy > span:not(.build-night-settings):not(.build-night-start),
+#studio-start-view .build-night-card small,
+#studio-start-view .build-night-settings b {
+  font-family: "Barlow", sans-serif !important;
+}
+
+#studio-start-view .command-eyebrow,
+#studio-start-view .command-card-kicker,
+#studio-start-view .build-night-kicker {
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.11em !important;
+}
+
+#studio-start-view .command-copy {
+  max-width: 650px !important;
+  font-size: clamp(14px, 1.12vw, 16px) !important;
+  font-weight: 500 !important;
+  letter-spacing: 0.005em !important;
+  line-height: 1.5 !important;
+}
+
+#studio-start-view .command-card-desc,
+#studio-start-view .command-card-guidance {
+  font-size: 12px !important;
+  font-weight: 500 !important;
+  letter-spacing: 0.01em !important;
+  line-height: 1.42 !important;
+}
+
+#studio-start-view .command-card-guidance {
+  opacity: 0.92 !important;
+}
+
+#studio-start-view .command-card-cta,
+#studio-start-view .command-path-or {
+  font-size: 10px !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.065em !important;
+}
+
+#studio-start-view .build-night-card-copy > span:not(.build-night-settings):not(.build-night-start) {
+  font-size: 11px !important;
+  font-weight: 500 !important;
+  letter-spacing: 0.005em !important;
+  line-height: 1.38 !important;
+}
+
+#studio-start-view .build-night-card small {
+  font-size: 9px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.075em !important;
+}
+
+#studio-start-view .build-night-settings b {
+  font-size: 7px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.055em !important;
+}
+
+#studio-start-view .build-night-card-copy > .build-night-start {
+  display: none !important;
+}
+
+/* GUI overhaul pass: Axiom Start typography correction.
+   Restore the sharper AXIOM cockpit voice after the supporting Barlow pass felt too plain. */
+#studio-start-view .command-eyebrow,
+#studio-start-view .command-card-kicker,
+#studio-start-view .command-card-cta,
+#studio-start-view .command-path-or,
+#studio-start-view .build-night-kicker,
+#studio-start-view .build-night-card small,
+#studio-start-view .build-night-settings b {
+  font-family: "Bebas Neue", sans-serif !important;
+  font-weight: 400 !important;
+  letter-spacing: 0.095em !important;
+}
+
+#studio-start-view .command-eyebrow,
+#studio-start-view .command-card-kicker,
+#studio-start-view .build-night-kicker {
+  font-size: 18px !important;
+  line-height: 1 !important;
+}
+
+#studio-start-view .command-copy,
+#studio-start-view .command-card-desc,
+#studio-start-view .command-card-guidance,
+#studio-start-view .command-card-guidance span,
+#studio-start-view .build-night-text,
+#studio-start-view .build-night-card-copy > span:not(.build-night-settings):not(.build-night-start) {
+  font-family: "Bebas Neue", sans-serif !important;
+  font-weight: 400 !important;
+  letter-spacing: 0.045em !important;
+  text-transform: uppercase !important;
+}
+
+#studio-start-view .command-copy {
+  font-size: clamp(20px, 1.6vw, 25px) !important;
+  line-height: 1.08 !important;
+}
+
+#studio-start-view .command-card-desc,
+#studio-start-view .command-card-guidance {
+  font-size: clamp(17px, 1.25vw, 20px) !important;
+  line-height: 1.08 !important;
+}
+
+#studio-start-view .command-card-cta,
+#studio-start-view .command-path-or {
+  font-size: 16px !important;
+  line-height: 1 !important;
+}
+
+#studio-start-view .build-night-card-copy > span:not(.build-night-settings):not(.build-night-start) {
+  font-size: 15px !important;
+  line-height: 1.06 !important;
+}
+
+#studio-start-view .build-night-card small {
+  font-size: 14px !important;
+  line-height: 1 !important;
+}
+
+#studio-start-view .build-night-settings b {
+  font-size: 12px !important;
+  line-height: 1 !important;
+}
+
+@import url("https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&display=swap");
+
+/* GUI overhaul pass: Axiom Start typography reset.
+   Titles stay approved; supporting text moves to crisp deck-screen type. */
+#studio-start-view .command-eyebrow,
+#studio-start-view .command-card-kicker,
+#studio-start-view .command-card-cta,
+#studio-start-view .command-path-or,
+#studio-start-view .build-night-kicker,
+#studio-start-view .build-night-card small,
+#studio-start-view .build-night-settings b {
+  font-family: "Rajdhani", "Barlow", sans-serif !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.085em !important;
+  text-transform: uppercase !important;
+}
+
+#studio-start-view .command-copy,
+#studio-start-view .command-card-desc,
+#studio-start-view .command-card-guidance,
+#studio-start-view .command-card-guidance span,
+#studio-start-view .build-night-text,
+#studio-start-view .build-night-card-copy > span:not(.build-night-settings):not(.build-night-start) {
+  font-family: "Rajdhani", "Barlow", sans-serif !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.018em !important;
+  text-transform: none !important;
+}
+
+#studio-start-view .command-eyebrow,
+#studio-start-view .command-card-kicker,
+#studio-start-view .build-night-kicker {
+  font-size: 12px !important;
+  line-height: 1 !important;
+}
+
+#studio-start-view .command-copy {
+  max-width: 620px !important;
+  font-size: clamp(14px, 1.12vw, 16px) !important;
+  line-height: 1.42 !important;
+}
+
+#studio-start-view .command-card-desc,
+#studio-start-view .command-card-guidance {
+  font-size: 13px !important;
+  line-height: 1.34 !important;
+}
+
+#studio-start-view .command-card-guidance {
+  gap: 5px !important;
+  margin-top: 10px !important;
+}
+
+#studio-start-view .command-card-cta,
+#studio-start-view .command-path-or {
+  font-size: 11px !important;
+  line-height: 1 !important;
+}
+
+#studio-start-view .build-night-card-copy > span:not(.build-night-settings):not(.build-night-start) {
+  margin-top: 5px !important;
+  font-size: 12px !important;
+  line-height: 1.24 !important;
+}
+
+#studio-start-view .build-night-card small {
+  font-size: 10px !important;
+  line-height: 1 !important;
+}
+
+#studio-start-view .build-night-settings b {
+  font-size: 8px !important;
+  line-height: 1 !important;
+}
+
+/* GUI overhaul pass: Axiom Start font-system alignment.
+   Match the approved title/sidebar voice without adding a third font family. */
+#studio-start-view .command-eyebrow,
+#studio-start-view .command-copy,
+#studio-start-view .command-card-kicker,
+#studio-start-view .command-card-desc,
+#studio-start-view .command-card-guidance,
+#studio-start-view .command-card-guidance span,
+#studio-start-view .command-card-cta,
+#studio-start-view .command-path-or,
+#studio-start-view .build-night-kicker,
+#studio-start-view .build-night-text,
+#studio-start-view .build-night-card-copy > span:not(.build-night-settings):not(.build-night-start),
+#studio-start-view .build-night-card small,
+#studio-start-view .build-night-settings b {
+  font-family: "Bebas Neue", sans-serif !important;
+  font-weight: 400 !important;
+  text-transform: uppercase !important;
+}
+
+#studio-start-view .command-eyebrow,
+#studio-start-view .command-card-kicker,
+#studio-start-view .build-night-kicker {
+  font-size: 16px !important;
+  letter-spacing: 0.105em !important;
+  line-height: 1 !important;
+}
+
+#studio-start-view .command-copy {
+  max-width: 610px !important;
+  font-size: clamp(18px, 1.35vw, 21px) !important;
+  letter-spacing: 0.045em !important;
+  line-height: 1.14 !important;
+}
+
+#studio-start-view .command-card-desc {
+  max-width: 360px !important;
+  font-size: clamp(16px, 1.08vw, 18px) !important;
+  letter-spacing: 0.04em !important;
+  line-height: 1.12 !important;
+}
+
+#studio-start-view .command-card-guidance,
+#studio-start-view .command-card-guidance span {
+  font-size: clamp(14px, 0.95vw, 16px) !important;
+  letter-spacing: 0.035em !important;
+  line-height: 1.08 !important;
+}
+
+#studio-start-view .command-card-guidance {
+  gap: 6px !important;
+  margin-top: 10px !important;
+}
+
+#studio-start-view .command-card-cta,
+#studio-start-view .command-path-or {
+  font-size: 15px !important;
+  letter-spacing: 0.07em !important;
+  line-height: 1 !important;
+}
+
+#studio-start-view .build-night-card-copy > span:not(.build-night-settings):not(.build-night-start) {
+  margin-top: 5px !important;
+  font-size: clamp(13px, 0.88vw, 15px) !important;
+  letter-spacing: 0.035em !important;
+  line-height: 1.08 !important;
+}
+
+#studio-start-view .build-night-card small {
+  font-size: 13px !important;
+  letter-spacing: 0.075em !important;
+  line-height: 1 !important;
+}
+
+#studio-start-view .build-night-settings b {
+  font-size: 11px !important;
+  letter-spacing: 0.06em !important;
+  line-height: 1 !important;
+}
+
+/* GUI overhaul pass: Axiom Start path-card breathing room.
+   Keep the approved title and mission-card styling; loosen only the two start path cards. */
+#studio-start-view .command-action-card,
+#studio-start-view .command-action-card.primary,
+#studio-start-view .command-action-card.secondary {
+  grid-template-columns: 34px minmax(0, 1fr) !important;
+  grid-template-rows: auto auto !important;
+  align-content: center !important;
+  row-gap: 18px !important;
+  padding-top: clamp(28px, 2.5vw, 38px) !important;
+  padding-bottom: clamp(24px, 2.2vw, 34px) !important;
+}
+
+#studio-start-view .command-card-copy {
+  max-width: 520px !important;
+}
+
+#studio-start-view .command-card-title {
+  margin-bottom: 10px !important;
+}
+
+#studio-start-view .command-card-desc {
+  max-width: 460px !important;
+}
+
+#studio-start-view .command-card-guidance {
+  max-width: 490px !important;
+  margin-top: 12px !important;
+}
+
+#studio-start-view .command-card-cta,
+#studio-start-view #btn-upload-csv.command-card-cta {
+  grid-column: 2 !important;
+  justify-self: start !important;
+  align-self: start !important;
+  margin-top: 0 !important;
+  min-width: 154px !important;
+  min-height: 44px !important;
+}
+
+#studio-start-view .command-path-radio {
+  margin-top: 34px !important;
+}
+
+@media (max-height: 780px), (max-width: 1180px) {
+  #studio-start-view .command-action-card,
+  #studio-start-view .command-action-card.primary,
+  #studio-start-view .command-action-card.secondary {
+    row-gap: 12px !important;
+    padding-top: 20px !important;
+    padding-bottom: 18px !important;
+  }
+
+  #studio-start-view .command-card-guidance {
+    display: none !important;
+  }
+
+  #studio-start-view .command-card-cta,
+  #studio-start-view #btn-upload-csv.command-card-cta {
+    min-height: 38px !important;
+  }
+}
+
+/* GUI overhaul pass: Axiom Start path-card restore and snug copy sizing.
+   Restore the approved right-side CTA architecture; tighten only support copy. */
+#studio-start-view .command-action-card,
+#studio-start-view .command-action-card.primary,
+#studio-start-view .command-action-card.secondary {
+  grid-template-columns: 34px minmax(0, 1fr) auto !important;
+  grid-template-rows: none !important;
+  align-items: start !important;
+  align-content: stretch !important;
+  gap: 14px !important;
+  row-gap: 0 !important;
+  padding: clamp(25px, 2.2vw, 34px) clamp(22px, 2.3vw, 34px) !important;
+}
+
+#studio-start-view .command-card-copy {
+  max-width: none !important;
+}
+
+#studio-start-view .command-card-title {
+  margin-bottom: 8px !important;
+}
+
+#studio-start-view .command-card-desc {
+  max-width: 390px !important;
+  font-size: clamp(14px, 0.96vw, 16px) !important;
+  letter-spacing: 0.036em !important;
+  line-height: 1.08 !important;
+}
+
+#studio-start-view .command-card-guidance,
+#studio-start-view .command-card-guidance span {
+  font-size: clamp(12px, 0.82vw, 14px) !important;
+  letter-spacing: 0.032em !important;
+  line-height: 1.06 !important;
+}
+
+#studio-start-view .command-card-guidance {
+  display: grid !important;
+  gap: 5px !important;
+  max-width: 405px !important;
+  margin-top: 9px !important;
+}
+
+#studio-start-view .command-card-kicker {
+  margin-bottom: 16px !important;
+}
+
+#studio-start-view .command-card-cta,
+#studio-start-view #btn-upload-csv.command-card-cta {
+  grid-column: auto !important;
+  justify-self: auto !important;
+  align-self: center !important;
+  margin-top: 38px !important;
+  min-width: 132px !important;
+  min-height: 42px !important;
+  font-size: 14px !important;
+}
+
+#studio-start-view .command-path-radio {
+  margin-top: 40px !important;
+}
+
+@media (max-height: 780px), (max-width: 1180px) {
+  #studio-start-view .command-action-card,
+  #studio-start-view .command-action-card.primary,
+  #studio-start-view .command-action-card.secondary {
+    grid-template-columns: 34px minmax(0, 1fr) auto !important;
+    gap: 12px !important;
+    padding: 20px 18px !important;
+  }
+
+  #studio-start-view .command-card-guidance {
+    display: grid !important;
+  }
+
+  #studio-start-view .command-card-cta,
+  #studio-start-view #btn-upload-csv.command-card-cta {
+    margin-top: 28px !important;
+    min-height: 38px !important;
+  }
+
+  #studio-start-view .command-path-radio {
+    margin-top: 30px !important;
+  }
+}
+
+/* GUI overhaul pass: Axiom Start mission-card chip cleanup. */
+#studio-start-view .build-night-card-copy > .build-night-settings {
+  display: none !important;
+}
+
+/* GUI overhaul pass: Axiom Start hero image blend restore. */
+body:not(.light-mode) #studio-start-view .command-terrain {
+  border: 0 !important;
+  background:
+    linear-gradient(90deg, #050605 0%, rgba(5, 6, 5, 0.82) 10%, rgba(5, 6, 5, 0.22) 34%, rgba(5, 6, 5, 0.04) 64%),
+    linear-gradient(180deg, rgba(5, 6, 5, 0.22), rgba(5, 6, 5, 0.1)),
+    url("/static/axiom-platform-hero.png") center right / cover no-repeat !important;
+  box-shadow: none !important;
+}
+
+/* GUI overhaul pass: Axiom Start mission-card description readability. */
+#studio-start-view .build-night-card-copy > span:not(.build-night-settings):not(.build-night-start) {
+  font-family: "Barlow", sans-serif !important;
+  font-size: clamp(11px, 0.76vw, 12px) !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.025em !important;
+  line-height: 1.28 !important;
+  text-transform: uppercase !important;
+  color: rgba(244, 245, 242, 0.74) !important;
+}
+
+/* GUI overhaul pass: Axiom Start mission-card bottom clearance. */
+#studio-start-view.command-launch-shell {
+  padding-bottom: 26px !important;
+}
+
+#studio-start-view .build-night-panel {
+  height: calc(100% - 28px) !important;
+}
+
+@media (max-height: 780px), (max-width: 1180px) {
+  #studio-start-view.command-launch-shell {
+    padding-bottom: 18px !important;
+  }
+
+  #studio-start-view .build-night-panel {
+    height: calc(100% - 18px) !important;
+  }
+}
+
+/* GUI overhaul pass: Axiom Start mission-card bottom clearance fine tune. */
+#studio-start-view.command-launch-shell {
+  padding-bottom: 18px !important;
+}
+
+#studio-start-view .build-night-panel {
+  height: calc(100% - 20px) !important;
+}
+
+@media (max-height: 780px), (max-width: 1180px) {
+  #studio-start-view.command-launch-shell {
+    padding-bottom: 14px !important;
+  }
+
+  #studio-start-view .build-night-panel {
+    height: calc(100% - 14px) !important;
+  }
+}
+
+/* Set-start descriptions use a scoped Barlow Light face so other 300-weight
+   text elsewhere in the cockpit keeps its existing rendering. */
+@font-face {
+  font-family: "Barlow Set Start";
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap;
+  src: url("/static/vendor/barlow-5.3.0/files/barlow-latin-300-normal.woff2") format("woff2");
+}
+
+html body #studio-start-view .build-night-grid > .build-night-card > .build-night-card-copy > span:not(.build-night-settings):not(.build-night-start) {
+  font-family: "Barlow Set Start", "Barlow", sans-serif !important;
+  font-weight: 300 !important;
+}
+
+/* Owner sidebar annotations: label weights apply in both desktop themes.
+   Bundled Bebas Neue has only a 400 face; these requested CSS weights do not
+   introduce alternate font artwork. Counters and icons keep their styling. */
+html body #axiom-sidebar #tab-btn-library > div > span:not(#fav-sidebar-badge) {
+  font-weight: 200 !important;
+}
+
+html body #axiom-sidebar :is(#tab-btn-studio, #tab-btn-performance, #tab-btn-health) > div > span:not(#fav-sidebar-badge),
+html body #axiom-sidebar :is(#tab-btn-export, #tab-btn-playlists) > .axiom-sidebar-nav-label > span {
+  font-weight: 100 !important;
+}
+
+/* GUI overhaul pass: Axiom Start mission-card bottom clearance midpoint. */
+#studio-start-view.command-launch-shell {
+  padding-bottom: 22px !important;
+}
+
+/* Owner-selected desktop mission cards: idle title, hover artwork, click details.
+   Width expands inside the existing row; its height never changes with state. */
+html body #studio-start-view .mission-choice-row {
+  display: flex !important;
+  align-items: stretch !important;
+  gap: 0 !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+}
+html body #studio-start-view .mission-choice {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 0;
+  min-width: 0;
+  overflow: hidden;
+  background: #090d0b;
+  border-right: 1px solid #354037;
+  transition: flex-grow 280ms ease;
+}
+html body #studio-start-view .mission-choice:last-child { border-right: 0; }
+html body #studio-start-view .mission-choice.is-expanded { flex-grow: 2.25; }
+html body #studio-start-view .mission-choice-art {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 32%;
+  opacity: 0;
+  transform: scale(1.04);
+  transition: opacity 240ms ease, transform 360ms ease;
+  pointer-events: none;
+}
+html body #studio-start-view .mission-choice[data-mission="open_format"] .mission-choice-art { object-position: center 55%; }
+html body #studio-start-view .mission-choice::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: linear-gradient(90deg, rgba(4, 8, 6, .86), rgba(4, 8, 6, .32)), linear-gradient(0deg, rgba(4, 8, 6, .9), transparent 85%);
+}
+html body #studio-start-view .mission-choice:is(:hover, :focus-within, .is-expanded) .mission-choice-art {
+  opacity: 1;
+  transform: scale(1);
+}
+html body #studio-start-view .mission-choice-toggle {
+  position: relative;
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-width: 0;
+  padding: 46px 20px 34px !important;
+  background: transparent !important;
+  border: 0 !important;
+  color: #f5f7f2 !important;
+  text-align: center;
+  cursor: pointer;
+  user-select: none;
+}
+html body #studio-start-view .mission-choice-toggle strong {
+  display: block !important;
+  font-family: "Bebas Neue", sans-serif !important;
+  font-size: clamp(34px, 3.25vw, 50px) !important;
+  font-weight: 400 !important;
+  line-height: .98 !important;
+  letter-spacing: .005em !important;
+  color: #f5f7f2 !important;
+  text-transform: uppercase;
+  overflow-wrap: normal;
+  text-shadow: 0 2px 16px #000;
+}
+html body #studio-start-view .mission-choice .build-night-icon {
+  position: absolute;
+  left: 20px;
+  top: 16px;
+  width: 34px !important;
+  height: 34px !important;
+  padding: 4px !important;
+  margin: 0 !important;
+  border: 1px solid rgba(163,255,0,.3) !important;
+  border-radius: 4px !important;
+  background: rgba(4,8,6,.7) !important;
+  box-shadow: none !important;
+  object-fit: contain;
+  filter: none !important;
+}
+html body #studio-start-view .mission-choice.is-expanded .mission-choice-toggle {
+  flex: 0 0 auto;
+  min-height: 94px;
+  padding: 54px 22px 0 !important;
+  justify-content: flex-start;
+  text-align: left;
+}
+html body #studio-start-view .mission-choice.is-expanded .mission-choice-toggle strong {
+  font-size: clamp(32px, 2.9vw, 44px) !important;
+}
+html body #studio-start-view .mission-choice.is-expanded { box-shadow: inset 3px 0 #a3ff00; }
+html body #studio-start-view .mission-choice-details {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  flex: 0 1 auto;
+  min-height: 0;
+  padding: 8px 22px 16px;
+}
+html body #studio-start-view .mission-choice-details[hidden] { display: none !important; }
+html body #studio-start-view .mission-choice-details p {
+  min-height: 0;
+  overflow: auto;
+  margin: 0 0 12px !important;
+  font-family: "Barlow Set Start", "Barlow", sans-serif !important;
+  font-weight: 300 !important;
+  font-size: 15px !important;
+  line-height: 1.28 !important;
+  text-transform: none !important;
+  letter-spacing: 0 !important;
+  color: #f5f7f2 !important;
+  text-shadow: 0 1px 5px #000;
+}
+/* Photo cards deliberately stay dark in Day Mode; the generic paragraph
+   inversion for the light command shell must not darken their copy. */
+html body.light-mode #studio-start-view.command-launch-shell .mission-choice-details p {
+  color: #f5f7f2 !important;
+  -webkit-text-fill-color: #f5f7f2 !important;
+}
+/* Day Mode uses AXIOM blue for the same artwork, icons and interactions.
+   Blue controls remain readable on intentionally dark photo cards. */
+html body.light-mode #studio-start-view .mission-choice-art,
+html body.light-mode #studio-start-view .command-choice-art img,
+html body.light-mode #studio-start-view .command-card-hero-art img,
+html body.light-mode #studio-start-view .command-deck-art img {
+  filter: grayscale(1) sepia(.45) hue-rotate(170deg) saturate(2) !important;
+}
+html body.light-mode #studio-start-view .mission-choice .build-night-icon {
+  filter: hue-rotate(133deg) !important;
+}
+html body.light-mode #studio-start-view .mission-choice.is-expanded {
+  box-shadow: inset 3px 0 #3b82f6;
+}
+html body.light-mode #studio-start-view .mission-choice-build {
+  background: #0047ab !important;
+  border-color: #73a8ff !important;
+  color: #fff !important;
+}
+html body.light-mode #studio-start-view .mission-choice-build span { color: #fff !important; }
+html body.light-mode #studio-start-view :is(.mission-choice-toggle, .mission-choice-build):focus-visible {
+  outline-color: #73a8ff !important;
+}
+html body.light-mode #studio-start-view .command-close-doors {
+  border-color: #0047ab !important;
+  background: #fff !important;
+}
+html body.light-mode #studio-start-view .command-close-doors img {
+  filter: invert(21%) sepia(98%) saturate(2225%) hue-rotate(207deg) brightness(93%) contrast(104%) !important;
+}
+/* Day header: readable copy on white and one crisp image on the right.
+   Card hover artwork stays in the cards, rather than stacking over the hero. */
+html body.light-mode #studio-start-view.command-launch-shell .command-launch-hero {
+  grid-template-columns: minmax(0, .64fr) minmax(0, .36fr) !important;
+  gap: 0 !important;
+  background: #fff !important;
+  overflow: hidden !important;
+  box-shadow: none !important;
+}
+html body.light-mode #studio-start-view.command-launch-shell .command-launch-hero > div:not(.command-terrain):not(.command-status-readout) {
+  grid-column: 1 !important;
+  width: 100% !important;
+  min-width: 0;
+  box-sizing: border-box;
+  padding: 22px 28px !important;
+}
+html body.light-mode #studio-start-view.command-launch-shell .command-launch-hero .command-title {
+  width: 100% !important;
+  max-width: 100% !important;
+  font-size: clamp(42px, 4.1vw, 64px) !important;
+  line-height: 1.04 !important;
+  white-space: normal !important;
+  color: #07111f !important;
+}
+html body.light-mode #studio-start-view.command-launch-shell .command-launch-hero .command-copy {
+  max-width: 100% !important;
+  font-size: clamp(16px, 1.25vw, 20px) !important;
+  line-height: 1.24 !important;
+  color: #334155 !important;
+}
+html body.light-mode #studio-start-view.command-launch-shell .command-launch-hero :is(.command-terrain, .command-card-hero-art, .command-deck-process, .command-deck-caption, .command-status-readout) {
+  display: none !important;
+}
+html body.light-mode #studio-start-view.command-launch-shell .command-launch-hero .command-deck-art {
+  display: block !important;
+  inset: 0 0 0 64% !important;
+  opacity: 1 !important;
+  z-index: 1;
+  transition: none !important;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 14%) !important;
+  mask-image: linear-gradient(90deg, transparent, #000 14%) !important;
+}
+html body.light-mode #studio-start-view.command-launch-shell .command-launch-hero .command-deck-art img {
+  object-position: center !important;
+}
+html body.light-mode #studio-start-view #studio-path-fresh .command-choice-art::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgba(219,234,254,.98), rgba(219,234,254,.92) 80%, rgba(219,234,254,.18));
+}
+html body.light-mode #studio-start-view #studio-path-fresh:is(:hover, :focus-within, .is-art-selected) .command-path-radio {
+  border-color: #0047ab !important;
+  color: #0047ab !important;
+}
+html body.light-mode #studio-start-view #studio-path-room .command-choice-art::after {
+  background: linear-gradient(90deg, rgba(4,15,33,.96), rgba(4,15,33,.76) 48%, rgba(4,15,33,.12)) !important;
+  opacity: 1 !important;
+}
+html body.light-mode #studio-start-view #studio-path-room:is(:hover, :focus-within, .is-art-selected) :is(.command-card-title, .command-card-desc, .command-card-kicker, .command-card-guidance, .command-card-guidance span) {
+  color: #f5f7ff !important;
+  -webkit-text-fill-color: #f5f7ff !important;
+}
+html body.light-mode #studio-start-view #studio-path-room:is(:hover, :focus-within, .is-art-selected) .command-path-radio {
+  border-color: #73a8ff !important;
+  color: #73a8ff !important;
+}
+html body.light-mode #studio-start-view #studio-path-room:is(:hover, :focus-within, .is-art-selected) .command-card-cta,
+html body.light-mode #studio-start-view #studio-path-room:is(:hover, :focus-within, .is-art-selected) .command-card-cta span {
+  background: #0047ab !important;
+  border-color: #73a8ff !important;
+  color: #fff !important;
+  -webkit-text-fill-color: #fff !important;
+}
+html body #studio-start-view .mission-choice-build {
+  display: inline-flex;
+  align-self: flex-start;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 15px;
+  min-height: 30px;
+  padding: 6px 12px !important;
+  border: 1px solid #a3ff00 !important;
+  border-radius: 3px !important;
+  background: #a3ff00 !important;
+  color: #071005 !important;
+  font-family: "Bebas Neue", sans-serif !important;
+  font-size: 14px !important;
+  line-height: 1 !important;
+  font-weight: 400 !important;
+  letter-spacing: .04em !important;
+  cursor: pointer;
+}
+html body #studio-start-view .mission-choice-build span { color: #071005 !important; }
+html body #studio-start-view :is(.mission-choice-toggle, .mission-choice-build):focus-visible {
+  outline: 2px solid #a3ff00 !important;
+  outline-offset: -4px;
+}
+/* Short desktop windows retain the same row height. Put the selected title
+   beside its original icon to leave room for the explanation and build CTA. */
+@media (max-height: 950px) {
+  html body #studio-start-view .mission-choice.is-expanded .mission-choice-toggle {
+    min-height: 54px;
+    padding: 16px 22px 0 64px !important;
+  }
+  html body #studio-start-view .mission-choice.is-expanded .mission-choice-toggle strong {
+    font-size: 30px !important;
+  }
+  html body #studio-start-view .mission-choice-details { padding: 8px 20px 10px; }
+  html body #studio-start-view .mission-choice-details p {
+    font-size: 14px !important;
+    line-height: 1.2 !important;
+    margin-bottom: 8px !important;
+  }
+  html body #studio-start-view .mission-choice-build {
+    min-height: 28px;
+    padding: 5px 10px !important;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  html body #studio-start-view :is(.mission-choice, .mission-choice-art) { transition: none !important; }
+}
+
+#studio-start-view .build-night-panel {
+  height: calc(100% - 24px) !important;
+}
+
+@media (max-height: 780px), (max-width: 1180px) {
+  #studio-start-view.command-launch-shell {
+    padding-bottom: 16px !important;
+  }
+
+  #studio-start-view .build-night-panel {
+    height: calc(100% - 16px) !important;
+  }
+}

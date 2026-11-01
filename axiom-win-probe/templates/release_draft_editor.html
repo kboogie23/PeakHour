@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AXIOM PRO 1.0 Release Copy Preview</title>
+  <style>
+    :root { color-scheme: dark; font-family: Arial, sans-serif; }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: #090b08; color: #f4f5f2; }
+    main { max-width: 760px; min-height: 100vh; margin: auto; padding: 28px 22px 80px; }
+    .toolbar { display: flex; gap: 8px; align-items: center; justify-content: space-between; margin-bottom: 24px; }
+    .toolbar span { padding: 8px 10px; background: #151914; border: 1px solid #4a5639; font-size: 11px; font-weight: 700; text-transform: uppercase; }
+    button { min-height: 38px; padding: 8px 13px; border: 1px solid #a3ff00; border-radius: 3px; background: #a3ff00; color: #071005; font: inherit; font-size: 12px; font-weight: 800; cursor: pointer; }
+    button:hover, button:focus-visible { outline: 2px solid #f4f5f2; outline-offset: 2px; }
+    button.secondary { background: #181c16; color: #f4f5f2; border-color: #526344; }
+    a { display: inline-flex; align-items: center; min-height: 38px; padding: 8px 13px; border: 1px solid #526344; border-radius: 3px; color: #f4f5f2; font-size: 12px; font-weight: 800; text-decoration: none; }
+    a:hover, a:focus-visible { outline: 2px solid #a3ff00; outline-offset: 2px; }
+    .editor-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+    h1 { margin: 0 0 4px; font-size: 20px; }
+    h2 { margin: 0 0 10px; font-size: 14px; }
+    p { margin: 0 0 18px; color: #b9c2b1; font-size: 12px; line-height: 1.5; }
+    label { display: block; margin: 14px 0; color: #d8dfd4; font-size: 12px; font-weight: 700; }
+    input, textarea { display: block; width: 100%; margin-top: 6px; padding: 10px; border: 1px solid #4a563f; border-radius: 3px; background: #1b2119; color: #f4f5f2; font: 13px/1.45 Arial, sans-serif; resize: vertical; }
+    input:focus, textarea:focus { outline: 2px solid #a3ff00; border-color: #a3ff00; }
+    .feature { margin: 18px 0; padding-top: 18px; border-top: 1px solid #394434; }
+    .actions { position: sticky; bottom: -20px; display: flex; align-items: center; gap: 10px; margin: 20px -20px -20px; padding: 14px 20px; border-top: 1px solid #394434; background: #10130f; }
+    #status { min-width: 0; margin: 0; }
+    @media (max-width: 600px) { .toolbar span { display: none; } }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="toolbar"><span>Local draft only</span><a href="/?review=release&amp;ui_preview=release">Back To Preview</a></div>
+    <div class="editor-head">
+      <div><h1>AXIOM PRO 1.0</h1><p>Edit the returning-user update splash. Saving changes only this local draft.</p></div>
+    </div>
+    <form id="draft-form">
+      <label>Headline<input name="release_title" maxlength="90" required></label>
+      <label>Summary<textarea name="release_summary" rows="5" maxlength="400" required></textarea></label>
+      <h2>Left Panel: Access Terms</h2>
+      <div id="business"></div>
+      <h2>Right Panel: Software &amp; Updates</h2>
+      <div id="features"></div>
+      <button class="secondary" id="add-feature" type="button">Add Software Item</button>
+      <div class="actions"><button type="submit">Save Draft</button><p id="status" role="status"></p></div>
+    </form>
+  </main>
+  <script>
+    const endpoint = '/api/app/release-draft?ui_preview=release';
+    const form = document.getElementById('draft-form');
+    const status = document.getElementById('status');
+    const business = document.getElementById('business');
+    const features = document.getElementById('features');
+    function field(labelText, name, value, rows) {
+      const label = document.createElement('label');
+      label.textContent = labelText;
+      const control = rows ? document.createElement('textarea') : document.createElement('input');
+      control.name = name;
+      control.value = value || '';
+      control.required = true;
+      if (rows) control.rows = rows;
+      label.append(control);
+      return label;
+    }
+    function featureRow(feature, index, removable) {
+      const section = document.createElement('section');
+      section.className = 'feature';
+      const heading = document.createElement('h2');
+      heading.textContent = `${removable ? 'Software' : 'Access'} ${index + 1}`;
+      section.append(heading, field('Title', 'title', feature.title),
+        field('Short line', 'brief', feature.brief, 2),
+        field('Expanded detail', 'description', feature.description, 4));
+      if (removable) {
+        const remove = document.createElement('button');
+        remove.className = 'secondary';
+        remove.type = 'button';
+        remove.textContent = 'Remove Item';
+        remove.onclick = () => section.remove();
+        section.append(remove);
+      }
+      return section;
+    }
+    function rows(container) {
+      return [...container.querySelectorAll('.feature')].map(row => ({
+        title: row.querySelector('[name="title"]').value,
+        brief: row.querySelector('[name="brief"]').value,
+        description: row.querySelector('[name="description"]').value
+      }));
+    }
+    async function loadDraft() {
+      const response = await fetch(endpoint);
+      if (!response.ok) throw new Error('The draft could not be loaded.');
+      const draft = await response.json();
+      form.elements.release_title.value = draft.release_title || '';
+      form.elements.release_summary.value = draft.release_summary || '';
+      business.replaceChildren(...draft.release_business.map((feature, index) => featureRow(feature, index, false)));
+      features.replaceChildren(...draft.release_features.map((feature, index) => featureRow(feature, index, true)));
+    }
+    loadDraft().catch(error => { status.textContent = error.message; });
+    document.getElementById('add-feature').onclick = () => {
+      if (features.querySelectorAll('.feature').length >= 12) return;
+      features.append(featureRow({ title: '', brief: '', description: '' }, features.querySelectorAll('.feature').length, true));
+      features.lastElementChild.querySelector('input').focus();
+    };
+    form.onsubmit = async event => {
+      event.preventDefault();
+      const payload = {
+        release_title: form.elements.release_title.value,
+        release_summary: form.elements.release_summary.value,
+        release_business: rows(business),
+        release_features: rows(features)
+      };
+      status.textContent = 'Saving...';
+      try {
+        const response = await fetch(endpoint, {
+          method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload)
+        });
+        const result = await response.json();
+        if (!response.ok) throw new Error(result.error || 'Draft save failed.');
+        window.location.href = '/?review=release&ui_preview=release';
+      } catch (error) { status.textContent = error.message; }
+    };
+  </script>
+</body>
+</html>

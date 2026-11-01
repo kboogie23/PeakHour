@@ -1,0 +1,73 @@
+<style id="library-help-collapsed-reveal-v1">
+  /* Library Help stays quiet until the user shows intent. The grid slot remains
+     stable, while the control grows from a compact question mark to the exact
+     approved 96 × 48 Help button on hover or keyboard focus. */
+  html body #tab-content-library.library-cockpit#tab-content-library
+    #btn-library-guide.library-guide-btn.axiom-help-btn {
+    position: relative !important;
+    align-self: center !important;
+    justify-self: end !important;
+    width: 42px !important;
+    min-width: 42px !important;
+    max-width: 42px !important;
+    height: 42px !important;
+    min-height: 42px !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    border-radius: 8px !important;
+    transition: width 180ms ease, max-width 180ms ease, height 180ms ease,
+      border-radius 180ms ease, background-color 180ms ease !important;
+  }
+
+  html body #tab-content-library.library-cockpit#tab-content-library
+    #btn-library-guide.library-guide-btn.axiom-help-btn:is(:hover, :focus-visible) {
+    width: 96px !important;
+    min-width: 96px !important;
+    max-width: 96px !important;
+    height: 48px !important;
+    min-height: 48px !important;
+    border-radius: 8px !important;
+  }
+
+  #btn-library-guide .library-help-compact-mark,
+  #btn-library-guide .library-help-expanded-label {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    font-family: 'Bebas Neue', Impact, sans-serif;
+    font-size: 18px;
+    font-weight: 400;
+    line-height: 1;
+    transition: opacity 130ms ease, transform 180ms ease;
+  }
+
+  #btn-library-guide .library-help-compact-mark {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  #btn-library-guide .library-help-expanded-label {
+    opacity: 0;
+    transform: translateX(6px);
+  }
+
+  #btn-library-guide:is(:hover, :focus-visible) .library-help-compact-mark {
+    opacity: 0;
+    transform: translateX(-6px);
+  }
+
+  #btn-library-guide:is(:hover, :focus-visible) .library-help-expanded-label {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html body #tab-content-library.library-cockpit#tab-content-library
+      #btn-library-guide.library-guide-btn.axiom-help-btn,
+    #btn-library-guide .library-help-compact-mark,
+    #btn-library-guide .library-help-expanded-label {
+      transition: none !important;
+    }
+  }
+</style>

@@ -1,0 +1,69 @@
+{
+  "name": "AXIOM Starter Kit",
+  "version": 1,
+  "origin": "Original synthesized AXIOM one-shots; no third-party sample recordings.",
+  "engine": "Tone.js 15.1.22",
+  "recipe": "script/generate_starter_kit.cjs",
+  "files": [
+    {
+      "file": "punch-kick.wav",
+      "frames": 33600,
+      "sampleRate": 48000,
+      "sha256": "e68d567eac253118b2a31228f2e9de6c4b46e2c61843c632ca16f32681b723fd"
+    },
+    {
+      "file": "deep-kick.wav",
+      "frames": 33600,
+      "sampleRate": 48000,
+      "sha256": "e225b4b038f01e767a6128a6ead8e34b33d4b95700ec4c2c4bd552461a9ec636"
+    },
+    {
+      "file": "tight-snare.wav",
+      "frames": 33600,
+      "sampleRate": 48000,
+      "sha256": "886259367eed5a1963633be6f0e4e0f9f10e39993979c6c7fd999ad3c7d748f2"
+    },
+    {
+      "file": "hand-clap.wav",
+      "frames": 33600,
+      "sampleRate": 48000,
+      "sha256": "0d13c548a2da02eb63871a0d1f15b8cfb3bab142d70b98200be82c6440840dd1"
+    },
+    {
+      "file": "closed-hat.wav",
+      "frames": 33600,
+      "sampleRate": 48000,
+      "sha256": "e395b2ca3256be609f90d44727b9f09544c89d2626124cecaca2c19b71e557b4"
+    },
+    {
+      "file": "open-hat.wav",
+      "frames": 38400,
+      "sampleRate": 48000,
+      "sha256": "3dc87c79549e8bd39c6290c9e9ab49b3a28d9997a5b60e61d1fd08dfd80486d8"
+    },
+    {
+      "file": "short-bass-c2.wav",
+      "frames": 33600,
+      "sampleRate": 48000,
+      "sha256": "236cbb2c770474756f029396814f2d10ac122ba66acb1a49bed88eec80793ad3"
+    },
+    {
+      "file": "sub-808-c1.wav",
+      "frames": 81600,
+      "sampleRate": 48000,
+      "sha256": "e2096b5559a0c89fe200064a07923c233c16722431feb05402c2be101786f6cb"
+    },
+    {
+      "file": "rim-shot.wav",
+      "frames": 33600,
+      "sampleRate": 48000,
+      "sha256": "c8e50a8bb99ade5e9428f10cd4dd0ec76e2d72630a6cb9c7613caf7ec80c906a"
+    },
+    {
+      "file": "wood-perc.wav",
+      "frames": 33600,
+      "sampleRate": 48000,
+      "sha256": "cfc2cb787df709001e0466c7d6b49f58492195b3554203177213c4f5e1a099a1"
+    }
+  ]
+}

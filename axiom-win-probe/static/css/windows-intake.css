@@ -1,0 +1,50 @@
+/* "Adding your music" on Windows (windows-intake.js): fits laptop screens without scrollbars, PEAK HOUR
+   branding, the step / time-left line, and the slim top meter shown after "Hide progress". */
+html body #music-intake-overlay.record-vault-overlay { padding: 16px !important; overflow: hidden !important; }
+html body #music-intake-overlay.record-vault-overlay .record-vault-intake {
+  width: min(1240px, 100%); min-height: 0; max-height: calc(100vh - 32px); overflow: clip;  /* clip: focus can never scroll it */
+  grid-template-columns: minmax(0, 1fr) minmax(0, 0.9fr);
+}
+html body #music-intake-overlay.record-vault-overlay .vault-brand small { display: none !important; }  /* "PRO" was AXIOM's edition label */
+html body #music-intake-overlay.record-vault-overlay .vault-intake-copy { padding: clamp(18px, 4vh, 34px) 24px clamp(18px, 4vh, 36px) clamp(24px, 3.4vw, 46px); }
+html body #music-intake-overlay.record-vault-overlay .vault-intake-heading { font-size: clamp(38px, min(4.8vw, 8vh), 68px) !important; margin: clamp(12px, 3.5vh, 35px) 0 clamp(8px, 2vh, 18px) !important; white-space: normal !important; }
+html body #music-intake-overlay.record-vault-overlay .vault-source { margin-top: clamp(12px, 3.4vh, 34px); }
+html body #music-intake-overlay.record-vault-overlay .vault-source img { filter: none !important; }
+html body #music-intake-overlay.record-vault-overlay #music-intake-kicker { line-height: 1.45 !important; }
+html body #music-intake-overlay.record-vault-overlay .music-intake-progress { margin-top: clamp(14px, 3vh, 28px) !important; }
+html body #music-intake-overlay.record-vault-overlay .vault-progress-summary { flex-wrap: wrap; }
+html body #music-intake-overlay.record-vault-overlay .music-intake-hide { font-size: 14px !important; padding: 8px 14px !important; border: 1px solid #6b6f73 !important; border-radius: 3px !important; text-decoration: none !important; }
+html body #music-intake-overlay.record-vault-overlay .music-intake-hide:hover { border-color: #f4f5f2 !important; color: #f4f5f2 !important; }
+html body #music-intake-overlay.record-vault-overlay .vault-motion-stage { min-height: 0; }
+html body #music-intake-overlay.record-vault-overlay .vault-crate { height: 92%; top: 4%; }
+@media (max-height: 640px) {
+  #music-intake-overlay .vault-brand > b { font-size: 28px; }
+  #music-intake-overlay .record-vault-intake #music-intake-message, html body #music-intake-overlay.record-vault-overlay .vault-protection { font-size: 14px !important; line-height: 1.45 !important; }
+  #music-intake-overlay .record-vault-intake #music-intake-percent-summary { font-size: 40px !important; }
+  #music-intake-overlay .vault-flying-record { width: 84px; height: 84px; }
+}
+
+/* The player and its "working" card sit above the window on short screens: hidden while it is open. */
+html body:has(#music-intake-overlay.active:not(.hidden)) #audio-player { visibility: hidden !important; }
+
+/* Top meter while the window is hidden, and while track details are read after the library is ready:
+   a tab hanging from the top edge like the Health scan meter (windows-activity.css), below it if both show. */
+#ph-import-meter {
+  position: fixed; top: 0; left: 50%; transform: translateX(-50%); z-index: 30000;
+  width: min(620px, calc(100vw - 32px)); display: flex; align-items: center; gap: 10px;
+  height: 30px; padding: 0 6px 0 12px; overflow: hidden;
+  background: rgba(14, 12, 12, .96); border: 2px solid #000; border-top: 0; border-radius: 0 0 8px 8px;
+  box-shadow: 0 4px 0 #000; font: 12px/1 'Barlow', sans-serif; color: #c9ccd0;
+}
+html body:has(#health-top-scan-banner:not(.hidden)) #ph-import-meter { top: 34px; border-top: 2px solid #000; border-radius: 8px; }
+#ph-import-meter[hidden] { display: none; }
+#ph-import-meter .ph-import-meter-pill { display: contents; }
+#ph-import-meter strong { order: 1; flex: none; font-weight: 700; color: #f4f5f2; white-space: nowrap; letter-spacing: .3px; }
+#ph-import-meter .ph-import-meter-bar { order: 2; flex: 0 0 90px; height: 4px; border-radius: 2px; background: rgba(255, 255, 255, .12); overflow: hidden; }
+#ph-import-meter .ph-import-meter-bar span { display: block; height: 100%; width: 0; background: var(--ph-red, #b3262f); transition: width .4s linear; }
+#ph-import-meter.is-indeterminate .ph-import-meter-bar span { width: 30%; animation: ph-import-sweep 1.4s ease-in-out infinite; }
+@keyframes ph-import-sweep { from { transform: translateX(-100%); } to { transform: translateX(340%); } }
+#ph-import-meter .ph-import-meter-text { order: 3; flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+#ph-import-meter button { order: 4; flex: none; font: 700 11px 'Barlow', sans-serif; letter-spacing: .4px; color: #f4f5f2; background: var(--ph-red, #b3262f); border: 0; border-radius: 4px; padding: 4px 10px; cursor: pointer; }
+#ph-import-meter button[hidden] { display: none; }
+@media (prefers-reduced-motion: reduce) { #ph-import-meter.is-indeterminate .ph-import-meter-bar span { animation: none; width: 100%; opacity: .5; } }

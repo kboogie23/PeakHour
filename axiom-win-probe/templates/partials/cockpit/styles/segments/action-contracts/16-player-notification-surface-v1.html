@@ -1,0 +1,364 @@
+<style id="player-notification-surface-v1">
+  /* The persistent player becomes the notification surface, then restores the
+     current-song controls after the message has had enough reading time. */
+  html body #audio-player.library-player-upgrade {
+    overflow: hidden !important;
+    transition: z-index 0s linear, box-shadow 260ms ease, border-color 260ms ease !important;
+  }
+
+  /* The shared `.glass` cockpit rule adds a steel-like highlight to every glass
+     surface. Keep that treatment while a notification owns the player, but
+     restore the normal transport to a clean matte black once it is dismissed. */
+  html body #audio-player.library-player-upgrade:not(.player-notification-active) {
+    background: #070707 !important;
+  }
+
+  html body #audio-player.library-player-upgrade.player-notification-active {
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, .043), transparent 52%),
+      #070a08 !important;
+  }
+
+  html body #audio-player.library-player-upgrade.player-notification-active {
+    z-index: 16060 !important;
+    border-top-color: rgba(163, 255, 0, .72) !important;
+    box-shadow:
+      0 -18px 54px rgba(0, 0, 0, .72),
+      0 -5px 34px rgba(163, 255, 0, .20),
+      inset 0 1px 0 rgba(255, 255, 255, .08) !important;
+  }
+
+  html body #audio-player.library-player-upgrade.player-notification-error {
+    border-top-color: rgba(255, 82, 91, .78) !important;
+    box-shadow:
+      0 -18px 54px rgba(0, 0, 0, .72),
+      0 -5px 34px rgba(255, 82, 91, .18),
+      inset 0 1px 0 rgba(255, 255, 255, .08) !important;
+  }
+
+  html body #audio-player.library-player-upgrade.player-notification-active
+    > :is(.player-left-zone, .player-main-zone, .player-volume-zone) {
+    /* Visual controls yield to the receipt; #main-player is deliberately not
+       selected, so playback continues beneath the notification surface. */
+    opacity: .08 !important;
+    filter: blur(3px) saturate(.4) !important;
+    transform: scale(.985) !important;
+    pointer-events: none !important;
+    transition: opacity 220ms ease, filter 220ms ease, transform 280ms cubic-bezier(.22,.82,.22,1) !important;
+  }
+
+  html body #audio-player.library-player-upgrade.player-notification-leaving
+    > :is(.player-left-zone, .player-main-zone, .player-volume-zone) {
+    opacity: 1 !important;
+    filter: none !important;
+    transform: none !important;
+  }
+
+  html body #audio-player.library-player-upgrade .player-notification-surface {
+    --player-notification-color: var(--accent);
+    position: absolute !important;
+    inset: 8px clamp(16px, 2.2vw, 34px) !important;
+    z-index: 20 !important;
+    display: grid !important;
+    grid-template-columns: 62px minmax(0, 1fr) auto 44px !important;
+    align-items: center !important;
+    gap: clamp(14px, 1.8vw, 26px) !important;
+    min-width: 0 !important;
+    padding: 12px clamp(18px, 2.2vw, 34px) 14px !important;
+    overflow: hidden !important;
+    border: 1px solid color-mix(in srgb, var(--player-notification-color) 66%, transparent) !important;
+    border-left-width: 5px !important;
+    border-radius: 7px !important;
+    background:
+      linear-gradient(100deg, color-mix(in srgb, var(--player-notification-color) 13%, #050a06), rgba(3, 8, 6, .99) 54%, rgba(5, 12, 8, .98)) !important;
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, .07),
+      0 0 30px color-mix(in srgb, var(--player-notification-color) 18%, transparent) !important;
+    opacity: 0 !important;
+    transform: translateY(110%) scaleX(.965) !important;
+    transform-origin: center bottom !important;
+    pointer-events: none !important;
+    transition:
+      opacity 240ms ease,
+      transform 460ms cubic-bezier(.16,1,.3,1) !important;
+  }
+
+  html body #audio-player.library-player-upgrade .player-notification-surface.is-error {
+    --player-notification-color: #ff525b;
+  }
+
+  html body #audio-player.library-player-upgrade .player-notification-surface.has-action {
+    --player-notification-color: #25d9f4;
+  }
+
+  html body #audio-player.library-player-upgrade .player-notification-surface.is-visible {
+    opacity: 1 !important;
+    transform: translateY(0) scaleX(1) !important;
+  }
+
+  html body #audio-player.library-player-upgrade .player-notification-surface.is-leaving {
+    opacity: 0 !important;
+    transform: translateY(115%) scaleX(.98) !important;
+    transition-duration: 360ms !important;
+  }
+
+  html body #audio-player.library-player-upgrade .player-notification-surface::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(100deg, transparent 0%, color-mix(in srgb, var(--player-notification-color) 13%, transparent) 46%, transparent 58%);
+    transform: translateX(-105%);
+    animation: player-notification-scan 1.8s cubic-bezier(.22,.82,.22,1) both;
+  }
+
+  html body #audio-player.library-player-upgrade .player-notification-signal {
+    position: relative;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 4px !important;
+    width: 54px !important;
+    height: 54px !important;
+    border: 1px solid color-mix(in srgb, var(--player-notification-color) 72%, transparent) !important;
+    border-radius: 50% !important;
+    background: color-mix(in srgb, var(--player-notification-color) 10%, #030704) !important;
+    box-shadow: 0 0 24px color-mix(in srgb, var(--player-notification-color) 26%, transparent) !important;
+  }
+
+  html body #audio-player.library-player-upgrade .player-notification-signal::after {
+    content: "";
+    position: absolute;
+    inset: -6px;
+    border: 1px solid color-mix(in srgb, var(--player-notification-color) 32%, transparent);
+    border-radius: inherit;
+    animation: player-notification-pulse 1.5s ease-out infinite;
+  }
+
+  html body #audio-player.library-player-upgrade .player-notification-signal i {
+    display: block !important;
+    width: 3px !important;
+    height: 18px !important;
+    border-radius: 2px !important;
+    background: var(--player-notification-color) !important;
+    box-shadow: 0 0 8px var(--player-notification-color) !important;
+    animation: player-notification-bars 720ms ease-in-out infinite alternate;
+  }
+
+  html body #audio-player.library-player-upgrade .player-notification-signal i:nth-child(2) {
+    height: 30px !important;
+    animation-delay: -260ms;
+  }
+
+  html body #audio-player.library-player-upgrade .player-notification-signal i:nth-child(3) {
+    height: 23px !important;
+    animation-delay: -480ms;
+  }
+
+  html body #audio-player.library-player-upgrade .player-notification-copy {
+    position: relative;
+    z-index: 2;
+    display: flex !important;
+    min-width: 0 !important;
+    flex-direction: column !important;
+    gap: 5px !important;
+  }
+
+  html body #audio-player.library-player-upgrade .player-notification-copy small {
+    color: var(--player-notification-color) !important;
+    font-family: "Bebas Neue", Impact, sans-serif !important;
+    font-size: 12px !important;
+    line-height: 1 !important;
+    letter-spacing: .16em !important;
+  }
+
+  html body #audio-player.library-player-upgrade .player-notification-copy strong {
+    display: -webkit-box !important;
+    overflow: hidden !important;
+    color: #f7fff1 !important;
+    -webkit-text-fill-color: #f7fff1 !important;
+    font-family: "Bebas Neue", Impact, sans-serif !important;
+    font-size: clamp(18px, calc(1.35vw + 4px), 22px) !important;
+    font-weight: 400 !important;
+    line-height: 1.2 !important;
+    letter-spacing: .055em !important;
+    text-transform: uppercase !important;
+    -webkit-box-orient: vertical !important;
+    -webkit-line-clamp: 2 !important;
+  }
+
+  html body #audio-player.library-player-upgrade .player-notification-status {
+    position: relative;
+    z-index: 2;
+    color: color-mix(in srgb, var(--player-notification-color) 74%, #ffffff) !important;
+    font-family: "Bebas Neue", Impact, sans-serif !important;
+    font-size: 16px !important;
+    letter-spacing: .14em !important;
+  }
+
+  html body #audio-player.library-player-upgrade .player-notification-action {
+    position: relative;
+    z-index: 3;
+    min-width: 126px !important;
+    min-height: 44px !important;
+    padding: 0 18px !important;
+    border: 1px solid var(--player-notification-color) !important;
+    border-radius: 4px !important;
+    background: var(--player-notification-color) !important;
+    color: #041006 !important;
+    font-family: "Bebas Neue", Impact, sans-serif !important;
+    font-size: 17px !important;
+    letter-spacing: .08em !important;
+    pointer-events: auto !important;
+  }
+
+  html body #audio-player.library-player-upgrade .player-notification-dismiss {
+    position: relative !important;
+    z-index: 4 !important;
+    display: grid !important;
+    width: 42px !important;
+    height: 42px !important;
+    place-items: center !important;
+    padding: 0 !important;
+    border: 1px solid color-mix(in srgb, var(--player-notification-color) 54%, rgba(255,255,255,.24)) !important;
+    border-radius: 4px !important;
+    background: rgba(0, 0, 0, .34) !important;
+    color: #f7fff1 !important;
+    -webkit-text-fill-color: #f7fff1 !important;
+    font-family: "Barlow", Arial, sans-serif !important;
+    font-size: 28px !important;
+    font-weight: 400 !important;
+    line-height: 1 !important;
+    cursor: pointer !important;
+    pointer-events: auto !important;
+    transition: border-color 160ms ease, background 160ms ease, color 160ms ease, transform 160ms ease !important;
+  }
+
+  html body #audio-player.library-player-upgrade .player-notification-dismiss:hover,
+  html body #audio-player.library-player-upgrade .player-notification-dismiss:focus-visible {
+    border-color: var(--player-notification-color) !important;
+    background: color-mix(in srgb, var(--player-notification-color) 14%, #030704) !important;
+    color: var(--player-notification-color) !important;
+    -webkit-text-fill-color: var(--player-notification-color) !important;
+    outline: 2px solid color-mix(in srgb, var(--player-notification-color) 34%, transparent) !important;
+    outline-offset: 2px !important;
+    transform: translateY(-1px) !important;
+  }
+
+  html body #audio-player.library-player-upgrade .player-notification-timeline {
+    position: absolute !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    height: 3px !important;
+    background: var(--player-notification-color) !important;
+    box-shadow: 0 0 12px var(--player-notification-color) !important;
+    transform-origin: left center !important;
+    animation: player-notification-timeline var(--player-notification-duration, 4200ms) linear forwards;
+  }
+
+  /* Running work uses an indeterminate progress runner instead of trust copy.
+     Completed updates keep the normal time-to-restore line. */
+  html body #audio-player.library-player-upgrade .player-notification-surface.is-working
+    .player-notification-timeline {
+    right: auto !important;
+    width: 34% !important;
+    transform-origin: center !important;
+    animation: player-notification-working-progress 1.25s cubic-bezier(.45,0,.55,1) infinite !important;
+  }
+
+  html body #audio-player.library-player-upgrade .player-notification-surface.is-persistent:not(.is-working)
+    .player-notification-timeline {
+    opacity: .8 !important;
+    transform: scaleX(1) !important;
+    animation: none !important;
+  }
+
+  #toast-container [data-toast-key] {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 18px !important;
+  }
+
+  #toast-container [data-toast-key] button {
+    width: 28px !important;
+    height: 28px !important;
+    flex: 0 0 28px !important;
+    border: 1px solid currentColor !important;
+    border-radius: 3px !important;
+    background: rgba(0,0,0,.28) !important;
+    color: inherit !important;
+    font-size: 20px !important;
+    line-height: 1 !important;
+  }
+
+  html body.light-mode #audio-player.library-player-upgrade .player-notification-surface {
+    background: linear-gradient(100deg, #06121f, #07111a 58%, #081923) !important;
+  }
+
+  @keyframes player-notification-scan {
+    to { transform: translateX(120%); }
+  }
+
+  @keyframes player-notification-pulse {
+    from { opacity: .72; transform: scale(.82); }
+    to { opacity: 0; transform: scale(1.28); }
+  }
+
+  @keyframes player-notification-bars {
+    from { transform: scaleY(.55); opacity: .62; }
+    to { transform: scaleY(1); opacity: 1; }
+  }
+
+  @keyframes player-notification-timeline {
+    from { transform: scaleX(1); }
+    to { transform: scaleX(0); }
+  }
+
+  @keyframes player-notification-working-progress {
+    from { transform: translateX(-115%) scaleX(.72); }
+    50% { transform: translateX(145%) scaleX(1); }
+    to { transform: translateX(335%) scaleX(.72); }
+  }
+
+  @media (max-width: 760px) {
+    html body #audio-player.library-player-upgrade .player-notification-surface {
+      inset: 6px 8px !important;
+      grid-template-columns: 42px minmax(0, 1fr) 36px !important;
+      gap: 12px !important;
+      padding: 10px 14px 12px !important;
+    }
+
+    html body #audio-player.library-player-upgrade .player-notification-signal {
+      width: 40px !important;
+      height: 40px !important;
+    }
+
+    html body #audio-player.library-player-upgrade :is(.player-notification-status, .player-notification-action) {
+      display: none !important;
+    }
+
+    html body #audio-player.library-player-upgrade .player-notification-dismiss {
+      width: 34px !important;
+      height: 34px !important;
+      font-size: 23px !important;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html body #audio-player.library-player-upgrade .player-notification-surface,
+    html body #audio-player.library-player-upgrade.player-notification-active
+      > :is(.player-left-zone, .player-main-zone, .player-volume-zone) {
+      transition-duration: 1ms !important;
+    }
+
+    html body #audio-player.library-player-upgrade .player-notification-surface::before,
+    html body #audio-player.library-player-upgrade .player-notification-signal::after,
+    html body #audio-player.library-player-upgrade .player-notification-signal i,
+    html body #audio-player.library-player-upgrade .player-notification-surface.is-working
+      .player-notification-timeline {
+      animation: none !important;
+    }
+  }
+</style>

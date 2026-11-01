@@ -1,0 +1,389 @@
+    <div id="tab-content-library" class="tab-content hidden flex-1 p-12 pb-32 overflow-hidden flex flex-col library-cockpit">
+      <div class="max-w-5xl mb-6 library-topbar">
+        {% if not axiom_lite %}
+        <div class="library-design-heading"><h1>Library</h1><span id="library-design-count" aria-live="polite"></span></div>
+        <div class="library-view-switch" role="group" aria-label="Library view">
+          <button type="button" data-library-view="list" aria-pressed="true" onclick="AxiomLibraryDesign.setView('list')">List</button>
+          <button type="button" data-library-view="album" aria-pressed="false" onclick="AxiomLibraryDesign.setView('album')">Album Art</button>
+        </div>
+        <button type="button" id="library-design-matching-toggle" aria-pressed="false" onclick="toggleLibraryMatchingSongs()">Matching Songs</button>
+        {% endif %}
+        <button onclick="openUniversalHelp({ surface: 'library' })" id="btn-library-guide"
+          class="px-4 py-3 text-[10px] font-black uppercase rounded-xl transition-all library-guide-btn axiom-help-btn axiom-help-btn--feature button--secondary"
+          aria-label="Open Library Help" title="Library Help">
+          <span class="library-help-compact-mark" aria-hidden="true">?</span>
+          <span class="library-help-expanded-label" aria-hidden="true">Help</span>
+        </button>
+        <div class="library-search-shell">
+          <input type="text" id="main-search" placeholder="{% if axiom_lite %}SEARCH MUSIC FILES...{% else %}SEARCH MUSIC, RNB, 90s, 100-105 BPM...{% endif %}" aria-label="Search music files" oninput="scheduleLibrarySearch()" aria-keyshortcuts="Meta+F Control+F"
+            class="w-full bg-black/40 border border-white/10 rounded-3xl px-10 py-6 text-lg font-bold text-white outline-none focus:border-axiom-accent transition-all shadow-inner library-search-input">
+          <svg class="library-search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m21 21-4.35-4.35M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15Z" />
+          </svg>
+        </div>
+        <div class="flex gap-3 mt-4 items-center library-control-row">
+          <button id="library-choose-music-source" onclick="(window.AxiomDawFinder && AxiomDawFinder.sourcePrimaryAction ? AxiomDawFinder.sourcePrimaryAction() : openLibrarySourcePicker())"
+            class="px-5 py-3 bg-axiom-accent text-black text-[10px] font-black uppercase rounded-xl hover:brightness-110 transition-all library-add-folder button--primary">Choose Music Source</button>
+          <p id="library-source-helper" class="text-[10px] text-axiom-muted font-bold uppercase tracking-widest">Connect DJ software or choose a music folder.</p>
+          <span id="library-preparation-page-title" aria-hidden="true">Track Prep</span>
+        </div>
+      </div>
+      <div class="flex-1 flex gap-8 overflow-hidden library-main-grid">
+        <div class="library-results-column">
+        <div id="library-brief-lens" class="library-brief-lens" data-library-brief-panel="closed" data-library-actions-expanded="true" aria-live="polite">
+          <div id="library-brief-topline">
+            <div class="library-brief-copy">
+              <span id="library-brief-kicker">Set Prep</span>
+              <strong id="library-brief-title">Party Mode</strong>
+              <div id="library-brief-filter-status" class="library-filter-status" hidden aria-live="polite"></div>
+            </div>
+            <button id="library-brief-actions-toggle" type="button" class="library-brief-actions-toggle button--small" aria-expanded="true" aria-controls="library-brief-action-rail" onclick="toggleLibraryBriefActions()">
+              <span>Actions</span>
+              <img src="/static/icons/chevron-up.svg" alt="">
+            </button>
+            {% if not axiom_lite %}
+            <section id="library-top-sort-bar" class="library-top-sort-bar" aria-label="Library sort controls" title="Click to sort; click again to reverse. Ctrl-click or Command-click adds a secondary sort.">
+              <span class="library-top-sort-label">Sort Library</span>
+              <button type="button" data-library-top-sort="bpm" aria-pressed="false" onclick="setLibraryTopSort('bpm', event)">BPM</button>
+              <button type="button" data-library-top-sort="key" aria-pressed="false" onclick="setLibraryTopSort('key', event)">Key</button>
+              <button type="button" data-library-top-sort="year" aria-pressed="false" onclick="setLibraryTopSort('year', event)">Year</button>
+              <button type="button" data-library-top-sort="genre" aria-pressed="false" onclick="setLibraryTopSort('genre', event)">Genre</button>
+              <button type="button" class="library-top-sort-clear" onclick="clearLibraryTopSort()">Clear</button>
+              <output id="library-top-sort-status">Click to sort. Ctrl-click or Command-click to add a secondary sort.</output>
+            </section>
+            {% endif %}
+            <div id="library-brief-action-rail" class="library-brief-action-rail">
+              <button id="library-preparation-toggle" type="button" class="library-preparation-toggle button--green-outline button--small" aria-label="Track Preparation" aria-expanded="false" aria-controls="library-preparation-toolbar" onclick="toggleLibraryPreparationPanel(null, this)">
+                <img src="/static/icons/database.svg" alt="">
+                <span data-library-action-label>Track Prep</span>
+              </button>
+              <button type="button" class="library-gap-launch button--green-outline button--small" aria-label="Paste a Playlist" aria-haspopup="dialog" aria-controls="library-gap-workspace" title="Paste a playlist or song list and check it against your Library" onclick="setLibraryRailMode('gap')">
+                <img src="/static/icons/file-up.svg" alt="">
+                <span>Paste A Playlist</span>
+                <span class="library-paste-art" aria-hidden="true"><img src="/static/brands/axiom-paste-playlist.png" alt=""></span>
+              </button>
+              <button id="library-fresh-rotate" type="button" class="library-brief-chip library-fresh-rotate button--cyan-outline button--small" onclick="rotateLibraryFreshBuild()">
+                <img src="/static/icons/zap.svg" alt="">
+                <span>Fresh Picks</span>
+              </button>
+              <button id="library-recent-toggle" type="button" class="text-[10px] font-black uppercase library-recent-toggle button--green-outline button--small" aria-pressed="false" onclick="toggleLibraryRecentlyAdded(this)">Recently Added</button>
+            </div>
+            <div id="library-setup-utility-bar" class="library-setup-utility-bar" aria-label="Set setup controls">
+              <details id="library-brief-lane-dropdown" class="library-brief-lane-dropdown" ontoggle="syncLibraryPreparationOpenMenus(this)">
+                <summary>
+                  <small class="library-preparation-options-label">Set</small>
+                  <span>Set Prep Options</span>
+                  <img src="/static/icons/chevron-down.svg" alt="">
+                </summary>
+                <div id="library-brief-chips" class="library-brief-chips" role="menu"></div>
+              </details>
+              <button id="library-brief-collapse" type="button" class="library-brief-collapse button--green-outline button--small" aria-expanded="false" aria-controls="library-brief-settings" {% if not axiom_lite %}title="Choose BPM, era, music style and room settings."{% endif %} onclick="toggleLibraryBriefSetup()">
+                <img src="/static/icons/sliders-horizontal.svg" alt="">
+                <span data-library-action-label>Show Setup</span>
+              </button>
+              <div class="library-setup-health" aria-label="Set health">
+                <span>Health</span>
+                <strong id="library-setup-health-value">Ready</strong>
+              </div>
+              <div class="library-setup-fit" aria-live="polite">
+                <strong id="library-setup-fit-count">0 Tracks</strong>
+                <span>Fit This Set</span>
+              </div>
+              <button id="library-setup-view-tracks" type="button" style="height:42px!important;min-height:42px!important;max-height:42px!important;" onclick="focusLibrarySetupTracks()">View Tracks</button>
+            </div>
+            <section id="library-setup-overview" class="library-setup-overview" aria-label="Current set setup" hidden>
+              <div class="library-setup-overview-copy">
+                <p id="library-setup-summary-primary">Party Mode · Live Set · Mixed Adult · Club</p>
+                <p id="library-setup-summary-secondary">Clean Preferred · Open Format · All Speeds · All Eras · All Roots</p>
+              </div>
+            </section>
+          </div>
+          {% if not axiom_lite %}<div id="library-search-feedback" class="library-search-feedback" aria-live="polite" hidden><span id="library-search-understood"></span><button type="button" onclick="clearLibraryTypedSearch()">Clear search</button></div>{% endif %}
+          <div class="library-brief-panel">
+            <div id="library-brief-settings" class="library-brief-settings hidden">
+              <div class="library-brief-control-grid">
+                <label class="library-bpm-filter-wrap" title="Rank Library rows toward an outcome" data-brief-display="Please Choose One">
+                  <span>Prep Mode</span>
+                  <select id="library-brief-intention" class="library-brief-select" onchange="setLibraryBriefField('intention', this.value)">
+                                      <option value="" disabled selected>Please Choose One</option>
+                    <option value="party">Party Mode</option>
+                    <option value="wedding">Wedding</option>
+                    <option value="club_peak">Club</option>
+                    <option value="family_friendly">Family-Friendly</option>
+                    <option value="open_format">Open Format</option>
+                    <option value="global">Global</option>
+                  </select>
+                </label>
+              <label class="library-bpm-filter-wrap" title="Choose whether this is for a live room or a repeatable content mix">
+                <span>Purpose</span>
+                <select id="library-brief-purpose" class="library-brief-select" onchange="setLibraryBriefField('purpose', this.value)">
+                  <option value="live_set">Live Set</option>
+                  <option value="content_mix">Content Mix</option>
+                </select>
+              </label>
+              <label class="library-bpm-filter-wrap" title="Choose the room age AXIOM should read for">
+                <span>Audience</span>
+                <select id="library-brief-audience" class="library-brief-select" onchange="setLibraryBriefField('audience', this.value)">
+                  <option value="mixed_adult">Mixed Adult</option>
+                  <option value="under_40">18+ Under 40</option>
+                  <option value="adult_18">18+</option>
+                  <option value="all_ages">All Ages</option>
+                </select>
+              </label>
+              <label class="library-bpm-filter-wrap" title="Choose the setting AXIOM should read for">
+                <span>Setting</span>
+                <select id="library-brief-setting" class="library-brief-select" onchange="setLibraryBriefField('setting', this.value)">
+                  <option value="club">Club</option>
+                  <option value="bar">Bar</option>
+                  <option value="private_party">Private Party</option>
+                  <option value="youtube">YouTube</option>
+                  <option value="wedding">Wedding</option>
+                  <option value="corporate">Corporate</option>
+                </select>
+              </label>
+              <label class="library-bpm-filter-wrap" title="Choose how explicit records should be treated">
+                <span>Lyrics</span>
+                <select id="library-brief-lyrics" class="library-brief-select" onchange="setLibraryBriefField('lyrics', this.value)">
+                  <option value="clean_preferred">Clean Preferred</option>
+                  <option value="clean_only">Clean Only</option>
+                  <option value="explicit_allowed">Explicit Allowed</option>
+                  <option value="after_dark">After Dark / Club</option>
+                </select>
+              </label>
+              <label class="library-bpm-filter-wrap" title="Choose the sound AXIOM should favour">
+                <span>Sound</span>
+                <select id="library-brief-sound" class="library-brief-select" onchange="setLibraryBriefField('soundFocus', this.value)">
+	                  <option value="open_format">Open Format</option>
+	                  <option value="classic_wedding">Classic Reception</option>
+	                  <option value="global_wedding">Global / Afro / Latin</option>
+	                  <option value="urban_electronic_top40">Urban + Electronic + Top 40</option>
+	                  <option value="urban">R&amp;B / Urban</option>
+	                  <option value="electronic_top40">Electronic + Top 40</option>
+                  <option value="global">Global Journey</option>
+                </select>
+              </label>
+              <label class="library-bpm-filter-wrap" title="Start from a speed range">
+                <span>BPM</span>
+                <select id="library-bpm-filter" class="library-brief-select" onchange="setLibraryBpmFilter(this.value)">
+                  <option value="all">All Speeds</option>
+                  <option value="70-85">70-85 Warm</option>
+                  <option value="85-100">85-100 Groove</option>
+                  <option value="100-115">100-115 Bounce</option>
+                  <option value="115-128">115-128 Club</option>
+                  <option value="128-140">128-140 Peak</option>
+                  <option value="140-plus">140+ Fast</option>
+                </select>
+              </label>
+              <label class="library-bpm-filter-wrap" title="Filter by release era">
+                <span>Era</span>
+                <select id="library-era-filter" class="library-brief-select" onchange="setEraFilter(this.value)">
+                  <option value="All">All Eras</option>
+                  <option value="Retro One">Retro 1</option>
+                  <option value="Retro 2">Retro 2</option>
+                  <option value="The 90s">The 90s</option>
+                  <option value="2k Era">2k Era</option>
+                  <option value="2010s">2010s</option>
+                  <option value="Pre-Covid">Pre-Covid</option>
+                  <option value="Post-Covid">Post-Covid</option>
+                  <option value="Old">Old</option>
+                  <option value="Recent">Recent</option>
+                  <option value="New">New</option>
+                  <option value="Unknown">Unknown Year</option>
+                </select>
+              </label>
+              <label class="library-bpm-filter-wrap" title="Filter by music root or broad genre family">
+                <span>Roots</span>
+                <select id="library-root-filter" class="library-brief-select" onchange="setLibraryRootFilter(this.value)">
+                  <option value="">All Roots</option>
+                  <option value="Urban">Urban</option>
+                  <option value="Global">Global</option>
+                  <option value="Electronic">Electronic</option>
+                  <option value="Pop">Pop</option>
+                  <option value="Utility">Utility</option>
+                </select>
+	              </label>
+	            </div>
+	            <div id="library-preparation-toolbar" class="library-preparation-toolbar hidden" aria-label="Library preparation filters">
+	              <div class="library-preparation-toolbar-copy">
+	                <span>Track Preparation</span>
+	                <small>Repair BPM, Camelot Key, and Year with the same Health engine and AXIOM Library cache. Source audio stays untouched.</small>
+	              </div>
+	              <label class="library-preparation-menu-field">
+	                <span>Show</span>
+	                <details id="library-preparation-filter-menu" class="library-preparation-menu" ontoggle="syncLibraryPreparationOpenMenus(this)">
+	                  <summary>
+	                    <span id="library-preparation-filter-value">Missing BPM, Key or Year</span>
+	                    <img src="/static/icons/chevron-down.svg" alt="">
+	                  </summary>
+	                  <div class="library-preparation-menu-options" role="menu" aria-label="Show Track Prep records">
+	                    <small class="library-preparation-menu-heading">Choose What To Show</small>
+	                    <button type="button" role="menuitemradio" data-value="missing_metadata" class="library-brief-chip" onclick="chooseLibraryPreparationMenu('library-preparation-filter', 'missing_metadata', this)">
+	                      <span class="library-brief-chip-index">01</span>
+	                      <span class="library-brief-chip-copy"><strong>Missing BPM, Key or Year</strong><small>Tracks with preparation gaps</small></span>
+	                      <span class="library-brief-chip-state"></span>
+	                    </button>
+	                    <button type="button" role="menuitemradio" data-value="missing_file" class="library-brief-chip" onclick="chooseLibraryPreparationMenu('library-preparation-filter', 'missing_file', this)">
+	                      <span class="library-brief-chip-index">02</span>
+	                      <span class="library-brief-chip-copy"><strong>Missing Files</strong><small>Source files AXIOM cannot reach</small></span>
+	                      <span class="library-brief-chip-state"></span>
+	                    </button>
+	                  </div>
+	                </details>
+	                <select id="library-preparation-filter" class="library-preparation-native-select" onchange="setLibraryPreparationFilter(this.value)" tabindex="-1" aria-hidden="true">
+	                  <option value="missing_metadata">Missing BPM, Key or Year</option>
+	                  <option value="missing_file">Missing Files</option>
+	                </select>
+	              </label>
+	              <label class="library-preparation-menu-field">
+	                <span>Sort</span>
+	                <details id="library-preparation-sort-menu" class="library-preparation-menu" ontoggle="syncLibraryPreparationOpenMenus(this)">
+	                  <summary>
+	                    <span id="library-preparation-sort-value">Missing Information First</span>
+	                    <img src="/static/icons/chevron-down.svg" alt="">
+	                  </summary>
+	                  <div class="library-preparation-menu-options" role="menu" aria-label="Sort Track Prep records">
+	                    <small class="library-preparation-menu-heading">Choose Library Order</small>
+	                    <button type="button" role="menuitemradio" data-value="default" class="library-brief-chip" onclick="chooseLibraryPreparationMenu('library-preparation-sort', 'default', this)">
+	                      <span class="library-brief-chip-index">01</span><span class="library-brief-chip-copy"><strong>Library Order</strong><small>Keep the current Library sequence</small></span><span class="library-brief-chip-state"></span>
+	                    </button>
+	                    <button type="button" role="menuitemradio" data-value="missing_first" class="library-brief-chip" onclick="chooseLibraryPreparationMenu('library-preparation-sort', 'missing_first', this)">
+	                      <span class="library-brief-chip-index">02</span><span class="library-brief-chip-copy"><strong>Missing Information First</strong><small>Put preparation gaps at the top</small></span><span class="library-brief-chip-state"></span>
+	                    </button>
+	                    <button type="button" role="menuitemradio" data-value="recent" class="library-brief-chip" onclick="chooseLibraryPreparationMenu('library-preparation-sort', 'recent', this)">
+	                      <span class="library-brief-chip-index">03</span><span class="library-brief-chip-copy"><strong>Recently Added First</strong><small>Newest indexed tracks first</small></span><span class="library-brief-chip-state"></span>
+	                    </button>
+	                    <button type="button" role="menuitemradio" data-value="bpm_asc" class="library-brief-chip" onclick="chooseLibraryPreparationMenu('library-preparation-sort', 'bpm_asc', this)">
+	                      <span class="library-brief-chip-index">04</span><span class="library-brief-chip-copy"><strong>BPM Low To High</strong><small>Slowest tempo first</small></span><span class="library-brief-chip-state"></span>
+	                    </button>
+	                    <button type="button" role="menuitemradio" data-value="bpm_desc" class="library-brief-chip" onclick="chooseLibraryPreparationMenu('library-preparation-sort', 'bpm_desc', this)">
+	                      <span class="library-brief-chip-index">05</span><span class="library-brief-chip-copy"><strong>BPM High To Low</strong><small>Fastest tempo first</small></span><span class="library-brief-chip-state"></span>
+	                    </button>
+	                    <button type="button" role="menuitemradio" data-value="key" class="library-brief-chip" onclick="chooseLibraryPreparationMenu('library-preparation-sort', 'key', this)">
+	                      <span class="library-brief-chip-index">06</span><span class="library-brief-chip-copy"><strong>Camelot Key</strong><small>Group harmonic keys together</small></span><span class="library-brief-chip-state"></span>
+	                    </button>
+	                    <button type="button" role="menuitemradio" data-value="year" class="library-brief-chip" onclick="chooseLibraryPreparationMenu('library-preparation-sort', 'year', this)">
+	                      <span class="library-brief-chip-index">07</span><span class="library-brief-chip-copy"><strong>Year Newest First</strong><small>Most recent release year first</small></span><span class="library-brief-chip-state"></span>
+	                    </button>
+	                  </div>
+	                </details>
+	                <select id="library-preparation-sort" class="library-preparation-native-select" onchange="setLibraryPreparationSort(this.value)" tabindex="-1" aria-hidden="true">
+	                  <option value="default">Library Order</option>
+	                  <option value="missing_first">Missing Information First</option>
+	                  <option value="recent">Recently Added First</option>
+	                  <option value="bpm_asc">BPM Low to High</option>
+	                  <option value="bpm_desc">BPM High to Low</option>
+	                  <option value="key">Camelot Key</option>
+	                  <option value="year">Year Newest First</option>
+	                </select>
+	              </label>
+	              <button id="library-preparation-scan-visible" type="button" onclick="runLibraryPreparationPrimaryAction(this)" class="button--green-outline">
+	                Scan Filtered Tracks
+	              </button>
+	              <div id="library-preparation-inherited-filters" class="library-preparation-inherited-filters" hidden aria-live="polite"></div>
+	              <div id="library-preparation-scan-receipt" class="library-preparation-scan-receipt hidden" aria-live="polite">
+	                <div>
+	                  <strong id="library-preparation-receipt-title">Scan Finished</strong>
+	                  <span id="library-preparation-receipt-copy">The filtered Library list has been refreshed.</span>
+	                  <button id="library-preparation-view-all" type="button" onclick="returnToAllLibraryTracks(this)">View All Tracks</button>
+	                  <button id="library-preparation-stop-retries" type="button" class="hidden" onclick="stopUnifiedHealthScan()">Stop Retries</button>
+	                  <button id="library-preparation-export-key-batch" type="button" class="hidden" onclick="downloadLibraryKeyAnalysisBatch(this)">Create Serato/djay Analysis Batch</button>
+	                </div>
+	                <span><b id="library-preparation-receipt-scanned">0</b><small>Tracks Scanned</small></span>
+	                <span><b id="library-preparation-receipt-fixed">0</b><small>Values Saved</small></span>
+	                <span><b id="library-preparation-receipt-review">0</b><small>Still Need Attention</small></span>
+	              </div>
+	            </div>
+	            <div id="library-brief-active-summary" class="library-brief-active-summary"></div>
+              <p id="library-brief-copy" class="library-brief-description">Choose the room settings AXIOM should use to rank this Library view.</p>
+	          </div>
+          </div>
+	        </div>
+        <div id="library-batch-bpm-toolbar" class="library-batch-bpm-toolbar hidden" aria-live="polite">
+          <div class="library-batch-bpm-copy">
+            <strong><span id="library-batch-bpm-count">0</span> Selected</strong>
+            <span>Add to Studio or Half BPM. Source audio stays untouched. Double BPM is also available.</span>
+          </div>
+          <div class="library-batch-bpm-actions">
+            <button id="library-batch-select-shown" type="button" class="button--green-outline" onclick="selectAllShownLibraryTracks()">Select All On This Page</button>
+            <button id="library-batch-add-studio" type="button" class="button--green-outline" onclick="addSelectedLibraryTracksToStudio(this)">Add To Studio</button>
+            <button id="library-batch-half-bpm" type="button" class="button--primary" onclick="batchHalfSelectedLibraryBpm(this)">Half BPM</button>
+            <button id="library-batch-double-bpm" type="button" class="button--secondary" onclick="batchDoubleSelectedLibraryBpm(this)">Double BPM</button>
+            <button type="button" class="button--secondary" onclick="clearLibraryBatchSelection()">Clear</button>
+          </div>
+        </div>
+        {% if not axiom_lite %}
+        <div id="library-column-headings" role="row" aria-label="Library column sorting">
+          <button type="button" class="library-select-all" aria-label="Select all displayed Library tracks" onclick="selectAllShownLibraryTracks()"><img src="/static/icons/square.svg" alt=""></button>
+          <div class="library-heading-art" aria-hidden="true"></div>
+          {% for token, label in [('title', 'Track'), ('genre', 'Genre'), ('year', 'Year'), ('bpm', 'BPM'), ('key', 'Key')] %}
+          <div role="columnheader" aria-sort="none" class="library-column-{{ token }}"><button type="button" data-library-top-sort="{{ token }}" aria-label="Sort Library by {{ label }}" aria-pressed="false" onclick="setLibraryTopSort('{{ token }}', event)" oncontextmenu="if(event.ctrlKey){event.preventDefault();setLibraryTopSort('{{ token }}', event)}" title="Click to sort; click again to reverse. Ctrl-click or Command-click to add a secondary sort."><span>{{ label }}</span><span class="library-sort-order"></span><img class="library-sort-arrow" src="/static/icons/chevron-up.svg" alt=""></button></div>
+          {% endfor %}
+          <span class="library-heading-actions">Actions</span>
+        </div>
+        <p id="library-sort-description" role="status">Ctrl-click a heading to add a secondary sort.</p>
+        {% endif %}
+        <div id="search-results" class="flex-1 overflow-y-auto pr-4 pb-20 flex flex-col gap-3" role="list" aria-label="Library tracks"></div>
+        </div>
+
+        <div id="smart-links-panel" class="w-[450px] border border-white/10 ml-8 p-8 flex flex-col h-full shrink-0 rounded-2xl smart-links-container recommendations-panel" style="background: #1e1e1e; box-shadow: 6px 12px 22px rgba(0,0,0,0.35);">
+          <div id="library-matching-rail" class="library-rail-pane">
+          <div class="recommendations-header">
+            <span class="recommendations-icon">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 14a8 8 0 0 1 16 0M4 14h2m12 0h2M7 14v4m10-4v4m-6-4v7m2-7v7" />
+              </svg>
+            </span>
+            <h3 class="recommendations-title">Matching Songs</h3>
+          </div>
+          <div class="flex gap-2 mb-6 flex-wrap pb-2 recommendations-controls">
+            <button type="button" onclick="toggleLibModifier('bpm_half')" id="lmod-bpm_half" aria-pressed="false"
+              class="px-3 py-1 rounded-md bg-white/5 text-[9px] font-black uppercase text-white hover:text-[#ADFF2F] hover:border-[#ADFF2F] border border-white/10 transition-all button--secondary button--small">Half BPM</button>
+            <button type="button" onclick="toggleLibModifier('bpm_double')" id="lmod-bpm_double" aria-pressed="false"
+              class="px-3 py-1 rounded-md bg-white/5 text-[9px] font-black uppercase text-white hover:text-[#ADFF2F] hover:border-[#ADFF2F] border border-white/10 transition-all button--secondary button--small">Double BPM</button>
+            <select id="lmod-bpm-window" onchange="setLibraryMatchingFilter('bpm_window', this.value)" aria-label="Matching Songs BPM range"
+              class="bg-black border border-white/10 text-white text-[9px] font-black uppercase rounded-md px-2 outline-none hover:border-[#ADFF2F] transition-all">
+              <option value="3" selected>±3 BPM</option>
+              <option value="5">±5 BPM</option>
+              <option value="10">±10 BPM</option>
+            </select>
+            <select id="lmod-era" onchange="setLibraryMatchingFilter('era', this.value)" aria-label="Matching Songs era"
+              class="bg-black border border-white/10 text-white text-[9px] font-black uppercase rounded-md px-2 outline-none hover:border-[#ADFF2F] transition-all">
+              <option value="All">All Eras</option>
+              <option value="Retro One">Retro 1</option>
+              <option value="Retro 2">Retro 2</option>
+              <option value="The 90s">The 90s</option>
+              <option value="2k Era">2k Era</option>
+              <option value="2010s">2010s</option>
+              <option value="Pre-Covid">Pre-Covid</option>
+              <option value="Post-Covid">Post-Covid</option>
+              <option value="Old">Old</option>
+              <option value="Recent">Recent</option>
+              <option value="New">New</option>
+              <option value="Unknown">Unknown</option>
+            </select>
+            <select id="lmod-root" onchange="setLibraryMatchingFilter('root', this.value)" aria-label="Matching Songs music root"
+              class="bg-black border border-white/10 text-white text-[9px] font-black uppercase rounded-md px-2 py-1 outline-none hover:border-[#ADFF2F] transition-all">
+              <option value="">All Roots</option>
+              <option value="Urban">Urban</option>
+              <option value="Global">Global</option>
+              <option value="Electronic">Electronic</option>
+              <option value="Pop">Pop</option>
+              <option value="Utility">Utility</option>
+            </select>
+            <span class="root-help" title="Urban: Hip-hop, R&B, trap, funk, gospel&#10;Global: Afro, moombahton, reggae, world&#10;Electronic: House, techno, D&B, synth&#10;Pop: Mainstream, Top 40, dance pop, ballads&#10;Utility: Openers, transitions, FX, tools">i</span>
+            <select id="lmod-count" onchange="setLibraryMatchingFilter('count', this.value)" aria-label="Matching Songs result count"
+              class="bg-black border border-white/10 text-white text-[9px] font-black uppercase rounded-md px-2 outline-none hover:border-[#ADFF2F] transition-all">
+              <option value="10">10 Matches</option>
+              <option value="20" selected>20 Matches</option>
+              <option value="50">50 Matches</option>
+              <option value="100">100 Matches</option>
+            </select>
+            <div id="library-matching-filter-status" class="library-matching-filter-status" hidden aria-live="polite"></div>
+          </div>
+          <div id="lib-suggestions-list" class="flex-1 overflow-y-auto space-y-3 pb-20">
+            <p class="text-white font-bold text-xs uppercase mt-10 text-center tracking-widest">Select a song to find matching songs</p>
+          </div>
+          </div>
+        </div>
+      </div>
+    </div>

@@ -1,0 +1,11 @@
+.axiom-windows-video { width:min(760px,92vw); max-height:90vh; border:1px solid #99db20; border-radius:12px; background:#101711; color:#f4f7ef; padding:18px; }
+.axiom-windows-video::backdrop { background:rgba(0,0,0,.78); }
+.axiom-windows-video header { display:flex; align-items:center; justify-content:space-between; gap:16px; }
+.axiom-windows-video h2 { font-size:1.15rem; margin:0; overflow-wrap:anywhere; }
+.axiom-windows-video button { border:1px solid #a9da43; border-radius:6px; padding:8px 14px; background:#1d2c18; color:white; cursor:pointer; }
+.axiom-windows-video p { color:#d4dec8; margin:12px 0; }
+.axiom-windows-video video { display:block; width:100%; max-height:65vh; background:#000; }
+.axiom-windows-video header h2 { flex: 1 1 auto; }
+.axiom-windows-video header button { flex: none; }
+.axiom-windows-video p:empty { display: none; }
+.axiom-windows-video .axiom-windows-video-audio-only { display: flex; align-items: center; gap: 8px; margin-top: 12px; font-size: .9rem; color: #d4dec8; cursor: pointer; }

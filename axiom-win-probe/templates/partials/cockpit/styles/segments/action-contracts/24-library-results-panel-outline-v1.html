@@ -1,0 +1,19 @@
+<style id="library-results-panel-outline-v1">
+  /* Separate the Library result deck from the brushed-steel chassis without
+     changing row geometry or introducing another heavy card surface. */
+  html body:not(.light-mode) #tab-content-library.library-cockpit#tab-content-library
+    .library-results-column > #search-results#search-results {
+    border: 1px solid rgba(163, 255, 0, .52) !important;
+    background-color: rgba(3, 7, 5, .86) !important;
+    box-shadow:
+      0 0 0 2px rgba(0, 0, 0, .82),
+      inset 0 1px 0 rgba(255, 255, 255, .045),
+      0 14px 30px rgba(0, 0, 0, .26) !important;
+  }
+
+  html body.light-mode #tab-content-library.library-cockpit#tab-content-library
+    .library-results-column > #search-results#search-results {
+    border: 1px solid rgba(0, 71, 171, .34) !important;
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, .82) !important;
+  }
+</style>

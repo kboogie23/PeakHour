@@ -1,0 +1,848 @@
+        <div id="health-view" class="hidden flex-1 flex flex-col min-h-0 w-full overflow-y-auto pr-2 pb-36">
+            <section id="health-inbox-app" class="health-inbox-app health-approved-shell" aria-label="Library Health" aria-busy="true" data-health-snapshot-state="idle" data-health-has-snapshot="false">
+                {% if not axiom_lite %}{% include 'partials/cockpit/surfaces/health-cockpit.html' %}{% endif %}
+                <div class="health-steel-chassis health-steel-overview-chassis">
+                <header class="health-approved-header health-readiness-header">
+                    <div class="health-readiness-copy">
+                        <span class="health-readiness-kicker">Library Health</span>
+                        <div class="health-approved-title-row">
+                            <h2 id="health-readiness-title">Scan Library Health</h2>
+                        </div>
+                        <p id="health-readiness-copy">Run a Health scan to find missing files, BPM, key, year and review queues before AXIOM suggests fixes.</p>
+                        <div class="health-approved-summary">
+                            <span><b id="health-stat-total">&mdash;</b> <span id="health-stat-total-label">unknown until scan</span></span>
+                            <span><b id="health-inbox-track-total">&mdash;</b> tracks checked</span>
+                            <i aria-hidden="true">·</i>
+                            <span><b id="health-inbox-attention-count">&mdash;</b> <span id="health-inbox-attention-label">need your review</span></span>
+                            <i aria-hidden="true">·</i>
+                            <span>Last checked <b id="health-inbox-last-checked">not scanned yet</b></span>
+                        </div>
+                    </div>
+                    <div class="health-readiness-actions">
+                        <div class="health-readiness-action-module" aria-label="Health repair summary">
+                            <span class="health-readiness-badge"><strong id="health-approved-improvements">&mdash;</strong><small id="health-approved-improvements-label">repairs</small></span>
+                            <span class="health-readiness-live-copy"><strong id="health-readiness-live-title">Library Health</strong><small id="health-readiness-live-state">Repair plan ready</small></span>
+                        </div>
+                        <span id="health-readiness-next-copy" class="health-readiness-next-copy hidden">Next step</span>
+                        <button id="health-prepare-library" class="health-readiness-primary" type="button" data-health-action="refresh" onclick="handleHealthReadinessPrimary(this)">Scan Health</button>
+                        <button id="health-readiness-secondary" class="health-readiness-secondary hidden" type="button" data-health-action="workspace" onclick="handleHealthReadinessSecondary(this)">Review Tracks</button>
+                        <button id="health-readiness-stop" class="health-readiness-stop" type="button" onclick="stopUnifiedHealthScan()">Stop Safely</button>
+                        <button id="health-readiness-rerun" class="health-readiness-tertiary hidden" type="button" onclick="dismissHealthScanReceipt()">Back to Health Overview</button>
+                        <button id="health-readiness-last-receipt" class="health-readiness-tertiary hidden" type="button" onclick="restoreHealthScanReceipt()">View Last Scan Receipt</button>
+                    </div>
+                </header>
+
+                {% if not axiom_lite %}
+                <section id="health-batch-panel" class="health-readiness-plan" aria-label="Publish AXIOM information into your DJ software after a Health scan">
+                    <div class="health-readiness-plan-copy">
+                        <div class="health-batch-header">
+                            <div class="health-batch-heading">
+                                <span class="health-batch-kicker">After Health Scan</span>
+                                <h3>Publish to DJ software</h3>
+                                <p class="health-batch-intro">Use this after Health has scanned and saved values. It publishes verified missing BPM, key and year tags; it is not the Health scan.</p>
+                            </div>
+                            <div class="health-readiness-plan-actions">
+                                <button id="health-batch-start" class="health-readiness-plan-start" type="button" onclick="startHealthMetadataBatch(this)">Publish Verified Tags</button>
+                                <button id="health-batch-history-button" class="health-readiness-secondary" type="button" onclick="showHealthMetadataHistory()">Batch History</button>
+                                <select id="health-batch-history" class="hidden" aria-label="Choose a previous metadata batch" onchange="healthMetadataBatch = {id: this.value}; pollHealthMetadataBatch()"></select>
+                                <button id="health-batch-rollback" class="health-readiness-secondary hidden" type="button" onclick="rollbackHealthMetadataBatch()">Roll Back Full Batch</button>
+                            </div>
+                        </div>
+                        <div class="health-batch-apps" aria-label="How your DJ software picks up the updates">
+                            <article class="health-batch-app">
+                                <div class="health-batch-brand"><img src="/static/brands/serato-dj-pro.svg" alt="Serato DJ Pro" width="194" height="34"></div>
+                                <strong>BPM · Key · Year</strong>
+                                <p>After AXIOM finishes, use <b>Re-scan File Info</b> in Serato to see your updates.</p>
+                            </article>
+                            <article class="health-batch-app">
+                                <div class="health-batch-brand health-batch-brand-djay"><img src="/static/brands/djay-wordmark.png" alt="djay" width="116" height="32"><span>Pro</span></div>
+                                <strong>BPM · Year</strong>
+                                <p>Reopen your tracks in <b>My Files</b> to see your updates. <b>Scan keys separately in djay.</b></p>
+                            </article>
+                        </div>
+                        <ul class="health-batch-promises" aria-label="Your music stays protected">
+                            <li>Existing info kept</li>
+                            <li>Backup before changes</li>
+                            <li>Undo the full batch</li>
+                        </ul>
+                        <p class="health-batch-reassurance">Only missing song details are filled in. Your audio stays unchanged. Anything uncertain is left alone and listed in your results.</p>
+                        <details class="health-batch-details">
+                            <summary>Good to know</summary>
+                            <p>AXIOM saves the updates with your music files. It does not directly change your Serato or djay library database. Existing Serato beatgrids stay as they are, so deck BPM may differ. Refresh tested with MP3, FLAC and M4A; djay’s My Collection refresh is not yet verified.</p>
+                        </details>
+                        <p id="health-batch-status" role="status" aria-live="polite">Scan Health first, then publish verified missing tags here.</p>
+                        <p id="health-batch-summary"></p>
+                        <p id="health-batch-refresh" class="hidden">Your updates are saved. Follow the Serato or djay steps above to see them in your DJ software.</p>
+                        <a id="health-batch-report" class="hidden" href="#">Download results and exceptions</a>
+                    </div>
+                </section>
+                {% endif %}
+
+                <section class="health-readiness-plan" aria-label="Full audio verification">
+                    <div class="health-readiness-plan-copy"><h3>Audio Readiness</h3><p>Check complete songs for unreadable audio before making a mixtape. BPM, key and year scans check metadata; this check reads every song to its end.</p><p id="health-audio-check-status" role="status" aria-live="polite" hidden></p></div>
+                    <button class="health-readiness-plan-start" type="button" onclick="checkHealthAudioReadiness(this)">Check Audio</button>
+                </section>
+
+                <section id="health-readiness-plan" class="health-readiness-plan hidden" aria-labelledby="health-readiness-plan-title" aria-hidden="true" tabindex="-1">
+                    <div class="health-readiness-plan-copy">
+                        <span class="health-readiness-plan-kicker">Before Health Runs</span>
+                        <h3 id="health-readiness-plan-title">What AXIOM Will Repair</h3>
+                        <p id="health-readiness-plan-summary">Review the preparation work queued for this library.</p>
+                    </div>
+                    <div id="health-readiness-plan-lanes" class="health-readiness-plan-lanes" aria-live="polite"></div>
+                    <div class="health-readiness-plan-safety">
+                        <strong>Nothing changes until you start.</strong>
+                        <span>Repairs are saved only in AXIOM. Source audio, Serato, and djay Pro stay untouched.</span>
+                    </div>
+                    <div class="health-readiness-plan-actions">
+                        <button class="health-readiness-plan-close" type="button" onclick="closeHealthPreparationPlan()">Close Review</button>
+                        <button id="health-readiness-plan-start" class="health-readiness-plan-start" type="button" onclick="startHealthPreparationFromPlan(this)">Start Repairs</button>
+                    </div>
+                </section>
+
+                <div id="health-repair-center" class="health-repair-center health-approved-lanes" aria-label="Health status lanes">
+                    <button id="health-inbox-item-missing_file" class="health-repair-center-card file" data-health-item="missing_file" onclick="selectHealthInboxItem('missing_file')" type="button">
+                        <span>Missing Files</span>
+                        <strong id="health-stat-missing-file">&mdash;</strong>
+                        <small>Reconnect moved music before preparing the set.</small>
+                    </button>
+                        <button id="health-inbox-item-missing_bpm" class="health-repair-center-card bpm" data-health-item="missing_bpm" onclick="handleHealthApprovedLaneClick('missing_bpm', event, this)" type="button">
+                        <span>Missing BPM</span>
+                        <strong id="health-repair-bpm-count">&mdash;</strong>
+                        <small>Fix tempo for safer set flow and BPM movement.</small>
+                        <span class="health-approved-lane-control">
+                            <span id="health-repair-bpm-clear" class="health-repair-card-clear">Clear</span>
+                            <span id="btn-fix-bpm" class="health-repair-card-action hidden">Scan BPM</span>
+                        </span>
+                    </button>
+                        <button id="health-inbox-item-missing_key" class="health-repair-center-card key" data-health-item="missing_key" onclick="handleHealthApprovedLaneClick('missing_key', event, this)" type="button">
+                        <span>Missing Key</span>
+                        <strong id="health-repair-key-count">&mdash;</strong>
+                        <small>Fill harmonic data for stronger transition choices.</small>
+                        <span class="health-approved-lane-control">
+                            <span id="health-repair-key-clear" class="health-repair-card-clear">Clear</span>
+                            <span id="btn-fix-key" class="health-repair-card-action hidden">Scan</span>
+                        </span>
+                    </button>
+                        <button id="health-inbox-item-missing_year" class="health-repair-center-card year" data-health-item="missing_year" onclick="handleHealthApprovedLaneClick('missing_year', event, this)" type="button">
+                        <span>Missing Year</span>
+                        <strong id="health-repair-year-count">&mdash;</strong>
+                        <small>Improve era placement and freshness control.</small>
+                        <span class="health-approved-lane-control">
+                            <span id="health-repair-year-clear" class="health-repair-card-clear">Clear</span>
+                            <span id="btn-fix-year" class="health-repair-card-action hidden">Scan Years</span>
+                        </span>
+                    </button>
+
+                    <div class="health-approved-hidden-state" aria-hidden="true">
+                        <span id="health-repair-center-state">Library Health</span>
+                        <span id="health-repair-center-title"><span class="overall-health-value">0</span> Improvements Needed</span>
+                        <span id="health-repair-center-copy">Health counts are current. AXIOM checks exact-path Serato or djay Pro data when that evidence is available, then falls back to local analysis.</span>
+                        <span id="health-repair-ready-count">0</span>
+                        <span id="health-stat-missing-bpm">0</span>
+                        <span id="health-stat-missing-key">0</span>
+                        <span id="health-stat-missing-year">0</span>
+                        <span id="health-overall-band"><b id="health-overall-rate">Building Baseline</b><em id="health-overall-detail">0 / 1,000 eligible tracks</em></span>
+                        <button id="btn-fix-all-health" class="hidden" onclick="startUnifiedHealthScan('', this)" type="button">Fix All Health</button>
+                        <span id="health-repair-all-clear">Clear</span>
+                        <button id="health-scan-all-button" type="button" onclick="startUnifiedHealthScan('', this)">Scan All Health</button>
+                        <button id="health-scan-pause-button" class="hidden" type="button" onclick="stopUnifiedHealthScan()">Stop Safely</button>
+                        <button id="health-scan-resume-button" class="hidden" type="button" onclick="resumeUnifiedHealthScan()">Resume Scan</button>
+                        <button id="health-scan-stop-button" class="hidden" type="button" onclick="stopUnifiedHealthScan()">Stop After Batch</button>
+                        <button id="health-scan-results-button" class="hidden" type="button" onclick="showUnifiedHealthResults()">View Results</button>
+                        <span id="health-approved-audio-count" class="hidden">0</span>
+                    </div>
+                </div>
+
+                <section id="health-new-music-intake" class="health-new-music-intake" aria-label="New music Health intake">
+                    <div class="health-new-music-intake-copy">
+                        <span>New Music Inbox</span>
+                        <strong id="health-new-music-title">No Recent Batch</strong>
+                        <small id="health-new-music-copy">Add music to AXIOM and its latest batch will appear here for one complete Health check.</small>
+                    </div>
+                    <span class="health-new-music-stat"><small>Ready</small><strong id="health-new-music-ready">0</strong></span>
+                    <span class="health-new-music-stat"><small>Needs Prep</small><strong id="health-new-music-prepare">0</strong></span>
+                    <span class="health-new-music-stat"><small>Needs Review</small><strong id="health-new-music-review">0</strong></span>
+                    <div class="health-new-music-actions">
+                        <button id="health-new-music-add" class="primary health-new-music-add" type="button" onclick="openLibrarySourcePicker()">Add Music</button>
+                        <button id="health-new-music-check" type="button" onclick="checkNewMusicAcrossHealth(this)">Review Batch</button>
+                        <button id="health-new-music-prepare-button" class="primary" type="button" onclick="prepareNewMusicBatch(this)">Prepare New Tracks</button>
+                    </div>
+                </section>
+
+                <section id="health-source-connections" class="health-source-connections" aria-label="Health connections">
+                    {% if not axiom_lite %}
+                    <article class="health-source-connection health-audio-driver-connection">
+                        <div class="health-source-connection-copy">
+                            <span>Mac Audio</span>
+                            <strong>Audio Driver</strong>
+                            <small>Check or refresh Core Audio before analysis or a live set.</small>
+                        </div>
+                        <button id="btn-coreaudio-loud" class="health-source-connection-action status-ok" onclick="refreshCoreAudioDriver(this)" type="button" title="Check Core Audio and repair it automatically only when needed.">
+                            <i class="status-icon" aria-hidden="true"></i>
+                            <span id="coreaudio-status-text">Check Audio</span>
+                        </button>
+                    </article>
+                    {% endif %}
+                    <article class="health-source-connection health-serato-database-connection">
+                        <div class="health-source-connection-copy">
+                            <span>Health Accelerator</span>
+                            <strong>Serato Database V2</strong>
+                            <small>Use trusted Serato BPM, key, and year to reduce missing Health metadata. Only AXIOM's cache changes.</small>
+                        </div>
+                        <button id="btn-sync-serato-library" onclick="syncSeratoLibraryFolderToAxiom(this)" class="health-source-connection-action health-serato-sync-btn" type="button" title="Choose Serato database V2 and use its BPM, key, and year data to improve AXIOM Health. Source audio and the Serato database stay untouched.">
+                            <img src="/static/icons/database.svg" alt="" aria-hidden="true">
+                            <span>Choose Database V2</span>
+                        </button>
+                    </article>
+                    <article class="health-source-connection health-generated-cache-connection">
+                        <div class="health-source-connection-copy">
+                            <span>Storage</span>
+                            <strong>AXIOM Generated Cache</strong>
+                            <small>Clear temporary previews, internal export backups and legacy AXIOM backup folders. BPM, key, year and saved sets stay.</small>
+                        </div>
+                        <button id="health-clear-generated-cache" class="health-source-connection-action" onclick="clearAxiomGeneratedCache(this)" type="button" title="Clear AXIOM-generated storage without resetting BPM, key, year, cues, saved sets, source audio, Serato, or djay Pro.">
+                            <img src="/static/icons/database.svg" alt="" aria-hidden="true">
+                            <span>Clear Cache</span>
+                        </button>
+                    </article>
+                </section>
+                </div>
+
+                <div class="health-steel-chassis health-steel-workflow-chassis">
+                <section class="health-approved-console" aria-label="Health repair console" data-health-job-state="idle">
+                    <article class="health-approved-task">
+                        <span class="health-approved-kicker">Why This Matters</span>
+                        <div class="health-approved-task-heading">
+                            <h3 id="health-approved-task-title">Missing Files</h3>
+                            <span id="health-approved-task-count">0 Items</span>
+                        </div>
+                        <p id="health-approved-task-copy">Reconnect moved music before relying on previews, exports, or live set decisions.</p>
+                        <div class="health-approved-task-actions">
+                            <button id="health-approved-task-action" class="health-approved-primary" type="button" onclick="runHealthApprovedSelectedAction()">Reconnect Music</button>
+                            <button class="health-approved-more" type="button" onclick="toggleHealthApprovedTools()" aria-label="Health tools">Tools</button>
+                        </div>
+                        <button class="health-approved-checks-toggle" type="button" onclick="toggleHealthApprovedChecks()">
+                            <img id="health-approved-checks-chevron" src="/static/icons/chevron-down.svg" alt="" aria-hidden="true">
+                            What AXIOM Checks
+                        </button>
+                        <div id="health-approved-checks" class="health-approved-checks hidden">Trusted DJ analysis, embedded tags, filename evidence, strict local analysis, and AXIOM cache state. Serato and djay Pro remain read-only.</div>
+                    </article>
+
+                    <article class="health-approved-working">
+                        <header class="health-approved-working-head">
+                            <span class="health-approved-working-intro">
+                                <span id="health-approved-working-kicker" class="health-approved-kicker">New Music Inbox</span>
+                                <strong id="health-approved-working-heading">Inline Batch Console</strong>
+                                <small id="health-approved-working-copy">AXIOM is processing this batch in order. Completed work is saved safely in the background.</small>
+                                <span id="health-approved-worker-state" class="health-approved-worker-state">Ready</span>
+                            </span>
+                            <div class="health-approved-live-metrics" aria-label="Health scan totals">
+                                <span class="health-approved-live-metrics-label">Batch Progress</span>
+                                <span><strong id="health-approved-metric-checked">0</strong><small>Repair checks</small></span>
+                                <span><strong id="health-approved-metric-fixed">0</strong><small id="health-approved-metric-fixed-detail">Values saved</small></span>
+                                <span><strong id="health-approved-metric-review">0</strong><small>Review</small></span>
+                                <span><strong id="health-approved-metric-pending">0</strong><small>Checks left</small></span>
+                                <strong id="health-approved-metric-queued" class="hidden">0</strong>
+                            </div>
+                        </header>
+                        <div id="health-unified-live" class="health-approved-working-body" aria-live="polite">
+                            <div id="health-scope-summary" class="health-scope-summary hidden" aria-label="Track scan breakdown">
+                                <span><strong id="health-scope-checked">0</strong><small>Tracks checked</small></span>
+                                <span><strong id="health-scope-already_healthy">0</strong><small>Already complete</small></span>
+                                <span><strong id="health-scope-repaired">0</strong><small>Repaired</small></span>
+                                <span><strong id="health-scope-skipped">0</strong><small>Skipped</small></span>
+                                <span><strong id="health-scope-needs_attention">0</strong><small>Still need attention</small></span>
+                            </div>
+                            <div id="health-unified-active-actions" class="health-approved-live-source"></div>
+                            <strong id="health-approved-working-status" class="health-approved-working-status">Ready for a trusted Health check</strong>
+                            <div id="health-approved-stageboard" class="health-approved-stageboard" aria-label="Health scan stages">
+                                <span data-stage-icon="rotate-cw"><img src="/static/icons/check.svg" alt="" aria-hidden="true"><small>Library</small><em>Checking scope</em></span>
+                                <span data-stage-icon="rotate-cw"><img src="/static/icons/check.svg" alt="" aria-hidden="true"><small>Metadata</small><em>Reusing saved data</em></span>
+                                <span data-stage-icon="rotate-cw"><img src="/static/icons/check.svg" alt="" aria-hidden="true"><small>Audio</small><em>Preparing tracks</em></span>
+                                <span data-stage-icon="rotate-cw"><img src="/static/icons/check.svg" alt="" aria-hidden="true"><small>Analyse</small><em>Finding missing data</em></span>
+                                <span data-stage-icon="rotate-cw"><img src="/static/icons/check.svg" alt="" aria-hidden="true"><small>Save</small><em>Verifying results</em></span>
+                            </div>
+                            <div class="health-approved-current-strip">
+                                <div class="health-approved-now-track">
+                                    <img id="health-approved-waveform" src="/static/icons/audio-waveform.svg" alt="" aria-hidden="true" class="opacity-50 transition-all">
+                                    <span><small id="health-approved-track-label">Working now</small><strong id="health-approved-working-title">No active scan</strong><em id="health-approved-working-artist">Choose a Health lane to begin.</em></span>
+                                </div>
+                                <div class="health-approved-time-block"><small>Elapsed</small><strong id="health-approved-elapsed">00:00</strong></div>
+                                <div class="health-approved-progress-block">
+                                    <div class="health-approved-inline-meter"><span id="health-approved-inline-bar"></span></div>
+                                    <strong id="health-approved-progress-percent">0%</strong>
+                                </div>
+                                <div class="health-approved-time-block remaining"><small>Est. Remaining</small><strong id="health-approved-remaining-time">--:--</strong></div>
+                            </div>
+                            <div id="health-approved-active-queue" class="health-approved-active-queue" aria-label="New music batch progress"></div>
+                            <div class="health-approved-working-foot"><span id="health-approved-remaining">0 remaining</span><i></i><span id="health-approved-checks-progress">0 checks</span></div>
+                            <div id="health-unified-recent-events" class="health-approved-recent-source hidden"></div>
+                        </div>
+                    </article>
+
+                    <article class="health-approved-results">
+                        <header class="health-session-receipt-head">
+                            <div class="health-session-receipt-title">
+                                <span>Session Receipt</span>
+                                <strong>What AXIOM Completed</strong>
+                            </div>
+                            <div class="health-session-tier" id="health-session-tier" data-tier="0">
+                                <img src="/static/icons/zap.svg" alt="" aria-hidden="true">
+                                <span><strong id="health-session-tier-label">Session Open</strong><small id="health-session-tier-percent">0% of library improved</small></span>
+                                <i aria-hidden="true"><b></b><b></b><b></b></i>
+                            </div>
+                        </header>
+                        <div class="health-session-receipt-label" aria-label="This session activity">
+                            <span>This Session</span>
+                            <strong id="health-session-receipt-count">0</strong>
+                        </div>
+                        <div id="health-approved-results-panel"></div>
+                    </article>
+                </section>
+
+                <section id="health-set-review" class="health-approved-set-building">
+                    <button class="health-approved-set-summary" type="button" onclick="toggleHealthApprovedSetBuilding()" aria-expanded="false" aria-controls="health-approved-set-detail">
+                        <span class="health-approved-set-title">Filter DJ tools &amp; long mixes <b id="health-inbox-set-building-count">0</b></span>
+                        <span class="health-approved-set-collapsed-copy">Keep kicks, snares, FX and drops out of your song picks. Choose a category and remove it in a few clicks.</span>
+                        <img id="health-approved-set-chevron" src="/static/icons/chevron-down.svg" alt="" aria-hidden="true">
+                    </button>
+                    <div id="health-approved-set-detail" class="health-approved-set-detail hidden">
+                        <p class="health-set-guide">Imported your whole music folder? Choose a category below, then remove it from AXIOM in one go. Review individual tracks if you want. Your music files stay on disk.</p>
+                        <div class="health-approved-set-tabs" role="tablist" aria-label="Set Building review categories">
+                            <button id="health-inbox-item-stingers" data-health-item="stingers" onclick="selectHealthInboxItem('stingers')" type="button" role="tab">Drops &amp; Stingers <b id="health-cleanup-stingers">0</b></button>
+                            <button id="health-inbox-item-transitions" data-health-item="transitions" onclick="selectHealthInboxItem('transitions')" type="button" role="tab">BPM Transitions <b id="health-cleanup-transitions">0</b></button>
+                            <button id="health-inbox-item-sound_effects" data-health-item="sound_effects" onclick="selectHealthInboxItem('sound_effects')" type="button" role="tab">FX &amp; Drum Samples <b id="health-cleanup-sound-effects">0</b></button>
+                            <button id="health-inbox-item-mixtapes" data-health-item="mixtapes" onclick="selectHealthInboxItem('mixtapes')" type="button" role="tab">Mixtapes &amp; Long Mixes <b id="health-cleanup-mixtapes">0</b></button>
+                        </div>
+                        <div id="health-approved-set-content" class="health-approved-set-content">Select a category to review candidates. Excluding a DJ tool affects AXIOM set-building only; the track stays searchable and source audio stays untouched.</div>
+                    </div>
+                </section>
+
+                <section id="health-approved-tools" class="health-approved-tools" aria-label="Library Health workspaces">
+                    <details id="health-recordings" ontoggle="if (this.open) loadHealthRecordings()">
+                        <summary>DJ mixes &amp; long recordings</summary>
+                        <p>Skipped for BPM, key and year scans. Playtime and title clues identify long recordings. Choose Individual song to include an unusually long song.</p>
+                        <div id="health-recordings-list" class="health-detail-list"></div>
+                    </details>
+                    <div class="health-approved-tools-head">
+                        <span><strong>Health Workspaces</strong><small>Choose the job you want to finish. AXIOM opens the full controls beside it without duplicating the same action elsewhere.</small></span>
+                    </div>
+                    <nav class="health-inbox-nav health-workspace-nav" aria-label="Health task groups">
+                        <section class="health-workspace-group organise active" data-health-workspace="organisation" tabindex="0" aria-current="true" onclick="selectHealthWorkspaceGroup('organisation', this, event)" onkeydown="handleHealthWorkspaceGroupKeydown(event)">
+                            <span class="health-workspace-number">01</span>
+                            <span class="health-workspace-copy"><strong>Organisation</strong><small>Consolidate genre lanes and duplicate AXIOM rows.</small></span>
+                            <div class="health-workspace-actions">
+                                <button id="health-workspace-duplicates" class="health-workspace-attention" type="button" onclick="openHealthDuplicateResolver(this)">Duplicates</button>
+                                <button id="health-inbox-item-genres" data-health-item="genres" onclick="selectHealthInboxItem('genres')" type="button">Genres <span id="health-genre-count">0</span></button>
+                            </div>
+                        </section>
+                        <section class="health-workspace-group metadata" data-health-workspace="metadata" tabindex="-1" onclick="selectHealthWorkspaceGroup('metadata', this, event)" onkeydown="handleHealthWorkspaceGroupKeydown(event)">
+                            <span class="health-workspace-number">02</span>
+                            <span class="health-workspace-copy"><strong>Metadata</strong><small>Clean titles and artists in one focused workspace.</small></span>
+                            <div class="health-workspace-actions">
+                                <button id="health-inbox-item-title_cleanup" data-health-item="title_cleanup" onclick="openHealthMetadataReview('title_cleanup', this, event)" type="button">Titles <span id="health-cleanup-title-cleanup">0</span></button>
+                                <button id="health-inbox-item-artist_format" data-health-item="artist_format" onclick="openHealthMetadataReview('artist_format', this, event)" type="button">Artists <span id="health-cleanup-artist-format">0</span></button>
+                            </div>
+                        </section>
+                        <section class="health-workspace-group years" data-health-workspace="era" tabindex="-1" onclick="selectHealthWorkspaceGroup('era', this, event)" onkeydown="handleHealthWorkspaceGroupKeydown(event)">
+                            <span class="health-workspace-number">03</span>
+                            <span class="health-workspace-copy"><strong>Era</strong><small>Group songs, find original years, then apply reviewed results.</small></span>
+                            <div class="health-era-workflow" aria-label="Year cleanup workflow">
+                                <ol>
+                                    <li class="health-workspace-actions">
+                                        <button class="health-era-step-action health-era-start" data-axiom-cta-skip="true" type="button" onclick="openEraAudit(this)"><span class="health-era-step-number" aria-hidden="true">01</span><span><strong>Fix Eras</strong><small>Scan your library for incorrect years, then review the era each song belongs in.</small></span><img src="/static/icons/arrow-right.svg" alt=""></button>
+                                    </li>
+                                    <li class="health-workspace-actions">
+                                        <button class="health-era-step-action" data-axiom-cta-skip="true" type="button" onclick="openEraYearRefinement()"><span class="health-era-step-number" aria-hidden="true">02</span><span><strong>Find Original Years</strong><small>Find original release years by group, folder, genre or remixer. Save verified matches in AXIOM.</small></span><img src="/static/icons/arrow-right.svg" alt=""></button>
+                                        <button id="health-release-year-research-button" class="health-era-saved-results" data-axiom-cta-skip="true" type="button" onclick="viewSavedReleaseYearResearch()">Open Saved Results</button>
+                                    </li>
+                                    <li class="health-workspace-actions">
+                                        <button id="health-era-batch-export" class="health-era-step-action" data-axiom-cta-skip="true" type="button" onclick="previewReleaseYearResearchPublish(this)" disabled><span class="health-era-step-number" aria-hidden="true">03</span><span><strong>Export to DJ Software</strong><small>Preview this batch's approved Year tags before publishing to files.</small></span><img src="/static/icons/arrow-right.svg" alt=""></button>
+                                        <p id="health-era-export-status" role="status">Apply verified years to AXIOM to enable this batch's export.</p>
+                                    </li>
+                                </ol>
+                            </div>
+                            <details class="health-era-other-tools" onclick="event.stopPropagation()" onkeydown="event.stopPropagation()">
+                                <summary>Other Year Tools</summary>
+                                <div class="health-workspace-actions">
+                                    <button id="health-release-year-csv-button" data-axiom-cta-skip="true" type="button" onclick="openReleaseYearCsvImport(event)"><img src="/static/icons/file-up.svg" alt="">Add CSV</button>
+                                    <button id="btn-year-publish" data-axiom-cta-skip="true" type="button" onclick="startYearPublishPreview(this)"><img src="/static/icons/arrow-right.svg" alt="">Preview All AXIOM Year Tags</button>
+                                </div>
+                            </details>
+                        </section>
+                        <section class="health-workspace-group transfer" data-health-workspace="transfer" tabindex="-1" onclick="selectHealthWorkspaceGroup('transfer', this, event)" onkeydown="handleHealthWorkspaceGroupKeydown(event)">
+                            <span class="health-workspace-number">04</span>
+                            <span class="health-workspace-copy"><strong>Serato / djay Pro</strong><small>Compare stored play counts and playlist membership.</small></span>
+                            <div class="health-transfer-toolbar">
+                                <div class="health-transfer-tabs" role="tablist" aria-label="DJ transfer task" onkeydown="healthDjTransferTabKeydown(event)">
+                                    <button id="health-transfer-tab-playlists" data-axiom-cta-skip="true" type="button" role="tab" aria-selected="true" aria-controls="health-dj-transfer-detail" onclick="selectHealthDjTransferTask('playlists')"><img src="/static/icons/folder-open.svg" alt="">Playlists</button>
+                                    <button id="health-transfer-tab-plays" data-axiom-cta-skip="true" type="button" role="tab" aria-selected="false" aria-controls="health-dj-transfer-detail" tabindex="-1" onclick="selectHealthDjTransferTask('plays')"><img src="/static/icons/play.svg" alt="">Play Counts</button>
+                                    <button id="health-transfer-tab-grids" data-axiom-cta-skip="true" type="button" role="tab" aria-selected="false" aria-controls="health-dj-transfer-detail" tabindex="-1" onclick="selectHealthDjTransferTask('grids')"><img src="/static/icons/sliders-horizontal.svg" alt="">Beatgrids</button>
+                                </div>
+                                <button id="health-dj-transfer-preview" data-axiom-cta-skip="true" type="button" onclick="previewHealthDjTransfer()"><img src="/static/icons/rotate-cw.svg" alt="">REFRESH LIBRARY</button>
+                                <div id="health-transfer-count-pending" class="health-transfer-count-pending" role="status" aria-live="polite" hidden><strong>Serato to djay Pro</strong><span id="health-transfer-count-pending-status">Not checked yet.</span></div>
+                                <div id="health-beatgrid-control-grid" class="health-beatgrid-control-grid" hidden onclick="event.stopPropagation()" onmousedown="event.stopPropagation()" onpointerdown="event.stopPropagation()">
+                                    <div class="health-beatgrid-control health-beatgrid-scan-control"><label for="health-beatgrid-scan-scope">Check</label><select id="health-beatgrid-scan-scope" aria-label="Beatgrid scan scope"><option value="test">Test / selected songs</option><option value="full">Full library</option></select><button id="health-dj-transfer-grid-doctor" data-axiom-cta-skip="true" type="button" onclick="startBeatgridDoctorScan()">Check grids</button></div>
+                                    <div class="health-beatgrid-control health-beatgrid-backup-control">
+                                        <h4>Repair safeguards</h4>
+                                        <div id="health-beatgrid-toolbar-backups">Checking location...</div>
+                                    </div>
+                                    <div class="health-beatgrid-control health-beatgrid-size-control">
+                                        <fieldset class="health-transfer-test-size" aria-label="Beatgrid Doctor test batch size">
+                                            <legend>Test size</legend>
+                                            <button id="health-dj-transfer-grid-test-5" data-axiom-cta-skip="true" type="button" aria-pressed="false" onclick="selectBeatgridDoctorTestLimit(5, event)">5</button>
+                                            <button id="health-dj-transfer-grid-test-7" data-axiom-cta-skip="true" type="button" aria-pressed="false" onclick="selectBeatgridDoctorTestLimit(7, event)">7</button>
+                                            <button id="health-dj-transfer-grid-test-10" data-axiom-cta-skip="true" type="button" aria-pressed="true" onclick="selectBeatgridDoctorTestLimit(10, event)">10</button>
+                                        </fieldset>
+                                        <p>Songs to analyse in this test</p>
+                                    </div>
+                                    <div class="health-beatgrid-control health-beatgrid-target-control">
+                                        <fieldset class="health-transfer-target" aria-label="Beatgrid Doctor destination">
+                                            <legend>Send to software</legend>
+                                            <button id="health-dj-transfer-grid-target-serato" data-axiom-cta-skip="true" type="button" aria-pressed="false" onclick="selectBeatgridDoctorTarget('serato', event)">Serato</button>
+                                            <button id="health-dj-transfer-grid-target-djay" data-axiom-cta-skip="true" type="button" aria-pressed="false" onclick="selectBeatgridDoctorTarget('djay', event)">djay</button>
+                                            <button id="health-dj-transfer-grid-target-both" data-axiom-cta-skip="true" type="button" aria-pressed="true" onclick="selectBeatgridDoctorTarget('both', event)">Both</button>
+                                        </fieldset>
+                                        <p>Target software for this transfer</p>
+                                    </div>
+                                    <div id="health-beatgrid-toolbar-actions" class="health-beatgrid-control health-beatgrid-toolbar-actions">
+                                        <h4>Actions</h4>
+                                        <div class="health-beatgrid-action-buttons">
+                                            <button id="health-dj-transfer-grid-handoff" data-axiom-cta-skip="true" type="button" onclick="prepareCleanBeatgridHandoff({mode: 'test'})"><img src="/static/icons/play.svg" alt=""><span>Send Test Grids</span></button>
+                                            <button id="health-dj-transfer-grid-full" data-axiom-cta-skip="true" type="button" onclick="prepareCleanBeatgridHandoff({mode: 'full'})"><img src="/static/icons/database.svg" alt=""><span>Send to Full Library</span></button>
+                                            <button id="health-dj-transfer-grid-receipt" data-axiom-cta-skip="true" type="button" onclick="prepareBeatgridDoctorTestReceipt()"><img src="/static/icons/clipboard.svg" alt="">Export Receipt</button>
+                                            <button id="health-dj-transfer-grid-refresh" data-axiom-cta-skip="true" type="button" onclick="previewHealthDjTransfer()"><img src="/static/icons/rotate-cw.svg" alt="">Refresh Library</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                        <span id="health-inbox-review-count" class="hidden">0</span>
+                    </nav>
+                    <div id="health-dj-transfer-detail" role="tabpanel" aria-labelledby="health-transfer-tab-playlists" tabindex="0" aria-live="polite">
+                        <div class="health-transfer-route"><div><small>From</small><span class="health-transfer-brand-djay"><img src="/static/brands/djay-wordmark.png" alt="djay"><b>Pro</b></span></div><button type="button" class="health-transfer-direction" aria-label="Reverse transfer direction" title="Reverse transfer direction" onclick="reverseHealthDjTransferDirection()"><img src="/static/icons/rotate-cw.svg" alt=""></button><div><small>To</small><img src="/static/brands/serato-dj-pro.svg" alt="Serato DJ Pro" class="health-transfer-brand-serato"></div></div>
+                        <p class="health-transfer-note">Refresh Library to load crates and playlists from both DJ libraries.</p>
+                    </div>
+                    <section id="health-inbox-detail" class="health-inbox-detail" aria-live="polite">
+                        <span class="health-detail-state">Checking Library</span>
+                        <h3 class="health-detail-title">Reading Health</h3>
+                        <p class="health-detail-copy">AXIOM is checking its cache and preparing the next useful action.</p>
+                    </section>
+                    <section id="health-release-year-research-panel" class="hidden mt-4 rounded-2xl border border-cyan-300/25 bg-cyan-300/5 p-5" aria-live="polite">
+                        <div class="health-year-results-heading">
+                            <div><h3 id="health-year-results-title">Year Results</h3><p id="health-year-results-copy">Review the years found. Apply verified matches to AXIOM.</p></div>
+                            <div class="health-year-results-actions">
+                                <button id="health-release-year-research-next-era" type="button" onclick="continueEraReleaseYearResearch(this)" class="hidden">Find next batch</button>
+                                <button id="health-release-year-research-resume" type="button" onclick="resumeReleaseYearResearch()" class="hidden">Resume</button>
+                                <button id="health-release-year-research-apply" type="button" onclick="applyReleaseYearResearchResults()" class="hidden">Apply Verified Years</button>
+                                <button id="health-release-year-research-stop" type="button" onclick="cancelReleaseYearResearch()">Stop</button>
+                                <button type="button" onclick="closeReleaseYearResearch()">Close</button>
+                            </div>
+                        </div>
+                        <details class="health-year-results-options"><summary>More options</summary><div>
+                            <button type="button" onclick="viewSavedReleaseYearResearch()">Saved batch</button>
+                            <button type="button" onclick="showReleaseYearTestLibrary()">Test library</button>
+                            <button type="button" onclick="startReleaseYearResearch(this, true)">New batch</button>
+                            <button id="health-release-year-research-export" type="button" onclick="exportReleaseYearResearchCsv()">Export CSV</button>
+                        </div><p id="health-release-year-research-detail"></p></details>
+                        <div id="health-release-year-research-status" class="mt-4 rounded-xl border border-white/10 bg-black/25 px-4 py-3 text-[11px] font-bold text-white/70">Choose tracks in Health, or run the Missing Year batch, to begin.</div>
+                        <div id="health-release-year-research-results" class="mt-3 space-y-2"></div>
+                        <details class="health-year-results-options"><summary>Export to DJ software</summary><div class="health-research-handoff">
+                            <div>
+                                <strong>Take reviewed years to DJ software</strong>
+                                <p id="health-release-year-research-handoff-copy">Apply verified results to AXIOM, then preview the file tags for this batch.</p>
+                                <p>AXIOM Era groups feed Live Assist separately. An era is never substituted for an exact release year. Export CSV carries both the grouping and year evidence as a report.</p>
+                            </div>
+                            <button id="health-release-year-research-publish" type="button" onclick="previewReleaseYearResearchPublish(this)" disabled>Preview DJ year handoff</button>
+                        </div>
+                        </details><p class="health-year-results-footnote">Changes stay in AXIOM until you export to your files.</p>
+                    </section>
+                    <section id="health-release-year-csv-panel" class="hidden mt-4 rounded-2xl border border-lime-300/30 bg-lime-300/10 p-5" aria-live="polite">
+                        <div class="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+                            <div class="min-w-0">
+                                <span class="block text-[10px] font-black uppercase tracking-[0.24em] text-lime-200">Release Year CSV Import</span>
+                                <h3 class="mt-1 text-xl font-black uppercase tracking-wide text-white">Import release years</h3>
+                                <p class="mt-2 max-w-3xl text-[11px] font-bold leading-relaxed text-white/70">Choose your CSV, review the matched tracks, then apply. Include a file URL or Title + Artist, plus a Release Year column.</p>
+                            </div>
+                            <div class="flex shrink-0 gap-2">
+                                <input id="health-release-year-csv-file" type="file" accept=".csv,text/csv,application/vnd.ms-excel" class="health-release-year-csv-input" onchange="handleReleaseYearCsvSelected(event)">
+                                <button id="health-release-year-csv-choose" type="button" onclick="chooseReleaseYearCsvFile()" class="health-release-year-csv-choose">Browse files</button>
+                                <button id="health-release-year-csv-apply" type="button" onclick="applyReleaseYearCsvImport()" disabled aria-describedby="health-release-year-csv-status">Apply years to AXIOM</button>
+                                <button type="button" onclick="closeReleaseYearCsvImport()" class="rounded-xl border border-white/15 bg-black/20 px-5 py-3 text-[10px] font-black uppercase tracking-wider text-white/70 transition hover:border-white/35 hover:text-white">Close</button>
+                            </div>
+                        </div>
+                        <div class="mt-4 flex flex-wrap items-center gap-x-6 gap-y-3 border-t border-white/10 pt-4 text-[10px] font-black uppercase tracking-wider text-white/65">
+                            <label class="flex cursor-pointer items-center gap-2"><input id="health-release-year-csv-overwrite" type="checkbox" class="accent-lime-300" onchange="invalidateReleaseYearCsvPreview()"> Replace existing AXIOM years when the CSV differs</label>
+                            <label class="flex cursor-pointer items-center gap-2"><input id="health-release-year-csv-candidates" type="checkbox" class="accent-lime-300" onchange="invalidateReleaseYearCsvPreview()"> Allow candidate/catalogue years as estimates</label>
+                        </div>
+                        <div id="health-release-year-csv-dropzone" class="health-release-year-csv-dropzone" role="button" tabindex="0" aria-controls="health-release-year-csv-file" aria-label="Choose or drop a release year CSV">
+                            <strong>Browse for a CSV or drop it here</strong>
+                            <span>Click to open your files. CSV only, up to 10 MB. You will review matches before applying.</span>
+                        </div>
+                        <p id="health-release-year-csv-review-note" class="hidden">Preview sandbox: this page uses a small test library. Your CSV may show no matches here. Import against your connected library in AXIOM.</p>
+                        <div id="health-release-year-csv-status" class="health-release-year-csv-status" aria-live="polite">Choose a CSV to preview its matches. Apply becomes available when tracks are ready to update.</div>
+                        <div id="health-release-year-csv-results" class="mt-3 space-y-2"></div>
+                        <div class="mt-4 flex flex-wrap items-center gap-3">
+                            <span class="text-[10px] font-bold uppercase tracking-wider text-white/45">Preview is read-only. Apply is cache-only and can be repeated safely.</span>
+                        </div>
+                    </section>
+                </section>
+
+                <div class="health-inbox-activity">
+                    <strong>Safe By Default</strong>
+                    <span id="health-inbox-activity-copy">{% if axiom_lite %}Health changes AXIOM intelligence only. Year Publish requires a separate preview and confirmation.{% else %}Health scans update AXIOM’s cache. Publishing tags and copying play counts require separate confirmation. Source audio stays unchanged.{% endif %}</span>
+                </div>
+                </div>
+            </section>
+
+                <section id="year-publish-panel" class="year-publish-panel hidden" aria-live="polite">
+                    <div class="year-publish-panel-head">
+                        <div>
+                            <div class="year-publish-panel-kicker">Year Tag Publisher</div>
+                            <h3 id="year-publish-title">Preview Verified Years</h3>
+                            <p id="year-publish-copy">AXIOM will inspect standard file tags only. Nothing changes until you review the totals and explicitly confirm publishing.</p>
+                        </div>
+                        <button class="year-publish-close" onclick="closeYearPublishPanel()" type="button" aria-label="Close Year Publish">&times;</button>
+                    </div>
+                    <div class="year-publish-progress"><span id="year-publish-progress-bar"></span></div>
+                    <div class="year-publish-stats">
+                        <div class="year-publish-stat ready"><span>Can Resolve Now</span><strong id="year-publish-ready">0</strong><small>empty year tags</small></div>
+                        <div class="year-publish-stat conflict"><span>Needs Approval</span><strong id="year-publish-conflicts">0</strong><small>existing tag conflicts</small></div>
+                        <div class="year-publish-stat"><span>Already Fixed</span><strong id="year-publish-current">0</strong><small>file tag matches</small></div>
+                        <div class="year-publish-stat"><span>AXIOM Only</span><strong id="year-publish-estimated">0</strong><small>estimated years</small></div>
+                        <div class="year-publish-stat blocked"><span>Protected</span><strong id="year-publish-blocked">0</strong><small>blocked formats</small></div>
+                        <div class="year-publish-stat blocked"><span>Needs Repair</span><strong id="year-publish-unavailable">0</strong><small>missing/unverified</small></div>
+                    </div>
+                    <div class="year-publish-actions">
+                        <button id="year-publish-safe-button" class="primary" onclick="confirmYearPublish(false, this)" type="button" disabled>Resolve Missing Tags</button>
+                        <button id="year-publish-conflict-button" class="conflict" onclick="confirmYearPublish(true, this)" type="button" disabled>Resolve Conflicts Too</button>
+                        <button id="year-publish-rollback-button" onclick="confirmYearPublishRollback(this)" type="button" disabled>Roll Back Last Publish</button>
+                        <button id="year-publish-refresh-button" onclick="startYearPublishPreview(this)" type="button">Refresh Preview</button>
+                    </div>
+                    <div id="year-publish-resolution" class="year-publish-resolution" aria-label="Year Publish resolution actions"></div>
+                    <div id="year-publish-samples" class="year-publish-samples" aria-label="Year Publish sample rows"></div>
+                    <div id="year-publish-result" class="year-publish-result">Preview has not started.</div>
+                </section>
+
+            <div class="health-command-header">
+                <div>
+                    <p class="health-command-kicker">Library Health</p>
+                    <h2 class="health-command-title">Fix Your Library</h2>
+                    <p class="health-command-copy">Find missing files and repair BPM, key, and year intelligence inside AXIOM. When your verified years are ready, the separate Year Publish tool can add only that field to supported file metadata after preview and confirmation.</p>
+                </div>
+                <div class="health-command-actions">
+                    <button onclick="showTab('studio')" class="health-back-studio-btn" title="Return to normal Studio mode">
+                        <span>Back To Studio</span>
+                    </button>
+                    <button id="btn-health-refresh-legacy" onclick="runLibraryHealthCheck()" class="px-6 py-2 bg-white/5 border border-white/10 text-white font-black uppercase text-[10px] rounded-xl hover:border-axiom-accent transition-all flex items-center gap-2" title="Refresh the health scan">
+                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                        <span>Refresh</span>
+                    </button>
+                    <button onclick="setHealthFilter('all')" class="health-show-all-btn px-6 py-2 bg-axiom-accent/15 border border-axiom-accent/35 text-axiom-accent font-black uppercase text-[10px] rounded-xl hover:bg-axiom-accent hover:text-black transition-all flex items-center gap-2" title="Show every current Library Health issue">
+                        <span>Show All</span>
+                        <span id="health-stat-total-legacy" class="font-black">0</span>
+                    </button>
+                    <button onclick="showTab('duplicates')" class="px-6 py-2 bg-axiom-accent/20 border border-axiom-accent/50 text-axiom-accent font-black uppercase text-[10px] rounded-xl hover:bg-axiom-accent hover:text-black transition-all flex items-center gap-2" title="Find and resolve duplicate tracks in your library">
+                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
+                        <span>Manage Duplicates</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="health-priority-panel" aria-label="Library Health priority">
+                <div class="health-priority-main">
+                    <div>
+                        <span class="health-priority-kicker">Next Best Fix</span>
+                        <div id="health-priority-title" class="health-priority-title">Run Library Health</div>
+                        <p id="health-priority-copy" class="health-priority-copy">Refresh Health to see the safest repair order for your library. AXIOM will keep source audio untouched.</p>
+                    </div>
+                    <button id="health-priority-action" onclick="runLibraryHealthCheck({ force: true })" class="health-priority-action" type="button">Refresh Health</button>
+                </div>
+                <div class="health-priority-stat">
+                    <span>Repair Ready</span>
+                    <strong id="health-priority-repair-count">0</strong>
+                    <small>BPM, key, and year items</small>
+                </div>
+                <div class="health-priority-stat">
+                    <span>Source Risk</span>
+                    <strong id="health-priority-file-count">0</strong>
+                    <small>Missing files first</small>
+                </div>
+                <div class="health-priority-stat">
+                    <span>Current View</span>
+                    <strong id="health-priority-visible-count">0</strong>
+                    <small>Rows visible below</small>
+                </div>
+            </div>
+
+            <div class="health-cleanup-panel" aria-label="Library utility cleanup review">
+                <div class="health-cleanup-head">
+                    <div>
+                        <span class="health-cleanup-kicker">Utility Review</span>
+                        <div class="health-cleanup-title">Spot Stingers, Tools, And Messy Titles</div>
+                        <p class="health-cleanup-copy">Review tracks that may not belong in normal set-building or may need cleaner DJ/editor metadata. This is read-only; AXIOM lists candidates without changing source audio.</p>
+                    </div>
+                    <button id="health-cleanup-refresh" onclick="loadHealthUtilityAudit({ force: true })" class="health-cleanup-refresh" type="button">Refresh Review</button>
+                </div>
+                <div class="health-cleanup-priority" aria-label="Utility cleanup priority">
+                    <div class="health-cleanup-priority-main">
+                            <div>
+                                <span>Cleanup Priority</span>
+                                <strong id="health-cleanup-priority-title">Run Utility Review</strong>
+                                <p id="health-cleanup-priority-copy">Refresh the review to see the safest cleanup order for stingers, DJ tools, titles, and name formatting.</p>
+                            </div>
+                            <button id="health-cleanup-priority-action" onclick="loadHealthUtilityAudit({ force: true })" class="health-cleanup-priority-action" type="button">Refresh Review</button>
+                        </div>
+                    <div class="health-cleanup-priority-stat">
+                        <span>Exclude Ready</span>
+                        <strong id="health-cleanup-priority-exclude">0</strong>
+                        <small>Stingers and DJ tools not yet hidden from set-building.</small>
+                    </div>
+                    <div class="health-cleanup-priority-stat">
+                        <span>Clean Ready</span>
+                        <strong id="health-cleanup-priority-clean">0</strong>
+                        <small>Titles or names with cache-only cleanup previews.</small>
+                    </div>
+                    <div class="health-cleanup-priority-stat">
+                        <span>Total Review</span>
+                        <strong id="health-cleanup-priority-total">0</strong>
+                        <small>Utility and metadata candidates found.</small>
+                    </div>
+                </div>
+                <div class="health-removed-bin" aria-label="Removed from AXIOM bin">
+                    <div class="health-removed-bin-head">
+                        <div>
+                            <span>Removed From AXIOM</span>
+                            <strong id="health-removed-bin-title">Nothing Removed Yet</strong>
+                            <p id="health-removed-bin-copy">Tracks removed from AXIOM appear here for restore. Your audio files stay on disk.</p>
+                        </div>
+                        <button id="health-removed-bin-refresh" onclick="loadRemovedFromAxiomBin({ force: true })" class="health-removed-bin-refresh" type="button">Refresh Bin</button>
+                    </div>
+                    <div id="health-removed-bin-list" class="health-removed-bin-list"></div>
+                </div>
+                <div class="health-cleanup-grid">
+                    <div class="health-cleanup-card">
+                        <div>
+                            <span>Stinger Edits</span>
+                            <strong id="health-cleanup-stingers-legacy">0</strong>
+                            <small>Drops, sweeps, station IDs, and stinger signals.</small>
+                            <div id="health-cleanup-status-stingers" class="health-cleanup-status"></div>
+                        </div>
+                        <button id="health-cleanup-review-stingers" onclick="reviewHealthUtilityCategory('stingers')" type="button" disabled>Review Stingers</button>
+                    </div>
+                    <div class="health-cleanup-card">
+                        <div>
+                            <span>DJ Tools</span>
+                            <strong id="health-cleanup-tools">0</strong>
+                            <small>Transitions, FX, samples, long mixes, and true utility clutter.</small>
+                            <div id="health-cleanup-status-tools" class="health-cleanup-status"></div>
+                        </div>
+                        <button id="health-cleanup-review-tools" onclick="reviewHealthUtilityCategory('tools')" type="button" disabled>Review Tools</button>
+                    </div>
+                    <div class="health-cleanup-card">
+                        <div>
+                            <span>Title Cleanup</span>
+                            <strong id="health-cleanup-title-cleanup-legacy">0</strong>
+                            <small>Version notes or DJ/editor names likely baked into titles.</small>
+                            <div id="health-cleanup-status-title-cleanup" class="health-cleanup-status"></div>
+                        </div>
+                        <button id="health-cleanup-review-title-cleanup" onclick="reviewHealthUtilityCategory('title_cleanup')" type="button" disabled>Review Titles</button>
+                    </div>
+                    <div class="health-cleanup-card">
+                        <div>
+                            <span>Artist Cleanup</span>
+                            <strong id="health-cleanup-artist-format-legacy">0</strong>
+                            <small>Version leakage, editor-credit position, or inconsistent artist formatting.</small>
+                            <div id="health-cleanup-status-artist-format" class="health-cleanup-status"></div>
+                        </div>
+                        <button id="health-cleanup-review-artist-format" onclick="reviewHealthUtilityCategory('artist_format')" type="button" disabled>Review Artists</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="health-summary-grid">
+                <div onclick="setHealthFilter('missing_file')" class="health-summary-card file">
+                    <div>
+                        <strong>Missing Files</strong>
+                        <span id="health-stat-missing-file-legacy" class="health-stat">0</span>
+                        <small>Tracks AXIOM can no longer find because a file or drive moved.</small>
+                    </div>
+                    <button onclick="event.stopPropagation(); relocateLibrary()" class="health-card-action" title="Point AXIOM to the moved folder or drive.">Relocate Files</button>
+                </div>
+                <div onclick="setHealthFilter('missing_bpm')" class="health-summary-card bpm">
+                    <div>
+                        <strong>Missing BPM</strong>
+                        <span id="health-stat-missing-bpm-legacy" class="health-stat">0</span>
+                        <small>Tracks that need tempo intelligence before they can be trusted for set building.</small>
+                    </div>
+                    <button id="btn-fix-bpm-summary" onclick="event.stopPropagation(); startUnifiedHealthScan('missing_bpm', this)" class="health-card-action" title="Scan the unlocked BPM lane using the unified Health worker. Source audio remains untouched.">Scan BPM</button>
+                </div>
+                <div onclick="setHealthFilter('missing_key')" class="health-summary-card key">
+                    <div>
+                        <strong>Missing Key</strong>
+                        <span id="health-stat-missing-key-legacy" class="health-stat">0</span>
+                        <small>Tracks missing harmonic key data for cleaner transitions.</small>
+                    </div>
+                    <button id="btn-fix-key-summary" onclick="event.stopPropagation(); startUnifiedHealthScan('missing_key', this)" class="health-card-action" title="Scan the unlocked key lane using the unified Health worker. Source audio remains untouched.">Scan Keys</button>
+                </div>
+                <div onclick="setHealthFilter('missing_year')" class="health-summary-card year">
+                    <div>
+                        <strong>Missing Year</strong>
+                        <span id="health-stat-missing-year-legacy" class="health-stat">0</span>
+                        <small>Tracks missing release year, which helps search by era and timeline.</small>
+                        <p style="position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;opacity:0;">Ready to enhance release years</p>
+                    </div>
+                    <button id="btn-fix-year-summary" onclick="event.stopPropagation(); startUnifiedHealthScan('missing_year', this)" class="health-card-action" title="Scan the unlocked year lane using the unified Health worker. Source audio remains untouched.">Scan Years</button>
+                </div>
+            </div>
+
+            <div class="health-tools-row">
+                <div class="flex gap-3 flex-wrap">
+                    <button onclick="clearAllDisplayedIssues(this)" class="px-5 py-2 bg-white/5 border border-white/10 text-white font-black uppercase text-[10px] rounded-xl hover:border-red-400 hover:text-red-400 transition-all flex items-center gap-2" title="Accept all currently displayed health issues">
+                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                        <span>Clear Displayed</span>
+                    </button>
+                    <button onclick="purgeMissingFiles()" class="px-5 py-2 bg-red-500/20 border border-red-500/40 text-red-500 font-black uppercase text-[10px] rounded-xl hover:bg-red-500 hover:text-white transition-all flex items-center gap-2" title="Remove missing-file entries from AXIOM cache only. Music files remain untouched.">
+                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                        <span>Purge Missing</span>
+                    </button>
+                    <button id="btn-export-years-serato" onclick="exportYearFixesToSerato(this)" style="display:none" aria-hidden="true" tabindex="-1" class="px-5 py-2 bg-blue-500/20 border border-blue-400/40 text-blue-300 font-black uppercase text-[10px] rounded-xl hover:bg-blue-500 hover:text-white transition-all flex items-center gap-2" title="Create a verified Serato playlist and year CSV report. Source audio and file tags stay unchanged.">
+                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4h7l2 2h7v14H4z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 11h8M8 15h5"/></svg>
+                        <span>Serato Year Report</span>
+                    </button>
+                    <button id="btn-import-serato-years" onclick="pullYearsFromSeratoToAxiom()" style="display:none" aria-hidden="true" tabindex="-1" class="px-5 py-2 bg-cyan-500/20 border border-cyan-400/40 text-cyan-200 font-black uppercase text-[10px] rounded-xl hover:bg-cyan-400 hover:text-black transition-all flex items-center gap-2" title="Backup CSV mode imports years from a Serato CSV export. Source audio and Serato database stay untouched.">
+                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v6h6M20 20v-6h-6"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 9a8 8 0 00-13.657-4.657L4 6.686M4 15a8 8 0 0013.657 4.657L20 17.314"/></svg>
+                        <span>Import Serato Years CSV</span>
+                    </button>
+                    <button id="btn-import-serato-bpms" onclick="pullBpmsFromSeratoToAxiom()" style="display:none" aria-hidden="true" tabindex="-1" class="px-5 py-2 bg-blue-500/20 border border-blue-400/40 text-blue-200 font-black uppercase text-[10px] rounded-xl hover:bg-blue-400 hover:text-black transition-all flex items-center gap-2" title="Backup CSV mode imports BPMs from a Serato CSV export. Source audio and Serato database stay untouched.">
+                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 12h3l2-5 4 10 2-5h5"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 20h16"/></svg>
+                        <span>Import Serato BPM CSV</span>
+                    </button>
+                    <button id="btn-import-serato-keys" onclick="pullKeysFromSeratoToAxiom()" style="display:none" aria-hidden="true" tabindex="-1" class="px-5 py-2 bg-violet-500/20 border border-violet-400/40 text-violet-200 font-black uppercase text-[10px] rounded-xl hover:bg-violet-400 hover:text-black transition-all flex items-center gap-2" title="Backup CSV mode imports keys from a Serato CSV export. Source audio and Serato database stay untouched.">
+                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a4 4 0 11-4-4 4 4 0 014 4z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 14l6 6M17 17l-3 3"/></svg>
+                        <span>Import Serato Keys CSV</span>
+                    </button>
+                    <button id="btn-serato-csv-backup" onclick="document.getElementById('serato-year-import-panel')?.classList.toggle('hidden'); document.getElementById('serato-year-csv-path')?.focus();" class="px-5 py-2 bg-white/5 border border-white/10 text-white/70 font-black uppercase text-[10px] rounded-xl hover:border-cyan-300 hover:text-cyan-100 transition-all flex items-center gap-2" title="Backup option for a Serato CSV export that includes a Year column.">
+                        <span>CSV Backup</span>
+                    </button>
+                </div>
+                <div class="flex items-center gap-2 bg-black/40 px-3 py-1.5 rounded-xl border border-white/5">
+                    <span class="text-[8px] font-black text-axiom-muted uppercase">Engine Mode:</span>
+                    <select id="processor-mode" class="bg-transparent text-axiom-accent text-[9px] font-black uppercase outline-none cursor-pointer">
+                        <option value="20" class="bg-[#0d0d0d]">Nitro (Max)</option>
+                        <option value="10" selected class="bg-[#0d0d0d]">Studio (Standard)</option>
+                        <option value="3" class="bg-[#0d0d0d]">Vintage (Slow Mac)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="serato-year-import-panel" class="hidden mb-6 rounded-2xl border border-cyan-400/35 bg-cyan-400/10 p-4">
+                <div class="flex flex-col lg:flex-row lg:items-end gap-4">
+                    <div class="flex-1 min-w-0">
+                        <div class="text-cyan-200 text-[10px] font-black uppercase tracking-[0.24em] mb-2">Import Years From Serato</div>
+                        <p class="text-white/70 text-[10px] font-bold uppercase tracking-widest mb-3">Desktop path mode only. In the browser, use Upload CSV so AXIOM can read the file you choose.</p>
+                        <input id="serato-year-csv-path" type="text" value="/Users/user/Music/_Serato_/" class="w-full bg-black/70 border border-cyan-400/30 text-cyan-100 rounded-xl px-4 py-3 text-[11px] font-bold outline-none focus:border-cyan-300" placeholder="/Users/you/Music/_Serato_/your-export.csv">
+                    </div>
+                    <div class="flex gap-2 shrink-0">
+                        <button id="btn-preview-serato-years" onclick="previewSeratoYearImportFromPanel()" class="px-5 py-3 bg-cyan-400 text-black text-[10px] font-black uppercase rounded-xl hover:brightness-110 transition-all">Preview</button>
+                        <button id="btn-apply-serato-years" onclick="applySeratoYearImportFromPanel()" class="hidden px-5 py-3 bg-axiom-accent text-black text-[10px] font-black uppercase rounded-xl hover:brightness-110 transition-all">Apply Preview</button>
+                    </div>
+                </div>
+            </div>
+
+
+
+            <div id="health-accordions" class="space-y-3 pr-2 pb-10">
+                <!-- Year Rescan -->
+                <div id="acc-year-rescan" class="glass rounded-xl border border-axiom-accent/30 overflow-hidden">
+                    <div class="acc-header flex items-center justify-between p-4 cursor-pointer bg-axiom-accent/10 hover:bg-axiom-accent/20 transition-all" onclick="toggleAccordion('year-rescan')">
+                        <div class="flex items-center gap-3">
+                            <span class="text-axiom-accent font-black uppercase text-lg">Year Rescan</span>
+                            <span class="text-[9px] font-bold text-axiom-muted uppercase tracking-widest hidden lg:inline">Spotify → Discogs → Last.fm → Apple Music → MusicBrainz</span>
+                        </div>
+                        <div class="flex items-center gap-2 overflow-x-auto shrink-0">
+                            <button onclick="event.stopPropagation(); startUnifiedHealthScan('missing_year', this)" id="btn-inline-rescan-start" class="px-4 py-2 bg-axiom-accent text-black font-black uppercase text-[10px] rounded hover:scale-105 transition-all whitespace-nowrap shrink-0">Scan Years</button>
+                            <button onclick="event.stopPropagation(); startUnifiedHealthScan('missing_year', this)" id="btn-inline-rescan-retry" class="px-4 py-2 bg-white/10 text-white font-black uppercase text-[10px] rounded hover:bg-white/20 transition-all whitespace-nowrap shrink-0">Retry Years</button>
+                            <button onclick="event.stopPropagation(); stopUnifiedHealthScan()" id="btn-inline-rescan-stop" class="hidden px-4 py-2 bg-red-500/20 text-red-500 font-black uppercase text-[10px] rounded hover:bg-red-500 hover:text-white transition-all whitespace-nowrap shrink-0">Stop</button>
+                            <button onclick="event.stopPropagation(); openHealthRepairReport()" class="px-4 py-2 bg-white/10 text-white font-black uppercase text-[10px] rounded hover:bg-white/20 transition-all whitespace-nowrap shrink-0">View Report</button>
+                            <span class="text-axiom-accent ml-2 font-black transition-transform duration-300 shrink-0" style="transform: rotate(180deg);" id="icon-year-rescan">▼</span>
+                        </div>
+                    </div>
+                    <div id="body-year-rescan" class="acc-body p-4 border-t border-axiom-accent/10">
+                        <div class="p-4 rounded-2xl border border-axiom-accent/30 bg-axiom-accent/5">
+                            <p class="text-axiom-muted font-bold uppercase text-[9px] tracking-widest">AXIOM updates the cache only. Unresolved year matches remain in review for an explicit pass by you.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Missing Files -->
+                <div id="acc-missing-file" class="glass rounded-xl border border-red-500/30 overflow-hidden">
+                    <div class="acc-header flex items-center justify-between p-4 cursor-pointer hover:bg-red-500/10 transition-all" onclick="toggleAccordion('missing-file')">
+                        <div class="flex items-center gap-3">
+                            <span class="text-red-500 font-black uppercase text-lg">Missing Files</span>
+                            <span id="acc-count-missing-file" class="text-[10px] font-black uppercase text-white bg-red-500/20 px-2 py-1 rounded">0</span>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <span class="text-red-500 font-black transition-transform duration-300" id="icon-missing-file">▼</span>
+                        </div>
+                    </div>
+                    <div id="body-missing-file" class="acc-body p-4 border-t border-red-500/10 space-y-2 hidden max-h-[420px] overflow-y-auto"></div>
+                </div>
+
+                <!-- Missing BPM -->
+                <div id="acc-missing-bpm" class="glass rounded-xl border border-green-500/30 overflow-hidden">
+                    <div class="acc-header flex items-center justify-between p-4 cursor-pointer hover:bg-green-500/10 transition-all" onclick="toggleAccordion('missing-bpm')">
+                        <div class="flex items-center gap-3">
+                            <span class="text-green-500 font-black uppercase text-lg">Missing BPM</span>
+                            <span id="acc-count-missing-bpm" class="text-[10px] font-black uppercase text-white bg-green-500/20 px-2 py-1 rounded">0</span>
+                        </div>
+                        <div class="flex items-center gap-4 shrink-0">
+                            <button id="btn-fix-bpm-accordion" onclick="event.stopPropagation(); startUnifiedHealthScan('missing_bpm', this)" class="px-3 py-1 bg-green-500/20 text-green-400 text-[9px] font-black uppercase rounded hover:bg-green-500 hover:text-black transition-all whitespace-nowrap shrink-0" title="Scan the missing BPM lane using the unified Health worker. Source audio remains untouched.">Scan BPM</button>
+                            <span class="text-green-500 font-black transition-transform duration-300 shrink-0" id="icon-missing-bpm">▼</span>
+                        </div>
+                    </div>
+                    <div id="body-missing-bpm" class="acc-body p-4 border-t border-green-500/10 space-y-2 hidden max-h-[420px] overflow-y-auto"></div>
+                </div>
+
+                <!-- Missing Key -->
+                <div id="acc-missing-key" class="glass rounded-xl border border-blue-500/30 overflow-hidden">
+                    <div class="acc-header flex items-center justify-between p-4 cursor-pointer hover:bg-blue-500/10 transition-all" onclick="toggleAccordion('missing-key')">
+                        <div class="flex items-center gap-3">
+                            <span class="text-blue-500 font-black uppercase text-lg">Missing Key</span>
+                            <span id="acc-count-missing-key" class="text-[10px] font-black uppercase text-white bg-blue-500/20 px-2 py-1 rounded">0</span>
+                        </div>
+                        <div class="flex items-center gap-4 shrink-0">
+                            <button id="btn-fix-key-accordion" onclick="event.stopPropagation(); startUnifiedHealthScan('missing_key', this)" class="px-3 py-1 bg-blue-500/20 text-blue-400 text-[9px] font-black uppercase rounded hover:bg-blue-500 hover:text-white transition-all whitespace-nowrap shrink-0" title="Scan the missing key lane using the unified Health worker. Source audio remains untouched.">Scan Keys</button>
+                            <span class="text-blue-500 font-black transition-transform duration-300 shrink-0" id="icon-missing-key">▼</span>
+                        </div>
+                    </div>
+                    <div id="body-missing-key" class="acc-body p-4 border-t border-blue-500/10 space-y-2 hidden max-h-[420px] overflow-y-auto"></div>
+                </div>
+
+                <!-- Missing Year -->
+                <div id="acc-missing-year" class="glass rounded-xl border border-amber-400/30 overflow-hidden">
+                    <div class="acc-header flex items-center justify-between p-4 cursor-pointer hover:bg-amber-400/10 transition-all" onclick="toggleAccordion('missing-year')">
+                        <div class="flex items-center gap-3">
+                            <span class="text-amber-400 font-black uppercase text-lg">Missing Year</span>
+                            <span id="acc-count-missing-year" class="text-[10px] font-black uppercase text-white bg-amber-400/20 px-2 py-1 rounded">0</span>
+                        </div>
+                        <div class="flex items-center gap-4 shrink-0">
+                            <button onclick="event.stopPropagation(); toggleAccordion('year-rescan', true)" class="px-3 py-1 bg-amber-400/20 text-amber-400 text-[9px] font-black uppercase rounded hover:bg-amber-400 hover:text-black transition-all whitespace-nowrap shrink-0">Open Rescan Tool</button>
+                            <span class="text-amber-400 font-black transition-transform duration-300 shrink-0" id="icon-missing-year">▼</span>
+                        </div>
+                    </div>
+                    <div id="body-missing-year" class="acc-body p-4 border-t border-amber-400/10 space-y-2 hidden max-h-[420px] overflow-y-auto"></div>
+                </div>
+            </div>
+
+            <div id="batch-health-actions" class="hidden mt-4 p-4 glass border border-axiom-accent/30 flex items-center justify-between animate-pulse">
+                <div class="text-[10px] font-black uppercase text-axiom-accent"><span id="selected-count">0</span> Tracks Selected</div>
+                <div class="flex gap-2">
+                    <button onclick="batchIgnoreSelectedHealthIssues(this)" class="px-4 py-2 bg-axiom-accent text-black text-[9px] font-black uppercase rounded hover:brightness-110 transition-all">Accept Selected</button>
+                    <button onclick="removeHealthReviewTracks('selected', this)" class="health-detail-action danger" type="button">Remove Selected from AXIOM</button>
+                    <button onclick="batchBanSelected()" class="px-4 py-2 bg-red-600 text-white text-[9px] font-black uppercase rounded hover:bg-red-700 transition-all">Ban Selected Folders</button>
+                    <button onclick="selectedHealthPaths.clear(); updateHealthSelectionUI();" class="px-4 py-2 bg-white/5 text-white text-[9px] font-black uppercase rounded hover:bg-white/10 transition-all">Cancel</button>
+                </div>
+            </div>
+        </div>

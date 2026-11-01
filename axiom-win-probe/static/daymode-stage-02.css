@@ -1,0 +1,1749 @@
+
+
+html body.light-mode #replacement-modal.anchor-dj-modal #btn-action-add.transition-action.primary,
+html body.light-mode #replacement-modal.anchor-dj-modal #btn-action-add.transition-action.primary span.text-primary-contrast,
+html body.light-mode #replacement-modal.anchor-dj-modal #btn-action-add.transition-action.primary small {
+  background: #0047ab !important;
+  color: #ffffff !important;
+  border-color: #0047ab !important;
+  text-shadow: none !important;
+}
+
+html body.light-mode #audio-player.library-player-upgrade :is(#ap-title, #ap-title.text-white) {
+  color: #07111f !important;
+  text-shadow: none !important;
+}
+
+html body.light-mode #audio-player.library-player-upgrade #ap-artist {
+  color: #40516a !important;
+  text-shadow: none !important;
+}
+
+html body.light-mode #tab-content-library.library-cockpit #search-results .library-track-card.axiom-focus-deck-row.selected .library-bpm-value {
+  color: #0047ab !important;
+  text-shadow: none !important;
+}
+
+html body.light-mode #tab-content-library.library-cockpit #search-results .library-track-card.axiom-focus-deck-row.selected :is(
+  .library-bpm-tools,
+  .library-meta-line,
+  .library-meta-line span
+) {
+  color: #40516a !important;
+  text-shadow: none !important;
+}
+
+html body.light-mode #studio-active-view #active-playlist-container
+  .playlist-row.studio-transition-row.axiom-focus-deck-row:not(.selected)
+  .transition-badge.energy-spine-node,
+html body.light-mode #studio-active-view #active-playlist-container
+  .playlist-row.studio-transition-row.axiom-focus-deck-row.selected
+  .transition-badge.energy-spine-node,
+html body.light-mode #studio-active-view #active-playlist-container
+  .playlist-row.studio-transition-row.axiom-focus-deck-row.selected.playing-track
+  .transition-badge.energy-spine-node {
+  background:
+    radial-gradient(circle at 40% 28%, rgba(255, 255, 255, 0.34), transparent 24%),
+    linear-gradient(145deg, #60a5fa 0%, #2563eb 48%, #0047ab 100%) !important;
+  color: #ffffff !important;
+  border: 2px solid rgba(255, 255, 255, 0.84) !important;
+  text-shadow: none !important;
+  box-shadow:
+    0 0 0 2px rgba(0, 71, 171, 0.08),
+    0 0 12px rgba(0, 71, 171, 0.30),
+    0 0 24px rgba(0, 71, 171, 0.14),
+    inset 0 0 8px rgba(255, 255, 255, 0.14) !important;
+}
+
+html body.light-mode #studio-active-view #active-playlist-container
+  .playlist-row.studio-transition-row .transition-badge.energy-spine-node::after {
+  background: linear-gradient(180deg, rgba(37, 99, 235, 0.24), #60a5fa 48%, rgba(0, 71, 171, 0.30)) !important;
+  box-shadow:
+    0 0 5px rgba(0, 71, 171, 0.50),
+    0 0 12px rgba(0, 71, 171, 0.20) !important;
+  opacity: 0.82 !important;
+}
+
+html body.light-mode #studio-active-view #active-playlist-container
+  .playlist-row.studio-transition-row .studio-spine-orb {
+  background: radial-gradient(circle, rgba(96, 165, 250, 0.62) 0 10%, rgba(37, 99, 235, 0.36) 28%, rgba(0, 71, 171, 0.12) 55%, transparent 72%) !important;
+  filter: blur(3px) saturate(1.02) !important;
+  opacity: 0.24 !important;
+}
+
+html body.light-mode #studio-active-view #active-playlist-container
+  .playlist-row.studio-transition-row .studio-harmonic-metric .studio-harmonic-indicator {
+  color: #0047ab !important;
+  text-shadow: none !important;
+}
+
+html body.light-mode #studio-active-view #active-playlist-container
+  .playlist-row.studio-transition-row .studio-harmonic-metric small {
+  color: #40516a !important;
+  text-shadow: none !important;
+}
+
+/* --------------------------------------------------------------------------
+   DAY MODE ZERO-GREEN LAW
+
+   Night mode owns AXIOM green. Day mode uses the same interaction hierarchy
+   with AXIOM blue, including decorative pseudo-elements and legacy inline
+   utilities that are otherwise easy to miss in a visual pass.
+   -------------------------------------------------------------------------- */
+
+html body.light-mode {
+  --accent: #0047ab !important;
+  --accent-rgb: 0, 71, 171 !important;
+  --focus-deck-lime: #0047ab !important;
+  --focus-deck-accent: #0047ab !important;
+  --color-accent: #0047ab !important;
+  --color-accent-rgb: 0, 71, 171 !important;
+  --color-accent-blue: #0047ab !important;
+}
+
+/* Sidebar: every inactive item is deliberately readable; the active item and
+   submenu counters use blue without inheriting night-mode filters or glows. */
+html body.light-mode aside#axiom-sidebar .axiom-sidebar-nav-item {
+  color: #07111f !important;
+  opacity: 1 !important;
+  filter: none !important;
+}
+
+html body.light-mode aside#axiom-sidebar .axiom-sidebar-nav-item > div,
+html body.light-mode aside#axiom-sidebar .axiom-sidebar-nav-item > div > span,
+html body.light-mode aside#axiom-sidebar .axiom-sidebar-nav-item .axiom-sidebar-nav-label {
+  color: #07111f !important;
+  opacity: 1 !important;
+  text-shadow: none !important;
+  filter: none !important;
+}
+
+html body.light-mode aside#axiom-sidebar .axiom-sidebar-nav-item :is(svg, svg *, .axiom-sidebar-nav-icon) {
+  color: #40516a !important;
+  stroke: currentColor !important;
+  opacity: 1 !important;
+  filter: none !important;
+}
+
+html body.light-mode aside#axiom-sidebar .axiom-sidebar-nav-item[data-nav-state="active"],
+html body.light-mode aside#axiom-sidebar .axiom-sidebar-nav-item[aria-current="page"] {
+  background: linear-gradient(90deg, rgba(0, 71, 171, 0.13), rgba(37, 99, 235, 0.045)) !important;
+  color: #0047ab !important;
+  border-color: rgba(0, 71, 171, 0.44) !important;
+  box-shadow: inset 4px 0 0 #0047ab !important;
+}
+
+html body.light-mode aside#axiom-sidebar .axiom-sidebar-nav-item[data-nav-state="active"] > div > span,
+html body.light-mode aside#axiom-sidebar .axiom-sidebar-nav-item[data-nav-state="active"] :is(svg, svg *, .axiom-sidebar-nav-icon),
+html body.light-mode aside#axiom-sidebar .axiom-sidebar-nav-item[aria-current="page"] > div > span,
+html body.light-mode aside#axiom-sidebar .axiom-sidebar-nav-item[aria-current="page"] :is(svg, svg *, .axiom-sidebar-nav-icon) {
+  color: #0047ab !important;
+  stroke: currentColor !important;
+  opacity: 1 !important;
+  filter: none !important;
+}
+
+html body.light-mode aside#axiom-sidebar .axiom-sidebar-counter-menu-btn,
+html body.light-mode aside#axiom-sidebar #studio-tools-dropdown-btn,
+html body.light-mode aside#axiom-sidebar #sidebar-export-dropdown-btn {
+  background: #ffffff !important;
+  color: #0047ab !important;
+  border-color: rgba(0, 71, 171, 0.45) !important;
+  outline-color: rgba(0, 71, 171, 0.44) !important;
+  box-shadow: none !important;
+  opacity: 1 !important;
+}
+
+html body.light-mode aside#axiom-sidebar .axiom-sidebar-counter-menu-btn:is(:hover, :focus-visible, [aria-expanded="true"]),
+html body.light-mode aside#axiom-sidebar #studio-tools-dropdown-btn:is(:hover, :focus-visible, [aria-expanded="true"]),
+html body.light-mode aside#axiom-sidebar #sidebar-export-dropdown-btn:is(:hover, :focus-visible, [aria-expanded="true"]) {
+  background: rgba(0, 71, 171, 0.09) !important;
+  color: #0047ab !important;
+  border-color: #0047ab !important;
+}
+
+html body.light-mode aside#axiom-sidebar .axiom-sidebar-counter-menu-btn :is(svg, svg *),
+html body.light-mode aside#axiom-sidebar #studio-tools-dropdown-btn :is(svg, svg *),
+html body.light-mode aside#axiom-sidebar #sidebar-export-dropdown-btn :is(svg, svg *) {
+  color: #0047ab !important;
+  stroke: currentColor !important;
+  filter: none !important;
+}
+
+/* Shared progress, grid, Help and guide accents. */
+html body.light-mode #undo-progress-bar {
+  background: linear-gradient(90deg, #60a5fa, #2563eb 52%, #0047ab) !important;
+  box-shadow: 0 0 12px rgba(0, 71, 171, 0.24) !important;
+}
+
+html body.light-mode #tab-content-library::before {
+  background-image:
+    linear-gradient(rgba(0, 71, 171, 0.018) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 71, 171, 0.018) 1px, transparent 1px) !important;
+}
+
+html body.light-mode :is(
+  #tab-content-library .library-guide-btn,
+  #studio-active-view #btn-studio-guide
+)::before {
+  border-color: rgba(0, 71, 171, 0.55) transparent rgba(0, 71, 171, 0.55) transparent !important;
+  filter: none !important;
+}
+
+/* Library: selection, readiness and recommendation cues all belong to the
+   same blue interaction system in Day Mode. */
+html body.light-mode #tab-content-library.library-cockpit #search-results
+  .library-track-card.axiom-focus-deck-row.selected .library-artwork {
+  border-color: rgba(0, 71, 171, 0.72) !important;
+  background: #ffffff !important;
+  box-shadow:
+    0 0 0 5px rgba(255, 255, 255, 0.88),
+    0 0 18px rgba(0, 71, 171, 0.17),
+    0 10px 22px rgba(15, 23, 42, 0.12) !important;
+}
+
+html body.light-mode #tab-content-library.library-cockpit #search-results
+  .library-track-card.axiom-focus-deck-row.selected .library-track-title {
+  color: #07111f !important;
+  border-bottom-color: #0047ab !important;
+  text-decoration-color: #0047ab !important;
+}
+
+html body.light-mode #tab-content-library.library-cockpit .library-health-chip.ready,
+html body.light-mode #tab-content-library.library-cockpit .library-health-chip.set-ready,
+html body.light-mode #tab-content-library.library-cockpit .library-health-chip[data-state="ready"] {
+  background: rgba(0, 71, 171, 0.08) !important;
+  color: #0047ab !important;
+  border-color: rgba(0, 71, 171, 0.38) !important;
+  box-shadow: none !important;
+}
+
+html body.light-mode #tab-content-library.library-cockpit :is(.recommendations-icon, .recommendations-title-icon) {
+  background: rgba(0, 71, 171, 0.08) !important;
+  color: #0047ab !important;
+  border-color: rgba(0, 71, 171, 0.36) !important;
+  box-shadow: none !important;
+}
+
+html body.light-mode #tab-content-library.library-cockpit :is(.recommendations-icon, .recommendations-title-icon) :is(svg, svg *) {
+  color: #0047ab !important;
+  stroke: currentColor !important;
+}
+
+/* Studio: replace the remaining green structural bloom, row washes and
+   artwork treatments while preserving the approved blue BPM spine. */
+html body.light-mode #studio-active-view .studio-header {
+  border-color: rgba(0, 71, 171, 0.18) !important;
+  box-shadow: none !important;
+}
+
+html body.light-mode #studio-active-view #studio-set-brief-bar .text-primary-contrast,
+html body.light-mode #studio-active-view #studio-set-brief-bar .text-axiom-accent {
+  color: #0047ab !important;
+  text-shadow: none !important;
+}
+
+html body.light-mode #studio-active-view .studio-tabbar::before {
+  background: linear-gradient(90deg, #0047ab, #2563eb 64%, rgba(96, 165, 250, 0.26)) !important;
+  box-shadow: 0 0 10px rgba(0, 71, 171, 0.18) !important;
+}
+
+html body.light-mode #studio-active-view #btn-optimize :is(.text-axiom-accent, svg, svg *) {
+  color: #0047ab !important;
+  stroke: currentColor !important;
+  filter: none !important;
+}
+
+html body.light-mode #active-playlist-container
+  .playlist-row.studio-transition-row.axiom-focus-deck-row::before {
+  background: linear-gradient(90deg, rgba(0, 71, 171, 0.045), rgba(37, 99, 235, 0.015) 48%, transparent 78%) !important;
+  box-shadow: none !important;
+}
+
+html body.light-mode #active-playlist-container
+  .playlist-row.studio-transition-row.axiom-focus-deck-row::after {
+  background: linear-gradient(90deg, rgba(0, 71, 171, 0.15), rgba(37, 99, 235, 0.035) 28%, transparent 64%) !important;
+  box-shadow: none !important;
+}
+
+html body.light-mode #active-playlist-container
+  .playlist-row.studio-transition-row.axiom-focus-deck-row .studio-track-artwork::after {
+  background: linear-gradient(135deg, rgba(96, 165, 250, 0.28), rgba(0, 71, 171, 0.08) 42%, transparent 72%) !important;
+  box-shadow: none !important;
+}
+
+/* Matching Songs: selection/sort cues follow the blue Day Mode law. */
+html body.light-mode #replacement-modal.anchor-dj-modal .anchor-sort-pill::after {
+  color: #0047ab !important;
+  background: #0047ab !important;
+  border-color: #0047ab !important;
+  box-shadow: none !important;
+}
+
+html body.light-mode #replacement-modal.anchor-dj-modal
+  .anchor-suggestion-row.axiom-focus-deck-row:is(.selected, .active-suggestion) {
+  --focus-deck-lime: #0047ab !important;
+  border-color: #0047ab !important;
+}
+
+/* ========================================================================
+   DAY MODE SURFACE COMPLETION
+   Night Mode remains acid green. Day Mode is a true light inversion with
+   AXIOM blue as its only positive/product accent.
+   ======================================================================== */
+
+/* AXIOM Start ----------------------------------------------------------- */
+html body.light-mode #studio-start-view.command-launch-shell {
+  color: #07111f !important;
+  background: #f7f9fc !important;
+}
+
+html body.light-mode #studio-start-view .command-launch-hero {
+  grid-template-columns: minmax(0, 1.06fr) minmax(380px, 0.94fr) !important;
+  border-color: rgba(0, 71, 171, 0.22) !important;
+  background: linear-gradient(90deg, #ffffff 0 50%, #eaf1fb 72%, #dce8f8 100%) !important;
+  box-shadow: 0 18px 44px rgba(28, 54, 88, 0.10) !important;
+}
+
+html body.light-mode #studio-start-view .command-launch-hero > div:not(.command-terrain):not(.command-status-readout) {
+  position: relative !important;
+  z-index: 3 !important;
+  padding-inline: clamp(24px, 2.2vw, 32px) clamp(12px, 1.4vw, 20px) !important;
+}
+
+html body.light-mode #studio-start-view .command-terrain {
+  width: 100% !important;
+  transform: none !important;
+  opacity: 0.78 !important;
+  filter: saturate(0.72) hue-rotate(170deg) brightness(1.12) !important;
+  mask-image: linear-gradient(90deg, transparent 0, #000 24%, #000 100%) !important;
+}
+
+html body.light-mode #studio-start-view :is(.command-section-kicker, .command-launch-copy h1, .command-launch-copy h2) {
+  color: #07111f !important;
+  text-shadow: none !important;
+}
+
+html body.light-mode #studio-start-view :is(.command-launch-copy p, .command-status-readout, .command-status-readout *) {
+  color: #40516a !important;
+  text-shadow: none !important;
+}
+
+html body.light-mode #studio-start-view .command-action-grid {
+  border: 1px solid rgba(0, 71, 171, 0.22) !important;
+  background: #ffffff !important;
+  box-shadow: 0 18px 40px rgba(28, 54, 88, 0.10) !important;
+}
+
+html body.light-mode #studio-start-view .command-action-card,
+html body.light-mode #studio-start-view .command-action-card.primary,
+html body.light-mode #studio-start-view .command-action-card.secondary,
+html body.light-mode #studio-start-view .command-action-card:not(.is-selected) {
+  border-color: rgba(0, 71, 171, 0.20) !important;
+  background: #ffffff !important;
+  color: #07111f !important;
+  box-shadow: none !important;
+}
+
+html body.light-mode #studio-start-view .command-action-card.is-selected,
+html body.light-mode #studio-start-view .command-action-card:first-child.is-selected,
+html body.light-mode #studio-start-view .command-action-card:last-child.is-selected {
+  border-color: #0047ab !important;
+  background: linear-gradient(118deg, #0047ab 0%, #2563eb 100%) !important;
+  color: #ffffff !important;
+  box-shadow: 0 14px 34px rgba(0, 71, 171, 0.20) !important;
+}
+
+html body.light-mode #studio-start-view .command-action-card:not(.is-selected) :is(.command-card-kicker, .command-card-title) {
+  color: #07111f !important;
+}
+
+html body.light-mode #studio-start-view .command-action-card:not(.is-selected) :is(.command-card-desc, .command-card-guidance, .command-card-guidance span) {
+  color: #40516a !important;
+}
+
+html body.light-mode #studio-start-view .command-action-card.is-selected :is(.command-card-kicker, .command-card-title) {
+  color: #ffffff !important;
+}
+
+html body.light-mode #studio-start-view .command-action-card.is-selected :is(.command-card-desc, .command-card-guidance, .command-card-guidance span) {
+  color: rgba(255, 255, 255, 0.82) !important;
+}
+
+html body.light-mode #studio-start-view .command-card-kicker::before,
+html body.light-mode #studio-start-view .command-card-guidance > span::before {
+  background: #0047ab !important;
+  box-shadow: none !important;
+}
+
+html body.light-mode #studio-start-view .command-action-card.is-selected :is(.command-card-kicker::before, .command-card-guidance > span::before) {
+  background: #ffffff !important;
+}
+
+html body.light-mode #studio-start-view .command-action-card:not(.is-selected) .command-card-cta,
+html body.light-mode #studio-start-view .command-action-card:not(.is-selected) #btn-upload-csv.command-card-cta {
+  border-color: rgba(0, 71, 171, 0.70) !important;
+  background: #ffffff !important;
+  color: #0047ab !important;
+}
+
+html body.light-mode #studio-start-view .command-action-card.is-selected .command-card-cta,
+html body.light-mode #studio-start-view .command-action-card.is-selected #btn-upload-csv.command-card-cta {
+  border-color: #ffffff !important;
+  background: #ffffff !important;
+  color: #07111f !important;
+}
+
+html body.light-mode #studio-start-view .command-path-or {
+  border-color: rgba(0, 71, 171, 0.38) !important;
+  background: #ffffff !important;
+  color: #0047ab !important;
+  box-shadow: 0 8px 20px rgba(28, 54, 88, 0.12) !important;
+}
+
+html body.light-mode #studio-start-view .build-night-panel,
+html body.light-mode #studio-start-view .build-night-grid {
+  border-color: rgba(0, 71, 171, 0.20) !important;
+  background: #ffffff !important;
+  box-shadow: 0 16px 36px rgba(28, 54, 88, 0.08) !important;
+}
+
+html body.light-mode #studio-start-view .build-night-card {
+  border-color: rgba(0, 71, 171, 0.16) !important;
+  background: #ffffff !important;
+  color: #0047ab !important;
+  box-shadow: none !important;
+}
+
+html body.light-mode #studio-start-view .build-night-card:hover,
+html body.light-mode #studio-start-view .build-night-card:focus-visible {
+  background: #edf4ff !important;
+  box-shadow: inset 0 3px 0 #0047ab !important;
+}
+
+html body.light-mode #studio-start-view .build-night-icon {
+  filter: brightness(0) saturate(100%) invert(21%) sepia(98%) saturate(2120%) hue-rotate(207deg) brightness(78%) contrast(111%) !important;
+}
+
+html body.light-mode #studio-start-view .build-night-card strong,
+html body.light-mode #studio-start-view :is(.build-night-kicker, .build-night-title) {
+  color: #07111f !important;
+}
+
+html body.light-mode #studio-start-view .build-night-card-copy > span:not(.build-night-settings):not(.build-night-start),
+html body.light-mode #studio-start-view .build-night-text {
+  color: #40516a !important;
+}
+
+html body.light-mode #studio-start-view .build-night-settings b {
+  border-color: rgba(0, 71, 171, 0.28) !important;
+  background: #f7f9fc !important;
+  color: #40516a !important;
+}
+
+html body.light-mode #studio-start-view .build-night-card-copy > .build-night-start {
+  color: #0047ab !important;
+}
+
+/* Quick Start ----------------------------------------------------------- */
+html body.light-mode .axiom-arrival-overlay {
+  background: rgba(226, 233, 243, 0.88) !important;
+}
+
+html body.light-mode .axiom-arrival-card {
+  border-color: rgba(0, 71, 171, 0.24) !important;
+  background: #ffffff !important;
+  box-shadow: 0 28px 74px rgba(28, 54, 88, 0.20) !important;
+}
+
+html body.light-mode .axiom-step-main,
+html body.light-mode .axiom-step-content,
+html body.light-mode .axiom-walkthrough-sidebar,
+html body.light-mode .axiom-step-footer {
+  border-color: rgba(0, 71, 171, 0.16) !important;
+  background: #ffffff !important;
+}
+
+html body.light-mode :is(.axiom-walkthrough-brand, .axiom-arrival-title) {
+  color: #07111f !important;
+}
+
+html body.light-mode :is(.axiom-walkthrough-kicker, .axiom-step-eyebrow, .axiom-step-counter, .axiom-step-module strong) {
+  color: #0047ab !important;
+}
+
+html body.light-mode .axiom-step-ghost {
+  color: rgba(0, 71, 171, 0.075) !important;
+}
+
+html body.light-mode :is(.axiom-arrival-copy, .axiom-step-module span, .axiom-walkthrough-protection) {
+  color: #40516a !important;
+}
+
+html body.light-mode .axiom-step-module:not(:last-child)::after {
+  filter: brightness(0) saturate(100%) invert(21%) sepia(98%) saturate(2120%) hue-rotate(207deg) brightness(78%) contrast(111%) !important;
+}
+
+html body.light-mode :is(.axiom-walkthrough-sidebar-head, .axiom-walkthrough-step) {
+  border-color: rgba(0, 71, 171, 0.16) !important;
+  color: #40516a !important;
+  background: transparent !important;
+}
+
+html body.light-mode .axiom-walkthrough-steps::before {
+  background: rgba(0, 71, 171, 0.22) !important;
+}
+
+html body.light-mode .axiom-walkthrough-step-number {
+  border-color: rgba(0, 71, 171, 0.42) !important;
+  background: #ffffff !important;
+  color: #40516a !important;
+}
+
+html body.light-mode .axiom-walkthrough-step.active {
+  border-left-color: #0047ab !important;
+  background: linear-gradient(90deg, rgba(0, 71, 171, 0.10), rgba(37, 99, 235, 0.035)) !important;
+  color: #0047ab !important;
+}
+
+html body.light-mode .axiom-walkthrough-step.active .axiom-walkthrough-step-number,
+html body.light-mode .axiom-step-progress-dot.active,
+html body.light-mode .axiom-arrival-primary {
+  border-color: #0047ab !important;
+  background: #0047ab !important;
+  color: #ffffff !important;
+  box-shadow: none !important;
+}
+
+html body.light-mode .axiom-step-progress-dot {
+  background: rgba(0, 71, 171, 0.18) !important;
+}
+
+html body.light-mode .axiom-arrival-secondary {
+  border-color: rgba(0, 71, 171, 0.48) !important;
+  background: #ffffff !important;
+  color: #0047ab !important;
+}
+
+html body.light-mode .axiom-arrival-secondary:disabled {
+  border-color: rgba(7, 17, 31, 0.12) !important;
+  background: #f1f4f8 !important;
+  color: rgba(7, 17, 31, 0.34) !important;
+}
+
+/* Release/update splash ------------------------------------------------- */
+html body.light-mode .release-splash-overlay {
+  background: rgba(226, 233, 243, 0.92) !important;
+}
+
+html body.light-mode .release-splash-shell,
+html body.light-mode .release-splash-brand,
+html body.light-mode .release-splash-content {
+  border-color: rgba(0, 71, 171, 0.20) !important;
+  background: #ffffff !important;
+  color: #07111f !important;
+  box-shadow: none !important;
+}
+
+html body.light-mode .release-splash-brand {
+  background: radial-gradient(circle at 30% 25%, rgba(0, 71, 171, 0.08), transparent 34%), #f7f9fc !important;
+}
+
+html body.light-mode .release-splash-mark {
+  mix-blend-mode: multiply !important;
+  filter: hue-rotate(170deg) saturate(1.1) !important;
+}
+
+html body.light-mode :is(.release-splash-latest, .release-splash-footer) {
+  color: #0047ab !important;
+}
+
+html body.light-mode :is(.release-splash-version, .release-splash-version strong, .release-splash-statement, .release-splash-headline, .release-splash-feature strong) {
+  color: #07111f !important;
+}
+
+html body.light-mode :is(.release-splash-identity-copy, .release-splash-title, .release-splash-feature span:last-child span) {
+  color: #40516a !important;
+}
+
+html body.light-mode .release-splash-feature {
+  border-bottom-color: rgba(0, 71, 171, 0.16) !important;
+}
+
+html body.light-mode .release-splash-feature::before {
+  color: rgba(0, 71, 171, 0.44) !important;
+}
+
+html body.light-mode .release-splash-btn.primary {
+  border-color: #0047ab !important;
+  background: #0047ab !important;
+  color: #ffffff !important;
+}
+
+html body.light-mode .release-splash-btn.secondary {
+  color: #0047ab !important;
+}
+
+/* Magic Set ------------------------------------------------------------- */
+html body.light-mode.studio-magic-mode #studio-active-view.graph-mode,
+html body.light-mode.studio-magic-mode #studio-active-view.graph-mode #magic-set-command,
+html body.light-mode.studio-magic-mode #studio-active-view.graph-mode .magic-command-main,
+html body.light-mode.studio-magic-mode #studio-active-view.graph-mode #studio-build-controls,
+html body.light-mode.studio-magic-mode #studio-active-view.graph-mode #studio-workspace,
+html body.light-mode.studio-magic-mode #studio-active-view.graph-mode #graph-container {
+  border-color: rgba(0, 71, 171, 0.18) !important;
+  background: #ffffff !important;
+  color: #07111f !important;
+  box-shadow: none !important;
+}
+
+html body.light-mode.studio-magic-mode #studio-active-view.graph-mode :is(.magic-command-title, .magic-command-copy, .magic-score-card span, .magic-score-card small, .magic-score-card strong) {
+  color: #07111f !important;
+  text-shadow: none !important;
+}
+
+html body.light-mode.studio-magic-mode #studio-active-view.graph-mode .magic-score-card {
+  border-color: rgba(0, 71, 171, 0.24) !important;
+  background: #f7f9fc !important;
+}
+
+html body.light-mode.studio-magic-mode #studio-active-view.graph-mode :is(#magic-score-value, #magic-score-label, .magic-axis-bpm, .magic-phase-band .active, .magic-chart-stats strong) {
+  color: #0047ab !important;
+}
+
+html body.light-mode.studio-magic-mode #studio-active-view.graph-mode :is(.magic-generate-btn, #btn-magic-set, #btn-view-studio-set) {
+  border-color: #0047ab !important;
+  background: #0047ab !important;
+  color: #ffffff !important;
+  box-shadow: none !important;
+}
+
+html body.light-mode.studio-magic-mode #studio-active-view.graph-mode .magic-build-around-btn {
+  border-color: #0047ab !important;
+  background: #ffffff !important;
+  color: #0047ab !important;
+  box-shadow: none !important;
+}
+
+html body.light-mode.studio-magic-mode #studio-active-view.graph-mode :is(select, input, button:not(.magic-generate-btn):not(.magic-build-around-btn)) {
+  border-color: rgba(0, 71, 171, 0.28) !important;
+  background: #ffffff !important;
+  color: #07111f !important;
+  box-shadow: none !important;
+}
+
+html body.light-mode.studio-magic-mode #studio-active-view.graph-mode .magic-phase-band,
+html body.light-mode.studio-magic-mode #studio-active-view.graph-mode .magic-graph-hud,
+html body.light-mode.studio-magic-mode #studio-active-view.graph-mode .magic-chart-footer {
+  border-color: rgba(0, 71, 171, 0.18) !important;
+  background: #f7f9fc !important;
+  color: #07111f !important;
+}
+
+html body.light-mode.studio-magic-mode #studio-active-view.graph-mode #graph-container::before {
+  border-color: rgba(0, 71, 171, 0.18) !important;
+  background: linear-gradient(rgba(0,71,171,0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(0,71,171,0.07) 1px, transparent 1px) !important;
+}
+
+/* Health Command Centre ------------------------------------------------- */
+html body.light-mode.studio-health-mode #health-view {
+  background: #f7f9fc !important;
+}
+
+html body.light-mode.studio-health-mode :is(.health-inbox-app, .health-repair-center, .health-inbox-workspace, .health-inbox-nav, .health-inbox-detail, .health-inbox-activity) {
+  border-color: rgba(0, 71, 171, 0.18) !important;
+  background: #ffffff !important;
+  color: #07111f !important;
+  box-shadow: none !important;
+}
+
+html body.light-mode.studio-health-mode .health-repair-center {
+  background: radial-gradient(circle at 15% -26%, rgba(0, 71, 171, 0.12), transparent 44%), #ffffff !important;
+}
+
+html body.light-mode.studio-health-mode :is(.health-repair-center-kicker, .health-repair-center-title .healthy, .health-detail-guidance-card span) {
+  color: #0047ab !important;
+}
+
+html body.light-mode.studio-health-mode :is(.health-repair-center-title, .health-repair-center-copy, .health-repair-center-card span, .health-repair-center-card small, .health-command-utility, .health-command-utility strong, .health-inbox-group-title, .health-inbox-group-title span, .health-inbox-item-label, .health-inbox-item-hint, .health-detail-title, .health-detail-copy, .health-detail-guidance-card strong) {
+  color: #07111f !important;
+  text-shadow: none !important;
+}
+
+html body.light-mode.studio-health-mode :is(.health-repair-center-card, .health-repair-center-main, .health-command-utility, .health-detail-guidance-card + .health-detail-guidance-card) {
+  border-color: rgba(0, 71, 171, 0.16) !important;
+  background: #ffffff !important;
+}
+
+html body.light-mode.studio-health-mode #health-repair-center[data-overall-health="healthy"] {
+  --health-overall-accent: #0047ab !important;
+  --health-overall-accent-rgb: 0, 71, 171 !important;
+}
+
+html body.light-mode.studio-health-mode :is(#health-scan-all-button, .health-repair-center-actions #health-scan-all-button) {
+  border-color: #0047ab !important;
+  background: #0047ab !important;
+  color: #ffffff !important;
+  box-shadow: none !important;
+}
+
+html body.light-mode.studio-health-mode .health-repair-center-actions > button:not(#health-scan-all-button) {
+  border-color: rgba(0, 71, 171, 0.38) !important;
+  background: #ffffff !important;
+  color: #0047ab !important;
+  box-shadow: none !important;
+}
+
+/* Playlists undo styling lives in static/css/surfaces/playlists/daymode.css. */
+
+html body.light-mode.studio-health-mode .health-inbox-item.active:not(.danger) {
+  border-left-color: #0047ab !important;
+  background: rgba(0, 71, 171, 0.08) !important;
+}
+
+html body.light-mode #health-top-scan-banner,
+html body.light-mode #health-progress-container.is-running {
+  border-color: rgba(0, 71, 171, 0.34) !important;
+  background: linear-gradient(90deg, #0047ab, #2563eb) !important;
+  color: #ffffff !important;
+  box-shadow: 0 12px 30px rgba(0, 71, 171, 0.20) !important;
+}
+
+html body.light-mode #health-top-scan-banner *,
+html body.light-mode #health-progress-container.is-running :is(.health-live-headline, .health-live-headline *, #health-progress-label, #health-progress-percent) {
+  color: #ffffff !important;
+}
+
+html body.light-mode #health-progress-bar,
+html body.light-mode #health-top-scan-banner .health-progress-track::after {
+  background: #ffffff !important;
+}
+
+/* Help button review board --------------------------------------------- */
+html body.light-mode #help-button-scale-review {
+  background: linear-gradient(rgba(0,71,171,0.045) 1px, transparent 1px), linear-gradient(90deg, rgba(0,71,171,0.035) 1px, transparent 1px), #f7f9fc !important;
+  color: #07111f !important;
+}
+
+html body.light-mode :is(.help-button-review-header, .help-button-review-card, .help-button-review-copy, .help-button-review-stage, .help-button-review-key) {
+  border-color: rgba(0, 71, 171, 0.18) !important;
+  background-color: #ffffff !important;
+  color: #07111f !important;
+}
+
+html body.light-mode :is(.help-button-review-header h1, .help-button-review-copy h2, .help-button-review-copy dd, .help-button-review-header p, .help-button-review-copy p, .help-button-review-key span) {
+  color: #07111f !important;
+}
+
+html body.light-mode :is(.help-button-review-header > div:first-child > span, .help-button-review-copy > span) {
+  color: #0047ab !important;
+}
+
+html body.light-mode .help-button-review-key i,
+html body.light-mode .help-peer-btn.positive {
+  border-color: #0047ab !important;
+  background: #0047ab !important;
+  color: #ffffff !important;
+}
+
+html body.light-mode .help-button-review-stage.large-stage {
+  background: linear-gradient(90deg, transparent 49.8%, rgba(0,71,171,0.12) 50%, transparent 50.2%), linear-gradient(transparent 49.8%, rgba(0,71,171,0.12) 50%, transparent 50.2%), #ffffff !important;
+}
+
+html body.light-mode .help-peer-btn:not(.positive):not(.attention):not(.danger) {
+  border-color: rgba(0, 71, 171, 0.34) !important;
+  background: #ffffff !important;
+  color: #0047ab !important;
+}
+
+/* Verification pass: remove late high-specificity colour leaks. */
+html body.light-mode .release-splash-overlay :is(.release-splash-headline, .release-splash-feature, .release-splash-feature strong, .release-splash-feature span, .release-splash-title) {
+  opacity: 1 !important;
+}
+
+html body.light-mode .release-splash-overlay :is(.release-splash-headline, .release-splash-feature strong) {
+  color: #07111f !important;
+}
+
+html body.light-mode .release-splash-overlay :is(.release-splash-title, .release-splash-feature span:last-child span) {
+  color: #40516a !important;
+}
+
+html body.light-mode .release-splash-overlay .release-splash-btn.secondary :is(svg, svg *, img) {
+  color: #0047ab !important;
+  stroke: currentColor !important;
+  filter: brightness(0) saturate(100%) invert(21%) sepia(98%) saturate(2120%) hue-rotate(207deg) brightness(78%) contrast(111%) !important;
+}
+
+html body.light-mode.studio-magic-mode #studio-active-view.graph-mode .magic-phase-band div.active {
+  border-color: #0047ab !important;
+  background: rgba(0, 71, 171, 0.08) !important;
+  box-shadow: inset 0 3px 0 #0047ab !important;
+}
+
+html body.light-mode.studio-magic-mode #studio-active-view.graph-mode .magic-phase-band div.active :is(strong, span),
+html body.light-mode.studio-magic-mode #studio-active-view.graph-mode .magic-axis-title.bpm strong {
+  color: #0047ab !important;
+  text-shadow: none !important;
+}
+
+html body.light-mode.studio-magic-mode #studio-active-view.graph-mode .magic-legend i {
+  border-color: #0047ab !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+html body.light-mode.studio-magic-mode #studio-active-view.graph-mode .magic-legend i.compatible {
+  border-color: #0891b2 !important;
+}
+
+html body.light-mode.studio-magic-mode #studio-active-view.graph-mode .magic-legend i.review {
+  border-color: #d99a00 !important;
+}
+
+html body.light-mode.studio-health-mode :is(#btn-fix-all-health, #btn-fix-bpm, #btn-fix-key, #btn-health-refresh, .health-detail-action.primary) {
+  border-color: #0047ab !important;
+  background: #0047ab !important;
+  color: #ffffff !important;
+  box-shadow: none !important;
+}
+
+html body.light-mode.studio-health-mode :is(.health-inbox-item, .health-inbox-group, .health-inbox-group-title, .health-inbox-item-label, .health-inbox-item-hint, .health-inbox-item-count) {
+  color: #07111f !important;
+}
+
+html body.light-mode.studio-health-mode .health-inbox-item:not(.active) {
+  background: #ffffff !important;
+}
+
+html body.light-mode.studio-health-mode :is(#btn-health-reset, #health-purge-missing, .health-detail-action.danger) {
+  background: #ffffff !important;
+  color: #c92b31 !important;
+}
+
+html body.light-mode #health-progress-container :is(.health-live-headline-dot, .health-progress-stage.active .health-progress-stage-dot, .health-progress-stage.done .health-progress-stage-dot),
+html body.light-mode #health-working-banner::before {
+  border-color: #0047ab !important;
+  background: #0047ab !important;
+  box-shadow: none !important;
+}
+
+html body.light-mode #health-progress-container :is(.health-live-headline strong, .health-working-banner strong, .health-progress-stage.done strong, .health-progress-stage.active strong, .health-progress-stage-top strong),
+html body.light-mode #health-working-banner :is(strong, span),
+html body.light-mode #health-live-headline-status {
+  color: #0047ab !important;
+  text-shadow: none !important;
+}
+
+html body.light-mode #health-progress-container.is-running :is(.health-live-headline strong, .health-live-headline span, .health-live-headline small, #health-live-headline-status) {
+  color: #ffffff !important;
+}
+
+/* Sidebar active state: every Day Mode feature uses the same blue law. */
+html body.light-mode aside#axiom-sidebar .axiom-sidebar-nav :is(button, .sidebar-nav-item).active,
+html body.light-mode aside#axiom-sidebar .axiom-sidebar-nav :is(button, .sidebar-nav-item)[aria-current="page"] {
+  border-color: #0047ab !important;
+  border-left-color: #0047ab !important;
+  background: linear-gradient(90deg, rgba(0, 71, 171, 0.11), rgba(37, 99, 235, 0.035)) !important;
+  color: #0047ab !important;
+  box-shadow: none !important;
+}
+
+/* Performance ---------------------------------------------------------- */
+html body.light-mode #tab-content-performance,
+html body.light-mode #tab-content-performance .performance-shell,
+html body.light-mode #tab-content-performance .performance-panel {
+  border-color: rgba(0, 71, 171, 0.18) !important;
+  background: #ffffff !important;
+  color: #07111f !important;
+  box-shadow: none !important;
+}
+
+html body.light-mode #tab-content-performance > .flex:first-child {
+  border-bottom: 1px solid rgba(0, 71, 171, 0.16) !important;
+  background: #ffffff !important;
+}
+
+html body.light-mode #tab-content-performance :is(h2, .performance-track-title, .performance-suggestion-title, .performance-rank) {
+  color: #07111f !important;
+  text-shadow: none !important;
+}
+
+html body.light-mode #tab-content-performance :is(.performance-now-card, .performance-shell > section.performance-panel) {
+  border-color: rgba(0, 71, 171, 0.16) !important;
+  background: #ffffff !important;
+}
+
+html body.light-mode #tab-content-performance :is(.performance-signal, .performance-playing-bpm-control, .performance-cued-next) {
+  border-color: rgba(0, 71, 171, 0.18) !important;
+  background: #f7f9fc !important;
+  color: #07111f !important;
+}
+
+html body.light-mode #tab-content-performance .performance-gig-profile {
+  border-color: rgba(8, 145, 178, 0.46) !important;
+  border-left-color: #0891b2 !important;
+  background: #f2fbfd !important;
+  color: #07111f !important;
+}
+
+html body.light-mode #tab-content-performance :is(.performance-gig-profile-head > span, .performance-gig-profile-summary, .performance-signal small) {
+  color: #0047ab !important;
+}
+
+html body.light-mode #tab-content-performance :is(.performance-suggestion-card, .performance-suggestion-card:not(.is-priority):not(.is-selected)) {
+  border-color: rgba(0, 71, 171, 0.18) !important;
+  background: #ffffff !important;
+  color: #07111f !important;
+}
+
+html body.light-mode #tab-content-performance :is(.performance-suggestion-card.is-priority, .performance-suggestion-card.is-selected, .performance-suggestion-card.gig-serato) {
+  border-color: rgba(8, 145, 178, 0.44) !important;
+  border-left-color: #0891b2 !important;
+  background: #f2fbfd !important;
+}
+
+html body.light-mode #tab-content-performance :is(.performance-suggestion-card.gig-djay) {
+  border-color: rgba(217, 119, 6, 0.44) !important;
+  border-left-color: #d97706 !important;
+  background: #fff8ed !important;
+}
+
+html body.light-mode #tab-content-performance :is(.performance-action, .performance-pick-btn, #performance-live-assist, #performance-serato-toggle, #performance-save-session, #performance-send-studio) {
+  border-color: #0047ab !important;
+  background: #0047ab !important;
+  color: #ffffff !important;
+  box-shadow: none !important;
+}
+
+html body.light-mode #tab-content-performance :is(.performance-action.secondary, .performance-mini-btn, .performance-filter-chip, input, select) {
+  border-color: rgba(0, 71, 171, 0.30) !important;
+  background: #ffffff !important;
+  color: #0047ab !important;
+  box-shadow: none !important;
+}
+
+html body.light-mode #tab-content-performance :is(p, small, .text-axiom-muted, .performance-decision-line span) {
+  color: #40516a !important;
+}
+
+html body.light-mode .performance-assist-activation {
+  border-color: #0047ab !important;
+  background: #ffffff !important;
+  color: #07111f !important;
+  box-shadow: 0 12px 30px rgba(0, 71, 171, 0.16) !important;
+}
+
+html body.light-mode .performance-assist-activation:hover {
+  background: #edf4ff !important;
+  box-shadow: 0 14px 34px rgba(0, 71, 171, 0.22) !important;
+}
+
+html body.light-mode .performance-assist-live-dot {
+  background: #0047ab !important;
+  box-shadow: 0 0 10px rgba(0, 71, 171, 0.42) !important;
+}
+
+html body.light-mode .performance-assist-copy :is(small, strong) {
+  color: #07111f !important;
+}
+
+html body.light-mode aside#axiom-sidebar .axiom-sidebar-nav [class*="border-axiom-accent"] {
+  border-color: #0047ab !important;
+  border-left-color: #0047ab !important;
+  background: linear-gradient(90deg, rgba(0, 71, 171, 0.11), rgba(37, 99, 235, 0.035)) !important;
+  color: #0047ab !important;
+  box-shadow: none !important;
+}
+
+/* Playlists Day Mode rules live in static/css/surfaces/playlists/daymode.css. */
+
+/* Final Day Mode navigation law. The original redesign uses route-specific
+   selectors with two IDs, so keep this equally specific and later in source. */
+html body.light-mode #axiom-sidebar :is(
+  #tab-btn-library,
+  #tab-btn-studio,
+  #tab-btn-export,
+  #tab-btn-performance,
+  #tab-btn-playlists,
+  #tab-btn-health
+)[data-nav-state="active"] {
+  border-color: rgba(0, 71, 171, 0.44) !important;
+  border-left-color: #0047ab !important;
+  background: linear-gradient(90deg, rgba(0, 71, 171, 0.13), rgba(37, 99, 235, 0.045)) !important;
+  color: #0047ab !important;
+  box-shadow: inset 4px 0 0 #0047ab !important;
+}
+
+html body.light-mode #axiom-sidebar :is(
+  #tab-btn-library,
+  #tab-btn-studio,
+  #tab-btn-export,
+  #tab-btn-performance,
+  #tab-btn-playlists,
+  #tab-btn-health
+)[data-nav-state="active"] :is(span, svg, svg *, .axiom-sidebar-nav-icon) {
+  color: #0047ab !important;
+  stroke: currentColor !important;
+  opacity: 1 !important;
+  filter: none !important;
+}
+
+/* Settings is a shared overlay, so its search field must also invert. */
+html body.light-mode .settings-search input {
+  border-color: rgba(0, 71, 171, 0.24) !important;
+  background: #ffffff !important;
+  color: #07111f !important;
+  box-shadow: none !important;
+}
+
+html body.light-mode .settings-search input::placeholder {
+  color: #68778d !important;
+  opacity: 1 !important;
+}
+
+html body.light-mode .settings-search svg {
+  color: #40516a !important;
+  stroke: currentColor !important;
+}
+
+html body.light-mode .settings-search input:focus {
+  border-color: #0047ab !important;
+  outline: 2px solid rgba(0, 71, 171, 0.16) !important;
+  outline-offset: 1px !important;
+}
+
+/* Settings rows were still inheriting their Night Mode white typography.
+   Keep every Library preference legible on the white Control Room surface. */
+html body.light-mode #master-hud .settings-column > h3,
+html body.light-mode #master-hud .settings-section-group > h3,
+html body.light-mode #master-hud .settings-item strong {
+  color: #07111f !important;
+  -webkit-text-fill-color: #07111f !important;
+  text-shadow: none !important;
+}
+
+html body.light-mode #master-hud .settings-item > div:first-child > span {
+  color: #40516a !important;
+  -webkit-text-fill-color: #40516a !important;
+}
+
+html body.light-mode #master-hud .settings-item,
+html body.light-mode #master-hud .settings-column.experience,
+html body.light-mode #master-hud .settings-column > h3,
+html body.light-mode #master-hud .settings-section-group > h3 {
+  border-color: rgba(0, 71, 171, 0.16) !important;
+}
+
+html body.light-mode #master-hud .settings-toggle {
+  border-color: #0047ab !important;
+  background: #0047ab !important;
+  box-shadow: none !important;
+}
+
+html body.light-mode #master-hud .settings-toggle:not([aria-pressed="true"]) {
+  background: #e8eef8 !important;
+}
+
+/* First-run connection is part of the same Day Mode surface. Keep the real
+   assets, but translate their night-green treatment to AXIOM blue. */
+html body.light-mode #connect-music-view :is(.connect-music-mark img, .connect-source-action img) {
+  filter: hue-rotate(152deg) saturate(1.35) brightness(0.82) !important;
+}
+
+html body.light-mode #connect-music-view .connect-source-action.primary {
+  border-color: #0047ab !important;
+  background: #0047ab !important;
+  color: #ffffff !important;
+}
+
+html body.light-mode #connect-music-view .connect-source-action.primary :is(strong, small, .connect-source-arrow) {
+  color: #ffffff !important;
+}
+
+html body.light-mode .release-splash-overlay .release-splash-btn.secondary :is(span, .text-primary-contrast) {
+  color: #0047ab !important;
+  -webkit-text-fill-color: #0047ab !important;
+}
+
+/* Health scan running state uses blue/white anticipation in Day Mode. */
+html body.light-mode #health-top-scan-banner .health-top-scan-pulse,
+html body.light-mode #health-progress-container.is-running .health-live-headline-dot,
+html body.light-mode #health-progress-container.is-running .health-working-pulse {
+  border-color: #ffffff !important;
+  background: #ffffff !important;
+  box-shadow: 0 0 18px rgba(255, 255, 255, 0.48) !important;
+}
+
+html body.light-mode #health-top-scan-banner .health-top-scan-status,
+html body.light-mode #health-progress-container.is-running #health-live-headline-status {
+  border-color: #ffffff !important;
+  background: #ffffff !important;
+  color: #0047ab !important;
+  box-shadow: none !important;
+}
+
+html body.light-mode #health-top-scan-banner .health-top-scan-meter {
+  background: rgba(255, 255, 255, 0.28) !important;
+}
+
+html body.light-mode #health-top-scan-banner .health-top-scan-meter span,
+html body.light-mode #health-progress-container.is-running #health-progress-bar {
+  background: linear-gradient(90deg, #ffffff, #9fe8ff, #ffffff) !important;
+  box-shadow: none !important;
+}
+
+/* Magic Set form controls are data-entry surfaces, not Night Mode blocks. */
+html body.light-mode.studio-magic-mode #studio-active-view.graph-mode #studio-build-controls :is(select, input[type="number"], input[type="text"]) {
+  border-color: rgba(0, 71, 171, 0.34) !important;
+  background: #ffffff !important;
+  color: #07111f !important;
+  box-shadow: none !important;
+}
+
+html body.light-mode.studio-magic-mode #studio-active-view.graph-mode .magic-phase-band div:not(.active) :is(strong, span),
+html body.light-mode.studio-magic-mode #studio-active-view.graph-mode .magic-axis-title.time :is(strong, small) {
+  color: #07111f !important;
+  text-shadow: none !important;
+  opacity: 1 !important;
+}
+
+/* Dropdown groups use an expanded state instead of data-nav-state=active. */
+html body.light-mode #axiom-sidebar .axiom-sidebar-nav-group.is-expanded > .axiom-sidebar-nav-item,
+html body.light-mode:has(#studio-start-view:not(.hidden)) #axiom-sidebar .axiom-sidebar-nav-group.is-expanded > .axiom-sidebar-nav-item,
+html body.light-mode.axiom-start-mode #axiom-sidebar .axiom-sidebar-nav-group.is-expanded > .axiom-sidebar-nav-item {
+  border-color: rgba(0, 71, 171, 0.44) !important;
+  border-left-color: #0047ab !important;
+  background: linear-gradient(90deg, rgba(0, 71, 171, 0.13), rgba(37, 99, 235, 0.045)) !important;
+  color: #0047ab !important;
+  box-shadow: inset 4px 0 0 #0047ab !important;
+}
+
+html body.light-mode #axiom-sidebar .axiom-sidebar-nav-group.is-expanded > .axiom-sidebar-nav-item :is(span, svg, svg *, .axiom-sidebar-nav-icon),
+html body.light-mode:has(#studio-start-view:not(.hidden)) #axiom-sidebar .axiom-sidebar-nav-group.is-expanded > .axiom-sidebar-nav-item :is(span, svg, svg *, .axiom-sidebar-nav-icon),
+html body.light-mode.axiom-start-mode #axiom-sidebar .axiom-sidebar-nav-group.is-expanded > .axiom-sidebar-nav-item :is(span, svg, svg *, .axiom-sidebar-nav-icon) {
+  color: #0047ab !important;
+  -webkit-text-fill-color: #0047ab !important;
+  stroke: currentColor !important;
+  opacity: 1 !important;
+  filter: none !important;
+}
+
+/* ========================================================================
+   DAY MODE SHARED NAVIGATION + MUSICAL DATA REPAIR
+   Keep Night Mode's acid-green system untouched. These selectors deliberately
+   match the high-specificity release rules used by Library, Studio and the
+   full-window Matching Songs shell.
+   ======================================================================== */
+
+/* Some grouped navigation labels carry a direct night-mode text fill on their
+   inner span. Override both color channels so Export and Playlists behave like
+   every other inactive, active and expanded Day Mode route. */
+html body.light-mode #axiom-sidebar .axiom-sidebar-nav-label > span {
+  color: #07111f !important;
+  -webkit-text-fill-color: #07111f !important;
+  opacity: 1 !important;
+  text-shadow: none !important;
+}
+
+html body.light-mode #axiom-sidebar :is(
+  .axiom-sidebar-nav-item[data-nav-state="active"],
+  .axiom-sidebar-nav-item[aria-current="page"]
+) .axiom-sidebar-nav-label > span,
+html body.light-mode #axiom-sidebar .axiom-sidebar-nav-group.is-expanded > .axiom-sidebar-nav-item .axiom-sidebar-nav-label > span {
+  color: #0047ab !important;
+  -webkit-text-fill-color: #0047ab !important;
+}
+
+/* Library rows: metadata should read as secondary information, not as solid
+   blue blocks. BPM and key remain clearly distinct musical-data controls. */
+html body.light-mode #tab-content-library.library-cockpit #search-results .library-track-card :is(
+  .library-dna-chip,
+  .library-year-chip
+) {
+  border-color: rgba(0, 71, 171, 0.28) !important;
+  background: rgba(0, 71, 171, 0.08) !important;
+  color: #0047ab !important;
+  -webkit-text-fill-color: #0047ab !important;
+  text-shadow: none !important;
+  box-shadow: none !important;
+}
+
+html body.light-mode #tab-content-library.library-cockpit #search-results .library-track-card :is(
+  .library-bpm-label,
+  .library-bpm-tools,
+  .library-bpm-tools button
+) {
+  color: #40516a !important;
+  -webkit-text-fill-color: #40516a !important;
+  text-shadow: none !important;
+  opacity: 1 !important;
+}
+
+html body.light-mode #tab-content-library.library-cockpit #search-results .library-track-card .library-bpm-tools button {
+  border-color: rgba(0, 71, 171, 0.22) !important;
+  background: rgba(0, 71, 171, 0.055) !important;
+}
+
+html body.light-mode #tab-content-library.library-cockpit #search-results .library-track-card .library-key-cell {
+  border-color: rgba(8, 145, 178, 0.46) !important;
+  background: #f0fbfd !important;
+  color: #07111f !important;
+  box-shadow: none !important;
+}
+
+html body.light-mode #tab-content-library.library-cockpit #search-results .library-track-card .library-key-cell :is(
+  .camelot-pill,
+  strong
+) {
+  color: #087f96 !important;
+  -webkit-text-fill-color: #087f96 !important;
+  text-shadow: none !important;
+}
+
+html body.light-mode #tab-content-library.library-cockpit #search-results .library-track-card .library-key-cell :is(
+  small,
+  .library-key-label
+) {
+  color: #40516a !important;
+  -webkit-text-fill-color: #40516a !important;
+  opacity: 1 !important;
+}
+
+html body.light-mode #fav-panel-count-badge {
+  border-color: rgba(0, 71, 171, 0.34) !important;
+  background: rgba(0, 71, 171, 0.10) !important;
+  color: #0047ab !important;
+  -webkit-text-fill-color: #0047ab !important;
+  box-shadow: none !important;
+}
+
+/* Studio uses the same BPM/key hierarchy as Library. The circular BPM spine
+   stays blue; only the stale dark key housing and pale labels are inverted. */
+html body.light-mode #studio-active-view #active-playlist-container .playlist-row.studio-transition-row :is(
+  .studio-bpm-metric small,
+  .studio-node-bpm-label
+) {
+  color: #40516a !important;
+  -webkit-text-fill-color: #40516a !important;
+  opacity: 1 !important;
+  text-shadow: none !important;
+}
+
+html body.light-mode #studio-active-view #active-playlist-container .playlist-row.studio-transition-row .studio-key-metric {
+  border-color: rgba(8, 145, 178, 0.46) !important;
+  background: #f0fbfd !important;
+  color: #07111f !important;
+  box-shadow: none !important;
+}
+
+html body.light-mode #studio-active-view #active-playlist-container .playlist-row.studio-transition-row .studio-key-metric .camelot-pill {
+  color: #087f96 !important;
+  -webkit-text-fill-color: #087f96 !important;
+  text-shadow: none !important;
+}
+
+html body.light-mode #studio-active-view #active-playlist-container .playlist-row.studio-transition-row .studio-key-metric > small {
+  color: #40516a !important;
+  -webkit-text-fill-color: #40516a !important;
+  opacity: 1 !important;
+}
+
+/* Matching Songs is mounted at document level and the approved Night Mode
+   rules intentionally use duplicate IDs. Match that specificity so no dark or
+   acid-green row component can win in Day Mode. */
+html body.light-mode #replacement-modal#replacement-modal.anchor-dj-modal #modal-suggestions-list .anchor-suggestion-row {
+  border-color: rgba(0, 71, 171, 0.18) !important;
+  background: #ffffff !important;
+  color: #07111f !important;
+  box-shadow: 0 8px 18px rgba(7, 17, 31, 0.07) !important;
+}
+
+html body.light-mode #replacement-modal#replacement-modal.anchor-dj-modal #modal-suggestions-list .anchor-suggestion-row:is(.selected, .active-suggestion) {
+  border-color: #0047ab !important;
+  background: linear-gradient(90deg, #ffffff, #e8f0ff 54%, #ffffff) !important;
+  box-shadow: 0 0 0 1px rgba(0, 71, 171, 0.10), 0 12px 24px rgba(7, 17, 31, 0.09), 0 0 20px rgba(0, 71, 171, 0.11) !important;
+}
+
+html body.light-mode #replacement-modal#replacement-modal.anchor-dj-modal #modal-suggestions-list .anchor-suggestion-art {
+  border-color: rgba(0, 71, 171, 0.26) !important;
+  background: linear-gradient(135deg, #ffffff, #e8f0ff) !important;
+  color: #07111f !important;
+  box-shadow: none !important;
+}
+
+html body.light-mode #replacement-modal#replacement-modal.anchor-dj-modal #modal-suggestions-list .anchor-suggestion-play {
+  border-color: rgba(255, 255, 255, 0.78) !important;
+  background: #0047ab !important;
+  color: #ffffff !important;
+  box-shadow: 0 0 16px rgba(0, 71, 171, 0.20) !important;
+}
+
+html body.light-mode #replacement-modal#replacement-modal.anchor-dj-modal #modal-suggestions-list .anchor-suggestion-play :is(svg, svg *) {
+  color: #ffffff !important;
+  fill: currentColor !important;
+  stroke: currentColor !important;
+}
+
+html body.light-mode #replacement-modal#replacement-modal.anchor-dj-modal #modal-suggestions-list :is(
+  .anchor-suggestion-title,
+  .anchor-suggestion-title strong
+) {
+  color: #07111f !important;
+  -webkit-text-fill-color: #07111f !important;
+  text-shadow: none !important;
+}
+
+html body.light-mode #replacement-modal#replacement-modal.anchor-dj-modal #modal-suggestions-list .anchor-suggestion-artist {
+  color: #40516a !important;
+  -webkit-text-fill-color: #40516a !important;
+  text-shadow: none !important;
+}
+
+html body.light-mode #replacement-modal#replacement-modal.anchor-dj-modal #modal-suggestions-list :is(
+  .anchor-suggestion-tags span,
+  .anchor-suggestion-bpm,
+  .anchor-suggestion-key,
+  .anchor-suggestion-match
+) {
+  border-color: rgba(0, 71, 171, 0.24) !important;
+  background: rgba(0, 71, 171, 0.075) !important;
+  color: #0047ab !important;
+  box-shadow: none !important;
+}
+
+html body.light-mode #replacement-modal#replacement-modal.anchor-dj-modal #modal-suggestions-list :is(
+  .anchor-suggestion-bpm > strong,
+  .anchor-suggestion-match > strong
+) {
+  color: #0047ab !important;
+  -webkit-text-fill-color: #0047ab !important;
+  text-shadow: none !important;
+}
+
+html body.light-mode #replacement-modal#replacement-modal.anchor-dj-modal #modal-suggestions-list .anchor-suggestion-key strong {
+  border-color: rgba(8, 145, 178, 0.46) !important;
+  background: #f0fbfd !important;
+  color: #087f96 !important;
+  -webkit-text-fill-color: #087f96 !important;
+  text-shadow: none !important;
+  box-shadow: none !important;
+}
+
+html body.light-mode #replacement-modal#replacement-modal.anchor-dj-modal #modal-suggestions-list :is(
+  .anchor-suggestion-metric span,
+  .anchor-suggestion-key span,
+  .anchor-suggestion-match span,
+  .anchor-suggestion-bpm-tools,
+  .anchor-suggestion-bpm-tools button
+) {
+  color: #40516a !important;
+  -webkit-text-fill-color: #40516a !important;
+  opacity: 1 !important;
+  text-shadow: none !important;
+}
+
+html body.light-mode #replacement-modal#replacement-modal.anchor-dj-modal #modal-suggestions-list .anchor-suggestion-bpm-tools button {
+  border-color: rgba(0, 71, 171, 0.22) !important;
+  background: rgba(0, 71, 171, 0.055) !important;
+}
+
+html body.light-mode #replacement-modal#replacement-modal.anchor-dj-modal #modal-suggestions-list .anchor-suggestion-add {
+  border-color: #0047ab !important;
+  background: #0047ab !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  box-shadow: 0 0 14px rgba(0, 71, 171, 0.16) !important;
+}
+
+html body.light-mode #replacement-modal#replacement-modal.anchor-dj-modal #modal-suggestions-list .anchor-decision-btn {
+  border-color: rgba(0, 71, 171, 0.30) !important;
+  background: #ffffff !important;
+  color: #0047ab !important;
+  -webkit-text-fill-color: #0047ab !important;
+  box-shadow: none !important;
+}
+
+html body.light-mode #replacement-modal#replacement-modal.anchor-dj-modal #modal-suggestions-list .anchor-decision-btn:is(:hover, .active) {
+  border-color: #0047ab !important;
+  background: #0047ab !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+
+/* Library's live recommendation filters and compact key cells are shared with
+   the side-panel suggestions, so they must invert even when Matching Songs is
+   not open as a full-window shell. */
+html body.light-mode #tab-content-library.library-cockpit :is(#lmod-era, #lmod-root, #lmod-count) {
+  border-color: rgba(0, 71, 171, 0.26) !important;
+  background: #ffffff !important;
+  color: #07111f !important;
+  -webkit-text-fill-color: #07111f !important;
+  box-shadow: none !important;
+}
+
+html body.light-mode #tab-content-library.library-cockpit #lib-suggestions-list .recommendation-key-metric {
+  border-color: rgba(8, 145, 178, 0.42) !important;
+  background: #f0fbfd !important;
+  color: #07111f !important;
+  box-shadow: none !important;
+}
+
+html body.light-mode #tab-content-library.library-cockpit #lib-suggestions-list .recommendation-key-metric :is(
+  .camelot-pill,
+  strong
+) {
+  color: #087f96 !important;
+  -webkit-text-fill-color: #087f96 !important;
+  text-shadow: none !important;
+}
+
+html body.light-mode #tab-content-library.library-cockpit #lib-suggestions-list .recommendation-key-metric :is(
+  small,
+  span
+) {
+  color: #40516a !important;
+  -webkit-text-fill-color: #40516a !important;
+  opacity: 1 !important;
+}
+
+/* These shared overlays can be summoned from any feature. Their resting Day
+   Mode state should not expose a black Night Mode panel behind the page. */
+html body.light-mode #playlist-undo-snackbar,
+html body.light-mode #favorites-panel-drawer {
+  border-color: rgba(0, 71, 171, 0.24) !important;
+  background: #ffffff !important;
+  color: #07111f !important;
+  box-shadow: 0 18px 42px rgba(7, 17, 31, 0.14) !important;
+}
+
+/* ==========================================================================
+   GUI overhaul pass 1: shared Day Mode foundation
+   ========================================================================== */
+
+body.light-mode {
+  background:
+    linear-gradient(90deg, rgba(0, 71, 171, 0.045) 0 1px, transparent 1px 92px),
+    linear-gradient(0deg, rgba(7, 17, 31, 0.035) 0 1px, transparent 1px 58px),
+    #f5f7fb !important;
+}
+
+body.light-mode :is(
+  .tab-content,
+  .library-cockpit,
+  .performance-cockpit,
+  #tab-content-studio,
+  #tab-content-playlists,
+  #tab-content-duplicates,
+  #tab-content-health-review
+) {
+  background-color: transparent !important;
+}
+
+body.light-mode :is(
+  .glass,
+  .settings-shell,
+  .library-topbar,
+  .library-search-shell,
+  .library-results-column,
+  .playlists-shell > aside,
+  .playlists-shell > section,
+  .performance-now-track,
+  .performance-signal-card,
+  .health-priority-panel,
+  .health-cleanup-panel,
+  .health-approved-tools,
+  .update-modal-card,
+  .library-guide-card,
+  #favorites-panel-drawer
+) {
+  border-color: rgba(0, 71, 171, 0.18) !important;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.94), rgba(248, 251, 255, 0.98)) !important;
+  color: #07111f !important;
+  box-shadow: 0 18px 42px rgba(7, 17, 31, 0.11) !important;
+}
+
+body.light-mode :is(
+  input,
+  select,
+  textarea,
+  .library-search-input,
+  .license-field,
+  .export-upgrade-email
+) {
+  border-color: rgba(0, 71, 171, 0.24) !important;
+  background: #ffffff !important;
+  color: #07111f !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.84) !important;
+}
+
+body.light-mode :is(input, select, textarea)::placeholder {
+  color: #6b7a90 !important;
+}
+
+body.light-mode :is(
+  button,
+  a,
+  input,
+  select,
+  textarea,
+  [role="button"],
+  [tabindex]:not([tabindex="-1"])
+):focus-visible {
+  outline: none !important;
+  box-shadow: 0 0 0 2px #ffffff, 0 0 0 4px rgba(0, 71, 171, 0.72) !important;
+}
+
+body.light-mode :is(
+  .button--primary,
+  .modal-btn-primary,
+  .library-empty-primary,
+  .health-approved-primary,
+  .settings-item-action,
+  .performance-action.primary,
+  .update-modal-btn.primary
+) {
+  border-color: #0047ab !important;
+  background: #0047ab !important;
+  color: #ffffff !important;
+  text-shadow: none !important;
+  box-shadow: 0 12px 28px rgba(0, 71, 171, 0.18) !important;
+}
+
+body.light-mode :is(
+  .button--secondary,
+  .modal-btn-secondary,
+  .library-empty-secondary,
+  .performance-action.secondary,
+  .update-modal-btn.secondary,
+  .refresh-icon-btn,
+  .settings-close,
+  .health-back-studio-btn
+) {
+  border-color: rgba(0, 71, 171, 0.24) !important;
+  background: #ffffff !important;
+  color: #07111f !important;
+  box-shadow: none !important;
+}
+
+body.light-mode :is(
+  .button--secondary,
+  .modal-btn-secondary,
+  .library-empty-secondary,
+  .performance-action.secondary,
+  .update-modal-btn.secondary,
+  .refresh-icon-btn,
+  .settings-close,
+  .health-back-studio-btn
+):is(:hover, :focus-visible) {
+  border-color: #0047ab !important;
+  background: #eef3fb !important;
+  color: #0047ab !important;
+}
+
+body.light-mode #axiom-sidebar.axiom-sidebar {
+  width: 288px !important;
+  border-right-color: rgba(0, 71, 171, 0.16) !important;
+  background:
+    linear-gradient(180deg, rgba(0, 71, 171, 0.075), transparent 35%),
+    #ffffff !important;
+  box-shadow: 12px 0 36px rgba(7, 17, 31, 0.10) !important;
+}
+
+body.light-mode #axiom-sidebar .axiom-sidebar-brand-row {
+  padding: 28px 30px 24px !important;
+  border-bottom: 1px solid rgba(0, 71, 171, 0.12) !important;
+  background: #ffffff !important;
+}
+
+body.light-mode #axiom-start-button.axiom-start-wordmark {
+  color: #07111f !important;
+  letter-spacing: 0.08em !important;
+  text-shadow: none !important;
+}
+
+body.light-mode #axiom-sidebar .axiom-sidebar-nav {
+  gap: 4px !important;
+  margin-top: 18px !important;
+}
+
+body.light-mode #axiom-sidebar .axiom-sidebar-nav-item {
+  min-height: 56px !important;
+  padding-block: 16px !important;
+  border-left-width: 3px !important;
+  color: #40516a !important;
+  letter-spacing: 0.16em !important;
+}
+
+body.light-mode #axiom-sidebar .axiom-sidebar-nav-item:is(:hover, :focus-visible) {
+  border-left-color: rgba(0, 71, 171, 0.42) !important;
+  background: #eef3fb !important;
+  color: #07111f !important;
+}
+
+body.light-mode #axiom-sidebar .axiom-sidebar-nav-item[data-nav-state="active"] {
+  border-left-color: #0047ab !important;
+  background: linear-gradient(90deg, rgba(0, 71, 171, 0.16), rgba(0, 71, 171, 0.055) 58%, transparent) !important;
+  color: #0047ab !important;
+}
+
+body.light-mode #axiom-sidebar .axiom-sidebar-submenu {
+  margin: 2px 18px 8px 34px !important;
+  border: 1px solid rgba(0, 71, 171, 0.14) !important;
+  background: #ffffff !important;
+  box-shadow: inset 3px 0 0 rgba(0, 71, 171, 0.12) !important;
+}
+
+body.light-mode #axiom-sidebar .axiom-sidebar-track-dock {
+  margin: 18px !important;
+  border-color: rgba(0, 71, 171, 0.22) !important;
+  background: rgba(0, 71, 171, 0.055) !important;
+}
+
+body.light-mode :is(.styled-scrollbar, #search-results, #favorites-panel-tracks) {
+  scrollbar-color: rgba(0, 71, 171, 0.46) rgba(0, 71, 171, 0.075);
+}
+
+/* GUI overhaul pass 2: sidebar typography only. */
+body.light-mode #axiom-sidebar .axiom-sidebar-nav-item {
+  font-family: "Bebas Neue", sans-serif !important;
+  font-size: 20px !important;
+  font-weight: 400 !important;
+  line-height: 1 !important;
+  letter-spacing: 0.075em !important;
+}
+
+body.light-mode #axiom-sidebar .axiom-sidebar-nav-label,
+body.light-mode #axiom-sidebar .axiom-sidebar-nav-item > div {
+  align-items: center !important;
+  gap: 20px !important;
+}
+
+body.light-mode #axiom-sidebar .axiom-sidebar-nav-label > span,
+body.light-mode #axiom-sidebar .axiom-sidebar-nav-item > div > span:not(#fav-sidebar-badge) {
+  display: inline-flex !important;
+  align-items: center !important;
+  color: #26364d !important;
+  font-family: "Bebas Neue", sans-serif !important;
+  font-size: 20px !important;
+  font-weight: 400 !important;
+  line-height: 1 !important;
+  letter-spacing: 0.075em !important;
+  text-transform: uppercase !important;
+}
+
+body.light-mode #axiom-sidebar .axiom-sidebar-nav-item[data-nav-state="active"] .axiom-sidebar-nav-label > span,
+body.light-mode #axiom-sidebar .axiom-sidebar-nav-item[data-nav-state="active"] > div > span:not(#fav-sidebar-badge) {
+  color: #0047ab !important;
+}
+
+body.light-mode #axiom-sidebar .axiom-sidebar-counter-menu-btn,
+body.light-mode #axiom-sidebar .axiom-sidebar-nav-item > span:last-child:not(.axiom-sidebar-nav-label),
+body.light-mode #axiom-sidebar #fav-sidebar-badge {
+  font-family: "Barlow", sans-serif !important;
+  letter-spacing: 0.08em !important;
+}
+
+/* GUI overhaul pass 2B: selected sidebar signal motion. */
+@keyframes axiomSidebarActiveSweepDay {
+  0% {
+    opacity: 0;
+    transform: translateX(-120%);
+  }
+  18% {
+    opacity: 0.58;
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(120%);
+  }
+}
+
+@keyframes axiomSidebarSignalPulseDay {
+  0%, 100% {
+    transform: scale(1);
+    filter: drop-shadow(0 0 6px rgba(0, 71, 171, 0.28));
+  }
+  48% {
+    transform: scale(1.08);
+    filter:
+      drop-shadow(0 0 7px rgba(0, 71, 171, 0.46))
+      drop-shadow(0 0 17px rgba(0, 71, 171, 0.18));
+  }
+}
+
+body.light-mode #axiom-sidebar .axiom-sidebar-nav-item[data-nav-state="active"] {
+  overflow: hidden !important;
+}
+
+body.light-mode #axiom-sidebar .axiom-sidebar-nav-item[data-nav-state="active"]::after {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  content: "";
+  pointer-events: none;
+  background: linear-gradient(100deg, transparent 0%, rgba(0, 71, 171, 0.00) 26%, rgba(0, 71, 171, 0.18) 50%, rgba(0, 71, 171, 0.00) 74%, transparent 100%);
+  animation: axiomSidebarActiveSweepDay 1.15s ease-out both;
+}
+
+body.light-mode #axiom-sidebar .axiom-sidebar-nav-item[data-nav-state="active"] > *,
+body.light-mode #axiom-sidebar .axiom-sidebar-nav-group > .axiom-sidebar-nav-item[data-nav-state="active"] > * {
+  position: relative;
+  z-index: 1;
+}
+
+body.light-mode #axiom-sidebar .axiom-sidebar-nav-item[data-nav-state="active"] :is(svg, img, .axiom-sidebar-nav-icon) {
+  animation: axiomSidebarSignalPulseDay 2.8s ease-in-out infinite;
+  transform-origin: center;
+  will-change: transform, filter;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body.light-mode #axiom-sidebar .axiom-sidebar-nav-item[data-nav-state="active"]::after {
+    animation: none !important;
+    opacity: 0 !important;
+  }
+
+  body.light-mode #axiom-sidebar .axiom-sidebar-nav-item[data-nav-state="active"] :is(svg, img, .axiom-sidebar-nav-icon) {
+    animation: none !important;
+    filter: drop-shadow(0 0 7px rgba(0, 71, 171, 0.34)) !important;
+    transform: none !important;
+  }
+}
+
+/* ==========================================================================
+   GUI overhaul pass: Axiom Start polish restoration, Day Mode
+   ========================================================================== */
+
+body.light-mode #studio-start-view.command-launch-shell {
+  background:
+    radial-gradient(circle at 12% 8%, rgba(0, 132, 255, 0.12), transparent 28%),
+    radial-gradient(circle at 88% 16%, rgba(83, 222, 255, 0.12), transparent 30%),
+    linear-gradient(180deg, #f7fbff 0%, #edf5fb 48%, #e6eef4 100%) !important;
+}
+
+body.light-mode #studio-start-view .command-launch-hero {
+  border-bottom-color: rgba(0, 104, 184, 0.24) !important;
+  box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.84) !important;
+}
+
+body.light-mode #studio-start-view .command-terrain {
+  border: 1px solid rgba(0, 104, 184, 0.18) !important;
+  background:
+    linear-gradient(90deg, rgba(247, 251, 255, 0.98) 0%, rgba(247, 251, 255, 0.56) 20%, rgba(247, 251, 255, 0.12) 58%),
+    url("/static/axiom-platform-hero.png") center right / cover no-repeat !important;
+  box-shadow:
+    0 24px 54px rgba(8, 34, 54, 0.14),
+    inset 0 1px 0 rgba(255, 255, 255, 0.88) !important;
+}
+
+body.light-mode #studio-start-view .command-eyebrow {
+  color: #006ebd !important;
+  text-shadow: none !important;
+}
+
+body.light-mode #studio-start-view .command-title {
+  color: #071018 !important;
+  text-shadow: 0 16px 32px rgba(28, 58, 78, 0.12) !important;
+}

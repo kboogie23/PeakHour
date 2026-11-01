@@ -1,0 +1,214 @@
+/* Skip controls stay secondary buttons, including hover, press and keyboard focus. */
+html body #audio-player .player-skip-btn,
+html body #audio-player .player-skip-btn:is(:hover, :focus, :focus-visible, :active) {
+  background: var(--axiom-style-secondary-bg, #071005) !important;
+  color: var(--axiom-style-secondary-text, #e8f0e4) !important;
+  -webkit-text-fill-color: var(--axiom-style-secondary-text, #e8f0e4) !important;
+}
+html body #audio-player .player-skip-btn > span {
+  color: inherit !important;
+  -webkit-text-fill-color: currentColor !important;
+}
+html body #audio-player .player-skip-btn:is(:hover, :active) {
+  border-color: var(--axiom-style-secondary-text, #e8f0e4) !important;
+}
+html body #audio-player .player-skip-btn:focus-visible {
+  outline: 2px solid var(--axiom-style-secondary-text, #e8f0e4);
+  outline-offset: 3px;
+}
+
+/* A disabled Matching Songs panel must not reserve a column or a grid row. */
+html body.library-matching-songs-disabled #tab-content-library.library-cockpit#tab-content-library#tab-content-library > .library-main-grid {
+  grid-template-columns: minmax(0, 1fr) !important;
+  gap: 0 !important;
+}
+html body.library-matching-songs-disabled #tab-content-library.library-cockpit#tab-content-library#tab-content-library > .library-main-grid > #smart-links-panel {
+  display: none !important;
+}
+
+/* Let Pro's steel surface frame the dark search controls without another panel. */
+html body:not(.light-mode) #tab-content-library.library-cockpit#tab-content-library#tab-content-library > .library-topbar {
+  grid-template-rows: minmax(0, 1fr) !important;
+  flex-shrink: 0 !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+html body:not(.light-mode) #tab-content-library.library-cockpit#tab-content-library#tab-content-library > .library-topbar .library-search-shell {
+  height: 44px !important;
+  min-height: 44px !important;
+  max-height: 44px !important;
+  box-sizing: border-box !important;
+  border: 1px solid #333d35 !important;
+  border-radius: 4px !important;
+  background: #090e0b !important;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, .45) !important;
+}
+html body:not(.light-mode) #tab-content-library.library-cockpit#tab-content-library#tab-content-library > .library-topbar #main-search.library-search-input {
+  height: 42px !important;
+  min-height: 42px !important;
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+html body:not(.light-mode) #tab-content-library.library-cockpit#tab-content-library#tab-content-library > .library-topbar .library-search-shell:focus-within {
+  border-color: var(--accent) !important;
+}
+html body:not(.light-mode) #tab-content-library.library-cockpit#tab-content-library#tab-content-library > .library-topbar #library-choose-music-source {
+  height: 44px !important;
+  min-height: 44px !important;
+}
+
+#tab-content-library #search-results .library-year-editable {
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  border-radius: 2px;
+}
+#tab-content-library #search-results .library-year-editable:is(:hover, :focus-visible) {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  outline: 1px solid var(--accent);
+  outline-offset: 3px;
+}
+
+/* Match the right gutter so selection controls do not touch the row edge. */
+html body #tab-content-library#tab-content-library#tab-content-library.library-cockpit
+  #search-results#search-results#search-results#search-results > .library-track-card.axiom-focus-deck-row {
+  padding-left: 10px !important;
+}
+
+/* Pro's sort strip shares the existing Library controls. Keep the legacy
+   Setup/Track Prep layouts intact; their exit buttons must remain reachable.
+   Specificity matches the existing final Library layout contracts. */
+html body #tab-content-library.library-cockpit#tab-content-library#tab-content-library#tab-content-library
+  #library-brief-lens#library-brief-lens#library-brief-lens:has(#library-top-sort-bar)[data-library-brief-panel="closed"] {
+  display: block !important;
+  /* Track results must surrender height before the command row does. */
+  flex: 0 0 auto !important;
+  height: auto !important;
+  min-height: 0 !important;
+  padding: 0 !important;
+  margin-bottom: 8px !important;
+}
+html body #tab-content-library.library-cockpit#tab-content-library#tab-content-library#tab-content-library
+  #library-brief-lens#library-brief-lens#library-brief-lens:has(#library-top-sort-bar)[data-library-brief-panel="closed"] > #library-brief-topline#library-brief-topline {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  align-items: center !important;
+  gap: 8px !important;
+  min-height: 0 !important;
+  height: auto !important;
+  max-height: none !important;
+  padding: 8px 12px !important;
+  overflow: visible !important;
+}
+html body #tab-content-library.library-cockpit#tab-content-library#tab-content-library#tab-content-library
+  #library-brief-lens#library-brief-lens#library-brief-lens:has(#library-top-sort-bar)[data-library-brief-panel="closed"]
+  :is(.library-brief-copy, #library-brief-actions-toggle, #library-setup-overview, .library-setup-health, .library-setup-fit, #library-setup-view-tracks, .library-brief-panel) {
+  display: none !important;
+}
+html body #tab-content-library.library-cockpit#tab-content-library#tab-content-library#tab-content-library
+  #library-brief-lens#library-brief-lens#library-brief-lens:has(#library-top-sort-bar)[data-library-brief-panel="closed"]
+  :is(#library-setup-utility-bar, #library-brief-action-rail) {
+  display: contents !important;
+}
+html body #tab-content-library.library-cockpit#tab-content-library#tab-content-library#tab-content-library
+  #library-brief-lens#library-brief-lens#library-brief-lens:has(#library-top-sort-bar)[data-library-brief-panel="closed"]
+  :is(#library-brief-lane-dropdown, #library-preparation-toggle, #library-brief-collapse, .library-gap-launch, #library-fresh-rotate, #library-recent-toggle) {
+  position: relative !important;
+  inset: auto !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex: 1 0 auto !important;
+  width: auto !important;
+  min-width: 0 !important;
+  max-width: none !important;
+  height: 38px !important;
+  min-height: 38px !important;
+  margin: 0 !important;
+  padding: 0 12px !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  font: 400 15px/1 'Bebas Neue', sans-serif !important;
+  letter-spacing: .035em !important;
+  white-space: nowrap !important;
+}
+html body #tab-content-library.library-cockpit#tab-content-library#tab-content-library#tab-content-library
+  #library-brief-lens#library-brief-lens#library-brief-lens:has(#library-top-sort-bar)[data-library-brief-panel="closed"]
+  #library-brief-lane-dropdown {
+  order: 1 !important;
+  flex: 1 0 140px !important;
+  padding: 0 !important;
+}
+html body #tab-content-library.library-cockpit#tab-content-library#tab-content-library#tab-content-library
+  #library-brief-lens#library-brief-lens#library-brief-lens:has(#library-top-sort-bar)[data-library-brief-panel="closed"]
+  #library-brief-lane-dropdown > summary {
+  width: 100% !important;
+  height: 38px !important;
+  min-height: 38px !important;
+  padding: 0 12px !important;
+}
+html body #tab-content-library.library-cockpit#tab-content-library#tab-content-library#tab-content-library
+  #library-brief-lens#library-brief-lens#library-brief-lens:has(#library-top-sort-bar)[data-library-brief-panel="closed"]
+  #library-preparation-toggle { order: 2 !important; }
+html body #tab-content-library.library-cockpit#tab-content-library#tab-content-library#tab-content-library
+  #library-brief-lens#library-brief-lens#library-brief-lens:has(#library-top-sort-bar)[data-library-brief-panel="closed"]
+  #library-brief-collapse { order: 3 !important; }
+html body #tab-content-library.library-cockpit#tab-content-library#tab-content-library#tab-content-library
+  #library-brief-lens#library-brief-lens#library-brief-lens:has(#library-top-sort-bar)[data-library-brief-panel="closed"]
+  .library-gap-launch { order: 4 !important; }
+html body #tab-content-library.library-cockpit#tab-content-library#tab-content-library#tab-content-library
+  #library-brief-lens#library-brief-lens#library-brief-lens:has(#library-top-sort-bar)[data-library-brief-panel="closed"]
+  #library-fresh-rotate { order: 5 !important; }
+html body #tab-content-library.library-cockpit#tab-content-library#tab-content-library#tab-content-library
+  #library-brief-lens#library-brief-lens#library-brief-lens:has(#library-top-sort-bar)[data-library-brief-panel="closed"]
+  #library-recent-toggle { order: 6 !important; }
+html body #tab-content-library.library-cockpit#tab-content-library#tab-content-library#tab-content-library
+  #library-brief-lens#library-brief-lens#library-brief-lens:has(#library-top-sort-bar):not([data-library-brief-panel="closed"]) #library-top-sort-bar {
+  display: none !important;
+}
+html body #tab-content-library.library-cockpit#tab-content-library#tab-content-library#tab-content-library
+  #library-brief-lens#library-brief-lens#library-brief-lens[data-library-brief-panel="closed"] #library-top-sort-bar {
+  display: flex !important;
+  align-items: center !important;
+  flex: 0 0 auto !important;
+  flex-wrap: nowrap !important;
+  width: auto !important;
+  min-width: 0 !important;
+  height: 38px !important;
+  margin: 0 !important;
+  padding: 0 8px !important;
+  gap: 6px !important;
+}
+#library-top-sort-bar .library-top-sort-label { font: 400 15px/1 'Bebas Neue', sans-serif; color: var(--accent); white-space: nowrap; }
+#tab-content-library #library-top-sort-bar button {
+  min-height: 26px; height: 26px; padding: 4px 8px; border: 1px solid #344038;
+  border-radius: 3px; background: #111915; color: #f2f7ef;
+  font: 700 10px/1 Barlow, sans-serif; text-transform: uppercase;
+}
+#tab-content-library #library-top-sort-bar button.active {
+  background: var(--accent); color: #071005; -webkit-text-fill-color: #071005; border-color: var(--accent);
+}
+#tab-content-library #library-top-sort-bar button.active::after { content: ' ' attr(data-sort-order); font-size: 9px; }
+#tab-content-library #library-top-sort-bar .library-top-sort-clear { color: #39dfff; border-color: #225561; }
+#tab-content-library #library-top-sort-bar #library-top-sort-status { display: none; }
+
+/* Narrow Library columns get two intentional rows, not one orphaned button. */
+@media (max-width: 1400px) {
+  html body #tab-content-library.library-cockpit#tab-content-library#tab-content-library#tab-content-library
+    #library-brief-lens#library-brief-lens#library-brief-lens[data-library-brief-panel="closed"] #library-top-sort-bar {
+    flex-basis: 100% !important; justify-content: flex-start !important;
+  }
+}
+html body:not(.library-matching-songs-disabled) #tab-content-library.library-cockpit#tab-content-library#tab-content-library#tab-content-library
+  #library-brief-lens#library-brief-lens#library-brief-lens[data-library-brief-panel="closed"] #library-top-sort-bar {
+  flex-basis: 100% !important; justify-content: flex-start !important;
+}
+#tab-content-library .library-search-feedback {
+  display: flex; align-items: center; gap: 8px; padding: 0 12px 8px;
+  font: 400 13px/1.3 Barlow, sans-serif; color: #bac5bd;
+}
+#tab-content-library .library-search-feedback[hidden] { display: none; }
+#tab-content-library .library-search-feedback button { color: #39dfff; background: transparent; border: 0; padding: 0; font: inherit; }

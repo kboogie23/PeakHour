@@ -1,0 +1,128 @@
+<style id="studio-reorder-feedback-v1">
+  /* Reordering needs three distinct signals: the lifted track, the destination
+     slot, and a short settled pulse after the order has been committed. */
+  html body #studio-active-view #active-playlist-container {
+    --studio-reorder-accent: var(--accent);
+    --studio-reorder-accent-rgb: 163, 255, 0;
+  }
+
+  html body.light-mode #studio-active-view #active-playlist-container {
+    --studio-reorder-accent: #1469d9;
+    --studio-reorder-accent-rgb: 20, 105, 217;
+  }
+
+  html body #studio-active-view #active-playlist-container.studio-reorder-active {
+    cursor: grabbing !important;
+  }
+
+  html body #studio-active-view #active-playlist-container.studio-reorder-active
+    .playlist-row.studio-transition-row:not(.studio-sortable-chosen):not(.studio-sortable-ghost) {
+    opacity: .58;
+    filter: saturate(.72) brightness(.82);
+    transform: scale(.995);
+  }
+
+  html body #studio-active-view #active-playlist-container
+    .playlist-row.studio-transition-row.studio-sortable-chosen:not(.studio-sortable-ghost),
+  html body #studio-active-view #active-playlist-container
+    .playlist-row.studio-transition-row.studio-sortable-drag {
+    z-index: 80 !important;
+    cursor: grabbing !important;
+    border-color: var(--studio-reorder-accent) !important;
+    background:
+      linear-gradient(90deg, rgba(var(--studio-reorder-accent-rgb), .16), rgba(8, 14, 11, .98) 48%, rgba(var(--studio-reorder-accent-rgb), .11)) !important;
+    box-shadow:
+      0 0 0 2px rgba(var(--studio-reorder-accent-rgb), .32),
+      0 24px 54px rgba(0, 0, 0, .66),
+      0 0 42px rgba(var(--studio-reorder-accent-rgb), .24),
+      inset 0 1px 0 rgba(255, 255, 255, .14) !important;
+    transform: scale(1.018) rotate(-.15deg) !important;
+  }
+
+  html body #studio-active-view #active-playlist-container.studio-reorder-active
+    .drag-handle {
+    color: var(--studio-reorder-accent) !important;
+    cursor: grabbing !important;
+    filter: drop-shadow(0 0 8px rgba(var(--studio-reorder-accent-rgb), .62));
+  }
+
+  html body #studio-active-view #active-playlist-container
+    .playlist-row.studio-transition-row.studio-sortable-ghost {
+    min-height: 78px !important;
+    opacity: 1 !important;
+    border: 2px dashed var(--studio-reorder-accent) !important;
+    background:
+      repeating-linear-gradient(135deg, rgba(var(--studio-reorder-accent-rgb), .075) 0 10px, transparent 10px 20px),
+      rgba(var(--studio-reorder-accent-rgb), .035) !important;
+    box-shadow:
+      inset 0 0 0 1px rgba(var(--studio-reorder-accent-rgb), .18),
+      inset 0 0 32px rgba(var(--studio-reorder-accent-rgb), .08),
+      0 0 24px rgba(var(--studio-reorder-accent-rgb), .14) !important;
+    transform: none !important;
+  }
+
+  html body #studio-active-view #active-playlist-container
+    .playlist-row.studio-transition-row.studio-sortable-ghost > * {
+    opacity: .06 !important;
+    pointer-events: none !important;
+  }
+
+  html body #studio-active-view #active-playlist-container
+    .playlist-row.studio-transition-row.studio-sortable-ghost::before {
+    opacity: .2 !important;
+  }
+
+  html body #studio-active-view #active-playlist-container
+    .playlist-row.studio-transition-row.studio-sortable-ghost::after {
+    content: 'DROP HERE · POSITION ' attr(data-drop-position) !important;
+    left: 16px !important;
+    right: 16px !important;
+    top: 50% !important;
+    height: auto !important;
+    color: var(--studio-reorder-accent) !important;
+    background: none !important;
+    filter: none !important;
+    opacity: 1 !important;
+    font-family: 'Bebas Neue', Impact, sans-serif !important;
+    font-size: 20px !important;
+    font-weight: 400 !important;
+    line-height: 1 !important;
+    letter-spacing: .12em !important;
+    text-align: center !important;
+    text-shadow: 0 0 16px rgba(var(--studio-reorder-accent-rgb), .48) !important;
+    transform: translateY(-50%) !important;
+    z-index: 90 !important;
+  }
+
+  html body #studio-active-view #active-playlist-container
+    .playlist-row.studio-transition-row.studio-reorder-settled,
+  html body #studio-active-view #active-playlist-container
+    .playlist-row.studio-transition-row.studio-reorder-returned {
+    animation: studio-reorder-settled 760ms cubic-bezier(.2, .8, .2, 1) both !important;
+  }
+
+  @keyframes studio-reorder-settled {
+    0% {
+      border-color: var(--studio-reorder-accent);
+      box-shadow: 0 0 0 2px rgba(var(--studio-reorder-accent-rgb), .58), 0 0 34px rgba(var(--studio-reorder-accent-rgb), .34);
+      transform: scale(1.018);
+    }
+    52% {
+      border-color: var(--studio-reorder-accent);
+      box-shadow: 0 0 0 1px rgba(var(--studio-reorder-accent-rgb), .28), 0 0 22px rgba(var(--studio-reorder-accent-rgb), .20);
+      transform: scale(.998);
+    }
+    100% { transform: scale(1); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html body #studio-active-view #active-playlist-container
+      .playlist-row.studio-transition-row.studio-reorder-settled,
+    html body #studio-active-view #active-playlist-container
+      .playlist-row.studio-transition-row.studio-reorder-returned {
+      animation: none !important;
+      outline: 2px solid var(--studio-reorder-accent) !important;
+      outline-offset: -2px !important;
+    }
+  }
+</style>

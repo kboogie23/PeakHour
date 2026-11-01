@@ -1,0 +1,235 @@
+<style id="library-track-prep-daymode-controls-v1">
+  /* Track Prep reuses Night Mode's compact command geometry. Day Mode keeps
+     that approved layout while replacing every black/lime control surface
+     with AXIOM blue, white, and readable dark ink. */
+  html body.light-mode #tab-content-library.library-cockpit#tab-content-library {
+    --track-prep-day-blue: #0047ab;
+    --track-prep-day-blue-strong: #003b8f;
+    --track-prep-day-soft: #edf4ff;
+    --track-prep-day-wash: #f8fbff;
+    --track-prep-day-ink: #07111f;
+    --track-prep-day-muted: #53647a;
+    --track-prep-day-line: rgba(0, 71, 171, .28);
+  }
+
+  html body.light-mode #tab-content-library.library-cockpit#tab-content-library
+    #library-brief-lens#library-brief-lens[data-library-brief-panel="preparation"] {
+    border-color: var(--track-prep-day-line) !important;
+    border-left-color: var(--track-prep-day-blue) !important;
+    background: linear-gradient(180deg, #ffffff 0%, var(--track-prep-day-wash) 100%) !important;
+    box-shadow: 0 8px 22px rgba(28, 64, 120, .08), inset 0 1px 0 #ffffff !important;
+  }
+
+  html body.light-mode.library-preparation-open #tab-content-library.library-cockpit#tab-content-library
+    #library-preparation-page-title {
+    color: var(--track-prep-day-blue) !important;
+    -webkit-text-fill-color: var(--track-prep-day-blue) !important;
+    text-shadow: none !important;
+  }
+
+  html body.light-mode #tab-content-library.library-cockpit#tab-content-library
+    #library-brief-lens[data-library-brief-panel="preparation"]
+    #library-preparation-toolbar > label > span,
+  html body.light-mode #tab-content-library.library-cockpit#tab-content-library
+    #library-brief-lens[data-library-brief-panel="preparation"]
+    #library-brief-lane-dropdown > summary > .library-preparation-options-label {
+    color: var(--track-prep-day-blue) !important;
+    -webkit-text-fill-color: var(--track-prep-day-blue) !important;
+    text-shadow: none !important;
+  }
+
+  html body.light-mode #tab-content-library.library-cockpit#tab-content-library
+    #library-brief-lens[data-library-brief-panel="preparation"]
+    :is(.library-preparation-menu, #library-brief-lane-dropdown) > summary > span {
+    border-color: var(--track-prep-day-line) !important;
+    border-right: 0 !important;
+    background: #ffffff !important;
+    color: var(--track-prep-day-ink) !important;
+    -webkit-text-fill-color: var(--track-prep-day-ink) !important;
+    text-shadow: none !important;
+  }
+
+  html body.light-mode #tab-content-library.library-cockpit#tab-content-library
+    #library-brief-lens[data-library-brief-panel="preparation"]
+    :is(.library-preparation-menu, #library-brief-lane-dropdown) > summary > img {
+    border-color: var(--track-prep-day-line) !important;
+    border-left: 0 !important;
+    /* Filtering an opaque image background makes the entire arrow a solid block. */
+    background: transparent !important;
+    filter: brightness(0) saturate(100%) invert(22%) sepia(99%) saturate(2459%) hue-rotate(205deg) brightness(79%) contrast(110%) !important;
+  }
+
+  html body.light-mode #tab-content-library.library-cockpit#tab-content-library
+    #library-brief-lens[data-library-brief-panel="preparation"]
+    :is(.library-preparation-menu, #library-brief-lane-dropdown) > summary:is(:hover, :focus-visible) > :is(span, img),
+  html body.light-mode #tab-content-library.library-cockpit#tab-content-library
+    #library-brief-lens[data-library-brief-panel="preparation"]
+    :is(.library-preparation-menu, #library-brief-lane-dropdown)[open] > summary > :is(span, img) {
+    border-color: var(--track-prep-day-blue) !important;
+  }
+
+  html body.light-mode #tab-content-library.library-cockpit#tab-content-library
+    #library-brief-lens#library-brief-lens[data-library-brief-panel="preparation"]
+    #library-preparation-scan-visible#library-preparation-scan-visible {
+    border: 1px solid var(--track-prep-day-blue) !important;
+    background: var(--track-prep-day-blue) !important;
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+    text-shadow: none !important;
+    box-shadow: 0 5px 14px rgba(0, 71, 171, .16) !important;
+  }
+
+  html body.light-mode #tab-content-library.library-cockpit#tab-content-library
+    #library-brief-lens#library-brief-lens[data-library-brief-panel="preparation"]
+    #library-brief-collapse#library-brief-collapse {
+    border-color: var(--track-prep-day-line) !important;
+    background: #ffffff !important;
+    color: var(--track-prep-day-blue) !important;
+    -webkit-text-fill-color: var(--track-prep-day-blue) !important;
+    text-shadow: none !important;
+    box-shadow: none !important;
+  }
+
+  html body.light-mode #tab-content-library.library-cockpit#tab-content-library
+    #library-brief-lens[data-library-brief-panel="preparation"]
+    #library-brief-collapse > img {
+    filter: brightness(0) saturate(100%) invert(22%) sepia(99%) saturate(2459%) hue-rotate(205deg) brightness(79%) contrast(110%) !important;
+  }
+
+  html body.light-mode #tab-content-library.library-cockpit#tab-content-library
+    #library-brief-lens#library-brief-lens[data-library-brief-panel="preparation"]
+    #library-preparation-toggle#library-preparation-toggle {
+    border-color: var(--track-prep-day-blue) !important;
+    background: var(--track-prep-day-blue) !important;
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+    text-shadow: none !important;
+    box-shadow: 0 5px 14px rgba(0, 71, 171, .16) !important;
+  }
+
+  html body.light-mode #tab-content-library.library-cockpit#tab-content-library
+    #library-brief-lens[data-library-brief-panel="preparation"]
+    #library-preparation-toggle > :is(span, [data-library-action-label]) {
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+    text-shadow: none !important;
+  }
+
+  html body.light-mode #tab-content-library.library-cockpit#tab-content-library
+    #library-brief-lens[data-library-brief-panel="preparation"]
+    #library-preparation-toggle > img {
+    filter: brightness(0) invert(1) !important;
+  }
+
+  html body.light-mode #tab-content-library.library-cockpit#tab-content-library
+    #library-brief-lens[data-library-brief-panel="preparation"]
+    :is(#library-preparation-scan-visible, #library-brief-collapse, #library-preparation-toggle):is(:hover, :focus-visible) {
+    border-color: var(--track-prep-day-blue-strong) !important;
+    background: var(--track-prep-day-blue-strong) !important;
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+    outline: 2px solid rgba(0, 71, 171, .16) !important;
+    outline-offset: 2px !important;
+  }
+
+  html body.light-mode #tab-content-library.library-cockpit#tab-content-library
+    #library-brief-lens[data-library-brief-panel="preparation"]
+    #library-brief-collapse:is(:hover, :focus-visible) > img {
+    filter: brightness(0) invert(1) !important;
+  }
+
+  /* Both Track Prep menus and Set Prep Options use the same Day Mode menu. */
+  html body.light-mode #tab-content-library.library-cockpit#tab-content-library
+    #library-brief-lens[data-library-brief-panel="preparation"]
+    :is(.library-preparation-menu-options, #library-brief-chips) {
+    border-color: var(--track-prep-day-line) !important;
+    border-top-color: var(--track-prep-day-blue) !important;
+    background: #ffffff !important;
+    box-shadow: 0 20px 42px rgba(28, 64, 120, .18), inset 0 1px 0 #ffffff !important;
+  }
+
+  html body.light-mode #tab-content-library.library-cockpit#tab-content-library
+    #library-brief-lens[data-library-brief-panel="preparation"]
+    :is(.library-preparation-menu-heading, #library-brief-chips::before) {
+    color: var(--track-prep-day-muted) !important;
+    -webkit-text-fill-color: var(--track-prep-day-muted) !important;
+  }
+
+  html body.light-mode #tab-content-library.library-cockpit#tab-content-library
+    #library-brief-lens[data-library-brief-panel="preparation"]
+    :is(.library-preparation-menu-options, #library-brief-chips) .library-brief-chip {
+    border-bottom-color: rgba(0, 71, 171, .12) !important;
+    background: #ffffff !important;
+    color: var(--track-prep-day-ink) !important;
+    -webkit-text-fill-color: var(--track-prep-day-ink) !important;
+    box-shadow: none !important;
+  }
+
+  html body.light-mode #tab-content-library.library-cockpit#tab-content-library
+    #library-brief-lens[data-library-brief-panel="preparation"]
+    :is(.library-preparation-menu-options, #library-brief-chips) .library-brief-chip :is(.library-brief-chip-index, .library-brief-chip-copy small) {
+    color: var(--track-prep-day-muted) !important;
+    -webkit-text-fill-color: var(--track-prep-day-muted) !important;
+  }
+
+  html body.light-mode #tab-content-library.library-cockpit#tab-content-library
+    #library-brief-lens[data-library-brief-panel="preparation"]
+    :is(.library-preparation-menu-options, #library-brief-chips) .library-brief-chip .library-brief-chip-copy strong {
+    color: var(--track-prep-day-ink) !important;
+    -webkit-text-fill-color: var(--track-prep-day-ink) !important;
+  }
+
+  html body.light-mode #tab-content-library.library-cockpit#tab-content-library
+    #library-brief-lens[data-library-brief-panel="preparation"]
+    :is(.library-preparation-menu-options, #library-brief-chips) .library-brief-chip .library-brief-chip-state {
+    color: var(--track-prep-day-blue) !important;
+    -webkit-text-fill-color: var(--track-prep-day-blue) !important;
+  }
+
+  html body.light-mode #tab-content-library.library-cockpit#tab-content-library
+    #library-brief-lens[data-library-brief-panel="preparation"]
+    :is(.library-preparation-menu-options, #library-brief-chips) .library-brief-chip:is(:hover, :focus-visible, .active) {
+    background: var(--track-prep-day-soft) !important;
+    box-shadow: inset 3px 0 var(--track-prep-day-blue) !important;
+    outline: none !important;
+  }
+
+  html body.light-mode #tab-content-library.library-cockpit#tab-content-library
+    #library-brief-lens[data-library-brief-panel="preparation"]
+    :is(.library-preparation-menu-options, #library-brief-chips) .library-brief-chip.active :is(.library-brief-chip-index, .library-brief-chip-copy strong) {
+    color: var(--track-prep-day-blue) !important;
+    -webkit-text-fill-color: var(--track-prep-day-blue) !important;
+  }
+
+  html body.light-mode #tab-content-library.library-cockpit#tab-content-library
+    #library-brief-lens[data-library-brief-panel="preparation"]
+    :is(#library-preparation-inherited-filters, #library-preparation-scan-receipt) {
+    border-color: var(--track-prep-day-line) !important;
+    background: var(--track-prep-day-soft) !important;
+    color: var(--track-prep-day-ink) !important;
+    box-shadow: none !important;
+  }
+
+  html body.light-mode #tab-content-library.library-cockpit#tab-content-library
+    #library-brief-lens[data-library-brief-panel="preparation"]
+    #library-preparation-scan-receipt :is(strong, b) {
+    color: var(--track-prep-day-blue) !important;
+    -webkit-text-fill-color: var(--track-prep-day-blue) !important;
+  }
+
+  html body.light-mode #tab-content-library.library-cockpit#tab-content-library
+    #library-brief-lens[data-library-brief-panel="preparation"]
+    #library-preparation-scan-receipt :is(span, small) {
+    color: var(--track-prep-day-muted) !important;
+    -webkit-text-fill-color: var(--track-prep-day-muted) !important;
+  }
+
+  html body.light-mode #tab-content-library.library-cockpit#tab-content-library
+    #library-brief-lens[data-library-brief-panel="preparation"]
+    #library-preparation-scan-receipt button {
+    border-color: var(--track-prep-day-blue) !important;
+    background: #ffffff !important;
+    color: var(--track-prep-day-blue) !important;
+    -webkit-text-fill-color: var(--track-prep-day-blue) !important;
+  }
+</style>

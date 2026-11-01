@@ -1,0 +1,118 @@
+
+<style id="library-annotation-button-finish-v1">
+  /* Keep the three Library-mode actions typographically identical, while the
+     Help utility uses the high-contrast filled AXIOM treatment in Night Mode. */
+  html body #tab-content-library.library-cockpit#tab-content-library
+    #library-brief-lens[data-library-brief-panel="closed"] :is(
+      #library-fresh-rotate,
+      #library-brief-collapse,
+      .library-gap-launch
+    ) {
+    font-family: 'Bebas Neue', Impact, sans-serif !important;
+  }
+
+  html body #tab-content-library.library-cockpit#tab-content-library
+    #library-brief-lens[data-library-brief-panel="closed"] .library-gap-launch {
+    position: relative !important;
+    overflow: hidden !important;
+    isolation: isolate;
+    contain: paint;
+  }
+
+  html body #tab-content-library.library-cockpit#tab-content-library
+    #library-brief-lens[data-library-brief-panel="closed"]
+    #library-brief-action-rail > button:not(.library-gap-launch)::after {
+    content: none !important;
+    display: none !important;
+    animation: none !important;
+  }
+
+  html body #tab-content-library.library-cockpit#tab-content-library
+    #library-brief-lens[data-library-brief-panel="closed"] .library-gap-launch::after {
+    content: '';
+    position: absolute;
+    z-index: 2;
+    top: -55%;
+    bottom: -55%;
+    left: -34%;
+    width: 24%;
+    background: linear-gradient(100deg, transparent, rgba(207,255,122,.72), transparent);
+    transform: translateX(-240%) skewX(-18deg);
+    opacity: 0;
+    pointer-events: none;
+    will-change: transform, opacity;
+    animation: axiom-library-paste-playlist-shine 4.8s ease-in-out infinite;
+  }
+
+  @keyframes axiom-library-paste-playlist-shine {
+    0%, 62% {
+      transform: translateX(-240%) skewX(-18deg);
+      opacity: 0;
+    }
+    68% { opacity: .76; }
+    82%, 100% {
+      transform: translateX(680%) skewX(-18deg);
+      opacity: 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html body #tab-content-library.library-cockpit#tab-content-library
+      #library-brief-lens[data-library-brief-panel="closed"] .library-gap-launch::after {
+      display: none !important;
+      animation: none !important;
+    }
+  }
+
+  html body:not(.light-mode) #tab-content-library.library-cockpit#tab-content-library
+    #btn-library-guide.library-guide-btn.axiom-help-btn {
+    border-color: var(--accent) !important;
+    background: var(--accent) !important;
+    background-image: none !important;
+    color: #071005 !important;
+    -webkit-text-fill-color: #071005 !important;
+    box-shadow: inset 0 0 0 1px rgba(7,16,5,.12) !important;
+  }
+
+  html body:not(.light-mode) #tab-content-library.library-cockpit#tab-content-library
+    #btn-library-guide.library-guide-btn.axiom-help-btn:is(:hover, :focus-visible) {
+    border-color: #c9ff63 !important;
+    background: #c9ff63 !important;
+    color: #071005 !important;
+    -webkit-text-fill-color: #071005 !important;
+  }
+
+  /* The Library walkthrough sits on a dark floating panel, so its close
+     control needs a filled AXIOM treatment instead of a low-contrast outline. */
+  html body:not(.light-mode) #library-guide-popover .workflow-close {
+    border-color: var(--accent) !important;
+    background: var(--accent) !important;
+    color: #071005 !important;
+    -webkit-text-fill-color: #071005 !important;
+    box-shadow: 0 0 16px rgba(163,255,0,.24) !important;
+  }
+
+  html body:not(.light-mode) #library-guide-popover .workflow-close:is(:hover, :focus-visible) {
+    border-color: #c9ff63 !important;
+    background: #c9ff63 !important;
+    color: #071005 !important;
+    outline: 2px solid rgba(163,255,0,.5) !important;
+    outline-offset: 2px !important;
+  }
+
+  html body.light-mode #library-guide-popover .workflow-close {
+    border-color: #ffffff !important;
+    background: #ffffff !important;
+    color: #0047ab !important;
+    -webkit-text-fill-color: #0047ab !important;
+    box-shadow: 0 0 14px rgba(7,17,31,.18) !important;
+  }
+
+  html body.light-mode #library-guide-popover .workflow-close:is(:hover, :focus-visible) {
+    border-color: #dce8ff !important;
+    background: #dce8ff !important;
+    color: #00347f !important;
+    outline: 2px solid rgba(255,255,255,.68) !important;
+    outline-offset: 2px !important;
+  }
+</style>

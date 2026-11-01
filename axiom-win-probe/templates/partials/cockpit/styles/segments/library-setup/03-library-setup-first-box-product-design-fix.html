@@ -1,0 +1,97 @@
+
+<style id="library-setup-first-box-product-design-fix">
+  #library-brief-lens:has(#library-brief-settings:not(.hidden)) {
+    max-height: 390px !important;
+    overflow: hidden !important;
+  }
+
+  #library-brief-settings:not(.hidden) .library-brief-control-grid {
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 10px !important;
+    align-items: stretch !important;
+  }
+
+  #library-brief-settings:not(.hidden) .library-bpm-filter-wrap {
+    min-height: 82px !important;
+    max-height: 82px !important;
+    height: 82px !important;
+    padding: 10px 12px !important;
+    display: grid !important;
+    grid-template-rows: 20px 38px !important;
+    align-content: start !important;
+    gap: 8px !important;
+    overflow: hidden !important;
+    background: linear-gradient(135deg, rgba(10, 31, 13, 0.96), rgba(5, 16, 9, 0.98)) !important;
+    border: 1px solid rgba(163, 255, 0, 0.44) !important;
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.025) !important;
+  }
+
+  #library-brief-settings:not(.hidden) .library-bpm-filter-wrap > span:first-child,
+  #library-brief-settings:not(.hidden) .library-bpm-filter-wrap > label:first-child {
+    display: block !important;
+    height: 20px !important;
+    line-height: 20px !important;
+    margin: 0 !important;
+    overflow: hidden !important;
+    color: var(--accent) !important;
+    font-family: var(--font-display, "Bebas Neue", sans-serif) !important;
+    font-size: 18px !important;
+    letter-spacing: 0.08em !important;
+  }
+
+  #library-brief-settings:not(.hidden) .library-bpm-filter-wrap select,
+  #library-brief-settings:not(.hidden) .library-bpm-filter-wrap .library-brief-select {
+    display: block !important;
+    width: 100% !important;
+    height: 38px !important;
+    min-height: 38px !important;
+    max-height: 38px !important;
+    margin: 0 !important;
+    padding: 0 42px 0 14px !important;
+    overflow: hidden !important;
+    white-space: nowrap !important;
+    text-overflow: ellipsis !important;
+    appearance: auto !important;
+    -webkit-appearance: menulist !important;
+    background-color: rgba(0, 0, 0, 0.34) !important;
+    color: #f2f8ed !important;
+    border: 1px solid rgba(255,255,255,0.18) !important;
+    border-radius: 0 !important;
+    font-size: 14px !important;
+    line-height: 38px !important;
+  }
+
+  #library-brief-settings:not(.hidden) .library-bpm-filter-wrap select option {
+    font-size: 14px !important;
+    color: #071005 !important;
+    background: #f3f7ed !important;
+  }
+
+  #library-brief-settings:not(.hidden) .library-bpm-filter-wrap:first-child {
+    min-height: 82px !important;
+    max-height: 82px !important;
+    height: 82px !important;
+  }
+
+  #library-brief-settings:not(.hidden) .library-bpm-filter-wrap:first-child select {
+    height: 38px !important;
+    min-height: 38px !important;
+    max-height: 38px !important;
+  }
+
+  @media (max-width: 980px) {
+    #library-brief-settings:not(.hidden) .library-brief-control-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    }
+  }
+
+  @media (max-width: 640px) {
+    #library-brief-lens:has(#library-brief-settings:not(.hidden)) {
+      max-height: none !important;
+    }
+    #library-brief-settings:not(.hidden) .library-brief-control-grid {
+      grid-template-columns: 1fr !important;
+    }
+  }
+</style>

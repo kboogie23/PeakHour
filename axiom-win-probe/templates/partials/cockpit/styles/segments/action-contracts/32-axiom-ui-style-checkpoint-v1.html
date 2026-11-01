@@ -1,0 +1,842 @@
+<style id="axiom-ui-style-checkpoint-v1">
+  /*
+    AXIOM UI STYLE CHECKPOINT v1.
+    New controls should use these tokens or the .axiom-ui-btn family.
+    Contract:
+    - Night primary controls are AXIOM green with dark text.
+    - Day primary controls are AXIOM blue with white text.
+    - Green/lime surfaces never carry white or pale text.
+    - Compact cockpit actions use Bebas Neue at fixed readable sizes.
+  */
+  :root {
+    --axiom-style-button-font: 'Bebas Neue', Impact, sans-serif;
+    --axiom-style-body-font: 'Barlow', Inter, system-ui, sans-serif;
+    --axiom-style-night-primary-bg: var(--accent, #a3ff00);
+    --axiom-style-night-primary-text: #071005;
+    --axiom-style-night-secondary-bg: #071005;
+    --axiom-style-night-secondary-text: #e8f0e4;
+    --axiom-style-night-secondary-border: rgba(163, 255, 0, .50);
+    --axiom-style-day-primary-bg: #0047ab;
+    --axiom-style-day-primary-text: #ffffff;
+    --axiom-style-day-secondary-bg: #ffffff;
+    --axiom-style-day-secondary-text: #0047ab;
+    --axiom-style-day-secondary-border: rgba(0, 71, 171, .42);
+    --axiom-style-green-text: #071005;
+    --axiom-style-control-height: 38px;
+    --axiom-style-control-radius: 4px;
+    --axiom-style-control-font-size: 14px;
+    --axiom-style-compact-font-size: 13px;
+  }
+
+  html body:not(.light-mode) {
+    --axiom-style-primary-bg: var(--axiom-style-night-primary-bg);
+    --axiom-style-primary-text: var(--axiom-style-night-primary-text);
+    --axiom-style-secondary-bg: var(--axiom-style-night-secondary-bg);
+    --axiom-style-secondary-text: var(--axiom-style-night-secondary-text);
+    --axiom-style-secondary-border: var(--axiom-style-night-secondary-border);
+  }
+
+  html body.light-mode {
+    --axiom-style-primary-bg: var(--axiom-style-day-primary-bg);
+    --axiom-style-primary-text: var(--axiom-style-day-primary-text);
+    --axiom-style-secondary-bg: var(--axiom-style-day-secondary-bg);
+    --axiom-style-secondary-text: var(--axiom-style-day-secondary-text);
+    --axiom-style-secondary-border: var(--axiom-style-day-secondary-border);
+  }
+
+  html body :where(
+    .axiom-ui-btn,
+    .button--primary,
+    .button--secondary,
+    .set-brief-action,
+    .command-card-cta,
+    .connect-source-action,
+    .library-empty-primary,
+    .library-gap-source-button,
+    .library-gap-primary,
+    .library-gap-secondary,
+    .player-skip-btn,
+    .player-add-btn,
+    .daw-tool-primary,
+    .studio-daw-top-actions button,
+    .studio-daw-device-strip button,
+    .daw-enhance-compare button,
+    .daw-fx-bar-presets button
+  ) {
+    font-family: var(--axiom-style-button-font) !important;
+    font-size: var(--axiom-style-control-font-size) !important;
+    font-weight: 400 !important;
+    line-height: 1 !important;
+    letter-spacing: 0 !important;
+    text-transform: uppercase !important;
+    border-radius: var(--axiom-style-control-radius) !important;
+    box-sizing: border-box !important;
+  }
+
+  html body :where(.axiom-ui-btn, .button--primary, .button--secondary) {
+    min-height: var(--axiom-style-control-height) !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 8px !important;
+  }
+
+  html body :where(.axiom-ui-btn--primary, .button--primary) {
+    border-color: var(--axiom-style-primary-bg) !important;
+    background: var(--axiom-style-primary-bg) !important;
+    color: var(--axiom-style-primary-text) !important;
+    -webkit-text-fill-color: var(--axiom-style-primary-text) !important;
+  }
+
+  html body :where(.axiom-ui-btn--secondary, .button--secondary) {
+    border-color: var(--axiom-style-secondary-border) !important;
+    background: var(--axiom-style-secondary-bg) !important;
+    color: var(--axiom-style-secondary-text) !important;
+    -webkit-text-fill-color: var(--axiom-style-secondary-text) !important;
+  }
+
+  /* Keep the player CTA opaque even if a WebKit selector or token falls back. */
+  html body:not(.light-mode) #audio-player .player-add-btn {
+    background: var(--accent, #a3ff00) !important;
+    color: #071005 !important;
+    -webkit-text-fill-color: #071005 !important;
+  }
+  html body.light-mode #audio-player .player-add-btn {
+    background: #0047ab !important;
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+  }
+
+  html body :where(.axiom-ui-btn--compact, .player-skip-btn, .daw-enhance-compare button, .daw-fx-bar-presets button) {
+    min-height: 30px !important;
+    font-size: var(--axiom-style-compact-font-size) !important;
+    padding-inline: 9px !important;
+  }
+
+  html body:not(.light-mode) :where(
+    .axiom-ui-btn--primary,
+    .button--primary,
+    #audio-player .player-add-btn,
+    #studio-daw-shell .daw-tool-primary
+  ),
+  html body:not(.light-mode) :where(
+    .library-gap-source-button.is-active,
+    .daw-enhance-compare button[aria-pressed="true"],
+    .daw-fx-bar-presets button[aria-pressed="true"]
+  ) {
+    border-color: var(--axiom-style-night-primary-bg) !important;
+    background: var(--axiom-style-night-primary-bg) !important;
+    color: var(--axiom-style-night-primary-text) !important;
+    -webkit-text-fill-color: var(--axiom-style-night-primary-text) !important;
+  }
+
+  html body.light-mode :where(
+    .axiom-ui-btn--primary,
+    .button--primary,
+    #audio-player .player-add-btn,
+    #studio-daw-shell .daw-tool-primary
+  ),
+  html body.light-mode :where(
+    .library-gap-source-button.is-active,
+    .daw-enhance-compare button[aria-pressed="true"],
+    .daw-fx-bar-presets button[aria-pressed="true"]
+  ) {
+    border-color: var(--axiom-style-day-primary-bg) !important;
+    background: var(--axiom-style-day-primary-bg) !important;
+    color: var(--axiom-style-day-primary-text) !important;
+    -webkit-text-fill-color: var(--axiom-style-day-primary-text) !important;
+  }
+
+  html body:not(.light-mode) :where(
+    .axiom-ui-btn--secondary,
+    .button--secondary,
+    #audio-player .player-skip-btn,
+    #studio-daw-shell .studio-daw-top-actions button,
+    #studio-daw-shell .studio-daw-device-strip button,
+    .library-gap-source-button
+  ) {
+    border-color: var(--axiom-style-night-secondary-border) !important;
+    background: var(--axiom-style-night-secondary-bg) !important;
+    color: var(--axiom-style-night-secondary-text) !important;
+    -webkit-text-fill-color: var(--axiom-style-night-secondary-text) !important;
+  }
+
+  html body.light-mode :where(
+    .axiom-ui-btn--secondary,
+    .button--secondary,
+    #audio-player .player-skip-btn,
+    #studio-daw-shell .studio-daw-top-actions button,
+    #studio-daw-shell .studio-daw-device-strip button,
+    .library-gap-source-button
+  ) {
+    border-color: var(--axiom-style-day-secondary-border) !important;
+    background: var(--axiom-style-day-secondary-bg) !important;
+    color: var(--axiom-style-day-secondary-text) !important;
+    -webkit-text-fill-color: var(--axiom-style-day-secondary-text) !important;
+  }
+
+  html body :where(
+    [class*="bg-axiom-accent"],
+    .axiom-ui-green-surface
+  ),
+  html body :where(
+    [class*="bg-axiom-accent"],
+    .axiom-ui-green-surface
+  ) :where(span, strong, small, img, svg) {
+    color: var(--axiom-style-green-text) !important;
+    -webkit-text-fill-color: var(--axiom-style-green-text) !important;
+    text-shadow: none !important;
+  }
+
+  html body.light-mode :where([class*="bg-axiom-accent"], .axiom-ui-btn--primary) {
+    background: var(--axiom-style-day-primary-bg) !important;
+    border-color: var(--axiom-style-day-primary-bg) !important;
+    color: var(--axiom-style-day-primary-text) !important;
+    -webkit-text-fill-color: var(--axiom-style-day-primary-text) !important;
+  }
+
+  /* Studio mode toggles are large rail instruments, not generic CTA buttons.
+     Lock their text fill so Manual Build stays readable when active. */
+  html body:not(.light-mode) #studio-active-view #studio-mode-controls .studio-mode-selector #studio-tab-manual.button--primary,
+  html body:not(.light-mode) #studio-active-view #studio-mode-controls .studio-mode-selector #studio-tab-manual.button--primary:is(.active, [aria-pressed="true"]) {
+    background: #090d11 !important;
+    border-color: #343a35 !important;
+    color: #edf1ec !important;
+    -webkit-text-fill-color: #edf1ec !important;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, .06) !important;
+  }
+
+  html body:not(.light-mode) #studio-active-view #studio-mode-controls .studio-mode-selector #studio-tab-manual.button--primary :where(span, strong, small, b),
+  html body:not(.light-mode) #studio-active-view #studio-mode-controls .studio-mode-selector #studio-tab-manual.button--primary:is(.active, [aria-pressed="true"]) :where(span, strong, small, b) {
+    color: #edf1ec !important;
+    -webkit-text-fill-color: #edf1ec !important;
+    text-shadow: none !important;
+  }
+
+  html body:not(.light-mode) #studio-active-view #studio-mode-controls .studio-mode-selector #studio-tab-manual.button--primary:is(:hover, :focus-visible):not(:disabled) {
+    background: var(--accent) !important;
+    border-color: var(--accent) !important;
+    color: #071005 !important;
+    -webkit-text-fill-color: #071005 !important;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, .24), 0 0 0 1px rgba(163, 255, 0, .75), 0 0 20px rgba(163, 255, 0, .28) !important;
+  }
+
+  html body:not(.light-mode) #studio-active-view #studio-mode-controls .studio-mode-selector #studio-tab-manual.button--primary:is(:hover, :focus-visible):not(:disabled) :where(span, strong, small, b) {
+    color: #071005 !important;
+    -webkit-text-fill-color: #071005 !important;
+    text-shadow: none !important;
+  }
+
+  /* Selected Manual Build stays dormant by default; it only latches hover colour
+     after a deliberate user click marks it as manually activated. */
+  html body:not(.light-mode) #studio-active-view #studio-mode-controls .studio-mode-selector #studio-tab-manual.button--primary.manual-user-activated:is(.active, [aria-pressed="true"]) {
+    background: var(--accent) !important;
+    border-color: var(--accent) !important;
+    color: #071005 !important;
+    -webkit-text-fill-color: #071005 !important;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, .24), 0 0 0 1px rgba(163, 255, 0, .75), 0 0 20px rgba(163, 255, 0, .28) !important;
+  }
+
+  html body:not(.light-mode) #studio-active-view #studio-mode-controls .studio-mode-selector #studio-tab-manual.button--primary.manual-user-activated:is(.active, [aria-pressed="true"]) :where(span, strong, small, b) {
+    color: #071005 !important;
+    -webkit-text-fill-color: #071005 !important;
+    text-shadow: none !important;
+  }
+
+  html body.light-mode #studio-active-view #studio-mode-controls .studio-mode-selector #studio-tab-manual.button--primary {
+    background: #ffffff !important;
+    border-color: rgba(0, 71, 171, .42) !important;
+    color: #0047ab !important;
+    -webkit-text-fill-color: #0047ab !important;
+  }
+
+  html body.light-mode #studio-active-view #studio-mode-controls .studio-mode-selector #studio-tab-manual.button--primary.manual-user-activated:is(.active, [aria-pressed="true"]) {
+    background: #ffffff !important;
+    border-color: rgba(0, 71, 171, .42) !important;
+    color: #0047ab !important;
+    -webkit-text-fill-color: #0047ab !important;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, .82), 0 0 0 1px rgba(0, 71, 171, .08) !important;
+  }
+
+  html body.light-mode #studio-active-view #studio-mode-controls .studio-mode-selector #studio-tab-manual.button--primary:is(:hover, :focus-visible):not(:disabled) {
+    background: #003f98 !important;
+    border-color: #003f98 !important;
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, .28), 0 0 0 1px rgba(0, 71, 171, .35), 0 8px 22px rgba(0, 71, 171, .24) !important;
+  }
+
+  html body.light-mode #studio-active-view #studio-mode-controls .studio-mode-selector #studio-tab-manual.button--primary:is(:hover, :focus-visible):not(:disabled) :where(span, strong, small, b) {
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+  }
+
+  html body.light-mode #studio-active-view #studio-mode-controls .studio-mode-selector #studio-tab-manual.button--primary:is(.active, [aria-pressed="true"]) {
+    background: #003f98 !important;
+    border-color: #003f98 !important;
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, .28), 0 0 0 1px rgba(0, 71, 171, .35), 0 8px 22px rgba(0, 71, 171, .24) !important;
+  }
+
+  html body.light-mode #studio-active-view #studio-mode-controls .studio-mode-selector #studio-tab-manual.button--primary.manual-user-activated:is(.active, [aria-pressed="true"]) :where(span, strong, small, b) {
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+  }
+
+  html body #studio-active-view #studio-mode-controls .studio-mode-selector #studio-tab-magic.button--secondary {
+    background: #090d11 !important;
+    border-color: #343a35 !important;
+    color: #edf1ec !important;
+    -webkit-text-fill-color: #edf1ec !important;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, .06) !important;
+  }
+
+  html body #studio-active-view #studio-mode-controls .studio-mode-selector {
+    overflow: visible !important;
+    gap: 14px !important;
+    border-color: transparent !important;
+    background: transparent !important;
+    box-shadow: none !important;
+  }
+
+  html body #studio-active-view #studio-mode-controls :is(#studio-open-daw, #studio-tab-magic.button--secondary, #studio-tab-manual.button--primary, #btn-optimize.button--harmonic, #studio-tab-route:not(.route-tab-hidden)) {
+    width: 188px !important;
+    min-width: 188px !important;
+    max-width: 188px !important;
+    height: 60px !important;
+    min-height: 60px !important;
+    max-height: 60px !important;
+    border-radius: 4px !important;
+    overflow: hidden !important;
+  }
+
+  html body #studio-active-view #studio-mode-controls .studio-mode-selector :is(#studio-tab-magic.button--secondary, #studio-tab-manual.button--primary) {
+    border-radius: 4px !important;
+    overflow: hidden !important;
+  }
+
+  html body #studio-active-view #studio-mode-controls :is(#studio-open-daw, #studio-tab-magic.button--secondary, #studio-tab-manual.button--primary, #btn-optimize.button--harmonic, #studio-tab-route:not(.route-tab-hidden)):is(:hover, :focus-visible):not(:disabled) {
+    border-radius: 4px !important;
+    transform: translateY(-1px) !important;
+    z-index: 5 !important;
+  }
+
+  html body #studio-active-view #studio-mode-controls #studio-open-daw:is(:hover, :focus-visible):not(:disabled) {
+    outline: none !important;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, .06), 0 0 0 1px rgba(207, 98, 255, .86), 0 0 18px rgba(207, 98, 255, .24) !important;
+  }
+
+  html body #studio-active-view #studio-mode-controls #studio-tab-route.active:not(.route-tab-hidden),
+  html body #studio-active-view #studio-mode-controls #studio-tab-route[aria-pressed="true"]:not(.route-tab-hidden) {
+    background: #20dff2 !important;
+    border-color: #20dff2 !important;
+    color: #071005 !important;
+    -webkit-text-fill-color: #071005 !important;
+    text-shadow: none !important;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, .28), 0 0 0 1px rgba(64, 235, 240, .9), 0 0 18px rgba(64, 235, 240, .24) !important;
+  }
+
+  html body #studio-active-view #studio-mode-controls #btn-optimize.button--harmonic:is(.is-selected, .route-created, [aria-pressed="true"]) {
+    background: #090d11 !important;
+    border-color: rgba(64, 235, 240, .72) !important;
+    color: #edfefe !important;
+    -webkit-text-fill-color: #edfefe !important;
+    outline: 1px solid rgba(64, 235, 240, .72) !important;
+    outline-offset: -1px !important;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, .06), inset 0 -3px 0 rgba(64, 235, 240, .92) !important;
+  }
+
+  html body #studio-active-view #studio-mode-controls #btn-optimize.button--harmonic:is(.is-selected, .route-created, [aria-pressed="true"]) :where(span, strong, small, b) {
+    color: #edfefe !important;
+    -webkit-text-fill-color: #edfefe !important;
+  }
+
+  html body.light-mode #studio-active-view #studio-mode-controls #btn-optimize.button--harmonic:is(.is-selected, .route-created, [aria-pressed="true"]) {
+    background: #eaf6ff !important;
+    border-color: #008ab3 !important;
+    color: #003f98 !important;
+    -webkit-text-fill-color: #003f98 !important;
+    outline: 1px solid rgba(0, 138, 179, .62) !important;
+    outline-offset: -1px !important;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, .82), inset 0 -3px 0 rgba(0, 138, 179, .92) !important;
+  }
+
+  html body #studio-active-view #studio-mode-controls .studio-mode-selector #studio-tab-magic.button--secondary .axiom-tool-logo::after {
+    color: #edf1ec !important;
+    -webkit-text-fill-color: #edf1ec !important;
+  }
+
+  html body #studio-active-view #studio-mode-controls .studio-mode-selector #studio-tab-magic.button--secondary:is(:hover, :focus-visible):not(:disabled),
+  html body #studio-active-view #studio-mode-controls .studio-mode-selector #studio-tab-magic.button--secondary:is(.active, [aria-pressed="true"]) {
+    background: #090d11 !important;
+    border-color: #343a35 !important;
+    color: #edf1ec !important;
+    -webkit-text-fill-color: #edf1ec !important;
+    outline: none !important;
+    transform: translateY(-1px) !important;
+    z-index: 5 !important;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, .06), 0 0 0 1px rgba(64, 235, 240, .9), 0 0 18px rgba(64, 235, 240, .22) !important;
+  }
+
+  html body #studio-active-view #studio-mode-controls .studio-mode-selector #studio-tab-magic.button--secondary:is(:hover, :focus-visible, .active, [aria-pressed="true"]):not(:disabled) .axiom-tool-logo::after,
+  html body #studio-active-view #studio-mode-controls .studio-mode-selector #studio-tab-magic.button--secondary:is(.active, [aria-pressed="true"]) .axiom-tool-logo::after {
+    color: #edf1ec !important;
+    -webkit-text-fill-color: #edf1ec !important;
+  }
+
+  html body.light-mode #studio-active-view #studio-mode-controls .studio-mode-selector #studio-tab-magic.button--secondary {
+    background: #ffffff !important;
+    border-color: rgba(0, 71, 171, .28) !important;
+    color: #0047ab !important;
+    -webkit-text-fill-color: #0047ab !important;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, .82) !important;
+  }
+
+  html body.light-mode #studio-active-view #studio-mode-controls .studio-mode-selector #studio-tab-magic.button--secondary .axiom-tool-logo::after {
+    color: #0047ab !important;
+    -webkit-text-fill-color: #0047ab !important;
+  }
+
+  html body.light-mode #studio-active-view #studio-mode-controls .studio-mode-selector #studio-tab-magic.button--secondary:is(:hover, :focus-visible):not(:disabled),
+  html body.light-mode #studio-active-view #studio-mode-controls .studio-mode-selector #studio-tab-magic.button--secondary:is(.active, [aria-pressed="true"]) {
+    background: #ffffff !important;
+    border-color: rgba(0, 71, 171, .28) !important;
+    color: #0047ab !important;
+    -webkit-text-fill-color: #0047ab !important;
+    outline: none !important;
+    transform: translateY(-1px) !important;
+    z-index: 5 !important;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, .82), 0 0 0 1px rgba(64, 235, 240, .82), 0 8px 22px rgba(0, 138, 179, .18) !important;
+  }
+
+  html body.light-mode #studio-active-view #studio-mode-controls .studio-mode-selector #studio-tab-magic.button--secondary:is(:hover, :focus-visible, .active, [aria-pressed="true"]):not(:disabled) .axiom-tool-logo::after,
+  html body.light-mode #studio-active-view #studio-mode-controls .studio-mode-selector #studio-tab-magic.button--secondary:is(.active, [aria-pressed="true"]) .axiom-tool-logo::after {
+    color: #0047ab !important;
+    -webkit-text-fill-color: #0047ab !important;
+  }
+
+  html body.light-mode #studio-active-view #studio-mode-controls .studio-mode-selector #studio-tab-manual.button--primary :where(span, strong, small, b),
+  html body.light-mode #studio-active-view #studio-mode-controls .studio-mode-selector #studio-tab-manual.button--primary:is(.active, [aria-pressed="true"]) :where(span, strong, small, b) {
+    color: inherit !important;
+    -webkit-text-fill-color: inherit !important;
+  }
+
+  html body #studio-active-view #studio-mode-controls #btn-optimize.button--harmonic:is(:hover, :active, :focus-visible):not(:disabled),
+  html body #studio-active-view #studio-mode-controls #btn-optimize.button--harmonic:is(:hover, :active, :focus-visible):not(:disabled) :where(span, strong, small, b) {
+    color: #071005 !important;
+    -webkit-text-fill-color: #071005 !important;
+    text-shadow: none !important;
+  }
+
+  html body #studio-active-view #studio-mode-controls #btn-optimize.button--harmonic:is(:hover, :active, :focus-visible):not(:disabled) :where(svg, svg *, .studio-suggest-order-icon) {
+    color: #071005 !important;
+    fill: #071005 !important;
+    stroke: #071005 !important;
+    -webkit-text-fill-color: #071005 !important;
+    filter: brightness(0) !important;
+  }
+
+  html body #studio-active-view .studio-header .studio-actions #btn-studio-guide#btn-studio-guide,
+  html body #studio-active-view .studio-header .studio-actions #btn-studio-guide#btn-studio-guide :where(span, svg, svg *) {
+    color: #071005 !important;
+    fill: #071005 !important;
+    stroke: #071005 !important;
+    -webkit-text-fill-color: #071005 !important;
+    text-shadow: none !important;
+  }
+
+  /* Door actions use the entrance's own cinematic button treatment. */
+
+  html body:not(.light-mode) #entrance-add-music {
+    background: #0b1208 !important;
+    border-color: #485f2c !important;
+    color: #f4f8ec !important;
+    -webkit-text-fill-color: #f4f8ec !important;
+  }
+
+  html body:not(.light-mode) #entrance-add-music :where(strong, span) {
+    color: #f4f8ec !important;
+    -webkit-text-fill-color: #f4f8ec !important;
+  }
+
+  html body:not(.light-mode) #entrance-add-music small {
+    color: #bec9b2 !important;
+    -webkit-text-fill-color: #bec9b2 !important;
+  }
+
+  html body.light-mode #entrance-add-music {
+    background: #ffffff !important;
+    border-color: rgba(0, 71, 171, .42) !important;
+    color: #07111f !important;
+    -webkit-text-fill-color: #07111f !important;
+  }
+
+  html body.light-mode #entrance-add-music :where(strong, span) {
+    color: #07111f !important;
+    -webkit-text-fill-color: #07111f !important;
+  }
+
+  html body.light-mode #entrance-add-music small {
+    color: #40516a !important;
+    -webkit-text-fill-color: #40516a !important;
+  }
+
+  html body.light-mode #entrance-add-music > img {
+    filter: brightness(0) saturate(100%) invert(20%) sepia(98%) saturate(2054%) hue-rotate(207deg) brightness(91%) contrast(103%) !important;
+  }
+
+  html body.light-mode .entrance-library-chooser {
+    background: #ffffff !important;
+    border-color: rgba(0, 71, 171, .28) !important;
+    color: #07111f !important;
+    -webkit-text-fill-color: #07111f !important;
+    box-shadow: 0 18px 48px rgba(28, 64, 120, .16) !important;
+  }
+
+  html body.light-mode .entrance-library-chooser h2,
+  html body.light-mode .entrance-library-chooser strong {
+    color: #07111f !important;
+    -webkit-text-fill-color: #07111f !important;
+  }
+
+  html body.light-mode .entrance-library-chooser small,
+  html body.light-mode .entrance-library-chooser footer {
+    color: #40516a !important;
+    -webkit-text-fill-color: #40516a !important;
+  }
+
+  html body.light-mode .entrance-library-chooser [data-entrance-source] {
+    background: rgba(0, 71, 171, .055) !important;
+    border-bottom-color: rgba(0, 71, 171, .18) !important;
+  }
+
+  /* Release/update splash follows the same day-mode contract. */
+  html body.light-mode #release-splash.release-splash-overlay.active .release-splash-mark {
+    filter:
+      brightness(0)
+      saturate(100%)
+      invert(19%)
+      sepia(97%)
+      saturate(2323%)
+      hue-rotate(210deg)
+      brightness(89%)
+      contrast(103%)
+      drop-shadow(0 0 10px rgba(0, 71, 171, .22)) !important;
+  }
+
+  html body.light-mode #release-splash.release-splash-overlay.active .release-splash-feature,
+  html body.light-mode #release-splash.release-splash-overlay.active.update-build .release-splash-feature {
+    border-bottom-color: rgba(0, 71, 171, .14) !important;
+    background: transparent !important;
+    color: #07111f !important;
+    -webkit-text-fill-color: #07111f !important;
+  }
+
+  html body.light-mode #release-splash.release-splash-overlay.active .release-splash-feature:hover,
+  html body.light-mode #release-splash.release-splash-overlay.active .release-splash-feature:focus-within {
+    background: rgba(0, 71, 171, .065) !important;
+  }
+
+  html body.light-mode #release-splash.release-splash-overlay.active.update-build .release-splash-feature::before {
+    background: #0047ab !important;
+  }
+
+  html body.light-mode #release-splash.release-splash-overlay.active .release-splash-feature strong,
+  html body.light-mode #release-splash.release-splash-overlay.active .release-splash-feature > span > span,
+  html body.light-mode #release-splash.release-splash-overlay.active .release-splash-disclosure summary,
+  html body.light-mode #release-splash.release-splash-overlay.active .release-splash-brief {
+    color: #07111f !important;
+    -webkit-text-fill-color: #07111f !important;
+    text-shadow: none !important;
+  }
+
+  html body.light-mode #release-splash.release-splash-overlay.active .release-splash-feature > span > span,
+  html body.light-mode #release-splash.release-splash-overlay.active .release-splash-detail {
+    color: #33445d !important;
+    -webkit-text-fill-color: #33445d !important;
+  }
+
+  html body.light-mode #release-splash.release-splash-overlay.active #release-splash-features:focus-visible,
+  html body.light-mode #release-splash .release-splash-disclosure summary:focus-visible {
+    outline-color: rgba(0, 71, 171, .82) !important;
+  }
+
+  html body.light-mode #release-splash.release-splash-overlay.active .release-splash-actions {
+    background: #ffffff !important;
+    border-top: 1px solid rgba(0, 71, 171, .12) !important;
+  }
+
+  html body.light-mode #release-splash.release-splash-overlay.active .release-splash-footer {
+    min-height: 34px !important;
+    padding: 0 2px !important;
+    background: #ffffff !important;
+    color: #0047ab !important;
+    -webkit-text-fill-color: #0047ab !important;
+  }
+
+  html body.light-mode #release-splash.release-splash-overlay.active .release-splash-footer :where(span, button) {
+    color: #0047ab !important;
+    -webkit-text-fill-color: #0047ab !important;
+  }
+
+  /* Sidebar dropdown wells are part of the button contract too. */
+  html body #axiom-sidebar #studio-sidebar-tools-container {
+    isolation: isolate !important;
+  }
+
+  html body #axiom-sidebar #studio-sidebar-tools-container.is-expanded {
+    background: rgba(3, 6, 4, .52) !important;
+    border-block: 1px solid rgba(163, 255, 0, .16) !important;
+  }
+
+  html body #axiom-sidebar #studio-tools-dropdown-btn {
+    min-width: 40px !important;
+    height: 24px !important;
+    border-color: rgba(163, 255, 0, .42) !important;
+    background: #11190c !important;
+    color: #a3ff00 !important;
+    -webkit-text-fill-color: #a3ff00 !important;
+    box-shadow: none !important;
+    opacity: 1 !important;
+  }
+
+  html body #axiom-sidebar #studio-tools-dropdown-btn :where(svg, path) {
+    color: currentColor !important;
+    stroke: currentColor !important;
+    filter: none !important;
+  }
+
+  html body #axiom-sidebar #studio-tools-dropdown-menu {
+    gap: 8px !important;
+    margin: 0 12px 12px 18px !important;
+    padding: 10px 10px 12px !important;
+    border: 1px solid rgba(163, 255, 0, .24) !important;
+    border-left: 3px solid rgba(163, 255, 0, .88) !important;
+    border-radius: 10px !important;
+    background: #050806 !important;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .035) !important;
+  }
+
+  html body #axiom-sidebar #studio-tools-dropdown-menu .sidebar-studio-destination {
+    width: 100% !important;
+    min-height: 38px !important;
+    justify-content: flex-start !important;
+    border: 1px solid rgba(163, 255, 0, .24) !important;
+    border-radius: 7px !important;
+    background: #0b1109 !important;
+    color: #f4f8ec !important;
+    -webkit-text-fill-color: #f4f8ec !important;
+    box-shadow: none !important;
+    font-family: var(--axiom-style-button-font) !important;
+    font-size: 12px !important;
+    letter-spacing: .06em !important;
+    line-height: 1 !important;
+    text-align: left !important;
+  }
+
+  html body #axiom-sidebar #studio-tools-dropdown-menu .sidebar-studio-destination:is(:hover, :focus-visible) {
+    border-color: rgba(163, 255, 0, .72) !important;
+    background: rgba(163, 255, 0, .12) !important;
+    color: #a3ff00 !important;
+    -webkit-text-fill-color: #a3ff00 !important;
+  }
+
+  html body #axiom-sidebar #studio-tools-dropdown-menu #btn-studio-daw-mode {
+    min-height: 52px !important;
+    justify-content: center !important;
+    padding: 8px !important;
+  }
+
+  html body #axiom-sidebar #studio-tools-dropdown-menu .axiom-tool-logo {
+    position: relative !important;
+    display: block !important;
+    width: 160px !important;
+    max-width: 100% !important;
+    aspect-ratio: 1200 / 435 !important;
+    overflow: hidden !important;
+    margin: 0 auto !important;
+    isolation: isolate !important;
+  }
+
+  html body #axiom-sidebar #studio-tools-dropdown-menu .axiom-tool-logo img {
+    position: absolute !important;
+    display: block !important;
+    width: 139.333333% !important;
+    max-width: none !important;
+    height: auto !important;
+    left: -18.333333% !important;
+    top: -4.597701% !important;
+    margin: 0 !important;
+    object-fit: initial !important;
+    opacity: 1 !important;
+    filter: none !important;
+    transform: none !important;
+  }
+
+  html body #axiom-sidebar #studio-tools-dropdown-menu .axiom-tool-logo-daw img {
+    top: -104.597701% !important;
+    clip-path: polygon(34.6890% 55.0478%, 78.6483% 55.0478%, 79.9641% 55.3666%, 80.9809% 56.5356%, 81.6388% 58.2359%, 81.9378% 60.4676%, 81.9378% 80.9777%, 81.6388% 83.2094%, 80.9809% 84.9097%, 79.9641% 85.8661%, 78.6483% 86.2912%, 34.9282% 86.2912%, 35.0385% 86.2929%, 33.7694% 87.9312%, 32.3844% 89.2398%, 30.9103% 90.1931%, 29.3759% 90.7726%, 27.8110% 90.9671%, 26.2461% 90.7726%, 24.7117% 90.1931%, 23.2377% 89.2398%, 21.8526% 87.9312%, 20.5835% 86.2929%, 19.4551% 84.3567%, 18.4893% 82.1603%, 17.7049% 79.7464%, 17.1173% 77.1621%, 16.7378% 74.4576%, 16.5738% 71.6856%, 16.6286% 68.9000%, 16.9010% 66.1550%, 17.3857% 63.5041%, 18.0734% 60.9989%, 18.9506% 58.6882%, 20.0003% 56.6168%, 21.2019% 54.8252%, 22.5323% 53.3481%, 23.9653% 52.2144%, 25.4732% 51.4461%, 27.0267% 51.0582%, 28.5953% 51.0582%, 30.1488% 51.4461%, 31.6567% 52.2144%, 33.0898% 53.3481%, 34.4201% 54.8252%) !important;
+  }
+
+  html body #axiom-sidebar #studio-tools-dropdown-menu .axiom-tool-logo-daw::after {
+    content: "MAKE A MIXTAPE" !important;
+    position: absolute !important;
+    bottom: 1% !important;
+    left: 37% !important;
+    right: 3% !important;
+    color: #f5f6f3 !important;
+    -webkit-text-fill-color: #f5f6f3 !important;
+    font: 600 5px/1.4 var(--axiom-style-body-font) !important;
+    letter-spacing: .18em !important;
+    text-align: center !important;
+    white-space: nowrap !important;
+  }
+
+  html body.light-mode #axiom-sidebar #studio-sidebar-tools-container.is-expanded {
+    background: #f5f8fd !important;
+    border-block-color: rgba(0, 71, 171, .14) !important;
+  }
+
+  html body.light-mode #axiom-sidebar #studio-tools-dropdown-btn {
+    border-color: rgba(0, 71, 171, .36) !important;
+    background: #ffffff !important;
+    color: #0047ab !important;
+    -webkit-text-fill-color: #0047ab !important;
+  }
+
+  html body.light-mode #axiom-sidebar #studio-tools-dropdown-btn:is(:hover, :focus-visible),
+  html body.light-mode #axiom-sidebar #studio-tools-dropdown-btn[aria-expanded="true"] {
+    border-color: #0047ab !important;
+    background: #e8f0ff !important;
+    color: #0047ab !important;
+    -webkit-text-fill-color: #0047ab !important;
+  }
+
+  html body.light-mode #axiom-sidebar #studio-tools-dropdown-menu {
+    border-color: rgba(0, 71, 171, .22) !important;
+    border-left-color: #0047ab !important;
+    background: #ffffff !important;
+    box-shadow: 0 14px 28px rgba(28, 64, 120, .10) !important;
+  }
+
+  html body.light-mode #axiom-sidebar #studio-tools-dropdown-menu .sidebar-studio-destination {
+    border-color: rgba(0, 71, 171, .22) !important;
+    background: #f7faff !important;
+    color: #07111f !important;
+    -webkit-text-fill-color: #07111f !important;
+  }
+
+  html body.light-mode #axiom-sidebar #studio-tools-dropdown-menu .sidebar-studio-destination:is(:hover, :focus-visible) {
+    border-color: #0047ab !important;
+    background: #e8f0ff !important;
+    color: #0047ab !important;
+    -webkit-text-fill-color: #0047ab !important;
+  }
+
+  html body.light-mode #axiom-sidebar #studio-tools-dropdown-menu .axiom-tool-logo-daw::after {
+    color: #26364d !important;
+    -webkit-text-fill-color: #26364d !important;
+  }
+
+  html body #axiom-sidebar #sidebar-export-group.is-expanded {
+    background: rgba(3, 6, 4, .52) !important;
+    border-block: 1px solid rgba(163, 255, 0, .16) !important;
+  }
+
+  html body #axiom-sidebar #sidebar-export-dropdown-btn {
+    min-width: 40px !important;
+    height: 24px !important;
+    border-color: rgba(163, 255, 0, .42) !important;
+    background: #11190c !important;
+    color: #a3ff00 !important;
+    -webkit-text-fill-color: #a3ff00 !important;
+    box-shadow: none !important;
+    opacity: 1 !important;
+  }
+
+  html body #axiom-sidebar #sidebar-export-dropdown-btn :where(svg, path) {
+    color: currentColor !important;
+    stroke: currentColor !important;
+    filter: none !important;
+  }
+
+  html body.light-mode #axiom-sidebar #sidebar-export-group.is-expanded {
+    background: #f5f8fd !important;
+    border-block-color: rgba(0, 71, 171, .14) !important;
+  }
+
+  html body.light-mode #axiom-sidebar #sidebar-export-dropdown-btn {
+    border-color: rgba(0, 71, 171, .36) !important;
+    background: #ffffff !important;
+    color: #0047ab !important;
+    -webkit-text-fill-color: #0047ab !important;
+  }
+
+  html body.light-mode #axiom-sidebar #sidebar-export-dropdown-btn:is(:hover, :focus-visible),
+  html body.light-mode #axiom-sidebar #sidebar-export-dropdown-btn[aria-expanded="true"] {
+    border-color: #0047ab !important;
+    background: #e8f0ff !important;
+    color: #0047ab !important;
+    -webkit-text-fill-color: #0047ab !important;
+  }
+
+  html body.light-mode #axiom-sidebar #sidebar-export-menu {
+    border-color: rgba(0, 71, 171, .22) !important;
+    border-left: 3px solid #0047ab !important;
+    background: #ffffff !important;
+    box-shadow: 0 14px 28px rgba(28, 64, 120, .10) !important;
+  }
+
+  html body.light-mode #axiom-sidebar #sidebar-export-menu .sidebar-export-destination {
+    border-bottom-color: rgba(0, 71, 171, .16) !important;
+    background: #f7faff !important;
+    color: #07111f !important;
+    -webkit-text-fill-color: #07111f !important;
+  }
+
+  html body.light-mode #axiom-sidebar #sidebar-export-menu .sidebar-export-destination.is-featured {
+    box-shadow: inset 0 0 0 1px rgba(0, 71, 171, .18) !important;
+  }
+
+  html body.light-mode #axiom-sidebar #sidebar-export-menu .sidebar-export-destination.is-featured::before,
+  html body.light-mode #axiom-sidebar #sidebar-export-menu .sidebar-export-destination:is(:hover, :focus-visible)::before {
+    background: #0047ab !important;
+    box-shadow: 0 0 14px rgba(0, 71, 171, .20) !important;
+  }
+
+  html body.light-mode #axiom-sidebar #sidebar-export-menu .sidebar-export-destination:is(:hover, :focus-visible) {
+    background: #e8f0ff !important;
+    color: #0047ab !important;
+    -webkit-text-fill-color: #0047ab !important;
+  }
+
+  html body.light-mode #axiom-sidebar #sidebar-export-menu .sidebar-export-brand {
+    min-height: 28px !important;
+    padding: 4px 8px !important;
+    border: 1px solid rgba(0, 71, 171, .18) !important;
+    border-radius: 7px !important;
+    background: #07111f !important;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .06) !important;
+  }
+
+  html body.light-mode #axiom-sidebar #sidebar-export-menu .sidebar-export-brand img {
+    opacity: 1 !important;
+    filter: none !important;
+  }
+
+  html body.light-mode #axiom-sidebar #sidebar-export-menu .sidebar-export-brand span {
+    color: rgba(255, 255, 255, .72) !important;
+    -webkit-text-fill-color: rgba(255, 255, 255, .72) !important;
+  }
+
+  html body.light-mode #axiom-sidebar #sidebar-export-menu .sidebar-export-destination > small {
+    color: #07111f !important;
+    -webkit-text-fill-color: #07111f !important;
+  }
+
+  html body.light-mode #axiom-sidebar #sidebar-export-menu .sidebar-export-chevron {
+    filter: brightness(0) saturate(100%) invert(20%) sepia(99%) saturate(2364%) hue-rotate(205deg) brightness(74%) contrast(112%) !important;
+    opacity: 1 !important;
+  }
+</style>

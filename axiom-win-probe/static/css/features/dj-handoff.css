@@ -1,0 +1,47 @@
+[data-metadata-publish-status] .health-clean-review-summary {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.metadata-publish-value {
+  min-width: 0;
+  color: #fff;
+}
+
+[data-metadata-publish-status] .health-clean-review-value strong,
+[data-metadata-publish-status] .health-clean-review-value small {
+  display: block;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+[data-metadata-publish-status] .health-clean-review-value strong {
+  font-size: 14px;
+  line-height: 1.35;
+}
+
+[data-metadata-publish-status] .health-clean-review-value small {
+  margin-top: 5px;
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+@media (max-width: 1100px) {
+  [data-metadata-publish-status] .health-clean-review-summary {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  [data-metadata-publish-status] .health-clean-review-stat:nth-child(3) {
+    border-left: 0;
+  }
+
+  [data-metadata-publish-status] .health-clean-review-stat:nth-child(n + 3) {
+    border-top: 1px solid rgba(255, 255, 255, 0.15);
+  }
+}
+
+@media (max-width: 900px) {
+  [data-metadata-publish-status] .health-clean-review-summary {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

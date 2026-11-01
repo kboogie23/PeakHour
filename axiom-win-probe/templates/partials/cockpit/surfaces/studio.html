@@ -1,0 +1,839 @@
+    <div id="tab-content-studio" class="tab-content flex-1 p-12 pb-32 overflow-y-auto">
+      <div id="connect-music-view" class="hidden" aria-labelledby="connect-music-title">
+        <section class="connect-music-hero">
+          <div>
+            <p class="connect-music-kicker">First Step</p>
+            <h2 id="connect-music-title" class="connect-music-title">Connect Your Music</h2>
+            <p class="connect-music-copy">Choose the music AXIOM can search, recommend, and use to build your sets. Start with a folder on this Mac or an external drive, or connect your Serato database.</p>
+          </div>
+          <div class="connect-music-mark" aria-hidden="true">
+            <img src="{% if axiom_lite %}/static/axiom-mark.png{% else %}/static/axiom-pro-mark.png?v=20260920-pro-logo-hd{% endif %}" alt="">
+            <span>Ready for your library</span>
+          </div>
+        </section>
+
+        <section class="connect-source-section" aria-label="Add music to AXIOM">
+          <div class="connect-source-heading">
+            <p class="connect-source-kicker">Add To AXIOM</p>
+            <h3>Choose Where Your Music Lives</h3>
+            <p>One source is enough to start. You can connect the other later from Library.</p>
+          </div>
+          <div class="connect-source-actions">
+            <button type="button" id="connect-music-folder-cta" class="connect-source-action primary" onclick="requestMusicFolderAccess('music folder on your hard drive')">
+              <img src="/static/icons/folder-open.svg" alt="" aria-hidden="true">
+              <span>
+                <strong>Add Music Folder</strong>
+                <small>Choose a folder on this Mac or an external hard drive.</small>
+              </span>
+              <span class="connect-source-arrow" aria-hidden="true">&rarr;</span>
+            </button>
+            <button type="button" id="connect-serato-cta" class="connect-source-action" onclick="startSeratoDatabaseFlowFromSource()">
+              <img src="/static/icons/database.svg" alt="" aria-hidden="true">
+              <span>
+                <strong>Connect Serato</strong>
+                <small>Choose Serato database V2 for crates, cue-point evidence, and DJ history.</small>
+              </span>
+              <span class="connect-source-arrow" aria-hidden="true">&rarr;</span>
+            </button>
+            <button type="button" id="connect-virtualdj-inspect" class="connect-source-action" hidden onclick="window.AxiomWindowsVirtualDJ.open()">
+              <img src="/static/icons/database.svg" alt="" aria-hidden="true"><span><strong>Inspect VirtualDJ</strong><small>Preview a VirtualDJ database and optional list without changing them.</small></span><span class="connect-source-arrow" aria-hidden="true">&rarr;</span>
+            </button>
+          </div>
+        </section>
+        <p class="connect-music-proof">AXIOM reads the source you choose. Your original music and Serato files stay where they are.</p>
+      </div>
+
+      <div id="studio-start-view" class="command-launch-shell" aria-label="Axiom Start">
+        <div class="command-launch-hero">
+          <span class="command-deck-art" aria-hidden="true"><img src="/static/images/entrance/start-deck-hd.png" alt="" decoding="async"></span>
+          <span class="command-card-hero-art command-card-hero-art-fresh" aria-hidden="true"><img src="/static/images/entrance/fresh-set-hd.png" alt="" decoding="async"></span>
+          <span class="command-card-hero-art command-card-hero-art-room" aria-hidden="true"><img src="/static/images/entrance/genre-drawers-hd.png" alt="" decoding="async"></span>
+          <span class="command-deck-process" aria-hidden="true">ANALYSE<br>ORGANISE<br>BUILD<br>PERFORM</span>
+          <span class="command-deck-caption" aria-hidden="true">MORE MUSIC<br>MORE POSSIBILITIES</span>
+          <button class="command-close-doors" type="button" aria-label="Close doors" title="Close doors" data-axiom-cta-skip="true" onclick="window.AxiomEntrance?.close()"><img src="/static/icons/door-closed.svg" alt="" width="22" height="22"></button>
+          <div class="command-terrain" aria-hidden="true">
+            <canvas id="studio-signal-canvas" class="command-signal-canvas"></canvas>
+          </div>
+          <div>
+            <p class="command-eyebrow">Axiom Start</p>
+            <h2 class="command-title">CHOOSE YOUR SET START</h2>
+            <p class="command-copy">Tell AXIOM whether you are building from scratch or improving something you already played. The next screen will guide the set, not just open a blank workspace.</p>
+          </div>
+          <div class="command-status-readout">
+            CHOOSE PATH<br>
+            THEN BUILD
+          </div>
+        </div>
+
+        <input type="file" id="csv-upload" accept=".csv" class="hidden" onchange="handleCSVUpload(event)">
+        <input type="file" id="serato-metadata-csv-upload" accept=".csv" class="hidden" onchange="handleSeratoMetadataCSVUpload(event)">
+        <input type="file" id="serato-folder-upload" class="hidden" onchange="handleSeratoFolderUpload(event)">
+        <input type="file" id="dj-source-file-upload" class="hidden" accept=".xml,.csv,text/xml,text/csv" onchange="handleDjSourceFileUpload(event)">
+        <section class="studio-quick-actions" aria-label="Quick actions">
+          <button id="studio-resume-set-btn" type="button" hidden class="button--secondary" style="margin-bottom:16px" onclick="window.AxiomStudioAutosave?.resume()">Resume Last Set</button>
+          <span class="studio-section-label">Quick Actions</span>
+          <div class="command-action-grid" role="radiogroup" aria-label="Choose how to start this set">
+            <div
+              id="studio-path-fresh"
+              class="command-action-card secondary is-selected"
+              role="radio"
+              aria-checked="true"
+              tabindex="0"
+              onclick="selectStudioStartPath('fresh', true)"
+              onmouseenter="previewStudioStartPath('fresh')"
+              onfocusin="previewStudioStartPath('fresh')"
+              onmouseleave="clearStudioStartPreview()"
+              onkeydown="handleStudioStartPathKeydown(event, 'fresh')"
+            >
+              <span class="command-choice-art" aria-hidden="true"><img src="/static/images/entrance/fresh-set-hd.png" alt="" decoding="async"></span>
+              <input
+                id="studio-path-fresh-radio"
+                class="command-path-radio"
+                type="radio"
+                name="studio-start-path"
+                value="fresh"
+                checked
+                aria-label="Build a fresh set"
+                onclick="event.stopPropagation()"
+                onchange="selectStudioStartPath('fresh', true)"
+              >
+              <span class="command-card-copy">
+                <span class="command-card-kicker">Blank Canvas</span>
+                <span class="command-card-title">Build A Fresh Set</span>
+                <span class="command-card-desc">Start with the room brief first, then let Library show tracks that actually match that mission.</span>
+                <span class="command-card-guidance">
+                  <span>Use this for a new gig, wedding, warm-up, club run, or content mix.</span>
+                  <span>Your brief carries into Library before you choose the first song.</span>
+                </span>
+              </span>
+              <button type="button" class="command-card-cta" onclick="event.stopPropagation(); selectStudioStartPath('fresh', true); startNewSet()" aria-label="Build a fresh set from zero">
+                <span>Build From Zero</span>
+                <span class="command-cta-arrow" aria-hidden="true">&rarr;</span>
+              </button>
+            </div>
+
+            <span class="requires-library hidden command-path-or" aria-hidden="true">OR</span>
+
+            <div
+              id="studio-path-room"
+              class="requires-library hidden command-action-card primary"
+              role="radio"
+              aria-checked="false"
+              tabindex="0"
+              onclick="selectStudioStartPath('room', true)"
+              onmouseenter="previewStudioStartPath('room')"
+              onfocusin="previewStudioStartPath('room')"
+              onmouseleave="clearStudioStartPreview()"
+              onkeydown="handleStudioStartPathKeydown(event, 'room')"
+            >
+              <span class="command-choice-art" aria-hidden="true"><img src="/static/images/entrance/genre-drawers-hd.png" alt="" decoding="async"></span>
+              <input
+                id="studio-path-room-radio"
+                class="command-path-radio"
+                type="radio"
+                name="studio-start-path"
+                value="room"
+                aria-label="Get direction for a new room"
+                onclick="event.stopPropagation()"
+                onchange="selectStudioStartPath('room', true)"
+              >
+              <span class="command-card-copy">
+                <span class="command-card-kicker">New Room. No Plan.</span>
+                <span class="command-card-title">Not Sure What To Play?</span>
+                <span class="command-card-desc">Tell AXIOM what you know about the gig. Get a clear direction and the right songs to start with.</span>
+                <span class="command-card-guidance">
+                  <span>Answer a few quick room questions.</span>
+                  <span>AXIOM turns the answers into a focused Library route.</span>
+                </span>
+              </span>
+              <button id="btn-new-room" type="button" class="command-card-cta" onclick="event.stopPropagation(); selectStudioStartPath('room', true); openSetBrief(false)" aria-label="Show me where to start for a new room">
+                <span>Show Me Where To Start</span>
+                <span class="command-cta-arrow" aria-hidden="true">&rarr;</span>
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <section class="build-night-panel" aria-label="Build The Night">
+          <div class="build-night-copy">
+            <span class="build-night-kicker">AXIOM Gig Brain</span>
+            <h3 class="build-night-title">Build The Night</h3>
+            <p class="build-night-text">Pick the room first. AXIOM loads the right Set Brief, Library Prep lens, Magic Set shape, and export path around that mission.</p>
+          </div>
+          <div class="build-night-grid mission-choice-row" aria-label="Choose a set mission">
+            <article class="mission-choice" data-mission="wedding" onkeydown="handleMissionChoiceKeydown(event, 'wedding')">
+              <img class="mission-choice-art" src="/static/images/missions/wedding-v1.jpg" alt="" aria-hidden="true" draggable="false" loading="lazy">
+              <button type="button" class="mission-choice-toggle" aria-expanded="false" aria-controls="mission-details-wedding" onclick="toggleMissionChoice('wedding')">
+                <img class="build-night-icon" src="/static/icons/mission-wedding.png" alt="" aria-hidden="true">
+                <strong>Wedding</strong>
+              </button>
+              <div class="mission-choice-details" id="mission-details-wedding" hidden>
+                <p>Build the reception from arrivals and familiar warm-up records through dancefloor lift and the final song.</p>
+                <button type="button" class="mission-choice-build" onclick="startBuildTheNight('wedding')" aria-label="Build a wedding set">Build a set <span aria-hidden="true">&rarr;</span></button>
+              </div>
+            </article>
+            <article class="mission-choice" data-mission="family_friendly" onkeydown="handleMissionChoiceKeydown(event, 'family_friendly')">
+              <img class="mission-choice-art" src="/static/images/missions/family-friendly-v1.jpg" alt="" aria-hidden="true" draggable="false" loading="lazy">
+              <button type="button" class="mission-choice-toggle" aria-expanded="false" aria-controls="mission-details-family_friendly" onclick="toggleMissionChoice('family_friendly')">
+                <img class="build-night-icon" src="/static/icons/mission-family-friendly.svg" alt="" aria-hidden="true">
+                <strong>Family-Friendly</strong>
+              </button>
+              <div class="mission-choice-details" id="mission-details-family_friendly" hidden>
+                <p>Meaning-safe music for family rooms, schools, community events, and radio-friendly sets—not just clean edits.</p>
+                <button type="button" class="mission-choice-build" onclick="startBuildTheNight('family_friendly')" aria-label="Build a family-friendly set">Build a set <span aria-hidden="true">&rarr;</span></button>
+              </div>
+            </article>
+            <article class="mission-choice" data-mission="open_format" onkeydown="handleMissionChoiceKeydown(event, 'open_format')">
+              <img class="mission-choice-art" src="/static/images/missions/open-format-v1.jpg" alt="" aria-hidden="true" draggable="false" loading="lazy">
+              <button type="button" class="mission-choice-toggle" aria-expanded="false" aria-controls="mission-details-open_format" onclick="toggleMissionChoice('open_format')">
+                <img class="build-night-icon" src="/static/icons/mission-open-format.png" alt="" aria-hidden="true">
+                <strong>Open Format</strong>
+              </button>
+              <div class="mission-choice-details" id="mission-details-open_format" hidden>
+                <p>Move confidently across urban, electronic, Top 40, and throwbacks with controlled genre bridges.</p>
+                <button type="button" class="mission-choice-build" onclick="startBuildTheNight('open_format')" aria-label="Build an open format set">Build a set <span aria-hidden="true">&rarr;</span></button>
+              </div>
+            </article>
+            <article class="mission-choice" data-mission="global" onkeydown="handleMissionChoiceKeydown(event, 'global')">
+              <img class="mission-choice-art" src="/static/images/missions/global-v1.jpg" alt="" aria-hidden="true" draggable="false" loading="lazy">
+              <button type="button" class="mission-choice-toggle" aria-expanded="false" aria-controls="mission-details-global" onclick="toggleMissionChoice('global')">
+                <img class="build-night-icon" src="/static/icons/mission-global.svg" alt="" aria-hidden="true">
+                <strong>Global</strong>
+              </button>
+              <div class="mission-choice-details" id="mission-details-global" hidden>
+                <p>Build a focused journey through Afrobeats, Amapiano, Dancehall, Soca, Reggaeton, Latin, and international crossover sounds.</p>
+                <button type="button" class="mission-choice-build" onclick="startBuildTheNight('global')" aria-label="Build a global set">Build a set <span aria-hidden="true">&rarr;</span></button>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <div class="command-feature-strip" aria-label="AXIOM workflow capabilities" style="display:none">
+          <div class="command-feature">
+            <span class="command-feature-icon">≋</span>
+            <span><strong>Smart Analysis</strong><span>AXIOM maps energy, flow, and weak spots.</span></span>
+          </div>
+          <div class="command-feature">
+            <span class="command-feature-icon">◎</span>
+            <span><strong>Transition Audit</strong><span>Identify clashing keys, BPM jumps, and gaps.</span></span>
+          </div>
+          <div class="command-feature">
+            <span class="command-feature-icon">▥</span>
+            <span><strong>Set Optimization</strong><span>Get actionable fixes and improvements.</span></span>
+          </div>
+          <div class="command-feature">
+            <span class="command-feature-icon">ϟ</span>
+            <span><strong>Performance Ready</strong><span>Stronger sets. Better crowds.</span></span>
+          </div>
+        </div>
+      </div>
+
+      <div id="set-brief-view" class="set-brief-shell hidden">
+        <section id="room-rescue-wizard" class="room-rescue-wizard hidden" aria-label="Not sure what to play">
+          <header class="room-rescue-head">
+            <div>
+              <span class="room-rescue-kicker">New Room. No Plan.</span>
+              <h2 id="room-rescue-title" class="room-rescue-title">WHAT KIND OF GIG?</h2>
+              <p id="room-rescue-copy" class="room-rescue-copy">Choose the room. AXIOM will keep the next decision short.</p>
+            </div>
+            <button type="button" class="room-rescue-back button--secondary" onclick="roomRescueBack()">Back</button>
+          </header>
+
+          <nav class="room-rescue-progress" aria-label="Three quick steps">
+            <span data-room-rescue-progress="1" class="active"><b>01</b> Gig</span>
+            <span data-room-rescue-progress="2"><b>02</b> Now</span>
+            <span data-room-rescue-progress="3"><b>03</b> Start</span>
+          </nav>
+
+          <div id="room-rescue-step-gig" class="room-rescue-step">
+            <div class="room-rescue-gig-grid" role="radiogroup" aria-label="Choose the gig type">
+              <button type="button" class="room-rescue-gig-card" data-room-rescue-gig="nightclub" onclick="selectRoomRescueGig('nightclub')">
+                <img src="/static/icons/mission-club-peak.png" alt="" aria-hidden="true">
+                <span>Nightclub</span>
+              </button>
+              <button type="button" class="room-rescue-gig-card" data-room-rescue-gig="private_event" onclick="selectRoomRescueGig('private_event')">
+                <img src="/static/icons/mission-custom.png" alt="" aria-hidden="true">
+                <span>Private Event</span>
+              </button>
+              <button type="button" class="room-rescue-gig-card" data-room-rescue-gig="wedding" onclick="selectRoomRescueGig('wedding')">
+                <img src="/static/icons/mission-wedding.png" alt="" aria-hidden="true">
+                <span>Wedding</span>
+              </button>
+            </div>
+          </div>
+
+          <div id="room-rescue-step-moment" class="room-rescue-step hidden">
+            <div id="room-rescue-moment-grid" class="room-rescue-moment-grid" role="radiogroup" aria-label="Choose what is happening now"></div>
+          </div>
+
+          <div id="room-rescue-step-start" class="room-rescue-step hidden" aria-live="polite">
+            <div class="room-rescue-result-head">
+              <div>
+                <span>Your First Direction</span>
+                <strong id="room-rescue-direction">Finding the clearest place to start...</strong>
+              </div>
+              <button type="button" class="room-rescue-change" onclick="roomRescueChangeMoment()">Change answer</button>
+            </div>
+            <div id="room-rescue-track-list" class="room-rescue-track-list">
+              <div class="room-rescue-loading">Finding five songs in your Library...</div>
+            </div>
+            <div class="room-rescue-final-action">
+              <p>Five songs. One clear start. You can change every track in Studio.</p>
+              <button id="room-rescue-build" type="button" class="button--primary" onclick="buildRoomRescueStart()" disabled>Build This Start <span aria-hidden="true">&rarr;</span></button>
+            </div>
+          </div>
+        </section>
+
+        <div id="set-brief-advanced-editor">
+        <div class="set-brief-head">
+          <div>
+            <span class="set-brief-kicker">Set Brief</span>
+            <h2 class="set-brief-title">WHAT ARE YOU BUILDING?</h2>
+            <p class="set-brief-copy">Give AXIOM a simple direction before choosing the first song. It guides suggestions and set-building without touching your original audio.</p>
+          </div>
+          <button type="button" class="set-brief-action" onclick="closeSetBrief()">Back</button>
+        </div>
+
+        <div class="set-brief-form">
+          <section class="set-brief-field">
+            <span>Set Intention</span>
+            <div class="set-brief-segments" data-brief-group="intention">
+              <button type="button" class="set-brief-option" data-brief-value="wedding" onclick="selectSetBriefOption('intention','wedding')">Wedding</button>
+              <button type="button" class="set-brief-option" data-brief-value="family_friendly" onclick="selectSetBriefOption('intention','family_friendly')">Family-Friendly</button>
+              <button type="button" class="set-brief-option" data-brief-value="open_format" onclick="selectSetBriefOption('intention','open_format')">Open Format</button>
+              <button type="button" class="set-brief-option" data-brief-value="global" onclick="selectSetBriefOption('intention','global')">Global</button>
+            </div>
+	            <small>Choose the room mission first. AXIOM resets the hidden defaults so one type of gig never leaks into another.</small>
+          </section>
+
+          <section class="set-brief-field">
+            <span>Purpose</span>
+            <div class="set-brief-segments" data-brief-group="purpose">
+              <button type="button" class="set-brief-option" data-brief-value="live_set" onclick="selectSetBriefOption('purpose','live_set')">Live Set</button>
+              <button type="button" class="set-brief-option" data-brief-value="content_mix" onclick="selectSetBriefOption('purpose','content_mix')">Content Mix</button>
+            </div>
+            <small>Content Mix keeps the same room mission but adds episode anchors, controlled switch-ups, and a stronger finish.</small>
+          </section>
+
+          <section class="set-brief-field">
+            <span>Energy Journey</span>
+            <div class="set-brief-segments" data-brief-group="energyJourney">
+              <button type="button" class="set-brief-option" data-brief-value="build" onclick="selectSetBriefOption('energyJourney','build')">Build Gradually</button>
+              <button type="button" class="set-brief-option" data-brief-value="stay_up" onclick="selectSetBriefOption('energyJourney','stay_up')">Stay Up</button>
+              <button type="button" class="set-brief-option" data-brief-value="waves" onclick="selectSetBriefOption('energyJourney','waves')">Peaks + Breathers</button>
+              <button type="button" class="set-brief-option" data-brief-value="finish_strong" onclick="selectSetBriefOption('energyJourney','finish_strong')">Finish Strong</button>
+            </div>
+            <small>The brief controls which tracks qualify for Library suggestions. Change a setting if you want to widen the pool.</small>
+          </section>
+
+          <label class="set-brief-field" for="set-brief-duration">
+            <span>Set Length</span>
+            <select id="set-brief-duration" class="set-brief-select" onchange="updateSetBriefSelects()">
+              <option value="30">30 Minutes</option>
+              <option value="60" selected>60 Minutes</option>
+              <option value="90">90 Minutes</option>
+              <option value="120">2 Hours</option>
+            </select>
+            <small>AXIOM uses this for the Studio timeline and estimated track count.</small>
+          </label>
+
+          <section class="set-brief-field">
+            <span>Planning Style</span>
+            <div class="set-brief-segments" data-brief-group="planningStyle">
+              <button type="button" class="set-brief-option" data-brief-value="loose" onclick="selectSetBriefOption('planningStyle','loose')">Loose Ideas</button>
+              <button type="button" class="set-brief-option" data-brief-value="guided" onclick="selectSetBriefOption('planningStyle','guided')">Guided Route</button>
+              <button type="button" class="set-brief-option" data-brief-value="fixed" onclick="selectSetBriefOption('planningStyle','fixed')">Detailed Plan</button>
+            </div>
+            <small>Choose how strongly AXIOM should favour the brief. You can still change every track.</small>
+          </section>
+
+	          <details class="set-brief-advanced">
+	            <summary>More Direction</summary>
+	            <section id="set-brief-wedding-style" class="set-brief-field hidden">
+	              <span>Wedding Style</span>
+	              <div class="set-brief-segments" data-brief-group="soundFocus">
+	                <button type="button" class="set-brief-option" data-brief-value="classic_wedding" onclick="selectSetBriefOption('soundFocus','classic_wedding')">Classic Reception</button>
+	                <button type="button" class="set-brief-option" data-brief-value="global_wedding" onclick="selectSetBriefOption('soundFocus','global_wedding')">Global / Afro / Latin</button>
+	              </div>
+	              <small>Classic keeps Latin/Afro/Island records out of the top unless they have wedding proof. Global intentionally brings those lanes forward.</small>
+	            </section>
+	            <label class="set-brief-field" for="set-brief-sound">
+	              <span>Sound Direction</span>
+	              <select id="set-brief-sound" class="set-brief-select" onchange="updateSetBriefSelects()">
+	                <option value="open_format">Open Format</option>
+	                <option value="urban">R&amp;B / Urban</option>
+	                <option value="electronic_top40">Electronic + Top 40</option>
+	                <option value="urban_electronic_top40">Urban + Electronic + Top 40</option>
+	                <option value="classic_wedding">Classic Reception</option>
+	                <option value="global_wedding">Global / Afro / Latin</option>
+	                <option value="global">Global Journey</option>
+	              </select>
+	            </label>
+	            <label class="set-brief-field" for="set-brief-era">
+	              <span>Era Direction</span>
+	              <select id="set-brief-era" class="set-brief-select" onchange="updateSetBriefSelects()">
+                <option value="All" selected>Mixed Eras</option>
+                <option value="Recent">Mostly Current</option>
+                <option value="2k Era">2K Era (2000-2009)</option>
+                <option value="2010s">2010-2016 Era</option>
+                <option value="The 90s">The 90s</option>
+                <option value="Retro 2">Classic Throwbacks</option>
+              </select>
+              <small>Optional. Era can still be changed later when choosing matching songs.</small>
+            </label>
+          </details>
+        </div>
+
+        <div id="set-brief-proof" class="set-brief-proof" role="status" aria-live="polite">
+          <strong>Library Proof</strong>
+          <span id="set-brief-proof-copy">AXIOM will check this direction against your connected library.</span>
+        </div>
+
+        <section id="crate-read-panel" class="crate-read-panel" aria-label="AXIOM crate read">
+          <div class="crate-read-loading">Reading what this library can do...</div>
+        </section>
+
+        <div class="set-brief-actions">
+          <button id="set-brief-skip" type="button" class="set-brief-action" onclick="beginNewSetFromBrief(true)">Skip Brief</button>
+          <button id="set-brief-submit" type="button" class="set-brief-action primary" onclick="applySetBrief()">Start Building</button>
+        </div>
+        </div>
+      </div>
+
+      <div id="studio-active-view" class="hidden flex flex-col h-full">
+        <div class="studio-header flex justify-between items-center mb-8">
+          <div class="studio-score-summary" aria-label="Current set summary">
+            <h3 class="studio-score-lockup font-heading text-white uppercase">
+              <small>Set Score</small>
+              <span id="set-score-display" class="text-axiom-accent">--</span>
+            </h3>
+            <div class="studio-set-facts" aria-live="polite">
+              <span><strong id="studio-set-track-count">0</strong><small>Tracks</small></span>
+              <span><strong id="studio-set-runtime">0 Min</strong><small>Set Length</small></span>
+            </div>
+          </div>
+          <div class="studio-actions flex">
+            <button id="studio-save-set-btn" onclick="saveSetToPlaylists()"
+              title="Store this set in Playlists as a performance crate."
+              class="studio-action-btn studio-paid-access-action studio-save-crate-btn button--primary">Save Set</button>
+            <span id="studio-autosave-status" role="status" hidden style="font-size:11px;max-width:180px;align-self:center;line-height:1.35">Autosaved on this Mac</span>
+
+            <div class="studio-compact-menu studio-paid-access-action" id="export-dropdown-container">
+              <button onclick="toggleExportDropdown(event)" id="export-dropdown-btn" class="button--secondary" type="button" aria-haspopup="menu" aria-expanded="false">
+                <span>Export</span>
+                <svg xmlns="http://www.w3.org/2000/svg" id="export-dropdown-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 9l6 6 6-6" />
+                </svg>
+                <span id="export-spinner" class="spinner hidden"></span>
+              </button>
+
+              <div id="export-dropdown-menu" class="studio-command-menu hidden" role="menu" aria-label="Export set">
+                <span class="studio-command-menu-label">DJ Software</span>
+                <div class="studio-export-dj-list">
+                  <button id="studio-export-serato-btn" class="studio-export-destination is-featured" type="button" role="menuitem" aria-label="Add to Serato DJ Pro" onclick="exportPlaylist('serato')">
+                    <span class="studio-export-brand studio-export-brand-serato">
+                      <img src="/static/brands/serato-dj-pro.svg" alt="Serato DJ Pro">
+                    </span>
+                    <small>Add this set to Serato</small>
+                    <img class="studio-export-chevron" src="/static/icons/chevron-down.svg" alt="" aria-hidden="true">
+                  </button>
+                  <button id="studio-export-djay-btn" class="studio-export-destination{% if axiom_lite %} is-pro-locked{% endif %}" type="button" role="menuitem" aria-label="{% if axiom_lite %}djay Pro export, Axiom Pro feature{% else %}Add to djay Pro{% endif %}" onclick="exportPlaylist('djay')">
+                    <span class="studio-export-brand studio-export-brand-djay">
+                      <img src="/static/brands/djay-wordmark.png" alt="djay">
+                      <span aria-hidden="true">Pro</span>
+                    </span>
+                    <small>{% if axiom_lite %}Axiom Pro feature{% else %}Add this set to djay{% endif %}</small>
+                    <img class="studio-export-chevron" src="/static/icons/chevron-down.svg" alt="" aria-hidden="true">
+                  </button>
+                </div>
+                <span class="studio-command-menu-label studio-command-menu-divider studio-export-files-label">Files</span>
+                <div class="studio-export-file-grid" aria-label="Export file formats">
+                  <button type="button" role="menuitem" onclick="exportPlaylist('csv'); closeExportDropdown()">CSV</button>
+                  <button type="button" role="menuitem" onclick="exportPlaylist('xml'); closeExportDropdown()">XML</button>
+                  <button type="button" role="menuitem" onclick="exportPlaylist('m3u'); closeExportDropdown()">M3U</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="studio-compact-menu" id="studio-more-menu-container">
+              <button id="studio-more-menu-btn" class="studio-more-menu-btn" type="button" onclick="toggleStudioMoreMenu(event)" aria-haspopup="menu" aria-expanded="false" title="More set actions" aria-label="More set actions">
+                <span aria-hidden="true">...</span>
+              </button>
+	              <div id="studio-more-menu" class="studio-command-menu hidden" role="menu" aria-label="More set actions">
+	                <span class="studio-command-menu-label">Set Tools</span>
+	                <button type="button" role="menuitem" class="studio-paid-access-action" onclick="exportSetBackup(); closeStudioMoreMenu()">Backup Set</button>
+	                <button type="button" role="menuitem" class="studio-paid-access-action" onclick="loadSetFromLocal(); closeStudioMoreMenu()">Load Set</button>
+	                <button type="button" role="menuitem" onclick="window.AxiomStudioAutosave?.openRecovery(); closeStudioMoreMenu()">Recover Set</button>
+	                <button type="button" role="menuitem" onclick="closeActiveSet(); closeStudioMoreMenu()">Close Set</button>
+	                <button type="button" role="menuitem" class="studio-command-danger studio-command-menu-divider button--danger button--small" onclick="clearSet(); closeStudioMoreMenu()">Clear Set</button>
+	              </div>
+	            </div>
+	            <button onclick="openStudioGuide(true)" id="btn-studio-guide" class="studio-help-btn axiom-help-btn button--secondary" type="button" aria-label="Studio Help" title="Studio Help">
+	                <span class="studio-help-compact-mark" aria-hidden="true">?</span>
+	                <span class="studio-help-expanded-label" aria-hidden="true">Help</span>
+	            </button>
+	          </div>
+	        </div>
+
+        <div id="studio-set-brief-bar" class="studio-set-brief-bar hidden">
+          <span>Set Brief</span>
+          <strong id="studio-set-brief-summary">No brief selected</strong>
+          <button type="button" onclick="openSetBrief(true)">Edit</button>
+        </div>
+
+
+        <section id="magic-set-command" aria-label="Magic Set overview">
+          <div class="magic-command-main">
+            <div class="min-w-0">
+              <h3 class="magic-command-title">Magic Set</h3>
+              <p class="magic-command-copy"><span id="magic-set-subtitle">AXIOM-built journey · 0 tracks · 2 hours</span></p>
+            </div>
+            <div class="magic-score-card" aria-label="Set score">
+              <span>Set Score</span>
+              <strong id="magic-score-value">--</strong>
+              <small id="magic-score-label">Ready</small>
+            </div>
+          </div>
+        </section>
+
+	        <div class="studio-tabbar flex gap-4 mb-6 items-center border-b border-white/5 pb-4">
+	            <div class="studio-mode-controls" id="studio-mode-controls" aria-label="Studio order mode">
+                  {% if not axiom_lite %}
+                  <button onclick="AxiomStudioDaw.requestCurrentSet()" id="studio-open-daw" class="studio-mode-tab" type="button" aria-label="Open Studio set in DAW" aria-haspopup="dialog">
+                    <span class="axiom-tool-logo axiom-tool-logo-daw" aria-hidden="true"><img src="/static/brands/axiom-studio-tools.png" alt=""></span>
+                  </button>
+                  {% endif %}
+                  <span class="studio-mode-selector" role="group" aria-label="Set building mode">
+	                  <button onclick="openMagicSetWorkspace()" id="studio-tab-magic" class="studio-mode-tab button--secondary" type="button" aria-label="Magic Set" aria-pressed="false">
+                      <span class="axiom-tool-logo axiom-tool-logo-magic" aria-hidden="true"><img src="/static/brands/axiom-studio-tools.png" alt=""></span>
+                    </button>
+	                  <button onclick="setGraphMode(false); setStudioView('manual', { userActivated: true })" id="studio-tab-manual" class="studio-mode-tab button--primary active" type="button" aria-pressed="true">
+                      <span>Manual Build</span>
+                    </button>
+                  </span>
+                  <span class="studio-mode-divider" aria-hidden="true"></span>
+	              <button onclick="setStudioView('route')" id="studio-tab-route" class="studio-mode-tab route-tab-hidden" type="button" aria-pressed="false">Harmonic Route</button>
+	              <button onclick="optimizePlaylistOrder()" id="btn-optimize" class="studio-build-gated studio-suggest-order button--secondary button--harmonic" type="button" disabled aria-disabled="true">
+                    <img class="studio-mode-icon studio-suggest-order-icon" src="/static/icons/zap.svg" alt="" aria-hidden="true">
+                    <span>Suggest Order</span>
+                </button>
+	            </div>
+        </div>
+
+
+        <div id="studio-build-controls" class="flex justify-between items-center mb-4">
+          <div class="magic-primary-rail flex gap-6 items-center">
+            <div class="magic-parameter-module magic-duration-module">
+              <label class="text-[9px] font-black text-axiom-muted uppercase tracking-widest block mb-1">Duration</label>
+              <select id="set-length-selector" onchange="handleMagicSetTimelineControlChange()"
+                class="bg-black border border-white/10 text-white text-[10px] font-black uppercase rounded-md px-3 py-1 outline-none">
+                <option value="30">30 Mins</option>
+                <option value="60">1 Hour</option>
+                <option value="90">1.5 Hours</option>
+                <option value="120" selected>2 Hours</option>
+                <option value="150">2.5 Hours</option>
+                <option value="180">3 Hours</option>
+              </select>
+            </div>
+            <div class="magic-parameter-module magic-mix-module">
+              <label class="text-[9px] font-black text-axiom-muted uppercase tracking-widest block mb-1">Avg Mix</label>
+              <select id="avg-duration-selector" onchange="handleMagicSetTimelineControlChange()"
+                class="bg-black border border-white/10 text-white text-[10px] font-black uppercase rounded-md px-3 py-1 outline-none">
+                <option value="1">1 Min</option>
+                <option value="2" selected>2 Mins</option>
+                <option value="3">3 Mins</option>
+                <option value="4">4 Mins</option>
+                <option value="5">5 Mins</option>
+              </select>
+            </div>
+            <div class="w-px h-8 bg-white/10 mx-2"></div>
+            <div class="magic-bpm-range" role="group" aria-labelledby="magic-bpm-range-label">
+              <span id="magic-bpm-range-label" class="magic-module-label">BPM Range</span>
+              <div class="magic-bpm-field magic-bpm-start">
+                <label for="blueprint-start-bpm">Start</label>
+                <input type="number" id="blueprint-start-bpm" value="120" onchange="applyBpmBlueprint()"
+                  class="bg-black border border-white/10 text-axiom-accent text-[10px] font-black rounded-md px-3 py-1 w-16 outline-none">
+              </div>
+              <div class="magic-bpm-field magic-bpm-end">
+                <label for="blueprint-end-bpm">End</label>
+                <input type="number" id="blueprint-end-bpm" value="128" onchange="applyBpmBlueprint()"
+                  class="bg-black border border-white/10 text-axiom-accent text-[10px] font-black rounded-md px-3 py-1 w-16 outline-none">
+              </div>
+            </div>
+            <div class="studio-magic-build-pair">
+              <button id="btn-build-around-tracks" data-axiom-cta-skip="true" onclick="buildMagicSetAroundWorkingTracks()" class="magic-build-around-btn" type="button" title="Keep the tracks already in the Working Set and build around their collective sound">Build Around These Tracks</button>
+              <button id="btn-magic-set" data-axiom-cta-skip="true" onclick="generateMagicSetFromParameters()" class="magic-generate-btn px-4 py-1.5 bg-axiom-accent text-black text-[9px] font-black uppercase rounded-md hover:brightness-110 transition-all self-end">Generate Set</button>
+            </div>
+          </div>
+          <div class="magic-utility-rail flex gap-4 items-center">
+            <button type="button" onclick="addBlueprintSegment()" class="magic-midpoint-btn px-3 py-1.5 bg-white/5 border border-white/10 text-white text-[9px] font-black uppercase rounded-md hover:bg-white/10 transition-all">+ Mid Point</button>
+            <button type="button" onclick="clearBlueprint()" class="magic-clear-btn px-3 py-1.5 bg-red-500/10 border border-red-500/20 text-red-500 text-[9px] font-black uppercase rounded-md hover:bg-red-500 hover:text-white transition-all">Clear</button>
+            <div class="w-px h-8 bg-white/10 mx-1"></div>
+            <div class="text-right">
+              <p class="text-white font-black text-2xl" id="est-track-count">60</p>
+              <p class="text-[9px] font-black text-axiom-muted uppercase tracking-widest">Est. Tracks Needed</p>
+            </div>
+          </div>
+        </div>
+
+        {% include "partials/cockpit/surfaces/health.html" %}
+
+        <div id="studio-workspace" class="flex-1 min-h-0 flex flex-col">
+        <div id="graph-container" class="glass rounded-3xl p-8 mb-6 h-56 border border-white/5 relative">
+          <div class="magic-phase-band" aria-label="Set timeline sections">
+            <div><strong>Warm Up</strong><span id="magic-phase-time-0">0 - 24 min</span></div>
+            <div><input type="text" maxlength="18" placeholder="Type label" aria-label="Name timeline section two"><span id="magic-phase-time-1">24 - 48 min</span></div>
+            <div class="active"><strong>Halfway There</strong><span id="magic-phase-time-2">48 - 72 min</span></div>
+            <div><input type="text" maxlength="18" placeholder="Type label" aria-label="Name timeline section four"><span id="magic-phase-time-3">72 - 96 min</span></div>
+            <div class="active"><strong>End Of Set</strong><span id="magic-phase-time-4">96 - 120 min</span></div>
+          </div>
+          <div class="magic-graph-hud">
+            <div class="magic-axis-title bpm">
+              <span>Song Tempo</span>
+              <strong>BPM</strong>
+            </div>
+            <div class="magic-axis-title time">
+              <span>Time (Minutes)</span>
+              <strong>Set Timeline</strong>
+            </div>
+            <div class="magic-dot-summary">
+              <span id="magic-dot-track-count">0 tracks</span>
+              <span id="magic-dot-open-count">0 open</span>
+            </div>
+          </div>
+          <div id="magic-selected-card" class="magic-selected-card hidden" aria-live="polite"></div>
+          <button id="pill-tuck" class="pill-tuck hidden" onclick="tuckGraph()">TUCK GRAPH</button>
+          <button id="btn-fill-set" onclick="fillSetFromBPMPoints()" type="button"
+            class="hidden px-4 py-2 bg-cyan-400 text-black font-black text-[9px] uppercase rounded-md absolute top-4 right-4 z-10 shadow-lg hover:scale-105 transition-all">BUILD SET</button>
+          <button id="btn-generate-from-anchor" onclick="generateSetFromAnchor()"
+            class="hidden px-4 py-2 text-black font-black text-[9px] uppercase rounded-md absolute top-4 left-4 z-10 hover:scale-105 transition-all flex items-center gap-2"
+            style="background:var(--accent); box-shadow:0 0 14px rgba(163,255,0,0.55), 0 0 30px rgba(163,255,0,0.2);">
+            <span id="gen-anchor-text">GENERATE SET TO TARGET</span>
+            <div id="gen-anchor-spinner" class="spinner hidden border-black border-l-black/30" style="width:10px;height:10px;border-width:2px;"></div>
+          </button>
+          <button id="btn-view-studio-set" onclick="viewMagicSetInStudio()" type="button" class="hidden">
+            <span class="magic-studio-return-copy">
+              <strong>Back to Studio</strong>
+              <small>Next: Export Set</small>
+            </span>
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+            </svg>
+          </button>
+          <div id="magic-point-actions" class="magic-point-actions hidden" aria-live="polite"></div>
+          <canvas id="bpmChart"></canvas>
+          <div id="magic-chart-footer" class="magic-chart-footer">
+            <div class="magic-legend" aria-label="Magic Set legend">
+              <span><i></i>Strong transition</span>
+              <span><i class="compatible"></i>Compatible transition</span>
+              <span><i class="review"></i>Needs review</span>
+              <span><i class="empty"></i>Slot to fill</span>
+            </div>
+            <div class="magic-chart-stats">
+              <span><strong id="magic-track-ratio">0 / 0</strong> Tracks</span>
+              <span><strong id="magic-open-positions" class="cyan">0</strong> Positions available</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="glass rounded-xl px-8 py-4 mb-6 border border-white/5 flex gap-1 h-12" id="energy-ladder"></div>
+
+        <div id="active-playlist-container" class="flex-1 space-y-2 overflow-y-auto pr-4 pb-10" role="list" aria-label="Studio track order"
+          ondragover="allowDropPlaylist(event)" ondrop="dropTrackPlaylist(event)"></div>
+        </div>
+      </div>
+
+      {% if not axiom_lite %}
+      <section id="studio-daw-shell" class="studio-daw-shell hidden" aria-label="AXIOM DAW" aria-hidden="true">
+        <header class="studio-daw-topbar">
+          <div class="studio-daw-title-block">
+            <div class="studio-daw-window-controls" aria-hidden="true"><i></i><i></i><i></i></div>
+            <details class="studio-daw-menu">
+              <summary class="studio-daw-menu-toggle" aria-label="Studio DAW menu" onclick="event.preventDefault(); const menu=this.closest('details'); if(menu) menu.toggleAttribute('open');">Menu</summary>
+	              <div class="studio-daw-menu-popover" role="menu" aria-label="Studio DAW project menu">
+	                <button type="button" id="daw-menu-player-toggle" role="menuitem" aria-pressed="false" onclick="const visible=document.body.classList.toggle('daw-player-visible');this.setAttribute('aria-pressed',String(visible));this.textContent=visible?'Hide Player':'Show Player';window.dispatchEvent(new Event('axiom-daw-layout-changed'))">Show Player</button>
+	                <label class="daw-menu-zoom-control">Timeline Range
+	                  <select id="daw-zoom-resolution" aria-label="Visible timeline range" onchange="AxiomStudioDaw?.setZoom?.(this.value)">
+	                    <option value="0">Full project</option>
+	                    <option value="64">16 bars</option>
+	                    <option value="32">8 bars</option>
+	                    <option value="16">4 bars</option>
+	                    <option value="8">2 bars</option>
+	                    <option value="4">1 bar</option>
+	                    <option value="2">1/2 bar</option>
+	                    <option value="1">1/4 bar</option>
+	                    <option value="0.5">1/8 bar</option>
+	                    <option value="0.25">1/16 bar</option>
+	                  </select>
+	                </label>
+	                <button type="button" role="menuitem" onclick="this.closest('details')?.removeAttribute('open'); closeStudioDawShell()">Back</button>
+                <button type="button" role="menuitem" onclick="this.closest('details')?.removeAttribute('open'); AxiomDawDrafts.open()">Open Project</button>
+                <button type="button" role="menuitem" onclick="this.closest('details')?.removeAttribute('open'); AxiomDawDrafts.files()" title="Save a project file or a portable copy with audio">Project Files</button>
+                <button type="button" role="menuitem" onclick="this.closest('details')?.removeAttribute('open'); AxiomRemixWorkflow.openSetup()">Editing Setup</button>
+                <button type="button" role="menuitem" onclick="this.closest('details')?.removeAttribute('open'); AxiomStudioDaw?.openSampleBankDialog?.()" title="Preview, reuse, or import DAW-only samples">Sample Bank</button>
+                <button type="button" role="menuitem" onclick="this.closest('details')?.removeAttribute('open'); AxiomStudioDaw?.toggleClipReverse?.()" title="Reverse the selected clip without changing the source file">Reverse Clip</button>
+                <button type="button" role="menuitem" onclick="this.closest('details')?.removeAttribute('open'); AxiomStudioDaw?.renderReverbTailForClip?.()" title="Render a reverb tail copy you can reverse for a build-up">Reverb Tail</button>
+                <button type="button" role="menuitem" onclick="this.closest('details')?.removeAttribute('open'); AxiomDawExport.open()" title="Export the complete project as WAV or MP3">Export Audio</button>
+                <button type="button" role="menuitem" onclick="this.closest('details')?.removeAttribute('open'); AxiomDawDrafts.save()">Save Draft</button>
+                <details class="daw-project-tools">
+                  <summary>More tools</summary>
+                  <button type="button" role="menuitem" onclick="this.closest('.studio-daw-menu').removeAttribute('open'); AxiomStudioDaw.selectSection('master'); AxiomMixer.open('mix')">Master mixer</button>
+                  <div class="daw-toolbar-accessory-group" id="daw-accessory-controls" aria-label="Advanced project tools"></div>
+                </details>
+              </div>
+            </details>
+            <div class="studio-daw-brand">
+              <span>PEAK HOUR</span>
+              <strong>DAW</strong>
+            </div>
+          </div>
+          <div class="studio-daw-master-controls" aria-label="Project controls">
+            <div class="daw-toolbar-transport-group" aria-label="Project state and transport">
+              <div id="daw-project-mode-slot"></div>
+              <div class="daw-toolbar-metadata-group" aria-label="Project metadata">
+                <label class="daw-project-tempo" title="Type a steady tempo for the whole project. Replaces BPM ramps; Undo restores them."><span>BPM</span><input id="studio-daw-top-bpm" type="number" min="20" max="400" step="0.01" value="120" aria-label="Project BPM" onfocus="AxiomStudioDaw.beginProjectBpmEdit(this)" oninput="this.dataset.bpmEdited='true'" onblur="AxiomStudioDaw.finishProjectBpmEdit(this)" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();} event.stopPropagation();"></label>
+                <div class="daw-project-key-card" aria-label="Project key">
+                  <div class="daw-project-key-readout"><span>KEY</span><strong id="studio-daw-top-key">5A</strong></div>
+                  <div id="daw-key-sync-slot" class="daw-key-sync-slot" aria-label="Key sync control"></div>
+                </div>
+              </div>
+              <div id="daw-idle-transport-controls"><button type="button" id="daw-toolbar-back" aria-label="Jump to project start" title="Jump to project start / Bar 1" onclick="AxiomArrangement?.seek?.(0); AxiomStudioDaw?.setCursorBeat?.(0);"><span class="daw-skip-start-icon" aria-hidden="true"></span></button><button type="button" id="daw-toolbar-play" aria-label="Play project" onclick="AxiomArrangement.toggle()"><span aria-hidden="true">▶</span></button><button type="button" id="daw-toolbar-stop" aria-label="Stop project" onclick="AxiomDawTimelineRecording.stop(); AxiomArrangement.stop()"><span aria-hidden="true">■</span></button><button type="button" id="daw-toolbar-record" aria-label="Record take" aria-pressed="false" title="Record into the Recordings lane; right-click to choose input" onclick="AxiomDawTimelineRecording.toggle()" oncontextmenu="event.preventDefault(); AxiomDawTimelineRecording.setup()"><span aria-hidden="true">●</span></button></div>
+            </div>
+            <div class="daw-toolbar-creative-group" aria-label="Creative controls">
+              <button type="button" class="daw-tool-primary" id="daw-fx-button" aria-pressed="false" onclick="AxiomDawFx.edit()" title="FX off: no effects applied. Add an effect and choose its target track.">FX</button>
+              <button type="button" class="daw-tool-primary" id="daw-steady-timing-button" aria-pressed="false" onclick="AxiomSteadyTiming.open()" title="Snap off: no automatic timing applied.">AXIOM Snap Off</button>
+              <label class="studio-daw-intro-marker-control" title="Set the DJ beat intro and edit entry marker">
+                <span>DJ INTRO</span>
+                <select id="studio-daw-intro-length" aria-label="DJ intro length" onchange="AxiomStudioDaw?.applyDjIntroMarkers?.(this.value)">
+                  <option value="8">8 bars · Start / Hype at 9</option>
+                  <option value="16">16 bars · Start / Hype at 17</option>
+                </select>
+              </label>
+              <button type="button" class="daw-tool-primary" onclick="AxiomStudioDaw?.applyDjIntroMarkers?.()" title="Place INTRO and START / HYPE markers">DJ Markers</button>
+            </div>
+          </div>
+          <div class="studio-daw-top-actions" aria-label="Studio DAW export actions">
+            <button type="button" class="studio-daw-export-mix" onclick="AxiomDawExport.open()" title="Export the complete project as WAV or MP3">Export Mix</button>
+          </div>
+        </header>
+
+        <div class="studio-daw-workbench">
+          <div class="studio-daw-stage-row hidden" id="studio-daw-layer-panel" aria-hidden="true">
+            <section class="studio-daw-drop-stage" aria-label="Studio DAW layer workspace">
+              <button type="button" class="studio-daw-back-scene" onclick="AxiomStudioDaw?.selectSection?.('master')">Back to Arrangement</button>
+              <div class="studio-daw-drop-copy" id="studio-daw-layer-panel-content">
+                <h2 id="studio-daw-project-title">Beatmaker</h2>
+                <p id="studio-daw-project-subtitle">Load kicks, snares, hats, one-shots, scratch breaks, and instrument parts for this layer.</p>
+              </div>
+            </section>
+          </div>
+
+          <div class="studio-daw-device-strip" aria-label="Studio DAW quick actions">
+            <button type="button" id="studio-daw-marker-action" onclick="AxiomStudioDaw?.addMarker?.()" oncontextmenu="return AxiomStudioDaw?.renameMarker?.(event)">Marker</button>
+            <button type="button" onclick="AxiomStudioDaw?.openSampleBankDialog?.()" title="Preview, reuse, or import DAW-only samples">Sample Bank</button>
+            <button type="button" onclick="AxiomStudioDaw?.splitActiveClip?.()">Split Clip</button>
+            <button type="button" onclick="AxiomStudioDaw?.duplicateSelection?.()">Duplicate</button>
+            <button type="button" onclick="AxiomStudioDaw?.repeatSelection?.()">Repeat</button>
+            <button type="button" onclick="AxiomStudioDaw?.toggleClipReverse?.()">Reverse Clip</button>
+            <button type="button" onclick="AxiomStudioDaw?.renderReverbTailForClip?.()" title="Render a reverb tail copy you can reverse for a build-up">Reverb Tail</button>
+            <button type="button" onclick="AxiomStudioDaw?.openStemSection?.()" title="Show the selected clip's separated stem mixer">Stem Section</button>
+            <button type="button" onclick="AxiomStudioDaw?.openMasterClip?.()">Master Clip</button>
+            <span class="studio-daw-snap-readout">Snap <strong>Bar</strong></span>
+            <span id="studio-daw-device-inspector-title">No clip selected</span>
+          </div>
+
+          <div class="studio-daw-performance-note hidden" id="studio-daw-performance-note" aria-live="polite">
+            <strong>Venue protection ready</strong>
+            <span>When Performance Mode, Live Assist, and DJ hardware are active, full Studio DAW will stay suspended. Quick Recording remains available.</span>
+          </div>
+
+          <div class="studio-daw-arrange-shell">
+            <div class="studio-daw-master-side-panel">
+              <div>
+                <strong>Master Clip</strong>
+                <button type="button" onclick="AxiomStudioDaw?.openMasterClip?.()">Open</button>
+                <span id="studio-daw-master-side-title">Call On Me Edit</span>
+              </div>
+              <small>BPM Automation</small>
+            </div>
+            <aside class="studio-daw-library-rail" aria-hidden="true">
+              <span>Library</span>
+              <i></i>
+            </aside>
+            <aside class="studio-daw-mixer-bank studio-daw-left-mixer-bank" aria-label="Studio DAW mixer">
+              <div class="studio-daw-mixer-header"><span>Mixer</span><button type="button" onclick="showToast('Mixer collapse is scaffolded for this DAW slice.')">Expand</button></div>
+              <div class="studio-daw-mixer-strips">
+                <div class="studio-daw-mixer-strip">
+                  <strong>MIX</strong>
+                  <label class="daw-knob-control daw-gain-control">GAIN<button class="daw-knob" role="slider" aria-valuemin="-24" aria-valuemax="12" aria-valuenow="0" data-mixer-scope="mix" data-mixer-param="gainDb" title="Gain: drag to adjust, double-click to enter dB" aria-label="Mix Gain"></button><output>0.0 dB</output></label>
+                  <div class="daw-eq-knob-row">
+                    <label class="daw-knob-control">HIGH<button class="daw-knob" role="slider" aria-valuemin="-24" aria-valuemax="12" aria-valuenow="0" data-mixer-scope="mix" data-mixer-param="highDb" title="High: drag to adjust, double-click to enter dB" aria-label="Mix High"></button><output>0.0 dB</output></label>
+                    <label class="daw-knob-control">MID<button class="daw-knob" role="slider" aria-valuemin="-24" aria-valuemax="12" aria-valuenow="0" data-mixer-scope="mix" data-mixer-param="midDb" title="Mid: drag to adjust, double-click to enter dB" aria-label="Mix Mid"></button><output>0.0 dB</output></label>
+                    <label class="daw-knob-control">LOW<button class="daw-knob" role="slider" aria-valuemin="-24" aria-valuemax="12" aria-valuenow="0" data-mixer-scope="mix" data-mixer-param="lowDb" title="Low: drag to adjust, double-click to enter dB" aria-label="Mix Low"></button><output>0.0 dB</output></label>
+                  </div>
+                  <div class="daw-strip-level-row">
+                    <div class="daw-channel-meter" aria-label="Mix preview level">
+                      <meter min="0" max="1" value="0" title="Stereo maximum sample peak"></meter>
+                      <div class="daw-meter-labels"><div>0</div><div>-6</div><div>-12</div><div>-24</div><div>-36</div><div>-60</div></div>
+                    </div>
+                    <label class="daw-fader-control">VOL<input class="daw-fader" type="range" min="0" max="1" step="0.01" value="1" aria-label="Mix volume" data-mixer-volume="mix"><output class="daw-volume-readout">0.0 dB</output></label>
+                  </div>
+                  <div class="daw-channel-buttons"><button data-mixer-solo="mix" aria-label="Solo Mix" aria-pressed="false">S</button><button data-mixer-mute="mix" aria-label="Mute Mix" aria-pressed="false">M</button><button data-mixer-automation="mix" aria-label="Edit Mix automation" title="Edit automation"><img src="/static/icons/audio-waveform.svg" alt="" width="14" height="14"></button></div>
+                  <small data-mixer-label="mix">left deck</small>
+                </div>
+                <div class="studio-daw-mixer-strip active">
+                  <strong>CLIP</strong>
+                  <label class="daw-knob-control daw-gain-control">GAIN<button class="daw-knob" role="slider" aria-valuemin="-24" aria-valuemax="12" aria-valuenow="0" data-mixer-scope="clip" data-mixer-param="gainDb" title="Gain: drag to adjust, double-click to enter dB" aria-label="Clip Gain"></button><output>0.0 dB</output></label>
+                  <div class="daw-eq-knob-row">
+                    <label class="daw-knob-control">HIGH<button class="daw-knob" role="slider" aria-valuemin="-24" aria-valuemax="12" aria-valuenow="0" data-mixer-scope="clip" data-mixer-param="highDb" title="High: drag to adjust, double-click to enter dB" aria-label="Clip High"></button><output>0.0 dB</output></label>
+                    <label class="daw-knob-control">MID<button class="daw-knob" role="slider" aria-valuemin="-24" aria-valuemax="12" aria-valuenow="0" data-mixer-scope="clip" data-mixer-param="midDb" title="Mid: drag to adjust, double-click to enter dB" aria-label="Clip Mid"></button><output>0.0 dB</output></label>
+                    <label class="daw-knob-control">LOW<button class="daw-knob" role="slider" aria-valuemin="-24" aria-valuemax="12" aria-valuenow="0" data-mixer-scope="clip" data-mixer-param="lowDb" title="Low: drag to adjust, double-click to enter dB" aria-label="Clip Low"></button><output>0.0 dB</output></label>
+                  </div>
+                  <div class="daw-strip-level-row">
+                    <div class="daw-channel-meter" aria-label="Clip preview level">
+                      <meter min="0" max="1" value="0" title="Stereo maximum sample peak"></meter>
+                      <div class="daw-meter-labels"><div>0</div><div>-6</div><div>-12</div><div>-24</div><div>-36</div><div>-60</div></div>
+                    </div>
+                    <label class="daw-fader-control">VOL<input class="daw-fader" type="range" min="0" max="1" step="0.01" value="1" aria-label="Clip volume" data-mixer-volume="clip"><output class="daw-volume-readout">0.0 dB</output></label>
+                  </div>
+                  <div class="daw-channel-buttons"><button data-mixer-solo="clip" aria-label="Solo Clip" aria-pressed="false">S</button><button data-mixer-mute="clip" aria-label="Mute Clip" aria-pressed="false">M</button><button data-mixer-automation="clip" aria-label="Edit Clip automation" title="Edit automation"><img src="/static/icons/audio-waveform.svg" alt="" width="14" height="14"></button></div>
+                  <small data-mixer-label="clip">no clip</small>
+                </div>
+              </div>
+            </aside>
+            <aside class="studio-daw-track-stack" id="studio-daw-track-stack" aria-label="Studio DAW lane controls"></aside>
+            <main class="studio-daw-timeline" aria-label="Studio DAW arrangement timeline">
+              <div class="studio-daw-master-strip" id="studio-daw-master-strip" aria-label="Master clip and BPM automation"></div>
+              <div class="studio-daw-transport">
+                <button type="button" aria-label="Stop playback" onclick="AxiomStudioDaw?.stopPlayback?.()">■</button>
+                <button type="button" aria-label="Play" onclick="AxiomStudioDaw?.playOrToggle?.()">▶</button>
+                <button type="button" aria-label="Repeat selected clip" onclick="AxiomStudioDaw?.repeatSelection?.()">↻</button>
+                <button type="button" aria-label="Record">●</button>
+                <select aria-label="Recording input"><option>No Device</option></select>
+                <div class="studio-daw-zoom-group" aria-label="Timeline zoom">
+                  <button type="button" id="studio-daw-zoom-arrange" class="active" onclick="AxiomStudioDaw?.setZoom?.('arrange')">16 Bars</button>
+                  <button type="button" id="studio-daw-zoom-bar" onclick="AxiomStudioDaw?.setZoom?.('bar')">1 Bar</button>
+                </div>
+              </div>
+              <div class="studio-daw-arrangement-overview" id="studio-daw-arrangement-overview" aria-hidden="true"></div>
+              <div class="studio-daw-automation-lane" id="studio-daw-bpm-lane" aria-label="BPM automation lane"></div>
+              <div class="studio-daw-ruler" id="studio-daw-ruler" aria-hidden="true"></div>
+              <div class="studio-daw-markers" id="studio-daw-markers" aria-label="Renameable project markers"></div>
+              <div class="studio-daw-lanes" id="studio-daw-lanes" onclick="if(event.target===this) AxiomStudioDaw.positionLane(event, AxiomStudioDaw.expandedSection)"></div>
+              <div class="studio-daw-step-editor" id="studio-daw-step-editor" aria-label="One-bar step editor"></div>
+            </main>
+            <aside class="studio-daw-clip-inspector" id="studio-daw-clip-inspector" aria-label="Selected clip inspector">
+              <div class="daw-inspector-kicker">Clip</div>
+              <div class="daw-inspector-preview" aria-hidden="true">
+                <div id="studio-daw-inspector-waveform"></div>
+              </div>
+              <h3 id="studio-daw-inspector-title">No clip selected</h3>
+              <p id="studio-daw-inspector-subtitle">Select a clip to edit fades, filters, stems, EQ, and level automation.</p>
+              <dl id="studio-daw-inspector-meta" class="daw-inspector-meta"></dl>
+              <div id="studio-daw-inspector-controls" class="daw-inspector-controls"></div>
+            </aside>
+          </div>
+        </div>
+      </section>
+      {% endif %}
+    </div>

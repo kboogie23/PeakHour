@@ -1,0 +1,570 @@
+.axiom-global-help-trigger {
+  font-family: "Barlow", sans-serif;
+  font-size: 15px;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.axiom-global-help-trigger > span {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+}
+
+.axiom-universal-help-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 11900;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgba(0, 0, 0, 0.82);
+  backdrop-filter: blur(12px);
+}
+
+.axiom-universal-help-overlay.active {
+  display: flex;
+}
+
+.axiom-universal-help-panel {
+  width: min(1040px, calc(100vw - 48px));
+  max-height: min(850px, calc(100vh - 48px));
+  overflow: auto;
+  border: 1px solid color-mix(in srgb, var(--accent-glow-base) 42%, transparent);
+  border-radius: 4px;
+  background: #070a08;
+  color: #f4f6f3;
+  box-shadow: 0 34px 110px rgba(0, 0, 0, 0.72);
+}
+
+.axiom-universal-help-head {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 28px 32px 24px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.axiom-universal-help-head > div > span,
+.axiom-help-tour-callout > div > span,
+.axiom-help-result-copy > span {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--accent);
+  font-size: 10px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.axiom-universal-help-head h2 {
+  margin: 0;
+  color: #ffffff;
+  font-family: "Bebas Neue", Impact, sans-serif;
+  font-size: clamp(34px, 5vw, 54px);
+  font-weight: 400;
+  line-height: 0.98;
+  letter-spacing: 0;
+}
+
+.axiom-universal-help-head p {
+  max-width: 680px;
+  margin: 10px 0 0;
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.axiom-universal-help-close {
+  flex: 0 0 38px;
+  width: 38px;
+  height: 38px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 3px;
+  background: #0b0f0c;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 25px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.axiom-universal-help-close:is(:hover, :focus-visible) {
+  border-color: var(--accent);
+  color: var(--accent);
+  outline: none;
+}
+
+.axiom-help-search {
+  padding: 24px 32px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.axiom-help-search label {
+  display: block;
+  margin-bottom: 8px;
+  color: rgba(255, 255, 255, 0.56);
+  font-size: 10px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.axiom-help-search > div {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 126px;
+  min-height: 54px;
+}
+
+.axiom-help-search input {
+  min-width: 0;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-right: 0;
+  border-radius: 3px 0 0 3px;
+  background: #020403;
+  color: #ffffff;
+  padding: 0 18px;
+  font-family: "Barlow", sans-serif;
+  font-size: 14px;
+  outline: none;
+}
+
+.axiom-help-search input::placeholder {
+  color: rgba(255, 255, 255, 0.35);
+}
+
+.axiom-help-search input:focus {
+  border-color: var(--accent);
+  box-shadow: inset 0 0 0 1px var(--accent);
+}
+
+/* Pro's help field and submit action are separate, evenly aligned controls. */
+html:has(meta[name="axiom-edition"][content="pro"]) .axiom-help-search > div {
+  gap: 12px;
+  align-items: center;
+}
+html:has(meta[name="axiom-edition"][content="pro"]) #axiom-help-search-input,
+html:has(meta[name="axiom-edition"][content="pro"]) .axiom-help-search button {
+  box-sizing: border-box;
+  width: 100%;
+  height: 54px;
+  min-height: 54px;
+  margin: 0;
+  border-radius: 4px;
+}
+html:has(meta[name="axiom-edition"][content="pro"]) #axiom-help-search-input {
+  border-right: 1px solid rgba(255, 255, 255, 0.22);
+}
+html:has(meta[name="axiom-edition"][content="pro"]) #axiom-help-search-input:focus {
+  border-color: var(--accent);
+}
+
+.axiom-universal-help-panel .axiom-help-search input {
+  color: #f6fff0 !important;
+  -webkit-text-fill-color: #f6fff0 !important;
+  caret-color: var(--accent);
+}
+
+.axiom-universal-help-panel .axiom-help-search input::placeholder {
+  color: rgba(246, 255, 240, 0.58) !important;
+  -webkit-text-fill-color: rgba(246, 255, 240, 0.58) !important;
+}
+
+.axiom-help-search button,
+.axiom-help-tour-callout button,
+.axiom-help-result button {
+  border: 1px solid var(--accent);
+  border-radius: 0 3px 3px 0;
+  background: var(--accent);
+  color: #071005;
+  font-family: "Bebas Neue", Impact, sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 0;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.axiom-help-search button:is(:hover, :focus-visible),
+.axiom-help-tour-callout button:is(:hover, :focus-visible),
+.axiom-help-result button:is(:hover, :focus-visible) {
+  background: #c2ff59;
+  outline: 2px solid color-mix(in srgb, var(--accent-glow-base) 30%, transparent);
+  outline-offset: 2px;
+}
+
+.axiom-help-tour-callout {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 20px 32px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  background: #0c120d;
+}
+
+.axiom-help-tour-callout strong {
+  display: block;
+  color: #ffffff;
+  font-size: 16px;
+  text-transform: uppercase;
+}
+
+.axiom-help-tour-callout p {
+  margin: 4px 0 0;
+  color: rgba(255, 255, 255, 0.58);
+  font-size: 12px;
+}
+
+.axiom-help-tour-callout button,
+.axiom-help-result button {
+  flex: 0 0 auto;
+  min-height: 40px;
+  border-radius: 3px;
+  padding: 0 16px;
+}
+
+.axiom-help-tour-actions {
+  display: flex;
+  flex: 0 0 auto;
+  gap: 8px;
+}
+
+.axiom-help-tour-actions .secondary {
+  border-color: color-mix(in srgb, var(--accent-glow-base) 62%, transparent);
+  background: transparent;
+  color: var(--accent);
+}
+
+.axiom-universal-help-panel .axiom-help-search button,
+.axiom-universal-help-panel .axiom-help-tour-callout button:not(.secondary),
+.axiom-universal-help-panel .axiom-help-result button {
+  color: #071005 !important;
+  -webkit-text-fill-color: #071005 !important;
+  text-shadow: none !important;
+}
+
+.axiom-universal-help-panel .axiom-help-tour-actions .secondary {
+  border-color: rgba(163, 255, 0, 0.74) !important;
+  background: rgba(163, 255, 0, 0.12) !important;
+  color: #dfff8b !important;
+  -webkit-text-fill-color: #dfff8b !important;
+  text-shadow: 0 0 12px rgba(163, 255, 0, 0.18) !important;
+}
+
+.axiom-universal-help-panel .axiom-help-tour-actions .secondary:is(:hover, :focus-visible) {
+  background: var(--accent) !important;
+  color: #071005 !important;
+  -webkit-text-fill-color: #071005 !important;
+  text-shadow: none !important;
+}
+
+.axiom-help-results-section {
+  padding: 24px 32px 8px;
+}
+
+.axiom-help-results-section h3 {
+  margin: 0 0 10px;
+  color: rgba(255, 255, 255, 0.48);
+  font-size: 10px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.axiom-help-results {
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.axiom-help-result {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 24px;
+  min-height: 94px;
+  padding: 16px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.axiom-help-result.is-best {
+  border-bottom-color: color-mix(in srgb, var(--accent-glow-base) 36%, transparent);
+}
+
+.axiom-help-result-copy > span {
+  margin-bottom: 4px;
+  font-size: 9px;
+}
+
+.axiom-help-result-copy strong {
+  display: block;
+  color: #ffffff;
+  font-size: 14px;
+  line-height: 1.3;
+  text-transform: uppercase;
+}
+
+.axiom-help-result-copy p {
+  max-width: 650px;
+  margin: 5px 0 0;
+  color: rgba(255, 255, 255, 0.54);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.axiom-help-result button {
+  min-width: 150px;
+}
+
+.axiom-help-no-match {
+  padding: 24px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.axiom-help-no-match strong {
+  color: #ffffff;
+  font-size: 14px;
+}
+
+.axiom-help-no-match p {
+  margin: 7px 0 0;
+  color: rgba(255, 255, 255, 0.56);
+  font-size: 12px;
+}
+
+.axiom-help-local-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 32px 20px;
+  color: rgba(255, 255, 255, 0.42);
+  font-size: 10px;
+}
+
+.axiom-help-local-footer button,
+.axiom-help-gaps button {
+  border: 0;
+  background: transparent;
+  color: var(--accent);
+  font-size: 10px;
+  font-weight: 900;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.axiom-help-local-footer b {
+  display: inline-grid;
+  place-items: center;
+  min-width: 20px;
+  height: 20px;
+  margin-left: 5px;
+  border: 1px solid color-mix(in srgb, var(--accent-glow-base) 38%, transparent);
+  border-radius: 50%;
+  color: #ffffff;
+}
+
+.axiom-help-gaps {
+  margin: 0 32px 26px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 3px;
+  background: #050706;
+}
+
+.axiom-help-gaps > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+  font-size: 11px;
+  text-transform: uppercase;
+}
+
+.axiom-help-gaps ul {
+  max-height: 140px;
+  overflow: auto;
+  margin: 0;
+  padding: 8px 14px 12px 30px;
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 11px;
+}
+
+.axiom-help-gaps li {
+  padding: 4px 0;
+}
+
+.axiom-help-gaps li.is-empty {
+  list-style: none;
+  margin-left: -16px;
+}
+
+body.light-mode .axiom-universal-help-overlay {
+  background: rgba(235, 239, 233, 0.88);
+}
+
+body.light-mode .axiom-universal-help-panel {
+  border-color: rgba(47, 89, 16, 0.42);
+  background: #f5f7f3;
+  color: #071005;
+  box-shadow: 0 30px 90px rgba(7, 16, 5, 0.2);
+}
+
+body.light-mode .axiom-universal-help-head,
+body.light-mode .axiom-help-search,
+body.light-mode .axiom-help-tour-callout,
+body.light-mode .axiom-help-result,
+body.light-mode .axiom-help-results,
+body.light-mode .axiom-help-gaps,
+body.light-mode .axiom-help-gaps > div {
+  border-color: rgba(7, 16, 5, 0.16);
+}
+
+body.light-mode .axiom-universal-help-head h2,
+body.light-mode .axiom-help-tour-callout strong,
+body.light-mode .axiom-help-result-copy strong,
+body.light-mode .axiom-help-no-match strong,
+body.light-mode .axiom-help-gaps > div {
+  color: #071005;
+}
+
+body.light-mode .axiom-universal-help-head > div > span,
+body.light-mode .axiom-help-tour-callout > div > span,
+body.light-mode .axiom-help-result-copy > span,
+body.light-mode .axiom-help-local-footer button,
+body.light-mode .axiom-help-gaps button {
+  color: #0047ab !important;
+}
+
+body.light-mode .axiom-help-search button,
+body.light-mode .axiom-help-tour-callout button,
+body.light-mode .axiom-help-result button {
+  border-color: #0047ab !important;
+  background: #0047ab !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+
+body.light-mode .axiom-help-search button:is(:hover, :focus-visible),
+body.light-mode .axiom-help-tour-callout button:is(:hover, :focus-visible),
+body.light-mode .axiom-help-result button:is(:hover, :focus-visible) {
+  background: #0b5bd3 !important;
+  outline-color: rgba(0, 71, 171, 0.28);
+}
+
+body.light-mode .axiom-universal-help-head p,
+body.light-mode .axiom-help-tour-callout p,
+body.light-mode .axiom-help-result-copy p,
+body.light-mode .axiom-help-no-match p,
+body.light-mode .axiom-help-local-footer,
+body.light-mode .axiom-help-gaps ul,
+body.light-mode .axiom-help-search label,
+body.light-mode .axiom-help-results-section h3 {
+  color: rgba(7, 16, 5, 0.62);
+}
+
+body.light-mode .axiom-help-tour-callout {
+  background: #e9eee6;
+}
+
+body.light-mode .axiom-help-tour-actions .secondary {
+  border-color: #0047ab !important;
+  background: #ffffff !important;
+  color: #0047ab !important;
+  -webkit-text-fill-color: #0047ab !important;
+}
+
+body.light-mode .axiom-help-search input,
+body.light-mode .axiom-help-gaps {
+  background: #ffffff;
+  color: #071005;
+}
+
+body.light-mode .axiom-help-search input::placeholder {
+  color: rgba(7, 16, 5, 0.45);
+}
+
+body.light-mode .axiom-universal-help-close {
+  border-color: rgba(7, 16, 5, 0.2);
+  background: #ffffff;
+  color: #071005;
+}
+
+body.light-mode .axiom-help-local-footer b {
+  color: #071005;
+}
+
+@media (max-width: 800px) {
+  .axiom-universal-help-overlay {
+    align-items: flex-start;
+    padding: 58px 8px 8px;
+  }
+
+  .axiom-universal-help-panel {
+    width: 100%;
+    max-height: calc(100vh - 66px);
+  }
+
+  .axiom-universal-help-head,
+  .axiom-help-search,
+  .axiom-help-tour-callout,
+  .axiom-help-results-section {
+    padding-left: 18px;
+    padding-right: 18px;
+  }
+
+  .axiom-help-search > div {
+    grid-template-columns: minmax(0, 1fr) 94px;
+  }
+
+  .axiom-help-search input {
+    padding: 0 12px;
+    font-size: 12px;
+  }
+
+  .axiom-help-tour-callout,
+  .axiom-help-result {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .axiom-help-tour-actions {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .axiom-help-tour-actions button {
+    width: 100%;
+  }
+
+  .axiom-help-result {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .axiom-help-result button {
+    width: 100%;
+  }
+
+  .axiom-help-local-footer {
+    align-items: flex-start;
+    flex-direction: column;
+    padding-left: 18px;
+    padding-right: 18px;
+  }
+
+  .axiom-help-gaps {
+    margin-left: 18px;
+    margin-right: 18px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .axiom-universal-help-overlay,
+  .axiom-universal-help-panel,
+  .axiom-universal-help-panel * {
+    scroll-behavior: auto !important;
+    transition: none !important;
+    animation: none !important;
+  }
+}

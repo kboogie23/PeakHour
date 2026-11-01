@@ -1,0 +1,282 @@
+
+<style id="library-daymode-annotated-contrast-v1">
+  /* Browser-review corrections: these controls inherited Night Mode surfaces
+     after the Day Mode sheets had already loaded. Keep the repair deliberately
+     scoped to Library Day Mode so Night Mode and all interactions are unchanged. */
+  html body.light-mode #tab-content-library.library-cockpit#tab-content-library
+    #library-brief-lens#library-brief-lens #library-brief-lane-dropdown#library-brief-lane-dropdown > summary {
+    border-color: rgba(0, 71, 171, .38) !important;
+    background: #ffffff !important;
+    color: #0047ab !important;
+    box-shadow: none !important;
+  }
+
+  html body.light-mode #tab-content-library.library-cockpit#tab-content-library
+    #library-brief-lens#library-brief-lens #library-brief-lane-dropdown#library-brief-lane-dropdown > summary > span {
+    color: #0047ab !important;
+    -webkit-text-fill-color: #0047ab !important;
+    text-shadow: none !important;
+  }
+
+  html body.light-mode #tab-content-library.library-cockpit#tab-content-library
+    #library-brief-lens#library-brief-lens #library-brief-lane-dropdown#library-brief-lane-dropdown > summary > img {
+    filter: brightness(0) saturate(100%) invert(24%) sepia(75%) saturate(2462%) hue-rotate(201deg) brightness(77%) contrast(111%) !important;
+    opacity: .82 !important;
+  }
+
+  html body.light-mode #tab-content-library.library-cockpit#tab-content-library
+    #library-brief-lens#library-brief-lens #library-brief-lane-dropdown#library-brief-lane-dropdown[open] > summary {
+    border-color: #0047ab !important;
+    background: #eaf2ff !important;
+  }
+
+  html body.light-mode #tab-content-library.library-cockpit#tab-content-library
+    #library-preparation-toggle.library-preparation-toggle {
+    border-color: rgba(0, 71, 171, .46) !important;
+    background: rgba(0, 71, 171, .07) !important;
+    color: #0047ab !important;
+    -webkit-text-fill-color: #0047ab !important;
+    text-shadow: none !important;
+  }
+
+  html body.light-mode #tab-content-library.library-cockpit#tab-content-library
+    #library-preparation-toggle.library-preparation-toggle:is(:hover, :focus-visible, [aria-expanded="true"]) {
+    border-color: #0047ab !important;
+    background: #0047ab !important;
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+  }
+
+  html body.light-mode #tab-content-library.library-cockpit#tab-content-library:has(#smart-links-panel:not(.hidden))
+    #search-results#search-results > .library-track-card.axiom-focus-deck-row > .library-key-cell.library-key-metric.has-key {
+    border-color: rgba(8, 127, 150, .52) !important;
+    background: #eef9fc !important;
+    color: #075985 !important;
+    -webkit-text-fill-color: #075985 !important;
+    box-shadow: none !important;
+  }
+
+  html body.light-mode #tab-content-library.library-cockpit#tab-content-library:has(#smart-links-panel:not(.hidden))
+    #search-results#search-results > .library-track-card.axiom-focus-deck-row > .library-key-cell.library-key-metric.has-key > .camelot-pill {
+    border-color: transparent !important;
+    background: transparent !important;
+    color: #087f96 !important;
+    -webkit-text-fill-color: #087f96 !important;
+    text-shadow: none !important;
+    box-shadow: none !important;
+  }
+
+  html body.light-mode #tab-content-library.library-cockpit#tab-content-library:has(#smart-links-panel:not(.hidden))
+    #search-results#search-results > .library-track-card.axiom-focus-deck-row > .library-key-cell.library-key-metric.has-key > small {
+    color: #40516a !important;
+    -webkit-text-fill-color: #40516a !important;
+    opacity: 1 !important;
+  }
+
+  html body.light-mode #tab-content-library.library-cockpit#tab-content-library
+    #library-brief-lens#library-brief-lens[data-library-brief-panel="preparation"]
+    #library-preparation-toolbar.library-preparation-toolbar {
+    border-color: rgba(0, 71, 171, .38) !important;
+    background: linear-gradient(105deg, #eaf2ff 0%, #f7faff 58%, #ffffff 100%) !important;
+    box-shadow: inset 0 0 0 1px rgba(0, 71, 171, .05) !important;
+  }
+
+  html body.light-mode #tab-content-library.library-cockpit#tab-content-library
+    #library-preparation-toolbar.library-preparation-toolbar :is(.library-preparation-toolbar-copy > span, label > span) {
+    color: #0047ab !important;
+    -webkit-text-fill-color: #0047ab !important;
+    text-shadow: none !important;
+  }
+
+  html body.light-mode #tab-content-library.library-cockpit#tab-content-library
+    #library-preparation-toolbar.library-preparation-toolbar .library-preparation-toolbar-copy > small {
+    color: #40516a !important;
+    -webkit-text-fill-color: #40516a !important;
+  }
+
+  html body.light-mode #tab-content-library.library-cockpit#tab-content-library
+    #library-preparation-toolbar.library-preparation-toolbar select {
+    border-color: rgba(0, 71, 171, .34) !important;
+    background: #ffffff !important;
+    color: #10213a !important;
+    -webkit-text-fill-color: #10213a !important;
+    color-scheme: light !important;
+    box-shadow: none !important;
+  }
+
+  html body.light-mode #tab-content-library.library-cockpit#tab-content-library
+    #library-preparation-toolbar.library-preparation-toolbar select:focus {
+    border-color: #0047ab !important;
+    box-shadow: 0 0 0 2px rgba(0, 71, 171, .12) !important;
+  }
+
+  html body.light-mode #tab-content-library.library-cockpit#tab-content-library
+    #library-preparation-toolbar.library-preparation-toolbar select > option {
+    background: #ffffff !important;
+    color: #10213a !important;
+  }
+
+  html body.light-mode #tab-content-library.library-cockpit#tab-content-library
+    #library-preparation-toolbar.library-preparation-toolbar #library-preparation-scan-visible {
+    border-color: rgba(0, 71, 171, .46) !important;
+    background: rgba(0, 71, 171, .06) !important;
+    color: #0047ab !important;
+    -webkit-text-fill-color: #0047ab !important;
+    box-shadow: none !important;
+  }
+
+  html body.light-mode #tab-content-library.library-cockpit#tab-content-library
+    #library-preparation-toolbar.library-preparation-toolbar #library-preparation-scan-visible:is(:hover, :focus-visible) {
+    border-color: #0047ab !important;
+    background: #0047ab !important;
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+  }
+
+  html body.light-mode #tab-content-library.library-cockpit#tab-content-library
+    .library-preparation-scan-receipt {
+    border-color: rgba(0,71,171,.34) !important;
+    background: linear-gradient(100deg, #eaf2ff, #ffffff 62%) !important;
+  }
+
+  html body.light-mode #tab-content-library.library-cockpit#tab-content-library
+    .library-preparation-scan-receipt > div strong {
+    color: #0047ab !important;
+    -webkit-text-fill-color: #0047ab !important;
+  }
+
+  html body.light-mode #tab-content-library.library-cockpit#tab-content-library
+    .library-preparation-scan-receipt > div span,
+  html body.light-mode #tab-content-library.library-cockpit#tab-content-library
+    .library-preparation-scan-receipt > span small {
+    color: #40516a !important;
+    -webkit-text-fill-color: #40516a !important;
+  }
+
+  html body.light-mode #tab-content-library.library-cockpit#tab-content-library
+    .library-preparation-scan-receipt > span {
+    border-left-color: rgba(16,33,58,.18) !important;
+  }
+
+  html body.light-mode #tab-content-library.library-cockpit#tab-content-library
+    .library-preparation-scan-receipt > span b {
+    color: #10213a !important;
+    -webkit-text-fill-color: #10213a !important;
+  }
+
+  html body.light-mode #tab-content-library.library-cockpit#tab-content-library
+    #library-preparation-toolbar.library-preparation-toolbar #library-preparation-scan-visible.library-preparation-remove-missing {
+    border-color: rgba(185, 28, 28, .62) !important;
+    background: #fee2e2 !important;
+    color: #7f1d1d !important;
+    -webkit-text-fill-color: #7f1d1d !important;
+  }
+
+  html body.light-mode #tab-content-library.library-cockpit#tab-content-library
+    #library-preparation-toolbar.library-preparation-toolbar #library-preparation-scan-visible.library-preparation-remove-missing:is(:hover, :focus-visible) {
+    border-color: #b91c1c !important;
+    background: #b91c1c !important;
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+  }
+
+  html body:not(.light-mode) #tab-content-library.library-cockpit#tab-content-library
+    #search-results#search-results > .library-track-card.library-track-missing-file {
+    border-color: rgba(239, 68, 68, .82) !important;
+    background: linear-gradient(112deg, #461417 0%, #21090b 58%, #350e12 100%) !important;
+    box-shadow: 0 0 0 1px rgba(239, 68, 68, .18), 0 16px 38px rgba(0, 0, 0, .42) !important;
+  }
+
+  html body:not(.light-mode) #tab-content-library.library-cockpit#tab-content-library
+    #search-results#search-results > .library-track-card.library-track-missing-file .library-track-title {
+    color: #fecaca !important;
+    -webkit-text-fill-color: #fecaca !important;
+  }
+
+  html body.light-mode #tab-content-library.library-cockpit#tab-content-library
+    #search-results#search-results > .library-track-card.library-track-missing-file {
+    border-color: rgba(185, 28, 28, .68) !important;
+    background: linear-gradient(112deg, #fee2e2 0%, #fff7f7 58%, #fecaca 100%) !important;
+    color: #310808 !important;
+  }
+
+  @keyframes axiom-library-key-scan-sweep {
+    0% { transform: translate3d(-125%, 0, 0); }
+    100% { transform: translate3d(235%, 0, 0); }
+  }
+
+  @keyframes axiom-library-key-scan-complete {
+    0% { opacity: .34; }
+    100% { opacity: 0; }
+  }
+
+  #tab-content-library #search-results > .library-track-card.library-key-scan-active {
+    border-color: rgba(163, 255, 0, .72) !important;
+    box-shadow: 0 0 0 1px rgba(163, 255, 0, .16), 0 0 28px rgba(163, 255, 0, .12) !important;
+    transform: none !important;
+    isolation: isolate;
+  }
+
+  #tab-content-library #search-results > .library-track-card.library-key-scan-active::after {
+    content: '';
+    position: absolute;
+    z-index: 1;
+    inset: 0 auto 0 0;
+    width: 46%;
+    background: linear-gradient(90deg, transparent 0%, rgba(163, 255, 0, .06) 20%, rgba(163, 255, 0, .28) 52%, rgba(163, 255, 0, .08) 78%, transparent 100%);
+    transform: translate3d(-125%, 0, 0);
+    animation: axiom-library-key-scan-sweep 1.15s cubic-bezier(.42, 0, .58, 1) infinite;
+    will-change: transform;
+    pointer-events: none;
+  }
+
+  #tab-content-library #search-results > .library-track-card.library-key-scan-active > * {
+    position: relative;
+    z-index: 2;
+  }
+
+  #tab-content-library #search-results > .library-track-card .library-key-cell.is-key-scanning .camelot-pill {
+    min-width: 58px;
+    border-color: rgba(163, 255, 0, .7) !important;
+    color: var(--accent) !important;
+    background: rgba(5, 12, 5, .9) !important;
+    box-shadow: 0 0 18px rgba(163, 255, 0, .2);
+    cursor: progress;
+  }
+
+  #tab-content-library #search-results > .library-track-card .library-key-cell.is-key-scanning small {
+    color: var(--accent) !important;
+  }
+
+  #tab-content-library #search-results > .library-track-card.library-key-scan-complete::after {
+    content: '';
+    position: absolute;
+    z-index: 1;
+    inset: 0;
+    background: linear-gradient(90deg, rgba(163, 255, 0, .26), rgba(163, 255, 0, .04) 72%, transparent);
+    pointer-events: none;
+    animation: axiom-library-key-scan-complete 1.1s ease-out forwards;
+  }
+
+  #tab-content-library #search-results > .library-track-card.library-key-scan-complete > * {
+    position: relative;
+    z-index: 2;
+  }
+
+  #tab-content-library #search-results > .library-track-card.library-key-scan-complete .library-key-cell {
+    filter: drop-shadow(0 0 8px rgba(163, 255, 0, .48));
+  }
+
+  body.light-mode #tab-content-library #search-results > .library-track-card.library-key-scan-active::after {
+    background: linear-gradient(90deg, transparent 0%, rgba(0, 71, 171, .05) 20%, rgba(0, 71, 171, .22) 52%, rgba(0, 71, 171, .07) 78%, transparent 100%);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    #tab-content-library #search-results > .library-track-card.library-key-scan-active::after {
+      width: 100%;
+      transform: none;
+      animation: none;
+      opacity: .45;
+    }
+  }
+</style>

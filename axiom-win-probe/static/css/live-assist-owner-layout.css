@@ -1,0 +1,685 @@
+/* Current AXIOM skin with the owner's readable rows and bottom tool menus. */
+html body.assist-owner-layout[data-popup-style="matching-songs"] .topbar {
+  display:flex!important;align-items:center!important;gap:4px!important;
+  min-height:var(--assist-topbar-height,46px)!important;height:var(--assist-topbar-height,46px)!important;box-sizing:border-box!important;
+  padding:5px 7px!important;background:#080d0d!important;
+  border:1px solid #283439!important;border-bottom:2px solid #a3ff00!important;border-radius:2px!important;
+}
+html body.assist-owner-layout .topbar::before,
+html body.assist-owner-layout .topbar h1::before,
+html body.assist-owner-layout .topbar .assist-hide-button::before {display:none!important}
+html body.assist-owner-layout[data-popup-style="matching-songs"] .topbar h1.assist-brand-title {
+  display:flex!important;align-items:center!important;gap:8px!important;flex:1!important;
+  min-width:0!important;margin:0!important;padding:0!important;
+  font:600 17px/1 Barlow,sans-serif!important;text-transform:none!important;
+}
+html body.assist-owner-layout .assist-brand-mark {width:var(--assist-brand-mark-size,32px);height:var(--assist-brand-mark-size,32px);flex:0 0 var(--assist-brand-mark-size,32px);object-fit:contain}
+html body.assist-owner-layout .assist-brand-name {font:700 18px/1 Barlow,sans-serif!important;letter-spacing:.09em!important}
+html body.assist-owner-layout .assist-brand-divider {height:22px;width:1px;background:#899192;flex:0 0 1px}
+html body.assist-owner-layout .assist-brand-product {font:600 17px/1 Barlow,sans-serif!important;letter-spacing:0!important;white-space:nowrap}
+html body.assist-owner-layout[data-popup-style="matching-songs"] .topbar > button {
+  width:28px!important;min-width:28px!important;height:30px!important;min-height:30px!important;
+  display:flex!important;align-items:center!important;justify-content:center!important;
+  padding:0!important;background:transparent!important;border:0!important;border-radius:3px!important;
+  box-shadow:none!important;color:#f0f3ef!important;-webkit-text-fill-color:#f0f3ef!important;
+  font:400 25px/1 Barlow,sans-serif!important;
+}
+html body.assist-owner-layout #pin-button svg {width:17px;height:19px}
+html body.assist-owner-layout .topbar > button > span {font:inherit!important}
+html body.assist-owner-layout[data-popup-style="matching-songs"] .topbar #pin-button.active {color:#a3ff00!important}
+html body.assist-owner-layout[data-popup-style="matching-songs"] .topbar > button:hover {background:#202b29!important}
+html body.assist-owner-layout[data-popup-style="matching-songs"] .shell {gap:var(--assist-shell-gap,7px)!important}
+html body.assist-owner-layout[data-popup-style="matching-songs"] .bpmbar {width:100%!important;max-width:none!important;box-sizing:border-box!important}
+html body.assist-owner-layout[data-popup-style="matching-songs"] .bpmbar #gig-profile-button {
+  display:flex!important;align-items:center!important;justify-content:flex-start!important;gap:10px!important;
+  background:transparent!important;border:0!important;border-radius:0!important;box-shadow:none!important;
+  color:#edf1e7!important;-webkit-text-fill-color:#edf1e7!important;
+  font:300 10px/1.2 Barlow,sans-serif!important;text-transform:none!important;letter-spacing:0!important;
+}
+html body.assist-owner-layout #gig-profile-button img {width:18px!important;height:18px!important;filter:brightness(0) saturate(100%) invert(89%) sepia(56%) saturate(2726%) hue-rotate(26deg) brightness(105%) contrast(106%)!important;flex:0 0 18px}
+html body.assist-owner-layout[data-popup-style="matching-songs"] .bpmbar #assist-only-selected {background:transparent!important;font:300 10px/1.2 Barlow,sans-serif!important;flex:0 0 auto!important}
+html body.assist-owner-layout[data-popup-style="matching-songs"] .assist-bottom-actions > * {grid-area:auto!important}
+html body.assist-owner-layout[data-popup-style="matching-songs"] .assist-bottom-actions {grid-template-columns:100px minmax(124px,1fr) 72px!important}
+html body.assist-owner-layout .bpmbar {
+  display:flex!important;align-items:center!important;gap:12px!important;
+  min-height:36px!important;padding:0 2px 6px!important;
+  border-bottom:1px solid #343a30!important;background:transparent!important;
+}
+html body.assist-owner-layout .bpmbar #gig-profile-button {
+  flex:1 1 0!important;width:auto!important;grid-area:auto!important;
+  text-align:left!important;background:transparent!important;border:0!important;
+  box-shadow:none!important;padding:0!important;font:400 17px/1.1 'Bebas Neue',sans-serif!important;
+}
+html body.assist-owner-layout .bpmbar #gig-profile-close {grid-area:auto!important;flex:0 0 auto!important}
+html body.assist-owner-layout:not(.assist-playlists-open)[data-popup-style="matching-songs"] #assist-source-toolbar {
+  min-height:30px!important;padding:0 2px 3px!important;
+}
+html body.assist-owner-layout:not(.assist-playlists-open) #assist-source-toolbar :is(#gig-profile-button,#assist-only-selected) {height:26px!important;min-height:26px!important}
+html body.assist-owner-layout:not(.assist-playlists-open) #assist-source-toolbar #gig-profile-button img {width:14px!important;height:14px!important;flex-basis:14px!important}
+/* Open playlists have a two-row toolbar; the thin row belongs to song view. */
+html body.assist-owner-layout.assist-playlists-open[data-popup-style="matching-songs"] #assist-source-toolbar {
+  display:grid!important;grid-template-columns:minmax(0,1fr) 112px!important;
+  grid-template-rows:34px 30px!important;gap:6px 8px!important;
+  min-height:76px!important;padding:0 0 6px!important;flex:0 0 auto!important;
+}
+html body.assist-owner-layout.assist-playlists-open[data-popup-style="matching-songs"] #assist-source-toolbar #gig-profile-search {
+  display:block!important;grid-area:1/1!important;width:100%!important;min-width:0!important;
+  height:34px!important;min-height:34px!important;box-sizing:border-box!important;
+  padding:0 9px!important;font:400 14px/1 Barlow,sans-serif!important;
+  color:#edf1e7!important;background:#121914!important;border:1px solid #47513f!important;border-radius:5px!important;
+}
+html body.assist-owner-layout.assist-playlists-open[data-popup-style="matching-songs"] #assist-source-toolbar #gig-profile-button {
+  grid-area:2/1!important;width:100%!important;min-width:0!important;height:30px!important;min-height:30px!important;padding:0 3px!important;
+}
+html body.assist-owner-layout.assist-playlists-open[data-popup-style="matching-songs"] #assist-source-toolbar :is(#gig-profile-refresh,#gig-profile-close) {
+  display:flex!important;align-items:center!important;justify-content:center!important;
+  width:112px!important;min-width:0!important;height:30px!important;min-height:30px!important;
+  padding:0 6px!important;box-sizing:border-box!important;white-space:nowrap!important;
+  font:600 12px/1 Barlow,sans-serif!important;text-transform:none!important;letter-spacing:0!important;
+  border:1px solid #4a593b!important;border-radius:5px!important;box-shadow:none!important;
+  background:#20291a!important;color:#e4eadc!important;-webkit-text-fill-color:#e4eadc!important;
+}
+html body.assist-owner-layout.assist-playlists-open[data-popup-style="matching-songs"] #assist-source-toolbar #gig-profile-close {
+  grid-area:1/2!important;height:34px!important;min-height:34px!important;
+  background:#a3ff00!important;color:#071005!important;-webkit-text-fill-color:#071005!important;border-color:#a3ff00!important;
+}
+html body.assist-owner-layout.assist-playlists-open[data-popup-style="matching-songs"] #assist-source-toolbar #gig-profile-refresh {grid-area:2/2!important}
+html body.assist-owner-layout.assist-playlists-open[data-popup-style="matching-songs"] #assist-source-toolbar #gig-profile-refresh:not(:disabled):not([aria-disabled="true"]) {
+  background:#20291a!important;color:#e4eadc!important;-webkit-text-fill-color:#e4eadc!important;box-shadow:none!important;
+}
+html body.assist-owner-layout.assist-playlists-open #assist-source-toolbar :is(#gig-profile-refresh,#gig-profile-close) span {font:inherit!important;color:inherit!important;-webkit-text-fill-color:inherit!important}
+html body.assist-owner-layout.assist-playlists-open[data-popup-style="matching-songs"] #assist-source-toolbar #assist-only-selected {display:none!important}
+/* Playlist browsing uses the same steel surfaces as the bottom tools. */
+html body.assist-owner-layout[data-popup-style="matching-songs"] #gig-profile-menu {
+  background:#101617!important;border:1px solid #485154!important;border-radius:8px!important;
+  padding:8px!important;gap:8px!important;box-shadow:none!important;
+}
+html body.assist-owner-layout #gig-profile-sources {padding:0!important}
+html body.assist-owner-layout #gig-profile-sources :is(.gig-profile-leaf,.gig-profile-branch-head) {
+  background:var(--assist-tab-steel)!important;border:1px solid #586166!important;border-radius:4px!important;
+  min-height:40px!important;padding:7px 8px!important;gap:9px!important;box-shadow:none!important;
+}
+html body.assist-owner-layout #gig-profile-sources label {margin-bottom:5px!important}
+html body.assist-owner-layout #gig-profile-sources strong {color:#f3f5f0!important;-webkit-text-fill-color:#f3f5f0!important;font:600 13px/1.2 Barlow,sans-serif!important}
+html body.assist-owner-layout #gig-profile-sources small {color:#c0cace!important;-webkit-text-fill-color:#c0cace!important;font:400 10px/1.2 Barlow,sans-serif!important}
+html body.assist-owner-layout #gig-profile-sources input:checked + strong {color:#a3ff00!important;-webkit-text-fill-color:#a3ff00!important}
+html body.assist-owner-layout[data-popup-style="matching-songs"] #gig-profile-menu .gig-profile-menu-foot {
+  grid-template-columns:minmax(0,1fr) 70px 30px 105px!important;gap:6px!important;
+  min-height:36px!important;padding-top:7px!important;border-top:1px solid #394448!important;
+}
+html body.assist-owner-layout #gig-profile-menu #gig-profile-selection-count {font:400 11px/1.2 Barlow,sans-serif!important;color:#a6b2b5!important}
+html body.assist-owner-layout[data-popup-style="matching-songs"] #gig-profile-menu :is(#gig-profile-reverse,#assist-playlist-settings > summary) {
+  height:32px!important;min-height:32px!important;padding:0 8px!important;
+  background:var(--assist-tab-steel)!important;border:1px solid #687174!important;border-radius:4px!important;
+  color:#edf0ec!important;-webkit-text-fill-color:#edf0ec!important;font:400 14px/1 'Bebas Neue',sans-serif!important;box-shadow:none!important;
+}
+html body.assist-owner-layout[data-popup-style="matching-songs"] #gig-profile-menu #gig-profile-apply {
+  height:32px!important;min-height:32px!important;padding:0 8px!important;background:#a3ff00!important;
+  border:1px solid #a3ff00!important;border-radius:4px!important;color:#071005!important;-webkit-text-fill-color:#071005!important;
+  font:400 15px/1 'Bebas Neue',sans-serif!important;box-shadow:none!important;
+}
+html body.assist-owner-layout[data-popup-style="matching-songs"] #gig-profile-menu .assist-playlist-settings-panel {
+  background:#101617!important;border-color:#485154!important;border-radius:6px!important;box-shadow:0 12px 28px #0009!important;
+}
+html body.assist-owner-layout #gig-profile-menu .assist-playlist-settings-panel :is(button,select,input) {
+  background:#192226!important;border-color:#465359!important;color:#edf0ec!important;-webkit-text-fill-color:#edf0ec!important;
+}
+html body.assist-owner-layout #gig-profile-menu .assist-playlist-settings-panel button {background:var(--assist-tab-steel)!important}
+html body.assist-owner-layout[data-popup-style="matching-songs"] #gig-profile-menu #assist-playlist-settings[open] .assist-playlist-settings-panel {
+  height:auto!important;min-height:0!important;max-height:calc(var(--assist-review-height,100vh) - 190px)!important;
+}
+html body.assist-owner-layout[data-popup-style="matching-songs"] #gig-profile-menu .assist-playlist-settings-head {background:#101617!important;border-color:#394448!important}
+html body.assist-owner-layout[data-popup-style="matching-songs"] #gig-profile-menu .assist-playlist-settings-panel :is(#gig-profile-load,#gig-profile-save,#gig-profile-save-confirm,#gig-profile-save-cancel,#gig-profile-select-all,#gig-profile-clear):not([aria-disabled="true"]) {
+  background:var(--assist-tab-steel)!important;border-color:#687174!important;color:#edf0ec!important;-webkit-text-fill-color:#edf0ec!important;
+}
+html body.assist-owner-layout[data-popup-style="matching-songs"] #gig-profile-menu .assist-playlist-settings-panel :is(#gig-profile-load:not(:disabled),#gig-profile-save,#gig-profile-save-confirm,#gig-profile-select-all):not([aria-disabled="true"]) {
+  background:#a3ff00!important;border-color:#a3ff00!important;color:#071005!important;-webkit-text-fill-color:#071005!important;text-shadow:none!important;
+}
+html body.assist-owner-layout[data-popup-style="matching-songs"] #gig-profile-menu .assist-playlist-settings-panel :is(#gig-profile-load:not(:disabled),#gig-profile-save,#gig-profile-save-confirm,#gig-profile-select-all):not([aria-disabled="true"]) * {color:#071005!important;-webkit-text-fill-color:#071005!important;text-shadow:none!important}
+html body.assist-owner-layout[data-popup-style="matching-songs"] #gig-profile-menu .assist-playlist-option-buttons > button {background:transparent!important}
+html body.assist-owner-layout[data-popup-style="matching-songs"] #gig-profile-menu .assist-playlist-option-buttons > button[aria-pressed="true"]::after {color:#071005!important;-webkit-text-fill-color:#071005!important}
+html body.assist-owner-layout.assist-playlists-open[data-popup-style="matching-songs"] #assist-source-toolbar #gig-profile-search {background:#192226!important;border-color:#465359!important}
+html body.assist-owner-layout.assist-playlists-open[data-popup-style="matching-songs"] #assist-source-toolbar #gig-profile-refresh:not(:disabled):not([aria-disabled="true"]) {background:var(--assist-tab-steel)!important;border-color:#687174!important;color:#edf0ec!important;-webkit-text-fill-color:#edf0ec!important}
+html body.assist-owner-layout .bpmbar #assist-only-selected,
+html body.assist-owner-layout .actions #clean-only-button {
+  display:flex!important;align-items:center!important;justify-content:space-between!important;
+  gap:9px!important;min-width:0!important;width:auto!important;height:36px!important;
+  padding:0!important;border:0!important;background:transparent!important;box-shadow:none!important;
+  text-shadow:none!important;color:#e1e5db!important;-webkit-text-fill-color:#e1e5db!important;
+  font:500 13px/1.1 Barlow,sans-serif!important;text-transform:none!important;white-space:nowrap!important;
+}
+html body.assist-owner-layout :is(#assist-only-selected,#clean-only-button)::before {display:none!important}
+html body.assist-owner-layout :is(#assist-only-selected,#clean-only-button)::after {
+  content:"";display:block;width:32px;height:18px;flex:0 0 32px;border-radius:12px;
+  border:1px solid #70766a;background:#42483c;
+  background-image:radial-gradient(circle at 8px 9px,#edf0e7 0,#edf0e7 6px,transparent 6.5px);
+}
+html body.assist-owner-layout :is(#assist-only-selected,#clean-only-button)[aria-checked="true"]::after {
+  background-color:#a3ff00;border-color:#a3ff00;
+  background-image:radial-gradient(circle at 23px 9px,#071005 0,#071005 6px,transparent 6.5px);
+}
+html body.assist-owner-layout[data-popup-style="matching-songs"] .track {
+  height:auto!important;min-height:var(--assist-row-height,86px)!important;flex:0 0 auto!important;padding:var(--assist-row-padding,6px) 9px!important;margin:0!important;
+  grid-template-columns:var(--assist-add-width,36px) minmax(0,1fr) 24px!important;gap:var(--assist-row-gap,10px)!important;
+}
+html body.assist-owner-layout #assist-anchor-title {font-size:var(--assist-title-size,27px)!important}
+/* Selection belongs beside the source label, clear of the provider logo. */
+html body.assist-owner-layout .assist-now-playing.selected::after {display:none!important}
+html body.assist-owner-layout #assist-anchor-action[aria-pressed="true"] #assist-anchor-source::after {
+  content:'Selected';display:inline-block;vertical-align:middle;margin-left:7px;padding:3px 5px;
+  border-radius:3px;background:#a3ff00;color:#071005;-webkit-text-fill-color:#071005;
+  font:700 8px/1 Barlow,sans-serif;letter-spacing:.04em;text-transform:uppercase;box-shadow:none;
+}
+html body.assist-owner-layout .track-copy {gap:var(--assist-copy-gap,2px)!important;min-width:0!important}
+html body.assist-owner-layout .track .track-title {
+  font:400 var(--assist-title-size,27px)/1.08 'Bebas Neue',sans-serif!important;letter-spacing:.015em!important;
+  white-space:normal!important;overflow:visible!important;text-overflow:clip!important;
+  color:#f6f8f0!important;
+}
+html body.assist-owner-layout .track .track-artist {
+  font:200 var(--assist-artist-size,14px)/1.2 Arial,sans-serif!important;text-transform:uppercase!important;color:#c7cfc2!important;
+}
+html body.assist-owner-layout .track .track-meta-parts {gap:6px!important;line-height:1.3!important}
+html body.assist-owner-layout .track .track-meta-part {font:600 var(--assist-meta-size,13px)/1.2 Barlow,sans-serif!important;color:#d5ddce!important}
+html body.assist-owner-layout .track .track-genre-chip {font:600 var(--assist-genre-size,11px)/1.1 Barlow,sans-serif!important;padding:var(--assist-chip-padding-y,3px) var(--assist-chip-padding-x,6px)!important;max-width:none!important;margin-left:8px!important}
+html body.assist-owner-layout .track .song-add {height:var(--assist-add-height,40px)!important;min-height:var(--assist-add-height,40px)!important;width:var(--assist-add-width,36px)!important;min-width:var(--assist-add-width,36px)!important;font-size:var(--assist-add-font,24px)!important}
+/* Compact density is independent of Full/Compact window geometry. It changes
+   every row without rebuilding the list or depending on viewport breakpoints. */
+html body.assist-owner-layout[data-assist-track-density="compact"] .track :is(.track-title,.track-artist) {
+  display:block!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;
+}
+html body.assist-owner-layout[data-assist-track-density="compact"] .track .track-meta-parts {flex-wrap:nowrap!important;overflow:hidden!important;white-space:nowrap!important;gap:5px!important}
+html body.assist-owner-layout[data-assist-track-density="compact"] .track .track-meta-part {flex:0 0 auto!important}
+html body.assist-owner-layout[data-assist-track-density="compact"] .track .track-genre-chip {min-width:0!important;overflow:hidden!important;text-overflow:ellipsis!important;margin-left:2px!important}
+html body.assist-owner-layout[data-popup-style="matching-songs"] .assist-now-playing {padding:var(--assist-anchor-padding,10px)!important}
+html body.assist-owner-layout[data-popup-style="matching-songs"] #refresh-button.deck-tempo {
+  gap:var(--assist-deck-gap,6px)!important;padding-bottom:var(--assist-deck-padding-bottom,4px)!important;
+}
+html body.assist-owner-layout #refresh-button.deck-tempo strong {font-size:var(--assist-deck-bpm-size,29px)!important}
+html body.assist-owner-layout[data-popup-style="matching-songs"][data-assist-track-density="compact"] .results {padding:0!important}
+html body.assist-owner-layout .track.gig-serato:not(.selected) {background:#101922!important;border-color:#2d4355!important;box-shadow:inset 3px 0 0 #3e596d!important}
+html body.assist-owner-layout .track.gig-serato.selected {background:#203b50!important;border-color:#298bdf!important;box-shadow:inset 4px 0 0 #22a7ff!important}
+html body.assist-owner-layout .track.gig-djay:not(.selected) {background:#1d1811!important;border-color:#58422b!important;box-shadow:inset 3px 0 0 #795c3b!important}
+html body.assist-owner-layout .track.gig-djay.selected {background:#43301c!important;border-color:#ee961f!important;box-shadow:inset 4px 0 0 #ff8a1f!important}
+html body.assist-owner-layout .results {position:relative!important;display:flex!important;flex-direction:column!important}
+html body.assist-owner-layout.recording-drawer-open[data-popup-style="matching-songs"] .results {display:flex!important}
+html body.assist-owner-layout #assist-announcer {flex:0 0 auto!important;font:500 12px/1.25 Barlow,sans-serif!important}
+html body.assist-owner-layout #assist-announcer:empty {display:none!important}
+html body.assist-owner-layout #list {display:flex!important;flex-direction:column!important;flex:1 1 0!important;min-height:0!important;gap:3px!important}
+html body.assist-owner-layout #list > * {flex-shrink:0!important}
+html body.assist-owner-layout #list > .assist-source-heading[data-source-group="playlist"] {display:none!important}
+html body.assist-owner-layout .actions {
+  position:relative!important;display:flex!important;flex-direction:column!important;
+  flex:0 0 auto!important;gap:var(--assist-footer-gap,8px)!important;padding:0!important;margin:0!important;overflow:visible!important;
+}
+html body.assist-owner-layout .assist-bottom-tabs {
+  --assist-tab-steel:#3c4144 url('/static/textures/axiom-brushed-gunmetal-steel.png') center/auto 100%;
+  display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px;border-bottom:1px solid #565e60;
+}
+html body.assist-owner-layout .more-like-control {position:static!important;display:contents!important}
+html body.assist-owner-layout .actions .assist-bottom-tab {
+  width:100%!important;height:var(--assist-tab-height,36px)!important;min-height:var(--assist-tab-height,36px)!important;padding:0 5px!important;
+  font:400 16px/1 'Bebas Neue',sans-serif!important;
+  background:var(--assist-tab-steel)!important;color:#f1f3ed!important;-webkit-text-fill-color:#f1f3ed!important;
+  border:1px solid #5c6365!important;border-bottom:2px solid transparent!important;border-radius:6px 6px 0 0!important;
+  box-shadow:inset 0 1px 0 #ffffff24,inset 0 -1px 0 #0008!important;text-shadow:0 1px 1px #000!important;
+}
+html body.assist-owner-layout .actions .assist-bottom-tab[aria-selected="true"] {
+  background:var(--assist-tab-steel)!important;border-bottom-color:#a3ff00!important;
+  color:#a3ff00!important;-webkit-text-fill-color:#a3ff00!important;
+}
+html body.assist-owner-layout[data-popup-style="matching-songs"] .actions #like-plus-button[role="tab"] {
+  font:400 16px/1 'Bebas Neue',sans-serif!important;text-indent:0!important;
+  color:#f1f3ed!important;-webkit-text-fill-color:#f1f3ed!important;background:var(--assist-tab-steel)!important;
+}
+html body.assist-owner-layout[data-popup-style="matching-songs"] .actions #like-plus-button[role="tab"][aria-selected="true"] {
+  background:var(--assist-tab-steel)!important;color:#a3ff00!important;-webkit-text-fill-color:#a3ff00!important;
+}
+html body.assist-owner-layout .assist-panel-buttons > * {grid-area:auto!important}
+html body.assist-owner-layout #set-record-button:not(.recording) {display:none!important}
+html body.assist-owner-layout #assist-anchor-refresh img {filter:brightness(0)!important}
+html body.assist-owner-layout .assist-panel-hint {text-transform:none!important;letter-spacing:0!important}
+html body.assist-owner-layout .coach-set-reminder {background:transparent!important;color:#dce4d2!important;-webkit-text-fill-color:#dce4d2!important;box-shadow:none!important;padding:0 0 0 10px!important}
+html body.assist-owner-layout .assist-bottom-actions {display:grid!important;grid-template-columns:minmax(82px,.9fr) minmax(112px,1.15fr) minmax(115px,1.25fr);align-items:center;gap:9px}
+html body.assist-owner-layout .assist-bottom-actions #maybe-button {
+  width:100%!important;display:flex!important;gap:5px!important;height:40px!important;
+  border:1px solid #4c5740!important;background:#1b2315!important;color:#e4eadc!important;
+  font:400 15px/1 'Bebas Neue',sans-serif!important;
+}
+html body.assist-owner-layout #maybe-count {font:600 12px/1 Barlow,sans-serif!important;color:#a3ff00!important}
+html body.assist-owner-layout #maybe-button .thinking {display:none!important}
+html body.assist-owner-layout #maybe-button .assist-maybe-label.is-crowd-mood {
+  font:400 24px/1 'Apple Color Emoji','Segoe UI Emoji',sans-serif!important;
+  text-transform:none!important;
+}
+html body.assist-owner-layout .refresh-control {display:block!important;position:static!important;min-width:0!important}
+html body.assist-owner-layout .actions #assist-anchor-refresh {
+  width:100%!important;min-height:40px!important;height:40px!important;padding:0 7px!important;
+  display:flex!important;gap:5px!important;align-items:center!important;justify-content:center!important;
+  font:400 15px/1.05 'Bebas Neue',sans-serif!important;white-space:normal!important;
+  background:#a3ff00!important;color:#071005!important;-webkit-text-fill-color:#071005!important;
+  border:1px solid #a3ff00!important;border-radius:6px!important;
+}
+html body.assist-owner-layout .assist-bottom-actions #clean-only-button {justify-content:center!important}
+html body.assist-owner-layout[data-popup-style="matching-songs"] .assist-bottom-actions #clean-only-button[aria-checked="false"] {
+  background:transparent!important;border:0!important;border-radius:0!important;
+  color:#f2f4ef!important;-webkit-text-fill-color:#f2f4ef!important;padding:0 7px!important;
+  text-transform:uppercase!important;
+}
+html body.assist-owner-layout #clean-only-button[aria-checked="false"]::after {
+  background-color:#8b2b36;border-color:#bd6973;
+}
+html body.assist-owner-layout #assist-anchor-refresh img {width:17px!important;height:17px!important;filter:brightness(0)!important}
+html body.assist-owner-layout .assist-bottom-panel,
+html body.assist-owner-layout #more-like-menu,
+html body.assist-owner-layout #set-record-drawer,
+html body.assist-owner-layout #maybe-drawer {
+  position:fixed!important;inset:auto 10px 104px!important;width:auto!important;
+  max-width:none!important;max-height:calc(100vh - 175px)!important;min-height:0!important;
+  overflow:auto!important;z-index:80!important;box-sizing:border-box!important;
+  margin:0!important;padding:14px!important;border:1px solid #596b42!important;
+  border-radius:9px!important;background:#10170c!important;box-shadow:0 -8px 24px #0009!important;
+  color:#e8edde!important;
+}
+html body.assist-owner-layout #more-like-menu {display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important}
+html body.assist-owner-layout #assist-similarity-summary {grid-column:1/-1;display:flex;align-items:center;gap:8px;justify-content:space-between;margin:0;padding:8px 10px;border:1px solid #526068;border-radius:5px;background:#172126;color:#f0f4f2!important;font:400 12px/1.35 Barlow,sans-serif!important;overflow-wrap:anywhere}
+html body.assist-owner-layout #more-like-menu #assist-reset-year-range {flex:none;background:#29353a!important;color:#fff!important;-webkit-text-fill-color:#fff!important;border:1px solid #657077;min-height:28px!important;font-size:11px!important;padding:4px 6px!important}
+html body.assist-owner-layout #assist-reset-year-range[hidden] {display:none!important}
+html body.assist-owner-layout #assist-similarity-summary[hidden] {display:none!important}
+html body.assist-owner-layout #assist-similarity-summary #assist-similarity-label {font:inherit!important;text-transform:none!important;letter-spacing:0!important;color:#f0f4f2!important;-webkit-text-fill-color:#f0f4f2!important}
+html body.assist-owner-layout #assist-similarity-summary {flex-wrap:wrap}
+html body.assist-owner-layout #assist-similarity-label {flex:1 1 100%}
+html body.assist-owner-layout #assist-similarity-summary .assist-range-settings {display:flex;align-items:center;gap:8px;width:100%;font:inherit}
+html body.assist-owner-layout #assist-similarity-summary .assist-range-settings label {font:inherit!important;color:#c8d2d5!important;-webkit-text-fill-color:#c8d2d5!important}
+html body.assist-owner-layout #assist-similarity-summary #assist-year-span {width:auto!important;flex:1;min-width:0;min-height:28px!important;padding:4px 6px!important;background:#101617!important;border:1px solid #657077!important;border-radius:4px;color:#fff!important;-webkit-text-fill-color:#fff!important;font:400 12px Barlow,sans-serif!important}
+html body.assist-owner-layout #assist-year-lookback {display:flex;align-items:center;gap:6px;flex:1;min-width:0}
+html body.assist-owner-layout #assist-year-lookback[hidden] {display:none!important}
+html body.assist-owner-layout #assist-similarity-summary .assist-range-settings {flex-wrap:wrap}
+html body.assist-owner-layout #more-like-menu .assist-year-control {display:flex;min-width:0;gap:3px}
+html body.assist-owner-layout #more-like-menu .assist-year-control > button {flex:1;min-width:0;padding:8px 4px!important;background:var(--assist-tab-steel)!important;border:1px solid #687174!important;color:#fff!important;-webkit-text-fill-color:#fff!important;border-radius:5px!important;transform:none!important;filter:none!important}
+html body.assist-owner-layout #more-like-menu .assist-year-steps {display:flex;gap:3px;align-items:stretch;color:#fff!important}
+html body.assist-owner-layout #more-like-menu .assist-year-steps[hidden] {display:none!important}
+html body.assist-owner-layout #more-like-menu .assist-year-steps button {width:28px;min-width:28px;padding:4px!important;background:#222c30!important;border:1px solid #657077!important;border-radius:4px;color:#fff!important;-webkit-text-fill-color:#fff!important;font-size:18px!important}
+html body.assist-owner-layout #more-like-menu :is(#like-button,#old-button,#energy-button,#new-button,#genre-flip-button,#genre-button,#more-era-button,#more-genre-button).active,
+html body.assist-owner-layout #more-like-menu :is(#like-button,#old-button,#energy-button,#new-button,#genre-flip-button,#genre-button,#more-era-button,#more-genre-button).active:is(:hover,:focus-visible),
+html body.assist-owner-layout #more-like-menu :is(#like-button,#old-button,#energy-button,#new-button,#genre-flip-button,#genre-button,#more-era-button,#more-genre-button)[aria-pressed="true"] {background:#a3ff00!important;color:#071005!important;-webkit-text-fill-color:#071005!important;border-color:#a3ff00!important;box-shadow:none!important}
+html body.assist-owner-layout #more-like-menu :is(#like-button,#old-button,#energy-button,#new-button,#genre-flip-button,#genre-button,#more-era-button,#more-genre-button).active :is(span,b) {color:#071005!important;-webkit-text-fill-color:#071005!important}
+html body.assist-owner-layout #more-like-menu :is(#energy-button,#new-button):is(:hover,:focus-visible,:focus-within) {transform:none!important;filter:none!important;transition:background-color .12s ease!important;box-shadow:none!important}
+html body.assist-owner-layout #more-like-menu :is(#energy-button,#new-button):not(.active):is(:hover,:focus-visible,:focus-within) {background:#485359!important;border-color:#839298!important;color:#fff!important;-webkit-text-fill-color:#fff!important}
+html body.assist-owner-layout #more-like-menu :is(#energy-button,#new-button).active:is(:hover,:focus-visible,:focus-within) {background:#91e300!important;color:#071005!important;-webkit-text-fill-color:#071005!important}
+html body.assist-owner-layout #more-like-menu .assist-year-steps button:is(:hover,:focus-visible,:focus-within) {background:#485359!important;color:#fff!important;-webkit-text-fill-color:#fff!important;transform:none!important;filter:none!important;box-shadow:none!important}
+html body.assist-owner-layout[data-popup-style="matching-songs"] #more-like-menu {
+  background:#101617!important;border-color:#485154!important;padding:14px!important;
+}
+html body.assist-owner-layout[data-popup-style="matching-songs"] #more-like-menu > button,
+html body.assist-owner-layout[data-popup-style="matching-songs"] #more-like-menu > button:is(:hover,:focus-visible) {
+  background:var(--assist-tab-steel)!important;border:1px solid #687174!important;border-radius:5px!important;
+  color:#ffffff!important;-webkit-text-fill-color:#ffffff!important;font:500 15px/1.2 Barlow,sans-serif!important;
+  letter-spacing:0!important;min-height:40px!important;transform:none!important;box-shadow:inset 0 1px 0 #ffffff18!important;
+}
+html body.assist-owner-layout[data-popup-style="matching-songs"] #more-like-menu > button.active,
+html body.assist-owner-layout[data-popup-style="matching-songs"] #more-like-menu > button[aria-pressed="true"],
+html body.assist-owner-layout[data-popup-style="matching-songs"] #more-like-menu > button[aria-checked="true"] {
+  border-color:#a3ff00!important;box-shadow:inset 0 -2px 0 #a3ff00!important;
+}
+html body.assist-owner-layout[data-popup-style="matching-songs"] #more-like-menu button :is(span,b),
+html body.assist-owner-layout[data-popup-style="matching-songs"] #more-like-menu button:is(:hover,:focus-visible) :is(span,b) {
+  color:#ffffff!important;-webkit-text-fill-color:#ffffff!important;filter:none!important;
+}
+html body.assist-owner-layout[data-popup-style="matching-songs"] #more-like-menu :is(#energy-button,#new-button,#genre-flip-button,#genre-button,#more-era-button,#more-genre-button):is(:disabled,[aria-disabled="true"]) {
+  background:var(--assist-tab-steel)!important;color:#d2d8d5!important;-webkit-text-fill-color:#d2d8d5!important;
+  border-color:#4e585b!important;opacity:.65!important;
+}
+html body.assist-owner-layout[data-popup-style="matching-songs"] #more-like-menu .coach-set-reminder,
+html body.assist-owner-layout[data-popup-style="matching-songs"] #more-like-menu .coach-set-reminder:is(:hover,:focus-within) {
+  background:#192226!important;border:1px solid #465359!important;color:#edf0ec!important;box-shadow:none!important;transform:none!important;
+}
+html body.assist-owner-layout[data-popup-style="matching-songs"] #more-like-menu #coach-set-reminder,
+html body.assist-owner-layout[data-popup-style="matching-songs"] #more-like-menu #coach-set-reminder:is(:hover,:focus-visible,:focus-within) {
+  background:#101617!important;color:#ffffff!important;-webkit-text-fill-color:#ffffff!important;
+  border:1px solid #465359!important;box-shadow:none!important;transform:none!important;
+}
+html body.assist-owner-layout :is(#more-like-menu,#set-record-drawer,#maybe-drawer,#assist-controls-panel)[hidden] {display:none!important}
+html body.assist-owner-layout .assist-bottom-panel :is(button,select,input),
+html body.assist-owner-layout #more-like-menu button {
+  min-height:38px!important;height:auto!important;font:500 15px/1.2 Barlow,sans-serif!important;
+  text-transform:none!important;padding:8px 10px!important;box-shadow:none!important;text-shadow:none!important;
+}
+html body.assist-owner-layout .assist-bottom-panel button {background:#222c19!important;border:1px solid #465337!important;color:#e5eadc!important;-webkit-text-fill-color:#e5eadc!important}
+html body.assist-owner-layout .assist-bottom-panel button.active,
+html body.assist-owner-layout .assist-bottom-panel button[aria-pressed="true"],
+html body.assist-owner-layout #set-record-start {background:#a3ff00!important;color:#071005!important;-webkit-text-fill-color:#071005!important}
+html body.assist-owner-layout .assist-bottom-panel :is(select,input) {background:#20271a!important;color:#e5eadc!important;border:1px solid #526241!important;width:100%!important;box-sizing:border-box!important}
+html body.assist-owner-layout .assist-panel-head {display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px}
+html body.assist-owner-layout .assist-panel-head strong {font:400 24px 'Bebas Neue',sans-serif}
+html body.assist-owner-layout .assist-panel-hint {font:500 14px/1.4 Barlow,sans-serif;color:#c7cfbe;margin:0 0 12px}
+html body.assist-owner-layout .assist-panel-buttons {display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px}
+html body.assist-owner-layout .assist-source-order {border:0;padding:0;margin:0;min-width:0}
+html body.assist-owner-layout .assist-source-order legend {font:500 15px Barlow,sans-serif;margin-bottom:8px;color:#e5eadc}
+html body.assist-owner-layout .assist-window-settings {display:flex;justify-content:space-between;align-items:center;gap:12px;font:500 15px Barlow,sans-serif}
+html body.assist-owner-layout .assist-window-settings .assist-layout-control {display:block!important;max-width:150px}
+/* Owner-selected Tempo Focus: steel tempo pads and a unified action rail. */
+html body.assist-owner-layout {--assist-tab-steel:#3c4144 url('/static/textures/axiom-brushed-gunmetal-steel.png') center/auto 100%}
+html body.assist-owner-layout #assist-controls-panel {
+  padding:12px 14px 8px!important;background:#101617!important;border-color:#485154!important;
+  border-radius:8px!important;color:#edf0ec!important;
+}
+html body.assist-owner-layout #assist-controls-panel .assist-panel-head {
+  position:sticky;top:-12px;z-index:2;
+  margin:0!important;padding:0 0 10px!important;background:#101617!important;
+  border-bottom:1px solid #51595c!important;box-shadow:none!important;
+}
+html body.assist-owner-layout #assist-controls-panel .assist-panel-head strong {
+  font:400 24px/1 'Bebas Neue',sans-serif!important;color:#f3f5f0!important;
+}
+html body.assist-owner-layout #assist-controls-panel .assist-controls-close {
+  width:auto!important;min-width:65px!important;height:30px!important;min-height:30px!important;
+  display:flex!important;align-items:center!important;gap:6px!important;
+  padding:0!important;font:400 14px/1 Barlow,sans-serif!important;
+  border:0!important;background:transparent!important;color:#e5e9e7!important;-webkit-text-fill-color:#e5e9e7!important;
+}
+html body.assist-owner-layout #assist-controls-panel .assist-control-row {
+  display:grid!important;grid-template-columns:138px minmax(0,1fr)!important;align-items:center!important;
+  gap:10px!important;min-height:48px!important;padding:6px 0!important;margin:0!important;
+  box-sizing:border-box!important;border:0!important;border-bottom:1px solid #303a3e!important;
+}
+html body.assist-owner-layout #assist-controls-panel .assist-control-row:last-child {border-bottom:0!important}
+html body.assist-owner-layout #assist-controls-panel .assist-text-preview {
+  display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 0 4px;
+}
+html body.assist-owner-layout #assist-controls-panel .assist-text-sample {min-width:0}
+html body.assist-owner-layout #assist-controls-panel .assist-text-sample strong {
+  display:block;font:400 var(--assist-title-size,27px)/1.08 'Bebas Neue',sans-serif!important;color:#f6f8f0!important;
+}
+html body.assist-owner-layout #assist-controls-panel .assist-text-sample span {
+  display:block;margin-top:4px;font:400 var(--assist-artist-size,14px)/1.2 Arial,sans-serif!important;color:#c7cfc2!important;
+}
+html body.assist-owner-layout #assist-controls-panel .assist-text-reset {
+  flex:0 0 auto;background:#192226!important;border-color:#465359!important;
+  color:#edf0ec!important;-webkit-text-fill-color:#edf0ec!important;
+}
+html body.assist-owner-layout[data-popup-style="matching-songs"] #assist-anchor-meta {
+  font-size:var(--assist-anchor-meta-size,11px)!important;
+}
+html body.assist-owner-layout #assist-controls-panel .assist-track-size-control {min-width:0!important}
+html body.assist-owner-layout #assist-controls-panel input.assist-track-size-slider {
+  display:block!important;width:100%!important;height:28px!important;min-height:28px!important;padding:0!important;margin:0!important;
+  -webkit-appearance:none;appearance:none;background:transparent!important;border:0!important;border-radius:0!important;cursor:pointer;
+}
+html body.assist-owner-layout #assist-controls-panel .assist-track-size-slider::-webkit-slider-runnable-track {height:5px;background:#465359;border-radius:3px}
+html body.assist-owner-layout #assist-controls-panel .assist-track-size-slider::-webkit-slider-thumb {
+  -webkit-appearance:none;width:16px;height:16px;margin-top:-5.5px;border:2px solid #071005;border-radius:50%;background:#a3ff00;box-shadow:0 0 0 1px #a3ff00;
+}
+html body.assist-owner-layout #assist-controls-panel .assist-track-size-slider:focus-visible {outline:2px solid #a3ff00;outline-offset:3px}
+html body.assist-owner-layout #assist-controls-panel .assist-track-size-ends {display:flex;justify-content:space-between;align-items:center;gap:8px;font:400 11px/1.2 Barlow,sans-serif;color:#b8c5c9}
+html body.assist-owner-layout #assist-controls-panel .assist-track-size-ends > span {font:400 11px/1.2 Barlow,sans-serif!important;text-transform:none!important}
+html body.assist-owner-layout #assist-controls-panel .assist-track-size-value {font:600 12px/1.2 Barlow,sans-serif!important;color:#edf0ec;font-variant-numeric:tabular-nums}
+html body.assist-owner-layout #assist-controls-panel .assist-control-label {display:flex;flex-direction:column;gap:4px;min-width:0}
+html body.assist-owner-layout #assist-controls-panel .assist-control-label strong {
+  font:400 18px/1.2 'Bebas Neue',sans-serif!important;color:#edf0ec!important;text-transform:uppercase!important;
+}
+html body.assist-owner-layout #assist-controls-panel .assist-control-label small {
+  font:400 12px/1.2 Barlow,sans-serif!important;color:#a6b2b5!important;text-transform:none!important;
+}
+html body.assist-owner-layout #assist-controls-panel .assist-panel-buttons {
+  display:grid!important;grid-template-columns:1fr 1fr!important;gap:3px!important;margin:0!important;
+  padding:0!important;background:#192022!important;border:1px solid #465154!important;border-radius:4px!important;
+}
+html body.assist-owner-layout #assist-controls-panel .assist-panel-buttons button {
+  width:100%!important;min-width:0!important;min-height:36px!important;height:36px!important;padding:5px 3px!important;
+  border:1px solid transparent!important;border-radius:4px!important;background:transparent!important;
+  font:500 14px/1.2 Barlow,sans-serif!important;color:#c0cbce!important;-webkit-text-fill-color:#c0cbce!important;
+}
+html body.assist-owner-layout #assist-controls-panel .assist-startup-settings .assist-panel-buttons button {
+  height:auto!important;min-height:44px!important;white-space:normal!important;
+}
+html body.assist-owner-layout #assist-controls-panel .assist-panel-buttons button.active,
+html body.assist-owner-layout #assist-controls-panel .assist-panel-buttons button[aria-pressed="true"] {
+  background:#a3ff00!important;border-color:#a3ff00!important;color:#071005!important;-webkit-text-fill-color:#071005!important;
+  box-shadow:none!important;
+}
+html body.assist-owner-layout #assist-controls-panel .assist-panel-buttons button:hover {background:#253034!important}
+html body.assist-owner-layout #assist-controls-panel .assist-layout-control {width:100%!important;max-width:none!important;min-width:0!important}
+html body.assist-owner-layout #assist-controls-panel #assist-layout-select {
+  width:100%!important;max-width:none!important;min-width:0!important;height:44px!important;min-height:44px!important;
+  padding:8px 30px 8px 12px!important;border:1px solid #465359!important;border-radius:6px!important;
+  background-color:#192226!important;color:#edf0ec!important;-webkit-text-fill-color:#edf0ec!important;
+  font:500 14px/1.2 Barlow,sans-serif!important;text-transform:none!important;
+}
+html body.assist-owner-layout #assist-controls-panel button:focus-visible,
+html body.assist-owner-layout #assist-controls-panel select:focus-visible {outline:2px solid #a3ff00!important;outline-offset:2px!important}
+html body.assist-owner-layout #assist-controls-panel .assist-controls-close img {width:17px;height:17px;filter:invert(1)}
+html body.assist-owner-layout #assist-controls-panel .assist-control-label small:empty {display:none}
+html body.assist-owner-layout #assist-controls-panel .assist-tempo-row {grid-template-columns:128px minmax(0,1fr)!important;min-height:102px!important;padding:8px 0!important}
+html body.assist-owner-layout #assist-controls-panel .assist-tempo-row .assist-panel-buttons {gap:8px!important;background:transparent!important;border:0!important}
+html body.assist-owner-layout #assist-controls-panel .assist-tempo-row .assist-control-label {padding-right:8px;border-right:1px solid #384347;gap:6px}
+html body.assist-owner-layout #assist-controls-panel .assist-tempo-row :is(#half-button,#double-button) {
+  display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:5px!important;
+  height:88px!important;min-height:88px!important;background:var(--assist-tab-steel)!important;border:1px solid #687174!important;border-radius:6px!important;
+  color:#f2f5ef!important;-webkit-text-fill-color:#f2f5ef!important;font:400 14px/1.2 Barlow,sans-serif!important;
+  grid-column:auto!important;grid-row:auto!important;
+}
+html body.assist-owner-layout #assist-controls-panel :is(#half-button,#double-button) span,
+html body.assist-owner-layout #assist-controls-panel :is(#half-button,#double-button)[aria-pressed="true"] span {
+  font:400 14px/1.2 Barlow,sans-serif!important;text-transform:none!important;
+  color:#ffffff!important;-webkit-text-fill-color:#ffffff!important;filter:none!important;
+}
+html body.assist-owner-layout #assist-controls-panel .assist-tempo-row .assist-tempo-ratio {font:600 38px/1 Barlow,sans-serif!important;color:inherit!important}
+html body.assist-owner-layout #assist-controls-panel .assist-tempo-row :is(#half-button,#double-button)[aria-pressed="true"] {border-color:#a3ff00!important;box-shadow:inset 0 -3px 0 #a3ff00!important;color:#a3ff00!important;-webkit-text-fill-color:#a3ff00!important}
+html body.assist-owner-layout[data-popup-style="matching-songs"] .assist-bottom-actions {
+  grid-template-columns:92px minmax(0,1fr) 66px!important;gap:0!important;
+  height:var(--assist-action-height,42px)!important;border:1px solid #465154!important;border-radius:5px!important;background:#171e20!important;
+}
+html body.assist-owner-layout .assist-bottom-actions #maybe-button {
+  height:calc(var(--assist-action-height,42px) - 2px)!important;border:0!important;border-right:1px solid #465154!important;border-radius:0!important;
+  background:transparent!important;font:400 15px/1 'Bebas Neue',sans-serif!important;justify-content:center!important;padding:0 5px!important;
+}
+html body.assist-owner-layout[data-popup-style="matching-songs"] .assist-bottom-actions #clean-only-button {
+  height:calc(var(--assist-action-height,42px) - 2px)!important;min-height:calc(var(--assist-action-height,42px) - 2px)!important;border:0!important;border-radius:0!important;
+  background:transparent!important;padding:0 7px!important;gap:7px!important;
+  font:400 15px/1 'Bebas Neue',sans-serif!important;text-transform:uppercase!important;
+  color:#f2f4ef!important;-webkit-text-fill-color:#f2f4ef!important;white-space:nowrap!important;
+}
+html body.assist-owner-layout .assist-bottom-actions #clean-only-button::before {content:''!important;display:block!important;width:9px!important;height:9px!important;border-radius:50%;background:#a3ff00!important;flex:0 0 9px!important}
+html body.assist-owner-layout .assist-bottom-actions #clean-only-button[aria-checked="false"]::before {background:#ef4656!important}
+html body.assist-owner-layout .assist-bottom-actions #clean-only-button::after {width:32px!important;min-width:32px!important;height:20px!important;background-size:auto!important;background-repeat:no-repeat!important}
+html body.assist-owner-layout .actions #assist-anchor-refresh {height:var(--assist-action-height,42px)!important;min-height:var(--assist-action-height,42px)!important;border-radius:0 4px 4px 0!important;margin:-1px -1px -1px 0!important;font-size:17px!important}
+html body.assist-owner-layout .coach-set-reminder {grid-column:1/-1;font:500 14px Barlow,sans-serif!important}
+html body.assist-owner-layout #coach-insights-toggle {grid-column:1/-1}
+html body.assist-owner-layout #set-record-drawer {display:flex!important;flex-direction:column!important;gap:12px!important}
+html body.assist-owner-layout #set-record-close {width:auto!important;min-width:60px!important;flex:0 0 auto!important}
+html body.assist-owner-layout .set-record-fields {display:flex!important;flex-direction:column!important;gap:10px!important}
+html body.assist-owner-layout .set-record-fields label {font:500 14px/1.4 Barlow,sans-serif!important;color:#dce4d2!important}
+html body.assist-owner-layout .set-record-source-modes {display:flex!important;gap:8px!important}
+html body.assist-owner-layout .set-record-source-modes button {flex:1!important}
+html body.assist-owner-layout .set-record-drawer-actions {display:flex!important;flex-direction:column!important;gap:12px!important}
+html body.assist-owner-layout .set-record-action-group {display:flex!important;gap:8px!important;flex-wrap:wrap!important;width:100%!important}
+html body.assist-owner-layout .set-record-action-group button {flex:1!important;width:auto!important}
+html body.assist-owner-layout #set-record-button .set-record-idle {display:flex!important;gap:7px!important;align-items:center!important;justify-content:center!important}
+html body.assist-owner-layout #set-record-button.recording .set-record-idle {display:none!important}
+html body.assist-owner-layout #set-record-button .set-record-idle b {display:block!important}
+html body.assist-owner-layout .record-level-control {width:100%!important;display:flex!important;align-items:center!important;justify-content:center!important}
+html body.assist-owner-layout #record-level {padding:0!important;min-height:0!important}
+html body.assist-owner-layout #set-record-drawer {
+  background:#101617!important;border-color:#485154!important;padding:12px 14px!important;gap:10px!important;
+}
+html body.assist-owner-layout #set-record-drawer .set-record-drawer-head {
+  display:flex!important;align-items:center!important;justify-content:space-between!important;
+  padding:0 0 10px!important;margin:0!important;border-bottom:1px solid #51595c!important;
+}
+html body.assist-owner-layout #set-record-drawer .set-record-drawer-head strong {font:400 24px/1 'Bebas Neue',sans-serif!important;color:#f3f5f0!important}
+html body.assist-owner-layout #set-record-drawer .set-record-drawer-head small {font:400 12px/1.3 Barlow,sans-serif!important;color:#a6b2b5!important;text-transform:none!important;display:block;margin-top:4px}
+html body.assist-owner-layout #set-record-close {background:transparent!important;border:0!important;min-height:30px!important;padding:0!important;color:#ccd4d6!important}
+html body.assist-owner-layout #set-record-drawer .set-record-source-modes {gap:6px!important;margin:0!important}
+html body.assist-owner-layout #set-record-drawer .set-record-source-modes button {background:var(--assist-tab-steel)!important;border:1px solid #687174!important;font:400 13px/1.2 Barlow,sans-serif!important;color:#edf0ec!important;-webkit-text-fill-color:#edf0ec!important;min-height:42px!important;padding:6px!important;border-radius:5px!important}
+html body.assist-owner-layout #set-record-drawer .set-record-source-modes button[aria-pressed="true"] {border-color:#a3ff00!important;box-shadow:inset 0 -2px 0 #a3ff00!important;color:#a3ff00!important;-webkit-text-fill-color:#a3ff00!important}
+html body.assist-owner-layout #set-record-drawer .set-record-fields {gap:0!important;margin:0!important}
+html body.assist-owner-layout #set-record-drawer .set-record-fields label {
+  display:grid!important;grid-template-columns:102px minmax(0,1fr)!important;align-items:center!important;
+  gap:10px!important;padding:5px 0!important;border-bottom:1px solid #303a3e!important;
+  font:400 16px/1.2 'Bebas Neue',sans-serif!important;text-transform:uppercase!important;color:#edf0ec!important;
+}
+html body.assist-owner-layout #set-record-drawer select {
+  height:38px!important;min-height:38px!important;min-width:0!important;border-radius:4px!important;
+  background-color:#192226!important;border-color:#465359!important;color:#edf0ec!important;-webkit-text-fill-color:#edf0ec!important;
+  font:400 14px/1.2 Barlow,sans-serif!important;padding:6px 24px 6px 9px!important;text-transform:none!important;
+}
+html body.assist-owner-layout #set-record-drawer .record-level-control {justify-content:flex-start!important;padding:0!important;gap:12px!important}
+html body.assist-owner-layout #set-record-drawer .record-level-control label {font:400 16px/1.2 'Bebas Neue',sans-serif!important;color:#edf0ec!important}
+html body.assist-owner-layout #set-record-drawer .record-level-control output {font:500 14px/1.2 Barlow,sans-serif!important;color:#a3ff00!important}
+html body.assist-owner-layout #set-record-drawer .record-level-control label {flex:0 0 auto!important}
+html body.assist-owner-layout #set-record-drawer .record-signal-visual {flex:1;min-width:0;margin-left:3px}
+html body.assist-owner-layout #set-record-drawer .record-signal-head {display:flex;justify-content:space-between;gap:4px;font:400 10px/1.2 Barlow,sans-serif;color:#b5c1c5;margin-bottom:4px}
+html body.assist-owner-layout #set-record-drawer #record-signal-value {color:#edf0ec;white-space:nowrap;font-variant-numeric:tabular-nums}
+html body.assist-owner-layout #set-record-drawer .record-signal-meter {height:9px;position:relative;overflow:hidden;background:#060b0d;border:1px solid #414c51;border-radius:2px}
+html body.assist-owner-layout #set-record-drawer .record-signal-fill {position:absolute;inset:0;display:block;background:linear-gradient(to right,#a3ff00 0%,#a3ff00 80%,#efbe48 80%,#efbe48 95%,#ef485b 95%);clip-path:inset(0 calc(100% - var(--signal-percent,0%)) 0 0)}
+html body.assist-owner-layout #set-record-drawer .record-signal-meter::after {content:'';position:absolute;inset:0;background:repeating-linear-gradient(to right,transparent 0,transparent calc(5% - 2px),#101617 calc(5% - 2px),#101617 5%)}
+html body.assist-owner-layout #set-record-drawer .record-signal-scale {position:relative;height:12px;margin-top:2px;font:400 9px/1 Barlow,sans-serif;color:#8e9da2}
+html body.assist-owner-layout #set-record-drawer .record-signal-scale span {position:absolute;top:0}
+html body.assist-owner-layout #set-record-drawer .record-signal-scale span:nth-child(2) {left:50%;transform:translateX(-50%)}
+html body.assist-owner-layout #set-record-drawer .record-signal-scale span:nth-child(3) {left:80%;transform:translateX(-50%)}
+html body.assist-owner-layout #set-record-drawer .record-signal-scale span:last-child {right:0}
+html body.assist-owner-layout #set-record-drawer .set-record-drawer-actions {gap:10px!important;margin:0!important}
+html body.assist-owner-layout #set-record-drawer .set-record-action-group {display:grid!important;grid-template-columns:1fr 1.2fr!important;gap:8px!important}
+html body.assist-owner-layout #set-record-drawer .set-record-action-group button {min-height:38px!important;font:400 15px/1.2 'Bebas Neue',sans-serif!important;background:var(--assist-tab-steel)!important;border-color:#687174!important;color:#edf0ec!important;-webkit-text-fill-color:#edf0ec!important;border-radius:4px!important}
+html body.assist-owner-layout #set-record-drawer #set-record-start {background:#a3ff00!important;border-color:#a3ff00!important;color:#071005!important;-webkit-text-fill-color:#071005!important}
+html body.assist-owner-layout #set-record-drawer #set-record-button {grid-column:1/-1}
+html body.assist-owner-layout #set-record-drawer #set-record-button:not(.recording):not(.stopping) {display:none!important}
+html body.assist-owner-layout #maybe-drawer header {display:flex!important;align-items:center!important;justify-content:space-between!important;gap:8px!important}
+html body.assist-owner-layout #maybe-drawer header strong {font:400 23px 'Bebas Neue',sans-serif!important}
+html body.assist-owner-layout #saved-list .saved-song strong {font:400 23px 'Bebas Neue',sans-serif!important}
+html body.assist-owner-layout #saved-list .saved-song small {font:500 14px Barlow,sans-serif!important;color:#c7cfbe!important}
+html body.assist-owner-layout button:focus-visible {outline:2px solid #a3ff00!important;outline-offset:2px!important}
+
+/* Keep lime actions readable even when legacy hover rules style child labels. */
+html body.assist-owner-layout[data-popup-style="matching-songs"] :is(#assist-anchor-refresh,#gig-profile-close,#gig-profile-apply,#set-record-start,#assist-search-access),
+html body.assist-owner-layout[data-popup-style="matching-songs"] :is(#assist-anchor-refresh,#gig-profile-close,#gig-profile-apply,#set-record-start,#assist-search-access):hover,
+html body.assist-owner-layout[data-popup-style="matching-songs"] #assist-controls-panel .assist-source-order button[aria-pressed="true"],
+html body.assist-owner-layout[data-popup-style="matching-songs"] #assist-controls-panel .assist-source-order button[aria-pressed="true"]:hover {
+  background:#a3ff00!important;border-color:#a3ff00!important;
+}
+html body.assist-owner-layout[data-popup-style="matching-songs"] #assist-controls-panel .assist-source-order button[aria-pressed="false"],
+html body.assist-owner-layout[data-popup-style="matching-songs"] #assist-controls-panel .assist-source-order button[aria-pressed="false"]:hover {
+  color:#edf0ec!important;-webkit-text-fill-color:#edf0ec!important;
+}
+html body.assist-owner-layout[data-popup-style="matching-songs"] :is(#assist-anchor-refresh,#gig-profile-close,#gig-profile-apply,#set-record-start,#assist-search-access),
+html body.assist-owner-layout[data-popup-style="matching-songs"] :is(#assist-anchor-refresh,#gig-profile-close,#gig-profile-apply,#set-record-start,#assist-search-access) *,
+html body.assist-owner-layout[data-popup-style="matching-songs"] #assist-controls-panel .assist-source-order button[aria-pressed="true"],
+html body.assist-owner-layout[data-popup-style="matching-songs"] #assist-controls-panel .assist-source-order button[aria-pressed="true"] * {
+  color:#071005!important;-webkit-text-fill-color:#071005!important;text-shadow:none!important;
+}
+
+/* The owner's vertical edge tab, shared by browser review and native collapse. */
+html body.assist-owner-layout[data-assist-mode="collapsed"] {background:transparent!important;padding:0!important;min-height:0!important}
+html body.assist-owner-layout[data-assist-mode="collapsed"] .shell {display:none!important}
+html body.assist-owner-layout .activation-bar {display:none!important}
+html body.assist-owner-layout[data-assist-mode="collapsed"] .activation-bar {
+  position:fixed!important;inset:auto 0 auto auto!important;top:50%!important;transform:translateY(-50%)!important;
+  display:flex!important;flex-direction:column!important;justify-content:center!important;align-items:center!important;
+  gap:12px!important;width:54px!important;height:174px!important;min-width:0!important;min-height:0!important;
+  padding:12px 0!important;margin:0!important;box-sizing:border-box!important;
+  border:1px solid #c3ff62!important;border-radius:20px 0 0 20px!important;
+  background:#a3ff00!important;box-shadow:none!important;cursor:pointer;
+}
+html body.assist-owner-layout .activation-mark {display:none!important}
+html body.assist-owner-layout .activation-live-dot {background:#071005!important;box-shadow:none!important;width:8px!important;height:8px!important;flex:0 0 8px!important}
+html body.assist-owner-layout .activation-copy {display:block!important;flex:0 0 auto!important}
+html body.assist-owner-layout .activation-copy strong {display:block!important;writing-mode:vertical-rl!important;transform:rotate(180deg)!important;font:400 28px/1 'Bebas Neue',sans-serif!important;letter-spacing:.12em!important;color:#071005!important;-webkit-text-fill-color:#071005!important;text-shadow:none!important}
+html body.assist-owner-layout .activation-copy span,
+html body.assist-owner-layout .activation-expand {display:none!important}
+@media (max-width:390px) {
+  html body.assist-owner-layout .assist-bottom-actions {gap:6px;grid-template-columns:minmax(76px,.8fr) minmax(98px,1fr) minmax(100px,1.15fr)}
+  html body.assist-owner-layout .actions #clean-only-button {font-size:12px!important;gap:5px!important}
+  html body.assist-owner-layout .bpmbar #gig-profile-button {font-size:10px!important}
+}
+@keyframes assist-panel-enter {from {opacity:0;translate:14px 6px} to {opacity:1;translate:0 0}}
+@keyframes assist-tab-enter {from {opacity:0;translate:14px 0} to {opacity:1;translate:0 0}}
+html body.assist-owner-layout.assist-entering[data-assist-mode="expanded"] .shell {animation:assist-panel-enter .32s ease-out both}
+html body.assist-owner-layout.assist-entering[data-assist-mode="collapsed"] .activation-bar {animation:assist-tab-enter .32s ease-out both}
+@media (prefers-reduced-motion:reduce) {html body.assist-owner-layout * {scroll-behavior:auto!important;transition:none!important;animation:none!important}}
+
+/* Local populated review: native-sized canvas instead of filling the browser. */
+html.assist-size-review {background:#080b06!important;overflow:auto!important}
+html.assist-size-review body.assist-owner-layout.assist-size-review[data-popup-style="matching-songs"] {
+  --assist-review-width:414px;--assist-review-height:570px;
+  position:relative!important;transform:translate(0,0)!important;
+  width:var(--assist-review-width)!important;height:var(--assist-review-height)!important;
+  min-width:0!important;min-height:0!important;max-height:none!important;
+  margin:16px auto!important;padding:0!important;overflow:hidden!important;
+}
+html.assist-size-review body.assist-owner-layout.assist-size-review[data-assist-layout-resolved="compact"] {
+  --assist-review-width:380px;--assist-review-height:540px;
+}
+html.assist-size-review body.assist-owner-layout.assist-size-review[data-popup-style="matching-songs"] .shell {
+  width:100%!important;height:100%!important;max-height:100%!important;
+}
+html.assist-size-review body.assist-owner-layout.assist-size-review :is(#more-like-menu,#set-record-drawer,#maybe-drawer,#assist-controls-panel) {
+  max-height:calc(var(--assist-review-height) - 175px)!important;
+}
+html.assist-size-review body.assist-owner-layout.assist-size-review[data-assist-mode="collapsed"] {
+  width:60px!important;height:184px!important;
+}
+
+/* Maybe Next fills the results well; its header and picker never sit above it. */
+html body.assist-owner-layout[data-popup-style="matching-songs"] .results #maybe-drawer:not([hidden]) {
+  position:absolute!important;inset:0!important;width:100%!important;height:100%!important;
+  display:flex!important;flex-direction:column!important;gap:8px!important;
+  min-height:0!important;max-height:none!important;margin:0!important;padding:12px!important;
+  overflow:hidden!important;background:#101617!important;border:1px solid #485154!important;
+  border-radius:8px!important;box-shadow:none!important;
+}
+html body.assist-owner-layout[data-popup-style="matching-songs"] #maybe-drawer > header {
+  flex:0 0 auto!important;min-height:30px!important;margin:0!important;padding-bottom:8px!important;
+  border-bottom:1px solid #384347!important;gap:8px!important;
+}
+html body.assist-owner-layout #maybe-drawer > header strong {
+  margin-right:auto!important;color:#f3f5ef!important;white-space:nowrap!important;
+}
+html body.assist-owner-layout #maybe-drawer > header button {
+  margin-left:0!important;min-height:30px!important;height:30px!important;padding:4px 8px!important;
+  background:var(--assist-tab-steel)!important;border:1px solid #687174!important;
+  color:#ffffff!important;-webkit-text-fill-color:#ffffff!important;border-radius:4px!important;
+}
+html body.assist-owner-layout #maybe-drawer #close-maybe {
+  width:30px!important;min-width:30px!important;padding:0!important;
+}
+html body.assist-owner-layout[data-popup-style="matching-songs"] #maybe-drawer #maybe-emoji-menu:not([hidden]) {
+  position:static!important;inset:auto!important;flex:0 0 auto!important;
+  display:grid!important;grid-template-columns:repeat(9,minmax(0,1fr))!important;gap:4px!important;
+  margin:0!important;padding:6px!important;background:#192226!important;
+  border:1px solid #38474c!important;border-radius:5px!important;box-shadow:none!important;
+}
+html body.assist-owner-layout #maybe-drawer #maybe-emoji-menu button {
+  min-height:28px!important;height:28px!important;padding:0!important;
+  background:var(--assist-tab-steel)!important;border:1px solid #626d70!important;
+  color:#ffffff!important;-webkit-text-fill-color:#ffffff!important;transform:none!important;
+  box-shadow:none!important;font-size:16px!important;
+}
+html body.assist-owner-layout #maybe-drawer #maybe-emoji-menu button[aria-pressed="true"] {
+  background:#a3ff00!important;border-color:#a3ff00!important;color:#071005!important;
+  -webkit-text-fill-color:#071005!important;
+}
+html body.assist-owner-layout[data-popup-style="matching-songs"] #maybe-drawer #saved-list {
+  flex:1 1 0!important;min-height:0!important;max-height:none!important;overflow:auto!important;
+  padding:0 2px 0 0!important;gap:6px!important;opacity:1!important;
+}
+html body.assist-owner-layout #maybe-drawer .saved-song {
+  background:#192226!important;border:1px solid #465359!important;border-radius:5px!important;
+  min-height:var(--assist-saved-row-height,60px)!important;padding:var(--assist-saved-row-padding,8px) 10px!important;
+}
+html body.assist-owner-layout #maybe-drawer .saved-song strong {
+  font:400 var(--assist-saved-title-size,20px)/1.1 'Bebas Neue',sans-serif!important;color:#f3f5ef!important;
+}
+html body.assist-owner-layout #maybe-drawer .saved-song small {
+  font:400 var(--assist-saved-artist-size,11px)/1.3 Arial,sans-serif!important;color:#b8c5c9!important;margin-top:4px!important;
+}
+html body.assist-owner-layout #maybe-drawer .saved-song button {
+  background:transparent!important;border:0!important;color:#c6d1d4!important;
+}
+html body.assist-owner-layout #maybe-drawer .assist-request-hint {
+  flex:0 0 auto!important;font:400 11px/1.3 Barlow,sans-serif!important;text-transform:none!important;
+  color:#a7b8bd!important;padding:0!important;
+}
+html body.assist-owner-layout[data-popup-style="matching-songs"] .results #maybe-drawer:has(#maybe-emoji-menu:not([hidden])) #saved-list {
+  opacity:1!important;
+}

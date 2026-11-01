@@ -1,0 +1,242 @@
+/* PEAK HOUR (Windows edition): 90s urban, for hip-hop DJs.
+   windows_theme.py recolours AXIOM's own colours (lime -> red, green-blacks -> asphalt,
+   pale greens -> platinum) and serves the brick-wall artwork. This sets the 90s style:
+   brick, spray paint, chrome block lettering with hard black outlines and drop shadows,
+   sticker-style buttons and VHS scanlines instead of futuristic neon glow. */
+:root {
+  --ph-red: #b3262f;      /* softer brick red (was #e3001b, hard on the eyes) */
+  --ph-red-dark: #7d1a21;
+  --ph-chrome-hi: #ffffff;
+  --ph-chrome: #d9d8d6;
+  --ph-chrome-lo: #8f9398;
+  --ph-ink: #000000;
+  --ph-asphalt: #0d0c0c;
+  --ph-hard-shadow: 4px 4px 0 var(--ph-ink);
+}
+
+/* VHS: faint scanlines and grain over everything (never blocks clicks). */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 2147483000;
+  pointer-events: none;
+  opacity: 0.09;
+  mix-blend-mode: overlay;
+  background-image:
+    repeating-linear-gradient(0deg, rgba(0,0,0,.55) 0 1px, transparent 1px 3px),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .9 0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Chrome block lettering, 90s rap-cover style: chrome fill, black outline, hard shadow. */
+h1:not(:has(*)),
+.entrance-wordmark,
+.axiom-start-wordmark-main {
+  background: linear-gradient(180deg, var(--ph-chrome-hi) 0%, var(--ph-chrome) 42%, var(--ph-chrome-lo) 52%, var(--ph-chrome) 70%, var(--ph-chrome-hi) 100%) !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  -webkit-text-stroke: 1.5px var(--ph-ink);
+  text-shadow: none !important;
+  filter: drop-shadow(4px 4px 0 var(--ph-ink)) drop-shadow(2px 2px 0 var(--ph-red));
+}
+.entrance-wordmark { -webkit-text-stroke-width: 3px; filter: drop-shadow(6px 6px 0 var(--ph-ink)) drop-shadow(3px 3px 0 var(--ph-red)); }
+
+/* "BUILT FOR HIP-HOP DJS": a slapped-on sticker under the name. */
+.entrance-tagline {
+  display: inline-block;
+  margin-top: -6px;
+  padding: 6px 14px 5px;
+  font: 400 clamp(18px, 1.9vw, 26px)/1 'Bebas Neue', Impact, 'Arial Narrow', sans-serif;
+  letter-spacing: .14em;
+  color: #ffffff;
+  background: var(--ph-red);
+  border: 3px solid var(--ph-ink);
+  box-shadow: var(--ph-hard-shadow);
+  transform: rotate(-2deg);
+}
+
+/* Sidebar on dark brick, with a red rail. */
+html body aside#axiom-sidebar.axiom-sidebar.axiom-sidebar {
+  background-color: #120f0e !important;
+  background-image: linear-gradient(rgba(10, 8, 8, .25), rgba(10, 8, 8, .55)), url("/static/brand/90s/brick-tile.png") !important;
+  background-size: auto, 240px 176px !important;
+  border-right: 3px solid var(--ph-ink) !important;
+  box-shadow: inset -3px 0 0 var(--ph-red-dark);
+}
+html body aside#axiom-sidebar .axiom-sidebar-brand-row.axiom-sidebar-brand-row,
+html body aside#axiom-sidebar .axiom-sidebar-engine.axiom-sidebar-engine { background: transparent !important; }
+.axiom-sidebar-nav-item[data-nav-state="active"] {
+  background: var(--ph-red) !important;
+  color: #ffffff !important;
+  border: 2px solid var(--ph-ink) !important;
+  box-shadow: var(--ph-hard-shadow) !important;
+}
+
+/* Sticker-style buttons: flat colour, black outline, hard shadow; pressing pushes them in.
+   Round buttons (play, icon buttons) keep their shape. */
+button.bg-axiom-accent:not(.rounded-full),
+.axiom-ui-btn--primary,
+.health-transfer-primary,
+#axiom-entrance .entrance-actions > button,
+.library-source-choice-action {
+  border: 2px solid var(--ph-ink) !important;
+  box-shadow: var(--ph-hard-shadow) !important;
+  text-shadow: none !important;
+  transition: transform .06s ease, box-shadow .06s ease;
+}
+button.bg-axiom-accent:not(.rounded-full):active,
+.axiom-ui-btn--primary:active,
+.health-transfer-primary:active,
+#axiom-entrance .entrance-actions > button:active {
+  transform: translate(3px, 3px);
+  box-shadow: 1px 1px 0 var(--ph-ink) !important;
+}
+button.bg-axiom-accent.rounded-full { border: 3px solid var(--ph-ink) !important; box-shadow: 3px 3px 0 var(--ph-ink) !important; }
+
+/* Entrance buttons as flat stickers instead of glossy pills. */
+#axiom-entrance .entrance-actions > button {
+  border-radius: 4px !important;
+  background: var(--ph-red) !important;
+  background-image: none !important;
+  color: #ffffff !important;
+  border: 3px solid var(--ph-ink) !important;
+  box-shadow: 5px 5px 0 var(--ph-ink) !important;
+  letter-spacing: .12em;
+}
+#axiom-entrance .entrance-actions > button::before,
+#axiom-entrance .entrance-actions > button::after { display: none !important; }
+#axiom-entrance #axiom-entrance-remix {
+  background: #141111 !important;
+  color: var(--ph-chrome) !important;
+}
+#axiom-entrance .entrance-actions > button:disabled { filter: grayscale(.35) brightness(.85); }
+
+/* No futuristic halo on the entrance: the brick wall has its own streetlight. */
+#axiom-entrance .entrance-light { opacity: .35 !important; }
+
+/* Panels: solid black edges like cut-out flyers. */
+dialog, .glass { border-color: rgba(0, 0, 0, .9) !important; }
+
+/* Focus rings and selection in red. */
+:focus-visible { outline: 3px solid var(--ph-red) !important; outline-offset: 2px; }
+::selection { background: rgba(179, 38, 47, .65); color: #ffffff; }
+
+/* ---------------------------------------------------------------------------------------------
+   Regions (windows-regions.js sets body[data-ph-region]). Red and platinum stay the base;
+   each page adds its region's cover art without its title (static/brand/regions/*-bg.jpg, make_region_backgrounds.py) and one accent: in the lettering shadow, a stripe along the
+   top of the page and the sidebar sticker.
+   Library = East Coast · Studio = West Coast · Performance = Dirty South · Playlists = Texas ·
+   Health = Midwest. */
+body[data-ph-region="east"]    { --ph-accent: #f2b01e; --ph-accent-ink: #000000; }  /* graffiti yellow, NYC (matches the East Coast cover) */
+body[data-ph-region="west"]    { --ph-accent: #ff7a1a; --ph-accent-ink: #000000; }  /* sunset orange, LA */
+body[data-ph-region="south"]   { --ph-accent: #d4af37; --ph-accent-ink: #000000; }  /* gold, ATL */
+body[data-ph-region="texas"]   { --ph-accent: #8e2de2; --ph-accent-ink: #ffffff; }  /* candy purple, HTX */
+body[data-ph-region="midwest"] { --ph-accent: #6f8fa8; --ph-accent-ink: #000000; }  /* steel blue, CHI/DET */
+
+/* AXIOM forces page backgrounds with repeated-id and :has() rules (Library uses six ids), so the ids are repeated
+   to outrank them. Night mode only: day mode keeps its light pages. */
+html body:not(.light-mode) #tab-content-library#tab-content-library#tab-content-library#tab-content-library#tab-content-library#tab-content-library#tab-content-library,
+html body:not(.light-mode) #tab-content-studio#tab-content-studio#tab-content-studio,
+html body:not(.light-mode) #tab-content-performance#tab-content-performance#tab-content-performance,
+html body:not(.light-mode) #tab-content-playlists#tab-content-playlists#tab-content-playlists,
+html body:not(.light-mode) #health-view#health-view#health-view {
+  background-size: cover !important;
+  background-position: center !important;
+  background-attachment: fixed !important;
+  border-top: 4px solid var(--ph-accent, var(--ph-red)) !important;
+}
+html body:not(.light-mode) #tab-content-library#tab-content-library#tab-content-library#tab-content-library#tab-content-library#tab-content-library#tab-content-library      { background-image: linear-gradient(rgba(8,7,7,.66), rgba(8,7,7,.86)), url("/static/brand/regions/east-bg.jpg") !important; }
+html body:not(.light-mode) #tab-content-studio#tab-content-studio#tab-content-studio       { background-image: linear-gradient(rgba(8,7,7,.66), rgba(8,7,7,.86)), url("/static/brand/regions/west-bg.jpg") !important; }
+html body:not(.light-mode) #tab-content-performance#tab-content-performance#tab-content-performance  { background-image: linear-gradient(rgba(8,7,7,.66), rgba(8,7,7,.86)), url("/static/brand/regions/south-bg.jpg") !important; }
+html body:not(.light-mode) #tab-content-playlists#tab-content-playlists#tab-content-playlists    { background-image: linear-gradient(rgba(8,7,7,.66), rgba(8,7,7,.86)), url("/static/brand/regions/texas-bg.jpg") !important; }
+html body:not(.light-mode) #health-view#health-view#health-view              { background-image: linear-gradient(rgba(8,7,7,.66), rgba(8,7,7,.86)), url("/static/brand/regions/midwest-bg.jpg") !important; }
+
+/* The Studio's own wrapper is opaque; let the wall show through it. */
+html body #tab-content-studio #studio-active-view#studio-active-view { background-color: transparent !important; }
+
+/* Library's track list is a solid panel; tint it instead so the East Coast cover shows behind the rows. */
+html body #tab-content-library#tab-content-library .library-results-column.library-results-column {
+  background-color: rgba(9, 8, 8, .66) !important;
+  background-image: none !important;
+}
+
+/* Playlists' two panels, tinted the same way for the Texas cover. */
+html body:not(.light-mode) #tab-content-playlists#tab-content-playlists#tab-content-playlists :is(aside, section).glass.glass {
+  background-color: rgba(19, 16, 16, .7) !important;
+}
+
+/* Health's own app shell is opaque too; the Midwest cover goes behind it. Health also hides
+   everything in the sidebar except its own menu, so the sticker is let back in. */
+html body:not(.light-mode) #health-view#health-view #health-inbox-app#health-inbox-app { background-color: rgba(8, 7, 7, .55) !important; }
+html body #axiom-sidebar #ph-region-sticker#ph-region-sticker:not([hidden]) { display: block !important; }
+
+/* Chrome headings take the region's colour as the second shadow. */
+body[data-ph-region] h1:not(:has(*)),
+body[data-ph-region] .axiom-start-wordmark-main {
+  filter: drop-shadow(4px 4px 0 var(--ph-ink)) drop-shadow(2px 2px 0 var(--ph-accent));
+}
+
+/* Region sticker in the sidebar's empty space under the menu. */
+.ph-region-sticker {
+  margin: 28px 34px 0;
+  padding: 10px 14px 8px;
+  width: max-content;
+  max-width: calc(100% - 68px);
+  background: var(--ph-accent, var(--ph-red));
+  color: var(--ph-accent-ink, #ffffff);
+  border: 3px solid var(--ph-ink);
+  box-shadow: var(--ph-hard-shadow);
+  transform: rotate(-3deg);
+  font-family: 'Bebas Neue', Impact, 'Arial Narrow', sans-serif;
+  line-height: 1;
+  pointer-events: none;
+  user-select: none;
+}
+.ph-region-sticker strong { display: block; font-size: 26px; font-weight: 400; letter-spacing: .1em; }
+.ph-region-sticker small { display: block; margin-top: 3px; font-size: 13px; letter-spacing: .18em; opacity: .85; }
+.ph-region-sticker[hidden] { display: none; }
+
+/* ---------------------------------------------------------------------------------------------
+   Sidebar menu on its own solid plate so the categories stand off the brick: full-white,
+   heavier lettering and brighter icons. */
+html body aside#axiom-sidebar .axiom-sidebar-nav.axiom-sidebar-nav {
+  background: rgba(12, 10, 10, .9) !important;
+  border: 2px solid var(--ph-ink) !important;
+  border-radius: 6px;
+  box-shadow: var(--ph-hard-shadow);
+  margin: 10px 14px !important;
+  padding: 6px 0 !important;
+}
+html body aside#axiom-sidebar .axiom-sidebar-nav-item.axiom-sidebar-nav-item,
+html body aside#axiom-sidebar .axiom-sidebar-nav-item.axiom-sidebar-nav-item span {
+  color: #f4f4f4 !important;
+  opacity: 1 !important;
+  font-weight: 600 !important;
+  letter-spacing: .06em !important;
+}
+html body aside#axiom-sidebar .axiom-sidebar-nav-item.axiom-sidebar-nav-item img,
+html body aside#axiom-sidebar .axiom-sidebar-nav-item.axiom-sidebar-nav-item svg { opacity: 1 !important; filter: brightness(1.6); }
+html body aside#axiom-sidebar .axiom-sidebar-nav-item.axiom-sidebar-nav-item:hover { background: rgba(255, 255, 255, .08) !important; }
+
+/* Set-start descriptions use AXIOM's own light Barlow face; Segoe UI reads more easily there too
+   (declared here because this file loads after AXIOM's). */
+@font-face {
+  font-family: "Barlow Set Start";
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap;
+  src: local("Segoe UI"), local("SegoeUI"), url("/static/vendor/barlow-5.3.0/files/barlow-latin-300-normal.woff2") format("woff2");
+}
+
+/* Font Size zooms the whole main area (windows-font-scale.js), so song titles no longer
+   take the scale a second time. */
+html body .track-title-resize.track-title-resize,
+html body .track-artist-resize.track-artist-resize { font-size: 1em !important; }
+
+/* Settings > Set Recording: AXIOM's two-column grid left the description 3px wide (one word per
+   line); the description now sits above the recording controls at full width. */
+html body #settings-content .settings-item.recording-settings-item.recording-settings-item {
+  grid-template-columns: minmax(0, 1fr) !important;
+  row-gap: 12px !important;
+}

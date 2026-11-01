@@ -1,0 +1,672 @@
+
+
+body.light-mode .file-glyph::after {
+  border-color: rgba(0, 71, 171, 0.78) !important;
+  background: rgba(255, 255, 255, 0.56) !important;
+}
+
+body.light-mode .command-launch-hero::after {
+  background:
+    repeating-radial-gradient(circle at center, transparent 0 42px, rgba(0, 71, 171, 0.28) 43px 44px, transparent 45px 73px),
+    radial-gradient(circle at center, rgba(0, 71, 171, 0.10), transparent 58%) !important;
+  filter: blur(0.2px) drop-shadow(0 0 26px rgba(0, 71, 171, 0.18)) !important;
+}
+
+body.light-mode .command-terrain {
+  border-bottom-color: rgba(0, 71, 171, 0.28) !important;
+  background:
+    radial-gradient(ellipse at 66% 63%, rgba(0, 71, 171, 0.22), transparent 20%),
+    radial-gradient(ellipse at 50% 68%, rgba(0, 71, 171, 0.16), transparent 38%),
+    radial-gradient(ellipse at 72% 80%, rgba(255, 255, 255, 0.30), transparent 30%),
+    linear-gradient(90deg, transparent 0 12%, rgba(0, 71, 171, 0.10) 48%, transparent 88%),
+    linear-gradient(to bottom, transparent 0 24%, rgba(0, 71, 171, 0.08) 48%, rgba(255, 255, 255, 0.80) 100%) !important;
+  box-shadow: inset 0 -34px 70px rgba(0, 71, 171, 0.08), 0 20px 80px rgba(0, 71, 171, 0.10) !important;
+}
+
+body.light-mode .command-terrain::before {
+  background:
+    linear-gradient(to top, rgba(0, 71, 171, 0.20), rgba(0, 71, 171, 0.07) 36%, transparent 70%),
+    repeating-linear-gradient(90deg, rgba(0, 71, 171, 0.14) 0 2px, transparent 2px 18px) !important;
+  filter: drop-shadow(0 -10px 30px rgba(0, 71, 171, 0.30)) blur(0.15px) !important;
+}
+
+body.light-mode .command-terrain::after {
+  background:
+    linear-gradient(rgba(0, 71, 171, 0.12), rgba(255, 255, 255, 0.02)),
+    repeating-linear-gradient(90deg, rgba(0, 71, 171, 0.18) 0 2px, transparent 2px 16px) !important;
+}
+
+body.light-mode .command-eyebrow {
+  color: #0047ab !important;
+}
+
+body.light-mode .command-eyebrow::after {
+  background: linear-gradient(90deg, rgba(0, 71, 171, 0.75), transparent) !important;
+  box-shadow: 0 0 14px rgba(0, 71, 171, 0.35) !important;
+}
+
+body.light-mode .command-title {
+  color: #07111f !important;
+  text-shadow: 0 0 26px rgba(255, 255, 255, 0.34), 0 0 54px rgba(0, 71, 171, 0.10), 0 12px 24px rgba(7, 17, 31, 0.18) !important;
+}
+
+/* Library day mode cleanup: no green controls and no white text on white cards. */
+body.light-mode .library-add-folder {
+  background: linear-gradient(135deg, #2563eb, #0047ab) !important;
+  color: #ffffff !important;
+  border-color: #0047ab !important;
+  box-shadow: 0 0 28px rgba(0, 71, 171, 0.34), 0 16px 32px rgba(7, 17, 31, 0.12), inset 0 1px 0 rgba(255,255,255,0.42) !important;
+  text-shadow: none !important;
+}
+
+body.light-mode .library-add-folder:hover {
+  box-shadow: 0 0 0 1px rgba(0, 71, 171, 0.26), 0 0 42px rgba(0, 71, 171, 0.34), 0 18px 38px rgba(7, 17, 31, 0.16) !important;
+}
+
+body.light-mode #era-filters.library-era-strip .era-btn:not(.active-era),
+body.light-mode .era-btn:not(.active-era) {
+  background: rgba(0, 71, 171, 0.08) !important;
+  color: #0f2f62 !important;
+  border-color: rgba(0, 71, 171, 0.22) !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
+}
+
+body.light-mode #era-filters.library-era-strip .era-btn:not(.active-era):hover,
+body.light-mode .era-btn:not(.active-era):hover {
+  background: rgba(0, 71, 171, 0.14) !important;
+  color: #0047ab !important;
+  border-color: rgba(0, 71, 171, 0.44) !important;
+}
+
+body.light-mode .library-search-icon,
+body.light-mode .library-search-icon * {
+  color: rgba(0, 71, 171, 0.52) !important;
+  stroke: currentColor !important;
+}
+
+body.light-mode .library-bpm-tools,
+body.light-mode .library-bpm-tools button {
+  color: rgba(7, 17, 31, 0.62) !important;
+  text-shadow: none !important;
+}
+
+body.light-mode .library-bpm-tools button:hover {
+  color: #0047ab !important;
+}
+
+body.light-mode .artwork-fallback {
+  background:
+    radial-gradient(circle at 50% 42%, rgba(0, 71, 171, 0.30), transparent 24%),
+    linear-gradient(135deg, rgba(0, 71, 171, 0.82), rgba(37, 99, 235, 0.64) 58%, rgba(238, 243, 251, 0.92)) !important;
+  color: #ffffff !important;
+  text-shadow: 0 1px 8px rgba(0, 24, 72, 0.32) !important;
+}
+
+body.light-mode .artwork-fallback::before,
+body.light-mode .artwork-fallback::after {
+  border-top-color: rgba(255, 255, 255, 0.30) !important;
+  border-bottom-color: rgba(0, 71, 171, 0.32) !important;
+}
+
+body.light-mode .library-artwork-play {
+  background: linear-gradient(145deg, #2563eb, #0047ab) !important;
+  color: #ffffff !important;
+  border-color: rgba(255,255,255,0.70) !important;
+  box-shadow: 0 0 24px rgba(0, 71, 171, 0.38), inset 0 1px 0 rgba(255,255,255,0.52) !important;
+}
+
+body.light-mode .library-artwork-play svg,
+body.light-mode .library-artwork-play path {
+  fill: #ffffff !important;
+  color: #ffffff !important;
+}
+
+body.light-mode .library-track-card:hover .library-artwork,
+body.light-mode .library-track-playing .library-artwork {
+  border-color: rgba(0, 71, 171, 0.58) !important;
+  box-shadow: 0 0 24px rgba(0, 71, 171, 0.18), 0 14px 26px rgba(7, 17, 31, 0.16) !important;
+}
+
+body.light-mode .library-track-card:hover .wavebar,
+body.light-mode .library-track-playing .wavebar,
+body.light-mode .playing-track .wavebar,
+body.light-mode .recommendation-card.playing-track .wavebar {
+  background: rgba(0, 71, 171, 0.82) !important;
+  box-shadow: 0 0 10px rgba(0, 71, 171, 0.24) !important;
+}
+
+/* AXIOM day mode EOF contract.
+   Keep this after the duplicated legacy rules: black/dark surfaces separate as white panels,
+   green accents become blue, and green glow becomes blue glow. */
+body.light-mode {
+  --bg-primary: #f5f7fb;
+  --bg-secondary: #ffffff;
+  --bg-surface: #ffffff;
+  --bg-surface-alt: #eef3fb;
+  --text-primary: #07111f;
+  --text-secondary: #40516a;
+  --text-muted: #6b7a90;
+  --accent-primary: #0047ab;
+  --accent-primary-rgb: 0, 71, 171;
+  --accent-secondary: #2563eb;
+  --border-primary: rgba(0, 71, 171, 0.18);
+  background:
+    radial-gradient(circle at 34% 16%, rgba(0,71,171,0.07), transparent 28%),
+    linear-gradient(135deg, #f8fbff, #eef3fb) !important;
+  color: #07111f !important;
+}
+
+body.light-mode main,
+body.light-mode #tab-content-library,
+body.light-mode #tab-content-studio {
+  background:
+    radial-gradient(circle at 24% 12%, rgba(0,71,171,0.08), transparent 26%),
+    linear-gradient(135deg, rgba(255,255,255,0.62), rgba(238,243,251,0.78)) !important;
+}
+
+body.light-mode :where(aside, .glass, .vampire-row, .library-track-card, .recommendation-card, .recommendations-panel, .smart-links-container, #audio-player, .command-center-hud, .studio-search-results, .folder-build-panel, .folder-source-picker, .folder-build-options, .folder-build-profile) {
+  background: rgba(255,255,255,0.96) !important;
+  color: #07111f !important;
+  border-color: rgba(0,71,171,0.18) !important;
+  box-shadow: 0 18px 42px rgba(7,17,31,0.10), inset 0 1px 0 rgba(255,255,255,0.94) !important;
+}
+
+body.light-mode .library-guide-overlay {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+body.light-mode :where(.library-guide-card, .workflow-card) {
+  background:
+    radial-gradient(circle at 18% 0%, rgba(255,255,255,0.28), transparent 30%),
+    linear-gradient(145deg, #2b76e5, #0047ab) !important;
+  color: #ffffff !important;
+  border-color: rgba(0,47,112,0.55) !important;
+  box-shadow: 0 24px 70px rgba(7,17,31,0.28), 0 0 34px rgba(0,71,171,0.34) !important;
+}
+
+body.light-mode :where(.library-guide-card, .workflow-card, .library-guide-card *, .workflow-card *) {
+  color: #ffffff !important;
+  text-shadow: none !important;
+}
+
+body.light-mode :where(.library-guide-primary, .library-guide-step span, .workflow-actions .primary, .workflow-item span) {
+  background: #ffffff !important;
+  color: #0047ab !important;
+  border-color: #ffffff !important;
+}
+
+body.light-mode :where(.text-axiom-accent, .text-\[\#39FF14\], .text-\[\#a3ff00\], .text-green-400, .accent-theme-primary, .nav-item.active, .fav-star-btn.fav-star-active) {
+  color: #0047ab !important;
+  text-shadow: none !important;
+}
+
+body.light-mode :where(.bg-axiom-accent, .bg-\[\#39FF14\], .bg-\[\#ADFF2F\], .bg-\[\#a3ff00\], .status-playing, .status-paused, .btn-primary, .era-btn.active-era, .library-year-chip, .library-dna-chip, .bpm-block, .library-bpm-value) {
+  background: #0047ab !important;
+  color: #ffffff !important;
+  border-color: #0047ab !important;
+  text-shadow: none !important;
+  box-shadow: 0 0 18px rgba(0,71,171,0.24) !important;
+}
+
+body.light-mode :where(.border-axiom-accent, .border-axiom-accent\/30, .border-axiom-accent\/35, .border-axiom-accent\/40, .border-axiom-accent\/55, .border-\[\#39FF14\]) {
+  border-color: rgba(0,71,171,0.55) !important;
+}
+
+body.light-mode :where(.library-track-title, .recommendation-title, .recommendations-title, .studio-row-title, .track-title-resize, h1, h2, h3, h4, .font-heading) {
+  color: #07111f !important;
+  text-shadow: none !important;
+}
+
+body.light-mode :where(.library-track-artist, .recommendation-artist, .library-meta-line, .library-meta-line span, .text-axiom-muted, .text-white\/40, .text-white\/50, .track-artist-resize) {
+  color: #40516a !important;
+  text-shadow: none !important;
+}
+
+body.light-mode #search-results .vampire-row:not(.playing-track):not(.played),
+body.light-mode #search-results .vampire-row:not(.playing-track):not(.played):hover,
+body.light-mode #search-results .vampire-row:not(.playing-track):not(.played).selected,
+body.light-mode #search-results .library-track-card {
+  background: #ffffff !important;
+  color: #07111f !important;
+  border-color: rgba(0,71,171,0.18) !important;
+  box-shadow: 0 16px 34px rgba(7,17,31,0.10), inset 0 1px 0 rgba(255,255,255,0.92) !important;
+}
+
+body.light-mode #search-results .vampire-row:not(.playing-track):not(.played) p,
+body.light-mode #search-results .vampire-row:not(.playing-track):not(.played) span,
+body.light-mode #search-results .vampire-row:not(.playing-track):not(.played) .track-title-resize,
+body.light-mode #search-results .vampire-row:not(.playing-track):not(.played) .track-artist-resize,
+body.light-mode #search-results .library-track-card .library-track-title,
+body.light-mode #search-results .library-track-card .library-track-artist,
+body.light-mode #search-results .library-track-card .library-meta-line,
+body.light-mode #search-results .library-track-card .library-meta-line span {
+  color: #07111f !important;
+  opacity: 1 !important;
+  text-shadow: none !important;
+}
+
+body.light-mode #search-results .library-track-card .library-track-artist,
+body.light-mode #search-results .library-track-card .library-meta-line,
+body.light-mode #search-results .library-track-card .library-meta-line span {
+  color: #40516a !important;
+}
+
+body.light-mode #search-results .vampire-row.library-track-card span.library-year-chip,
+body.light-mode #search-results .vampire-row.library-track-card span.library-dna-chip,
+body.light-mode #search-results .vampire-row.library-track-card span.library-bpm-value.bpm-block,
+body.light-mode #search-results .vampire-row.library-track-card .library-meta-line span.library-year-chip,
+body.light-mode #search-results .vampire-row.library-track-card .library-meta-line span.library-dna-chip {
+  background: #0047ab !important;
+  color: #ffffff !important;
+  border-color: #0047ab !important;
+  text-shadow: none !important;
+  box-shadow: 0 0 18px rgba(0,71,171,0.24) !important;
+}
+
+/* AXIOM day mode final contract. Keep this at EOF so duplicated legacy rules
+   cannot override the simple swap: black -> white, green -> blue. */
+:root[data-theme="green"],
+html.light-mode {
+  --bg-primary: #ffffff;
+  --bg-primary-rgb: 255, 255, 255;
+  --bg-secondary: #f5f7fb;
+  --bg-secondary-rgb: 245, 247, 251;
+  --bg-surface: #ffffff;
+  --bg-surface-rgb: 255, 255, 255;
+  --bg-surface-alt: #eef3fb;
+  --bg-surface-alt-rgb: 238, 243, 251;
+  --text-primary: #07111f;
+  --text-primary-rgb: 7, 17, 31;
+  --text-secondary: #40516a;
+  --text-secondary-rgb: 64, 81, 106;
+  --text-muted: #6b7a90;
+  --text-muted-rgb: 107, 122, 144;
+  --accent-primary: #0047ab;
+  --accent-primary-rgb: 0, 71, 171;
+  --accent-secondary: #2563eb;
+  --accent-secondary-rgb: 37, 99, 235;
+  --accent-success: #0047ab;
+  --accent-success-rgb: 0, 71, 171;
+  --accent-warning: #0047ab;
+  --accent-warning-rgb: 0, 71, 171;
+  --border-primary: rgba(0, 71, 171, 0.18);
+  --border-secondary: rgba(0, 71, 171, 0.10);
+}
+
+body.light-mode {
+  background: #ffffff !important;
+  color: #07111f !important;
+}
+
+body.light-mode :where(.bg-black, .bg-\[\#000\], .bg-\[\#050505\], .bg-\[\#070707\], .bg-\[\#070b07\], .bg-\[\#0a0a0a\], .bg-\[\#0d0d0d\], .bg-\[\#111\], .bg-\[\#1a1a1a\], .bg-\[\#1e1e1e\], .bg-black\/20, .bg-black\/40, .bg-black\/60, .bg-black\/80, .bg-black\/90, .bg-black\/95, .glass, .vampire-row, .library-track-card, .recommendation-card, .recommendations-panel, .smart-links-container, #audio-player, .command-center-hud, .studio-search-results) {
+  background: #ffffff !important;
+  color: #07111f !important;
+  border-color: rgba(0, 71, 171, 0.18) !important;
+}
+
+body.light-mode :where(.text-axiom-accent, .text-\[\#39FF14\], .text-\[\#a3ff00\], .text-green-400, .accent-theme-primary, .nav-item.active) {
+  color: #0047ab !important;
+  text-shadow: none !important;
+}
+
+body.light-mode :where(.bg-axiom-accent, .bg-\[\#39FF14\], .bg-\[\#ADFF2F\], .bg-\[\#a3ff00\], .status-playing, .status-paused, .btn-primary) {
+  background: #0047ab !important;
+  color: #ffffff !important;
+  border-color: #0047ab !important;
+  box-shadow: 0 0 24px rgba(0, 71, 171, 0.34) !important;
+}
+
+body.light-mode :where(.border-axiom-accent, .border-axiom-accent\/30, .border-axiom-accent\/35, .border-axiom-accent\/40, .border-axiom-accent\/55, .border-\[\#39FF14\]) {
+  border-color: rgba(0, 71, 171, 0.55) !important;
+}
+
+body.light-mode :where(.library-track-title, .recommendation-title, .recommendations-title, .studio-row-title, .track-title-resize, h1, h2, h3, h4, .font-heading) {
+  color: #07111f !important;
+  text-shadow: none !important;
+}
+
+body.light-mode :where(.library-track-artist, .recommendation-artist, .library-meta-line, .library-meta-line span, .text-axiom-muted, .text-white\/40, .text-white\/50, .track-artist-resize) {
+  color: #40516a !important;
+  text-shadow: none !important;
+}
+
+body.light-mode :where(.library-year-chip, .library-dna-chip, .dna-badge, .bpm-block, .library-bpm-value, .era-btn.active-era) {
+  color: #ffffff !important;
+  background: #0047ab !important;
+  border-color: #0047ab !important;
+  text-shadow: none !important;
+  box-shadow: 0 0 16px rgba(0,71,171,0.22) !important;
+}
+
+body.light-mode [style*="#39FF14"],
+body.light-mode [style*="#a3ff00"],
+body.light-mode [style*="rgba(57,255,20"],
+body.light-mode [style*="rgba(163,255,0"],
+body.light-mode [style*="rgba(163, 255, 0"] {
+  color: #0047ab !important;
+  border-color: #0047ab !important;
+  box-shadow: 0 0 24px rgba(0, 71, 171, 0.34) !important;
+}
+
+body.light-mode [style*="background:#39FF14"],
+body.light-mode [style*="background: #39FF14"],
+body.light-mode [style*="background:#a3ff00"],
+body.light-mode [style*="background: #a3ff00"] {
+  background: #0047ab !important;
+  color: #ffffff !important;
+}
+
+body.light-mode [style*="background:#000"],
+body.light-mode [style*="background: #000"],
+body.light-mode [style*="background:#050505"],
+body.light-mode [style*="background:#070b07"],
+body.light-mode [style*="background:#0a0a0a"],
+body.light-mode [style*="background:#0d0d0d"],
+body.light-mode [style*="background:#1e1e1e"],
+body.light-mode [style*="background: #1e1e1e"],
+body.light-mode [style*="background:#2a2a2a"] {
+  background: #ffffff !important;
+  color: #07111f !important;
+  border-color: rgba(0,71,171,0.18) !important;
+  box-shadow: 0 18px 40px rgba(7,17,31,0.10) !important;
+}
+.contrast-interactive { /* 3:1 minimum */ }
+
+/* ===========================================
+   LAW 2: THEME-SPECIFIC BASE PALETTES
+   =========================================== */
+
+/* INDIGO THEME (Night Mode) - Deep, professional DJ interface */
+:root[data-theme="indigo"] {
+  /* Backgrounds */
+  --bg-primary: #1A1A2E;      /* Deep indigo */
+  --bg-secondary: #16213E;    /* Darker indigo */
+  --bg-surface: #2D2B55;      /* Card/container background */
+  --bg-surface-alt: #2C2E5F;  /* Alternative surface */
+
+  /* Text Colors */
+  --text-primary: #E0E0E0;    /* Off-white for readability */
+  --text-secondary: #B8B8B8;  /* Muted off-white */
+  --text-muted: #888888;      /* Dim text */
+
+  /* Interactive Elements */
+  --accent-primary: #a3ff00;  /* Bright green for highlights */
+  --accent-secondary: #00ff88; /* Bright green secondary */
+  --accent-success: #a3ff00;   /* Same as primary */
+  --accent-warning: #a3ff00;   /* Green for warnings */
+  --accent-error: #FF4444;     /* Red */
+
+  /* Borders */
+  --border-primary: rgba(255, 255, 255, 0.1);
+  --border-secondary: rgba(255, 255, 255, 0.05);
+}
+
+/* GREEN THEME (Day Mode) - Clean, bright interface */
+:root[data-theme="green"] {
+  /* Backgrounds */
+  --bg-primary: #F0F7F0;      /* Very light mint */
+  --bg-secondary: #F5F5F0;    /* Soft off-white */
+  --bg-surface: #E2EDE2;      /* Light green-gray surface */
+  --bg-surface-alt: #E8F5E8;  /* Alternative surface */
+
+  /* Text Colors */
+  --text-primary: #1E2A1E;    /* Dark charcoal */
+  --text-secondary: #3D4A3D;  /* Medium charcoal */
+  --text-muted: #647864;      /* Muted green-gray */
+
+  /* Interactive Elements */
+  --accent-primary: #2E8B57;  /* Sea green */
+  --accent-secondary: #4682B4; /* Steel blue */
+  --accent-success: #228B22;   /* Forest green */
+  --accent-warning: #DAA520;   /* Goldenrod */
+  --accent-error: #B22222;     /* Firebrick */
+
+  /* Borders */
+  --border-primary: rgba(30, 42, 30, 0.15);
+  --border-secondary: rgba(30, 42, 30, 0.08);
+}
+
+/* ===========================================
+   LAW 3: NO ADJACENT MUTED CONFLICT
+   =========================================== */
+
+/* Ensure themes don't mix conflicting colors */
+[data-theme="indigo"] {
+  /* Indigo theme rejects green accents */
+  --forbidden-accent: #a3ff00; /* Original green - banned */
+}
+
+[data-theme="green"] {
+  /* Green theme rejects indigo accents */
+  --forbidden-accent: #4B0082; /* Indigo - banned */
+}
+
+/* ===========================================
+   LAW 4: DAY/NIGHT MODE LOGIC MAPPING
+   =========================================== */
+
+/* Automatic theme switching with proper contrast */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    /* Auto-apply indigo theme for dark mode preference */
+    --bg-primary: var(--indigo-bg-primary);
+    --text-primary: var(--indigo-text-primary);
+    /* ... other indigo variables */
+  }
+}
+
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme]) {
+    /* Auto-apply green theme for light mode preference */
+    --bg-primary: var(--green-bg-primary);
+    --text-primary: var(--green-text-primary);
+    /* ... other green variables */
+  }
+}
+
+/* ===========================================
+   LAW 5: LIBRARY ≠ STUDIO DISTINCTIVENESS
+   =========================================== */
+
+/* Library Mode: Higher contrast, sharper */
+.library-mode {
+  --border-radius: 4px;
+  --shadow-strength: 0.15;
+  --text-weight: 600;
+}
+
+/* Studio Mode: Softer contrast for "feel" */
+.studio-mode {
+  --border-radius: 12px;
+  --shadow-strength: 0.08;
+  --text-weight: 400;
+}
+
+/* ===========================================
+   LAW 6 & 7: TEXT COLOR RESTRICTIONS
+   =========================================== */
+
+/* Banned: Black text on dark backgrounds */
+[data-theme="indigo"] .text-black,
+[data-theme="indigo"] .text-gray-900,
+[data-theme="indigo"] .text-gray-800 {
+  color: var(--text-primary) !important; /* Force to off-white */
+}
+
+[data-theme="indigo"] .bg-axiom-accent.text-black,
+[data-theme="indigo"] .bg-axiom-accent .text-black,
+[data-theme="indigo"] .bg-\[\#39FF14\].text-black,
+[data-theme="indigo"] .bg-\[\#39FF14\] .text-black,
+[data-theme="indigo"] .bg-\[\#ADFF2F\].text-black,
+[data-theme="indigo"] .bg-\[\#ADFF2F\] .text-black,
+[data-theme="indigo"] #btn-upload-csv,
+[data-theme="indigo"] #btn-upload-csv * {
+  color: #000000 !important;
+}
+
+/* Banned: White text on light backgrounds */
+[data-theme="green"] .text-white,
+[data-theme="green"] .text-gray-100 {
+  color: var(--text-primary) !important; /* Force to dark charcoal */
+}
+
+/* ===========================================
+   LAW 8: TESTABLE CLASSES FOR CONTRAST
+   =========================================== */
+
+/* All text elements must use these classes */
+.text-primary-contrast {
+  color: var(--text-primary);
+  /* Runtime check: ensure contrast ratio >= 4.5:1 */
+}
+
+.text-secondary-contrast {
+  color: var(--text-secondary);
+  /* Runtime check: ensure contrast ratio >= 4.5:1 */
+}
+
+.interactive-contrast {
+  /* For buttons, links, etc. */
+  /* Runtime check: ensure contrast ratio >= 3:1 */
+}
+
+/* ===========================================
+   APPLICATION OF LAWS TO COMPONENTS
+   =========================================== */
+
+/* Body and global styles */
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Cards and surfaces */
+.card, .surface {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--border-radius, 8px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, var(--shadow-strength));
+}
+
+/* Interactive elements */
+.btn-primary {
+  background-color: var(--accent-primary);
+  color: var(--bg-primary);
+  border: none;
+  padding: 8px 16px;
+  border-radius: var(--border-radius, 8px);
+  font-weight: var(--text-weight);
+  transition: all 0.2s ease;
+}
+
+.btn-primary:hover {
+  filter: brightness(1.1);
+  transform: translateY(-1px);
+}
+
+/* Playing track highlight - theme appropriate */
+.track-playing {
+  border-left: 4px solid var(--accent-primary);
+  background-color: rgba(var(--accent-primary-rgb), 0.1);
+}
+
+/* Sidebar and navigation */
+.sidebar {
+  background-color: var(--bg-secondary);
+  border-right: 1px solid var(--border-primary);
+}
+
+.nav-item {
+  color: var(--text-secondary);
+  padding: 12px 20px;
+  border-left: 4px solid transparent;
+  transition: all 0.2s ease;
+}
+
+.nav-item.active {
+  color: var(--accent-primary);
+  border-left-color: var(--accent-primary);
+  background-color: rgba(var(--accent-primary-rgb), 0.1);
+}
+
+.nav-item:hover {
+  background-color: var(--bg-surface);
+  color: var(--text-primary);
+}
+
+/* Search and inputs */
+.search-input {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-primary);
+  color: var(--text-primary);
+  padding: 8px 12px;
+  border-radius: var(--border-radius, 8px);
+}
+
+.search-input::placeholder {
+  color: var(--text-muted);
+}
+
+.search-input:focus {
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 0 2px rgba(var(--accent-primary-rgb), 0.2);
+}
+
+/* Status indicators and badges */
+.status-playing {
+  background-color: var(--accent-success);
+  color: var(--bg-primary);
+}
+
+.status-paused {
+  background-color: var(--accent-warning);
+  color: var(--bg-primary);
+}
+
+.status-error {
+  background-color: var(--accent-error);
+  color: var(--bg-primary);
+}
+
+/* ===========================================
+   DEBUG MODE FOR CONTRAST CHECKING
+   =========================================== */
+
+.debug-contrast [class*="text-"],
+.debug-contrast [class*="bg-"] {
+  position: relative;
+}
+
+.debug-contrast [class*="text-"]::after {
+  content: "⚠️ LOW CONTRAST";
+  position: absolute;
+  top: -20px;
+  left: 0;
+  background: #ff4444;
+  color: white;
+  font-size: 10px;
+  padding: 2px 4px;
+  border-radius: 2px;
+  display: none; /* Shown by JavaScript contrast checker */
+}
+
+/* ===========================================
+   UTILITY CLASSES FOR EASY APPLICATION
+   =========================================== */
+
+.bg-theme-primary { background-color: var(--bg-primary); }
+.bg-theme-secondary { background-color: var(--bg-secondary); }
+.bg-theme-surface { background-color: var(--bg-surface); }
+
+.text-theme-primary { color: var(--text-primary); }
+.text-theme-secondary { color: var(--text-secondary); }
+.text-theme-muted { color: var(--text-muted); }
+
+.accent-theme-primary { color: var(--accent-primary); }
+.accent-theme-secondary { color: var(--accent-secondary); }
+
+.border-theme { border-color: var(--border-primary); }

@@ -1,0 +1,528 @@
+
+
+<style id="library-matching-stable-product-layout-v2">
+  /* Product-design reset: when Matching Songs is open, keep Library rows readable instead of crushing them. */
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) .library-results-column {
+    min-width: 0 !important;
+    overflow: hidden !important;
+  }
+
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) #search-results {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 0 !important;
+    overflow-x: hidden !important;
+  }
+
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) #search-results .library-track-card {
+    position: relative !important;
+    display: grid !important;
+    grid-template-columns: 52px 96px minmax(260px, 1fr) 92px 92px 98px 42px !important;
+    align-items: center !important;
+    column-gap: 18px !important;
+    min-height: 126px !important;
+    height: 126px !important;
+    padding: 18px 18px 18px 0 !important;
+    overflow: hidden !important;
+    border-bottom: 1px solid rgba(198, 255, 179, 0.16) !important;
+    background: linear-gradient(90deg, rgba(14, 36, 12, 0.32), rgba(3, 7, 6, 0.82) 42%, rgba(0, 0, 0, 0.5)) !important;
+    box-sizing: border-box !important;
+    transform: none !important;
+  }
+
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) #search-results .library-track-card.is-selected,
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) #search-results .library-track-card[aria-selected="true"] {
+    border: 2px solid var(--accent, var(--accent)) !important;
+    border-left-width: 0 !important;
+    background: linear-gradient(90deg, rgba(163, 255, 0, 0.12), rgba(6, 20, 8, 0.74) 34%, rgba(2, 6, 5, 0.72)) !important;
+  }
+
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) #search-results .library-track-card::before {
+    content: none !important;
+  }
+
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) #search-results .library-track-card.is-selected::before,
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) #search-results .library-track-card[aria-selected="true"]::before {
+    content: "" !important;
+    position: absolute !important;
+    inset: 0 auto 0 0 !important;
+    width: 52px !important;
+    background: var(--accent, var(--accent)) !important;
+    z-index: 0 !important;
+  }
+
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) #search-results .library-track-card > * {
+    position: relative !important;
+    z-index: 1 !important;
+    min-width: 0 !important;
+  }
+
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) #search-results .library-selection-rail {
+    grid-column: 1 !important;
+    grid-row: 1 !important;
+    width: 52px !important;
+    min-width: 52px !important;
+    height: 126px !important;
+    margin: -18px 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    color: #071005 !important;
+    background: transparent !important;
+    overflow: hidden !important;
+  }
+
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) #search-results .library-track-card:not(.is-selected):not([aria-selected="true"]) .library-selection-rail {
+    opacity: 0 !important;
+    pointer-events: none !important;
+  }
+
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) #search-results .track-art-wrap,
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) #search-results .track-artwork-wrap {
+    grid-column: 2 !important;
+    grid-row: 1 !important;
+    width: 94px !important;
+    height: 94px !important;
+    margin: 0 !important;
+    flex: 0 0 94px !important;
+    align-self: center !important;
+  }
+
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) #search-results .track-art,
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) #search-results .track-art-wrap img,
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) #search-results .track-artwork-wrap img {
+    width: 94px !important;
+    height: 94px !important;
+    object-fit: cover !important;
+  }
+
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) #search-results .play-btn,
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) #search-results .track-play-btn {
+    width: 58px !important;
+    height: 58px !important;
+  }
+
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) #search-results .library-track-main {
+    grid-column: 3 !important;
+    grid-row: 1 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    align-items: stretch !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    height: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    overflow: hidden !important;
+  }
+
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) #search-results .library-track-identity {
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    gap: 7px !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    height: auto !important;
+    overflow: hidden !important;
+    text-align: left !important;
+  }
+
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) #search-results .library-track-title {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+    font-family: 'Bebas Neue', Impact, sans-serif !important;
+    font-size: clamp(22px, 1.8vw, 30px) !important;
+    line-height: 0.96 !important;
+    letter-spacing: 0.035em !important;
+    color: #f6fff0 !important;
+    transform: none !important;
+  }
+
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) #search-results .library-track-artist {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+    font-family: Barlow, sans-serif !important;
+    font-size: clamp(15px, 1.1vw, 20px) !important;
+    line-height: 1.05 !important;
+    letter-spacing: 0.18em !important;
+    color: rgba(244, 255, 240, 0.72) !important;
+  }
+
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) #search-results .library-row-meta-stack,
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) #search-results .library-meta-line {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    gap: 10px !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    overflow: hidden !important;
+  }
+
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) #search-results .library-dna-chip,
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) #search-results .dna-badge,
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) #search-results .library-track-root-chip {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    min-width: 44px !important;
+    max-width: 112px !important;
+    height: 22px !important;
+    padding: 0 10px !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+    font-family: Barlow, sans-serif !important;
+    font-size: 12px !important;
+    line-height: 1 !important;
+    letter-spacing: 0.18em !important;
+  }
+
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) #search-results .library-row-year,
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) #search-results .library-track-year {
+    display: inline-flex !important;
+    align-items: center !important;
+    height: 22px !important;
+    font-family: 'Bebas Neue', Impact, sans-serif !important;
+    font-size: 20px !important;
+    line-height: 1 !important;
+    letter-spacing: 0.06em !important;
+    color: rgba(246, 255, 240, 0.9) !important;
+    white-space: nowrap !important;
+  }
+
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) #search-results .library-track-detail-lane,
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) #search-results .library-mini-waveform,
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) #search-results .library-more-btn,
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) #search-results .library-bpm-tools {
+    display: none !important;
+  }
+
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) #search-results .library-bpm-cell {
+    grid-column: 4 !important;
+    grid-row: 1 !important;
+    width: 88px !important;
+    height: 72px !important;
+    margin: 0 !important;
+    padding: 8px 6px 6px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border: 1px solid rgba(218, 255, 211, 0.22) !important;
+    background: rgba(1, 5, 5, 0.72) !important;
+    box-shadow: none !important;
+    overflow: hidden !important;
+  }
+
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) #search-results .library-bpm-value,
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) #search-results .bpm-block {
+    display: block !important;
+    font-family: 'Bebas Neue', Impact, sans-serif !important;
+    font-size: 36px !important;
+    line-height: 0.92 !important;
+    letter-spacing: 0.025em !important;
+    color: #f6fff0 !important;
+    text-align: center !important;
+  }
+
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) #search-results .library-bpm-label,
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) #search-results .bpm-label {
+    display: block !important;
+    margin-top: 4px !important;
+    font-size: 11px !important;
+    line-height: 1 !important;
+    letter-spacing: 0.12em !important;
+    color: rgba(246, 255, 240, 0.55) !important;
+  }
+
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) #search-results .library-key-cell,
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) #search-results .library-key-metric {
+    grid-column: 5 !important;
+    grid-row: 1 !important;
+    width: 88px !important;
+    height: 72px !important;
+    margin: 0 !important;
+    padding: 8px 6px 6px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border: 2px solid #24dfff !important;
+    border-radius: 8px !important;
+    background: rgba(0, 19, 22, 0.8) !important;
+    color: #24dfff !important;
+    overflow: hidden !important;
+  }
+
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) #search-results .library-key-value,
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) #search-results .key-value {
+    font-family: 'Bebas Neue', Impact, sans-serif !important;
+    font-size: 34px !important;
+    line-height: 0.92 !important;
+    letter-spacing: 0.04em !important;
+  }
+
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) #search-results .library-key-label,
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) #search-results .key-label {
+    margin-top: 4px !important;
+    font-size: 11px !important;
+    line-height: 1 !important;
+    letter-spacing: 0.12em !important;
+  }
+
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) #search-results .library-add-btn,
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) #search-results .track-add-btn,
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) #search-results button[aria-label*="Add"] {
+    grid-column: 6 !important;
+    grid-row: 1 !important;
+    width: 94px !important;
+    height: 72px !important;
+    min-width: 94px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border-radius: 8px !important;
+    font-size: 18px !important;
+    line-height: 1 !important;
+    letter-spacing: 0.06em !important;
+    align-self: center !important;
+  }
+
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) #search-results .fav-star-btn {
+    grid-column: 7 !important;
+    grid-row: 1 !important;
+    width: 38px !important;
+    height: 38px !important;
+    min-width: 38px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 34px !important;
+    line-height: 1 !important;
+    opacity: 0.42 !important;
+    transform: none !important;
+  }
+
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) #smart-links-panel {
+    flex: 0 0 360px !important;
+    width: 360px !important;
+    max-width: 360px !important;
+    min-width: 320px !important;
+    overflow: hidden !important;
+  }
+
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) #lib-suggestions-list {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 10px !important;
+    overflow-x: hidden !important;
+  }
+
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) #lib-suggestions-list .vampire-row {
+    position: relative !important;
+    display: grid !important;
+    grid-template-columns: 54px minmax(0, 1fr) 62px !important;
+    align-items: center !important;
+    column-gap: 12px !important;
+    min-height: 68px !important;
+    height: 68px !important;
+    padding: 8px 10px 8px 12px !important;
+    overflow: hidden !important;
+    border-left: 4px solid var(--accent, var(--accent)) !important;
+    border-top: 1px solid rgba(255,255,255,0.08) !important;
+    border-bottom: 1px solid rgba(255,255,255,0.08) !important;
+    background: linear-gradient(90deg, rgba(24, 44, 12, 0.72), rgba(17, 18, 17, 0.94) 42%, rgba(8, 10, 8, 0.98)) !important;
+    box-sizing: border-box !important;
+  }
+
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) #lib-suggestions-list .recommendation-art,
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) #lib-suggestions-list .track-art-wrap,
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) #lib-suggestions-list .track-artwork-wrap {
+    grid-column: 1 !important;
+    width: 50px !important;
+    height: 50px !important;
+    min-width: 50px !important;
+    margin: 0 !important;
+  }
+
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) #lib-suggestions-list .recommendation-main {
+    grid-column: 2 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    gap: 5px !important;
+    min-width: 0 !important;
+    overflow: hidden !important;
+  }
+
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) #lib-suggestions-list .recommendation-title {
+    display: block !important;
+    max-width: 100% !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+    font-family: 'Bebas Neue', Impact, sans-serif !important;
+    font-size: 15px !important;
+    line-height: 1 !important;
+    letter-spacing: 0.04em !important;
+    color: #f6fff0 !important;
+  }
+
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) #lib-suggestions-list .recommendation-artist {
+    display: block !important;
+    max-width: 100% !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+    font-family: Barlow, sans-serif !important;
+    font-size: 10px !important;
+    line-height: 1 !important;
+    letter-spacing: 0.13em !important;
+    color: rgba(246,255,240,0.64) !important;
+  }
+
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) #lib-suggestions-list .recommendation-meta {
+    display: contents !important;
+  }
+
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) #lib-suggestions-list .recommendation-bpm,
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) #lib-suggestions-list .recommendation-key-metric,
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) #lib-suggestions-list .recommendation-role,
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) #lib-suggestions-list .recommendation-score,
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) #lib-suggestions-list .fav-star-btn {
+    display: none !important;
+  }
+
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) #lib-suggestions-list [id^="lib-sugg-add"] {
+    grid-column: 3 !important;
+    grid-row: 1 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 58px !important;
+    min-width: 58px !important;
+    height: 40px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border-radius: 8px !important;
+    font-size: 15px !important;
+    line-height: 1 !important;
+    letter-spacing: 0.06em !important;
+    align-self: center !important;
+  }
+
+  @media (max-width: 1240px) {
+    #tab-content-library:has(#smart-links-panel:not(.hidden)) #search-results .library-track-card {
+      grid-template-columns: 42px 72px minmax(190px, 1fr) 64px 66px 70px 28px !important;
+      column-gap: 10px !important;
+      min-height: 100px !important;
+      height: 100px !important;
+      padding: 12px 10px 12px 0 !important;
+    }
+
+    #tab-content-library:has(#smart-links-panel:not(.hidden)) #search-results .library-track-card.is-selected::before,
+    #tab-content-library:has(#smart-links-panel:not(.hidden)) #search-results .library-track-card[aria-selected="true"]::before,
+    #tab-content-library:has(#smart-links-panel:not(.hidden)) #search-results .library-selection-rail {
+      width: 42px !important;
+      min-width: 42px !important;
+    }
+
+    #tab-content-library:has(#smart-links-panel:not(.hidden)) #search-results .library-selection-rail {
+      height: 100px !important;
+      margin: -12px 0 !important;
+    }
+
+    #tab-content-library:has(#smart-links-panel:not(.hidden)) #search-results .track-art-wrap,
+    #tab-content-library:has(#smart-links-panel:not(.hidden)) #search-results .track-artwork-wrap,
+    #tab-content-library:has(#smart-links-panel:not(.hidden)) #search-results .track-art,
+    #tab-content-library:has(#smart-links-panel:not(.hidden)) #search-results .track-art-wrap img,
+    #tab-content-library:has(#smart-links-panel:not(.hidden)) #search-results .track-artwork-wrap img {
+      width: 68px !important;
+      height: 68px !important;
+      flex-basis: 68px !important;
+    }
+
+    #tab-content-library:has(#smart-links-panel:not(.hidden)) #search-results .play-btn,
+    #tab-content-library:has(#smart-links-panel:not(.hidden)) #search-results .track-play-btn {
+      width: 44px !important;
+      height: 44px !important;
+    }
+
+    #tab-content-library:has(#smart-links-panel:not(.hidden)) #search-results .library-track-title {
+      font-size: 20px !important;
+    }
+
+    #tab-content-library:has(#smart-links-panel:not(.hidden)) #search-results .library-track-artist {
+      font-size: 13px !important;
+      letter-spacing: 0.14em !important;
+    }
+
+    #tab-content-library:has(#smart-links-panel:not(.hidden)) #search-results .library-dna-chip,
+    #tab-content-library:has(#smart-links-panel:not(.hidden)) #search-results .dna-badge,
+    #tab-content-library:has(#smart-links-panel:not(.hidden)) #search-results .library-track-root-chip {
+      height: 18px !important;
+      max-width: 86px !important;
+      padding: 0 7px !important;
+      font-size: 9px !important;
+      letter-spacing: 0.14em !important;
+    }
+
+    #tab-content-library:has(#smart-links-panel:not(.hidden)) #search-results .library-row-year,
+    #tab-content-library:has(#smart-links-panel:not(.hidden)) #search-results .library-track-year {
+      height: 18px !important;
+      font-size: 16px !important;
+    }
+
+    #tab-content-library:has(#smart-links-panel:not(.hidden)) #search-results .library-bpm-cell,
+    #tab-content-library:has(#smart-links-panel:not(.hidden)) #search-results .library-key-cell,
+    #tab-content-library:has(#smart-links-panel:not(.hidden)) #search-results .library-key-metric {
+      width: 62px !important;
+      height: 56px !important;
+      border-radius: 6px !important;
+    }
+
+    #tab-content-library:has(#smart-links-panel:not(.hidden)) #search-results .library-bpm-value,
+    #tab-content-library:has(#smart-links-panel:not(.hidden)) #search-results .bpm-block,
+    #tab-content-library:has(#smart-links-panel:not(.hidden)) #search-results .library-key-value,
+    #tab-content-library:has(#smart-links-panel:not(.hidden)) #search-results .key-value {
+      font-size: 25px !important;
+    }
+
+    #tab-content-library:has(#smart-links-panel:not(.hidden)) #search-results .library-add-btn,
+    #tab-content-library:has(#smart-links-panel:not(.hidden)) #search-results .track-add-btn,
+    #tab-content-library:has(#smart-links-panel:not(.hidden)) #search-results button[aria-label*="Add"] {
+      width: 68px !important;
+      min-width: 68px !important;
+      height: 56px !important;
+      font-size: 13px !important;
+    }
+
+    #tab-content-library:has(#smart-links-panel:not(.hidden)) #search-results .fav-star-btn {
+      width: 28px !important;
+      min-width: 28px !important;
+      height: 28px !important;
+      font-size: 27px !important;
+    }
+
+    #tab-content-library:has(#smart-links-panel:not(.hidden)) #smart-links-panel {
+      flex-basis: 320px !important;
+      width: 320px !important;
+      max-width: 320px !important;
+    }
+  }
+</style>

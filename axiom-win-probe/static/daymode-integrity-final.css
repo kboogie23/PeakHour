@@ -1,0 +1,701 @@
+/* AXIOM Day Mode final state lock.
+   This file intentionally loads after the release stylesheet so legacy
+   Night Mode selected-state rules cannot repaint shared controls green. */
+
+/* Shared entrance action remains legible when the sidebar changes theme. */
+html[data-entrance-library-empty] body.light-mode #axiom-sidebar #entrance-add-music {
+  background: #eaf0f8 !important;
+  border-color: #b8cbe5 !important;
+  box-shadow: none !important;
+}
+html[data-entrance-library-empty] body.light-mode #axiom-sidebar #entrance-add-music :is(span, strong, small) {
+  color: #26364d !important;
+  -webkit-text-fill-color: #26364d !important;
+  text-shadow: none !important;
+}
+html[data-entrance-library-empty] body.light-mode #axiom-sidebar #entrance-add-music > img {
+  filter: brightness(0) saturate(100%) invert(19%) sepia(99%) saturate(1856%) hue-rotate(204deg) brightness(86%) contrast(109%) !important;
+}
+html[data-entrance-library-empty] body.light-mode #axiom-sidebar #entrance-add-music:is(:hover, :focus-visible) {
+  background: #dce8f8 !important;
+  outline: 2px solid #0047ab !important;
+}
+
+html body.light-mode #studio-active-view #studio-mode-controls :is(#studio-open-daw, #studio-tab-magic, #btn-optimize),
+html body.light-mode #axiom-sidebar #studio-tools-dropdown-menu .sidebar-studio-destination {
+  background: #ffffff !important;
+  border-color: #c5d2e5 !important;
+  box-shadow: none !important;
+  color: #26364d !important;
+  -webkit-text-fill-color: #26364d !important;
+}
+html body.light-mode #studio-active-view #studio-mode-controls :is(#studio-open-daw, #studio-tab-magic, #btn-optimize):is(:hover, :focus-visible),
+html body.light-mode #axiom-sidebar #studio-tools-dropdown-menu .sidebar-studio-destination:is(:hover, :focus-visible) {
+  background: #eaf0f8 !important;
+  border-color: #0047ab !important;
+  outline-color: #0047ab !important;
+}
+html body.light-mode #studio-active-view #studio-mode-controls #btn-optimize :is(span, svg) {
+  color: #0047ab !important;
+  -webkit-text-fill-color: #0047ab !important;
+  filter: none !important;
+}
+
+html body.light-mode #studio-active-view #active-playlist-container
+  .playlist-row.studio-transition-row.axiom-focus-deck-row
+  > .studio-smart-btn.button--green-outline {
+  border-color: rgba(0, 71, 171, 0.62) !important;
+  background: #ffffff !important;
+  color: #0047ab !important;
+  -webkit-text-fill-color: #0047ab !important;
+  box-shadow: none !important;
+}
+
+html body.light-mode #studio-active-view #active-playlist-container
+  .playlist-row.studio-transition-row.axiom-focus-deck-row:is(.selected, .playing-track)
+  > .studio-smart-btn.button--green-outline {
+  border-color: #0047ab !important;
+  background: #0047ab !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  box-shadow: none !important;
+}
+
+html body.light-mode #studio-active-view #active-playlist-container
+  .playlist-row.studio-transition-row.axiom-focus-deck-row
+  .transition-badge.energy-spine-node,
+html body.light-mode #studio-active-view #active-playlist-container
+  .playlist-row.studio-transition-row.axiom-focus-deck-row:is(.selected, .playing-track)
+  .transition-badge.energy-spine-node {
+  border-color: #75a8ff !important;
+  background: #ffffff !important;
+  color: #0047ab !important;
+  box-shadow: 0 0 0 3px rgba(0, 71, 171, 0.08), 0 0 16px rgba(0, 71, 171, 0.30) !important;
+}
+
+html body.light-mode #studio-active-view #active-playlist-container
+  .playlist-row.studio-transition-row.axiom-focus-deck-row
+  .transition-badge.energy-spine-node .studio-node-bpm-value {
+  color: #0047ab !important;
+  -webkit-text-fill-color: #0047ab !important;
+  text-shadow: none !important;
+}
+
+html body.light-mode #studio-active-view #active-playlist-container
+  .playlist-row.studio-transition-row.axiom-focus-deck-row
+  .transition-badge.energy-spine-node .studio-node-bpm-label {
+  color: #40516a !important;
+  -webkit-text-fill-color: #40516a !important;
+  text-shadow: none !important;
+}
+
+html body.light-mode #studio-active-view #active-playlist-container
+  .playlist-row.studio-transition-row .transition-badge.energy-spine-node::after {
+  background: linear-gradient(180deg, rgba(0, 71, 171, 0.30), #70a5ff 48%, rgba(0, 71, 171, 0.36)) !important;
+  box-shadow: 0 0 5px rgba(0, 71, 171, 0.45), 0 0 13px rgba(0, 71, 171, 0.28) !important;
+}
+
+html body.light-mode #replacement-modal #modal-suggestions-list
+  .anchor-suggestion-row.axiom-focus-deck-row:is(.selected, .active-suggestion)
+  .anchor-suggestion-add,
+html body.light-mode #replacement-modal #modal-suggestions-list
+  .anchor-suggestion-row.axiom-focus-deck-row:is(.selected, .active-suggestion)
+  .anchor-decision-btn.active {
+  border-color: #0047ab !important;
+  background: #0047ab !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  box-shadow: none !important;
+}
+
+html body.light-mode #health-inbox-app#health-inbox-app .health-detail-state.healthy,
+html body.light-mode #health-inbox-app#health-inbox-app .health-detail-list-row b {
+  border-color: rgba(0, 71, 171, 0.42) !important;
+  color: #0047ab !important;
+  -webkit-text-fill-color: #0047ab !important;
+  text-shadow: none !important;
+}
+
+/* Day Mode alignment pass: Library rows keep every fixed control inside the
+   card while giving the title and status chips separate breathing lanes. */
+html body.light-mode #tab-content-library.library-cockpit
+  #search-results .library-track-card.axiom-focus-deck-row {
+  grid-template-columns: 60px minmax(176px, 1fr) 62px 54px 58px 34px !important;
+  column-gap: 7px !important;
+  padding-right: 10px !important;
+}
+
+html body.light-mode #tab-content-library.library-cockpit
+  #search-results .library-track-card.axiom-focus-deck-row .library-meta-line {
+  margin-bottom: 3px !important;
+}
+
+html body.light-mode #tab-content-library.library-cockpit
+  #search-results .library-track-card.axiom-focus-deck-row .library-health-chips {
+  margin-top: 2px !important;
+  gap: 6px !important;
+}
+
+html body.light-mode #tab-content-library.library-cockpit
+  #search-results .library-track-card.axiom-focus-deck-row > :is(
+    .library-bpm-cell,
+    .library-key-cell,
+    .library-add-btn,
+    .fav-star-btn
+  ) {
+  position: relative !important;
+  top: -4px !important;
+}
+
+/* The Library Matching Songs rail owns its grid column. Remove the legacy
+   fixed width and margin so its cards cannot be clipped by the viewport. */
+html body.light-mode #tab-content-library.library-cockpit #smart-links-panel.recommendations-panel {
+  width: 100% !important;
+  min-width: 0 !important;
+  margin-left: 0 !important;
+  padding: 18px 14px !important;
+  overflow: hidden !important;
+}
+
+html body.light-mode #tab-content-library.library-cockpit
+  #smart-links-panel .recommendations-controls {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 8px !important;
+  align-items: center !important;
+}
+
+html body.light-mode #tab-content-library.library-cockpit
+  #smart-links-panel .recommendations-controls :is(button, select) {
+  width: 100% !important;
+  min-width: 0 !important;
+}
+
+html body.light-mode #tab-content-library.library-cockpit
+  #smart-links-panel .recommendations-controls .root-help {
+  grid-column: 2 !important;
+  grid-row: 3 !important;
+  width: 30px !important;
+  height: 30px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  justify-self: end !important;
+  border: 1px solid rgba(0, 71, 171, 0.34) !important;
+  border-radius: 50% !important;
+  background: #ffffff !important;
+  color: #0047ab !important;
+  -webkit-text-fill-color: #0047ab !important;
+  font-weight: 800 !important;
+  opacity: 1 !important;
+}
+
+html body.light-mode #tab-content-library.library-cockpit
+  #smart-links-panel #lmod-count {
+  grid-column: 1 !important;
+  grid-row: 3 !important;
+}
+
+@media (min-width: 1181px) and (max-width: 1500px) {
+  html body.light-mode #tab-content-library.library-cockpit .library-brief-chip-row {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) auto !important;
+    gap: 7px !important;
+  }
+
+  html body.light-mode #tab-content-library.library-cockpit .library-brief-chips {
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 5px !important;
+    overflow: hidden !important;
+  }
+
+  html body.light-mode #tab-content-library.library-cockpit
+    .library-brief-chips .library-brief-chip.button--small {
+    width: 100% !important;
+    min-width: 0 !important;
+    padding-inline: 6px !important;
+    font-size: 8px !important;
+  }
+}
+
+/* Matching Songs filter order: count first, information last, flush against
+   the Transition panel. The search remains the flexible first control. */
+html body.light-mode #replacement-modal.anchor-dj-modal .anchor-filter-bar {
+  grid-template-columns: minmax(220px, 1fr) 136px 126px 110px 110px 112px 32px !important;
+}
+
+html body.light-mode #replacement-modal.anchor-dj-modal #mod-count {
+  grid-column: 6 !important;
+  grid-row: 1 !important;
+}
+
+html body.light-mode #replacement-modal.anchor-dj-modal .anchor-filter-bar > .root-help {
+  grid-column: 7 !important;
+  grid-row: 1 !important;
+  width: 30px !important;
+  height: 30px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border: 1px solid rgba(0, 71, 171, 0.34) !important;
+  border-radius: 50% !important;
+  background: #ffffff !important;
+  color: #0047ab !important;
+  -webkit-text-fill-color: #0047ab !important;
+  font-weight: 800 !important;
+  opacity: 1 !important;
+}
+
+/* Musical values are not table cells. Clear the accidental vertical bands
+   and keep one intentional key box instead of a nested double border. */
+html body.light-mode #replacement-modal#replacement-modal.anchor-dj-modal
+  #modal-suggestions-list .anchor-suggestion-bpm.anchor-suggestion-bpm,
+html body.light-mode #replacement-modal#replacement-modal.anchor-dj-modal
+  #modal-suggestions-list .anchor-suggestion-key.anchor-suggestion-key,
+html body.light-mode #replacement-modal#replacement-modal.anchor-dj-modal
+  #modal-suggestions-list .anchor-suggestion-match.anchor-suggestion-match {
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+html body.light-mode #replacement-modal#replacement-modal.anchor-dj-modal
+  #modal-suggestions-list .anchor-suggestion-key strong {
+  border: 1px solid rgba(8, 145, 178, 0.46) !important;
+  background: #f0fbfd !important;
+  box-shadow: none !important;
+}
+
+/* Health remains a light cockpit in Day Mode, including confirmations that
+   are mounted at body level rather than inside the Health tab. */
+html body.light-mode #health-inbox-app#health-inbox-app .health-overall-band {
+  border-color: rgba(0, 71, 171, 0.34) !important;
+  background: #eef4ff !important;
+  box-shadow: none !important;
+}
+
+html body.light-mode #health-inbox-app#health-inbox-app .health-overall-band b {
+  color: #0047ab !important;
+  -webkit-text-fill-color: #0047ab !important;
+}
+
+html body.light-mode #health-inbox-app#health-inbox-app .health-overall-band em {
+  color: #40516a !important;
+  -webkit-text-fill-color: #40516a !important;
+  opacity: 1 !important;
+}
+
+html body.light-mode #health-inbox-app#health-inbox-app .health-detail-action.danger {
+  outline: 0 !important;
+  box-shadow: none !important;
+}
+
+html body.light-mode #health-inbox-app#health-inbox-app .health-detail-action.danger:focus-visible {
+  outline: 2px solid #c81e1e !important;
+  outline-offset: 2px !important;
+}
+
+html body.light-mode #axiom-modal-overlay {
+  background: rgba(7, 17, 31, 0.36) !important;
+  backdrop-filter: blur(8px) saturate(0.9) !important;
+}
+
+html body.light-mode #axiom-modal-card {
+  background: linear-gradient(145deg, #ffffff, #f2f6ff) !important;
+  color: #07111f !important;
+  box-shadow: 0 26px 72px rgba(7, 17, 31, 0.22) !important;
+}
+
+html body.light-mode #axiom-modal-card[data-variant="health-all"] {
+  --system-accent: #0047ab !important;
+}
+
+html body.light-mode #axiom-modal-card::before {
+  background: linear-gradient(90deg, transparent, var(--system-accent), transparent) !important;
+}
+
+html body.light-mode #axiom-modal-card :is(#axiom-modal-title, #axiom-modal-body) {
+  color: #07111f !important;
+  -webkit-text-fill-color: #07111f !important;
+}
+
+html body.light-mode #axiom-modal-card #axiom-modal-body {
+  color: #40516a !important;
+  -webkit-text-fill-color: #40516a !important;
+}
+
+html body.light-mode #axiom-modal-card #axiom-modal-safety {
+  background: color-mix(in srgb, var(--system-accent) 8%, #ffffff) !important;
+  color: #24364f !important;
+  -webkit-text-fill-color: #24364f !important;
+}
+
+html body.light-mode #axiom-modal-card .modal-btn-secondary {
+  border-color: rgba(0, 71, 171, 0.28) !important;
+  background: #ffffff !important;
+  color: #0047ab !important;
+  -webkit-text-fill-color: #0047ab !important;
+  box-shadow: none !important;
+}
+
+html body.light-mode #axiom-modal-card .modal-btn-danger {
+  border-color: #c81e1e !important;
+  background: #c81e1e !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  box-shadow: none !important;
+}
+
+/* Approved Library Health console: the previous command-centre Day Mode
+   selectors target shared Health class names. Keep the rebuilt console fully
+   light and readable instead of leaving dark panels with dark text. */
+html body.light-mode.studio-health-mode #health-inbox-app.health-approved-shell {
+  --health-surface: #ffffff !important;
+  --health-border: rgba(0, 71, 171, 0.22) !important;
+  --health-rule: rgba(7, 17, 31, 0.16) !important;
+  background: #f7f9fc !important;
+  color: #07111f !important;
+}
+
+html body.light-mode.studio-health-mode #health-inbox-app.health-approved-shell :is(
+  .health-approved-header,
+  .health-approved-console,
+  .health-approved-console > article,
+  .health-approved-tools,
+  .health-approved-tools .health-inbox-nav,
+  .health-approved-tools .health-inbox-detail,
+  .health-approved-set-building,
+  .health-approved-set-summary,
+  .health-approved-set-detail
+) {
+  border-color: rgba(0, 71, 171, 0.22) !important;
+  background: #ffffff !important;
+  color: #07111f !important;
+  box-shadow: none !important;
+}
+
+html body.light-mode.studio-health-mode #health-inbox-app.health-approved-shell .health-approved-lanes.health-repair-center,
+html body.light-mode.studio-health-mode #health-inbox-app.health-approved-shell .health-approved-lanes .health-repair-center-card {
+  border-color: rgba(0, 71, 171, 0.22) !important;
+  background: #ffffff !important;
+  color: #07111f !important;
+  box-shadow: none !important;
+}
+
+html body.light-mode.studio-health-mode #health-inbox-app.health-approved-shell .health-new-music-intake {
+  border-color: rgba(0, 71, 171, 0.28) !important;
+  background: #ffffff !important;
+  color: #07111f !important;
+  box-shadow: none !important;
+}
+
+html body.light-mode.studio-health-mode #health-inbox-app.health-approved-shell :is(
+  .health-new-music-intake-copy strong,
+  .health-new-music-stat strong
+) {
+  color: #07111f !important;
+  -webkit-text-fill-color: #07111f !important;
+}
+
+html body.light-mode.studio-health-mode #health-inbox-app.health-approved-shell :is(
+  .health-new-music-intake-copy small,
+  .health-new-music-stat small
+) {
+  color: #40516a !important;
+  -webkit-text-fill-color: #40516a !important;
+}
+
+html body.light-mode.studio-health-mode #health-inbox-app.health-approved-shell .health-new-music-intake-copy span,
+html body.light-mode.studio-health-mode #health-inbox-app.health-approved-shell .health-new-music-actions button {
+  border-color: #0047ab !important;
+  color: #0047ab !important;
+  -webkit-text-fill-color: #0047ab !important;
+}
+
+html body.light-mode.studio-health-mode #health-inbox-app.health-approved-shell .health-new-music-actions button.primary {
+  background: #0047ab !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+
+html body.light-mode.studio-health-mode #health-inbox-app.health-approved-shell :is(
+  #health-approved-task-count,
+  .health-approved-trust strong,
+  .health-approved-stageboard > span,
+  .health-approved-time-row,
+  .health-approved-working-foot,
+  .health-approved-results-intro span,
+  .health-approved-set-summary b,
+  .health-approved-tools-head strong,
+  .health-tool-card strong
+) {
+  color: #24364f !important;
+  -webkit-text-fill-color: #24364f !important;
+}
+
+html body.light-mode.studio-health-mode #health-inbox-app.health-approved-shell :is(
+  .health-approved-trust small,
+  .health-approved-checks-toggle,
+  .health-approved-review-grid small,
+  .health-approved-tools-head small,
+  .health-tool-card small,
+  .health-maintenance-strip span
+) {
+  color: #40516a !important;
+  -webkit-text-fill-color: #40516a !important;
+}
+
+html body.light-mode.studio-health-mode #health-inbox-app.health-approved-shell .health-approved-working-status {
+  color: #356b00 !important;
+  -webkit-text-fill-color: #356b00 !important;
+}
+
+html body.light-mode.studio-health-mode #health-inbox-app.health-approved-shell :is(
+  #health-approved-improvements,
+  #health-inbox-attention-count,
+  #health-repair-year-count
+) {
+  color: #8a5700 !important;
+  -webkit-text-fill-color: #8a5700 !important;
+}
+
+html body.light-mode.studio-health-mode #health-inbox-app.health-approved-shell #health-repair-bpm-count {
+  color: #087d72 !important;
+  -webkit-text-fill-color: #087d72 !important;
+}
+
+html body.light-mode.studio-health-mode #health-inbox-app.health-approved-shell #health-repair-key-count {
+  color: #125bb0 !important;
+  -webkit-text-fill-color: #125bb0 !important;
+}
+
+html body.light-mode.studio-health-mode #health-inbox-app.health-approved-shell .health-approved-live-metrics {
+  background: rgba(0, 71, 171, 0.16) !important;
+}
+
+html body.light-mode.studio-health-mode #health-inbox-app.health-approved-shell .health-approved-live-metrics span {
+  background: #f7f9fc !important;
+}
+
+html body.light-mode.studio-health-mode #health-inbox-app.health-approved-shell .health-approved-live-metrics small,
+html body.light-mode.studio-health-mode #health-inbox-app.health-approved-shell .health-approved-live-metrics strong {
+  color: #24364f !important;
+  -webkit-text-fill-color: #24364f !important;
+}
+
+html body.light-mode.studio-health-mode #health-inbox-app.health-approved-shell .health-approved-live-metrics span:nth-child(3) strong {
+  color: #356b00 !important;
+  -webkit-text-fill-color: #356b00 !important;
+}
+
+html body.light-mode.studio-health-mode #health-inbox-app.health-approved-shell .health-approved-live-metrics span:nth-child(4) strong {
+  color: #8a5700 !important;
+  -webkit-text-fill-color: #8a5700 !important;
+}
+
+html body.light-mode.studio-health-mode #health-inbox-app.health-approved-shell .health-approved-result-tabs button span {
+  border-color: rgba(0, 71, 171, 0.24) !important;
+  color: #0047ab !important;
+  -webkit-text-fill-color: #0047ab !important;
+}
+
+html body.light-mode.studio-health-mode #health-inbox-app.health-approved-shell :is(
+  .health-tools-launch-grid,
+  .health-tools-dock,
+  .health-maintenance-strip
+) {
+  border-color: rgba(0, 71, 171, 0.18) !important;
+  background: #f7f9fc !important;
+}
+
+html body.light-mode.studio-health-mode #health-inbox-app.health-approved-shell .health-tool-card,
+html body.light-mode.studio-health-mode #health-inbox-app.health-approved-shell .health-tools-dock .health-tool-card {
+  border-color: rgba(0, 71, 171, 0.22) !important;
+  background: #ffffff !important;
+  color: #07111f !important;
+}
+
+html body.light-mode.studio-health-mode #health-inbox-app.health-approved-shell .health-tool-card span,
+html body.light-mode.studio-health-mode #health-inbox-app.health-approved-shell .health-tool-card b {
+  border-color: rgba(0, 71, 171, 0.38) !important;
+  color: #0047ab !important;
+  -webkit-text-fill-color: #0047ab !important;
+}
+
+html body.light-mode.studio-health-mode #health-inbox-app.health-approved-shell .health-maintenance-strip button {
+  border-color: rgba(0, 71, 171, 0.22) !important;
+  background: #ffffff !important;
+  color: #24364f !important;
+  -webkit-text-fill-color: #24364f !important;
+}
+
+html body.light-mode.studio-health-mode #health-inbox-app.health-approved-shell :is(
+  .health-approved-title-row h2,
+  .health-approved-task-heading h3,
+  .health-approved-now-track strong,
+  .health-approved-review-grid strong,
+  .health-approved-set-title,
+  .health-approved-set-summary strong
+) {
+  color: #07111f !important;
+  -webkit-text-fill-color: #07111f !important;
+  text-shadow: none !important;
+}
+
+html body.light-mode.studio-health-mode #health-inbox-app.health-approved-shell .health-approved-title-row h2 {
+  background: transparent !important;
+}
+
+html body.light-mode.studio-health-mode #health-inbox-app.health-approved-shell .health-approved-title-divider {
+  background: rgba(7, 17, 31, 0.34) !important;
+}
+
+html body.light-mode.studio-health-mode #health-inbox-app.health-approved-shell .health-approved-improvements-label small {
+  color: #40516a !important;
+  -webkit-text-fill-color: #40516a !important;
+}
+
+html body.light-mode.studio-health-mode #health-inbox-app.health-approved-shell :is(
+  .health-approved-summary,
+  .health-approved-section-label,
+  .health-approved-task-copy,
+  .health-approved-now-track small,
+  .health-approved-results-intro p,
+  .health-approved-results-safety,
+  .health-approved-review-grid > span,
+  .health-approved-set-summary small,
+  .health-approved-set-content
+) {
+  color: #40516a !important;
+  -webkit-text-fill-color: #40516a !important;
+  text-shadow: none !important;
+}
+
+html body.light-mode.studio-health-mode
+  #health-inbox-app.health-approved-shell
+  .health-approved-console[data-health-job-state="idle"]
+  .health-approved-task
+  > #health-approved-task-copy.text-primary-contrast {
+  color: #29425f !important;
+  -webkit-text-fill-color: #29425f !important;
+  text-shadow: none !important;
+}
+
+html body.light-mode.studio-health-mode #health-inbox-app.health-approved-shell .health-approved-lanes .health-repair-center-card > span:first-child,
+html body.light-mode.studio-health-mode #health-inbox-app.health-approved-shell .health-approved-lanes .health-repair-center-card > small {
+  color: #24364f !important;
+  -webkit-text-fill-color: #24364f !important;
+  text-shadow: none !important;
+}
+
+html body.light-mode.studio-health-mode #health-inbox-app.health-approved-shell .health-approved-result-tabs button,
+html body.light-mode.studio-health-mode #health-inbox-app.health-approved-shell .health-approved-filter-row button,
+html body.light-mode.studio-health-mode #health-inbox-app.health-approved-shell .health-approved-checks {
+  color: #40516a !important;
+  -webkit-text-fill-color: #40516a !important;
+}
+
+html body.light-mode.studio-health-mode #health-inbox-app.health-approved-shell .health-approved-result-tabs button.active,
+html body.light-mode.studio-health-mode #health-inbox-app.health-approved-shell .health-approved-filter-row button.active,
+html body.light-mode.studio-health-mode #health-inbox-app.health-approved-shell .health-approved-set-tabs button.active {
+  color: #0047ab !important;
+  -webkit-text-fill-color: #0047ab !important;
+}
+
+html body.light-mode.studio-health-mode #health-inbox-app.health-approved-shell .health-approved-result-tabs button.active::after {
+  background: #0047ab !important;
+}
+
+html body.light-mode.studio-health-mode #health-inbox-app.health-approved-shell :is(
+  .health-approved-primary,
+  .health-approved-review-actions .primary
+) {
+  border-color: #0047ab !important;
+  background: #0047ab !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  box-shadow: none !important;
+}
+
+html body.light-mode.studio-health-mode #health-inbox-app.health-approved-shell .health-approved-review-grid {
+  border-color: rgba(0, 71, 171, 0.22) !important;
+  background: #f7f9fc !important;
+}
+
+/* Keep Lite's generic export/name dialog genuinely readable in Day Mode. */
+html body.light-mode .axiom-dialog-overlay:not(.record-vault-export) {
+  background: rgba(222, 228, 226, 0.9) !important;
+  backdrop-filter: blur(14px) saturate(110%) !important;
+}
+
+html body.light-mode .axiom-dialog-overlay:not(.record-vault-export) .axiom-dialog-card {
+  border-color: #8da1a8 !important;
+  background: #ffffff !important;
+  color: #071005 !important;
+  box-shadow: 0 30px 72px rgba(18, 35, 42, 0.24) !important;
+}
+
+html body.light-mode .axiom-dialog-overlay:not(.record-vault-export) .axiom-dialog-card::before {
+  background: radial-gradient(circle at 50% 55%, rgba(89, 199, 239, 0.14), transparent 48%) !important;
+  opacity: 1 !important;
+}
+
+html body.light-mode .axiom-dialog-overlay:not(.record-vault-export) :is(
+  .axiom-dialog-title,
+  #axiom-text-prompt-title
+) {
+  color: #071005 !important;
+  -webkit-text-fill-color: #071005 !important;
+  text-shadow: none !important;
+}
+
+html body.light-mode .axiom-dialog-overlay:not(.record-vault-export) .axiom-dialog-kicker {
+  color: #005f87 !important;
+  -webkit-text-fill-color: #005f87 !important;
+}
+
+html body.light-mode .axiom-dialog-overlay:not(.record-vault-export) .axiom-dialog-copy {
+  color: #33443c !important;
+  -webkit-text-fill-color: #33443c !important;
+}
+
+html body.light-mode .axiom-dialog-overlay:not(.record-vault-export) .axiom-dialog-input {
+  border-color: #66818c !important;
+  background: #ffffff !important;
+  color: #071005 !important;
+  -webkit-text-fill-color: #071005 !important;
+  box-shadow: inset 0 1px 2px rgba(18, 35, 42, 0.08) !important;
+}
+
+html body.light-mode .axiom-dialog-overlay:not(.record-vault-export) .axiom-dialog-input:focus {
+  border-color: #005f87 !important;
+  box-shadow: 0 0 0 3px rgba(0, 95, 135, 0.16) !important;
+}
+
+html body.light-mode .axiom-dialog-overlay:not(.record-vault-export) .axiom-dialog-btn {
+  border-color: #82949a !important;
+  background: #eef2f1 !important;
+  color: #071005 !important;
+  -webkit-text-fill-color: #071005 !important;
+}
+
+html body.light-mode .axiom-dialog-overlay:not(.record-vault-export) .axiom-dialog-btn:hover {
+  border-color: #42595f !important;
+  background: #e2e8e6 !important;
+}
+
+html body.light-mode .axiom-dialog-overlay:not(.record-vault-export) .axiom-dialog-btn.primary {
+  border-color: #659d00 !important;
+  background: #a3ff00 !important;
+  color: #071005 !important;
+  -webkit-text-fill-color: #071005 !important;
+  box-shadow: none !important;
+}
+
+html body.light-mode .axiom-dialog-overlay:not(.record-vault-export) .axiom-dialog-close {
+  border-color: #82949a !important;
+  background: #eef2f1 !important;
+  color: #071005 !important;
+  -webkit-text-fill-color: #071005 !important;
+}

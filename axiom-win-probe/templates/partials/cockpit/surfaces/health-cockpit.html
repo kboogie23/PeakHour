@@ -1,0 +1,63 @@
+{# The original Health controls are mounted in these bays without cloning IDs. #}
+<link rel="stylesheet" href="/static/css/surfaces/health/cockpit-panels.css?v=20261015-direct-playlist-transfer">
+<div id="health-cockpit" class="health-cockpit">
+    <header class="health-cockpit-masthead health-cockpit-bay">
+        <div><span class="health-cockpit-eyebrow">Prepare your library</span><h1>Library Health</h1><p>Clean up. Fill the gaps. Get ready to play.</p></div>
+        <span class="health-cockpit-motto">A clean library<br>plays better</span>
+        <div class="health-cockpit-masthead-actions">
+            <button id="health-cockpit-scan-health" class="health-cockpit-scan-primary" type="button" data-health-action="refresh" onclick="AxiomHealthCockpit.scanHealth(this)">Scan Health</button>
+            <small id="health-cockpit-scan-note">Scan first. Publish to DJ software later.</small>
+        </div>
+    </header>
+    <div id="health-cockpit-morph" data-state="overview">
+    <div id="health-cockpit-overview" class="health-cockpit-overview"></div>
+    <div id="health-cockpit-plan"></div>
+    <section id="health-cockpit-live" class="health-cockpit-bay" hidden aria-label="Health Summary">
+        <header class="health-cockpit-live-head"><img src="/static/icons/heart-pulse.svg" alt=""><div><h2>Health Summary</h2><p>Your library is being checked. Follow the live progress below.</p></div><span id="health-cockpit-live-label" role="status">Processing</span><button id="health-cockpit-scan-details" type="button" aria-expanded="false" aria-controls="health-cockpit-live-console" onclick="AxiomHealthCockpit.toggleScanDetails(this)">Scan details</button></header>
+        <div id="health-cockpit-live-console"></div>
+        <p id="health-cockpit-other-progress" hidden role="status"></p>
+    </section>
+    </div>
+    <div id="health-cockpit-workspace">
+    <div id="health-cockpit-tools-column">
+    <header class="health-cockpit-tools-heading"><h2>Health tools <small>13 tools</small></h2><label><span class="sr-only">Find a Health tool</span><input id="health-cockpit-search" type="search" placeholder="Find a tool" oninput="AxiomHealthCockpit.filterTools()"></label><button type="button" onclick="AxiomHealthCockpit.expandTools(this)">Expand all</button></header>
+    <nav id="health-cockpit-filters" aria-label="Health tool categories">
+        {% for key, label in [('all', 'All tools'), ('cleanup', 'Clean up'), ('details', 'Fix details'), ('sync', 'Sync to DJ'), ('ready', 'Ready to play')] %}
+        <button type="button" data-health-group-filter="{{ key }}" aria-pressed="{{ 'true' if key == 'all' else 'false' }}" onclick="AxiomHealthCockpit.filterTools('{{ key }}')">{{ label }}</button>
+        {% endfor %}
+    </nav>
+    <div id="health-cockpit-sections">
+        {% set health_sections = [
+            ('detox', 'Library Detox', 'Find and hide FX samples, long mixes and tempo transition files.', 'audio-waveform'),
+            ('organisation', 'Duplicates + Organisation', 'Find duplicates, organise genres and restore removed tracks.', 'database'),
+            ('metadata', 'Metadata', 'Clean titles and artists in one focused workspace.', 'clipboard'),
+            ('era', 'Era', 'Find original-song years and put every track in its era.', 'disc-3'),
+            ('files', 'Missing Files', 'Find and reconnect missing files in your collection.', 'folder-open'),
+            ('bpm', 'BPM + Key Vault', 'Check and fill missing BPM and harmonic keys.', 'lock-keyhole-open'),
+            ('refresh', 'Serato + djay Refresh', 'Bring AXIOM information into your DJ software.', 'rotate-cw'),
+            ('transfer', 'DJ Transfer', 'Serato play counts, djay playlists and beatgrid repair.', 'arrow-right'),
+            ('audio', 'Audio Readiness', 'Check that your songs play cleanly from start to finish.', 'audio-waveform'),
+            ('connections', 'Connections', 'Check your audio driver and connected DJ library.', 'settings'),
+            ('inbox', 'New Music Inbox', 'Prepare your latest imports and revisit scan results.', 'folder-open'),
+            ('cache', 'Generated Storage', 'Review AXIOM generated files and clear its cache.', 'database'),
+            ('doctor', 'Beatgrid Doctor', 'Test a small batch or check your full DJ library.', 'sliders-horizontal')
+        ] %}
+        {% for key, title, copy, icon in health_sections %}
+        {% if key != 'refresh' or not axiom_lite %}
+        <details id="health-section-{{ key }}" class="health-cockpit-section" data-health-section="{{ key }}">
+            <summary><span class="health-cockpit-number">{{ '%02d'|format(loop.index) }}</span><img class="health-cockpit-section-icon" src="/static/icons/{{ icon }}.svg" alt=""><strong>{{ title }}</strong><span class="health-cockpit-section-copy">{{ copy }}</span><span id="health-section-status-{{ key }}" class="health-cockpit-chip" data-tone="neutral">Checking</span><img class="health-cockpit-chevron" src="/static/icons/chevron-down.svg" alt=""></summary>
+            <div id="health-section-body-{{ key }}" class="health-cockpit-section-body"></div>
+        </details>
+        {% endif %}
+        {% endfor %}
+    </div>
+    </div>
+    <aside id="health-cockpit-session" aria-label="This session">
+        <span class="health-cockpit-session-kicker">This session</span>
+        <nav aria-label="Session panels">{% for key, label in [('queue', 'Queue'), ('receipt', 'Receipt'), ('publish', 'Publish')] %}<button type="button" data-health-session-tab="{{ key }}" aria-pressed="{{ 'true' if key == 'queue' else 'false' }}" onclick="AxiomHealthCockpit.sessionTab('{{ key }}')">{{ label }}</button>{% endfor %}</nav>
+        <section id="health-cockpit-session-queue"><h2>Background queue</h2><strong id="health-cockpit-queue-title">Queue idle</strong><p id="health-cockpit-queue-copy">Choose a Health tool to begin.</p><button type="button" onclick="AxiomHealthCockpit.showProgress()">Scan details</button><button id="health-cockpit-queue-stop" type="button" onclick="stopUnifiedHealthScan()" hidden>Stop safely</button></section>
+        <section id="health-cockpit-session-receipt" hidden><h2>Session receipt</h2></section>
+        <section id="health-cockpit-session-publish" hidden></section>
+    </aside>
+    </div>
+</div>

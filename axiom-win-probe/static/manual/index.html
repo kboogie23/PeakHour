@@ -1,0 +1,514 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PEAK HOUR User Manual</title>
+<!--
+  KEEP THIS MANUAL CURRENT: every change to PEAK HOUR that a user can see updates this page in the same
+  piece of work (the how-to, the "What's new" list and the "Last updated" date). Screenshots come from
+  work/make_manual_screenshots.py with the shot list in work/manual_shots.py: add or retake a shot when a
+  screen changes. The page works offline, opened from PEAK HOUR (Settings > System > User Manual) or as a file.
+-->
+<style>
+  :root {
+    --bg: #0d0d0f; --panel: #17171b; --panel-2: #1f1f25; --line: #2c2c33;
+    --text: #e7e8ea; --muted: #a3a6ad; --platinum: #d9dde3; --red: #d02a37; --red-soft: #3a1418;
+    --amber: #f0b429; --amber-soft: #332712; --blue: #5aa9e6; --blue-soft: #132634;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-padding-top: 16px; }
+  body { margin: 0; background: var(--bg); color: var(--text); font: 16px/1.6 "Segoe UI", system-ui, sans-serif; }
+  a { color: #ff6b75; }
+  h1, h2, h3, .brand { font-family: Bahnschrift, "Segoe UI", sans-serif; font-stretch: condensed; letter-spacing: .02em; }
+  .layout { display: grid; grid-template-columns: 270px minmax(0, 1fr); max-width: 1320px; margin: 0 auto; }
+  nav.toc { position: sticky; top: 0; height: 100vh; overflow-y: auto; padding: 28px 18px; border-right: 1px solid var(--line); background: #0a0a0c; }
+  .brand { font-size: 30px; font-weight: 700; line-height: 1; color: var(--platinum); text-transform: uppercase; }
+  .brand span { display: block; margin-top: 6px; font-size: 13px; letter-spacing: .25em; color: var(--red); }
+  nav.toc ol { list-style: none; margin: 24px 0 0; padding: 0; counter-reset: ch; }
+  nav.toc li { counter-increment: ch; }
+  nav.toc a { display: block; padding: 6px 10px; border-radius: 6px; color: var(--muted); text-decoration: none; font-size: 15px; }
+  nav.toc a::before { content: counter(ch, decimal-leading-zero) "  "; color: var(--red); font-family: Bahnschrift, sans-serif; }
+  nav.toc a:hover, nav.toc a:focus-visible { background: var(--panel); color: var(--text); }
+  main { padding: 36px 48px 80px; min-width: 0; }
+  header.hero { border-bottom: 3px solid var(--red); padding-bottom: 22px; margin-bottom: 8px; }
+  header.hero h1 { margin: 0; font-size: 54px; line-height: 1; text-transform: uppercase; color: var(--platinum); }
+  header.hero p { margin: 10px 0 0; color: var(--muted); max-width: 70ch; }
+  .stamp { display: inline-block; margin-top: 14px; padding: 4px 10px; border: 1px solid var(--line); border-radius: 999px; font-size: 13px; color: var(--muted); }
+  section { padding-top: 36px; }
+  h2 { font-size: 34px; margin: 0 0 6px; text-transform: uppercase; color: var(--platinum); border-left: 6px solid var(--red); padding-left: 14px; }
+  h3 { font-size: 22px; margin: 28px 0 8px; color: var(--platinum); }
+  p, li { max-width: 78ch; }
+  ol.steps { padding-left: 0; list-style: none; counter-reset: step; }
+  ol.steps > li { counter-increment: step; position: relative; padding: 2px 0 10px 42px; }
+  ol.steps > li::before { content: counter(step); position: absolute; left: 0; top: 2px; width: 28px; height: 28px; border-radius: 50%;
+    background: var(--red); color: #fff; font: 700 15px/28px Bahnschrift, sans-serif; text-align: center; }
+  figure { margin: 18px 0 24px; max-width: 980px; }
+  figure img { display: block; width: 100%; height: auto; border: 1px solid var(--line); border-radius: 8px; }
+  figure.small { max-width: 520px; }
+  figcaption { margin-top: 8px; font-size: 14px; color: var(--muted); }
+  .note, .tip, .warn { max-width: 78ch; margin: 16px 0; padding: 12px 16px; border-radius: 8px; border-left: 4px solid; }
+  .tip { background: var(--blue-soft); border-color: var(--blue); }
+  .note { background: var(--panel); border-color: var(--platinum); }
+  .warn { background: var(--amber-soft); border-color: var(--amber); }
+  .tip b:first-child, .note b:first-child, .warn b:first-child { text-transform: uppercase; font-size: 13px; letter-spacing: .08em; margin-right: 6px; }
+  kbd, .ui { font-family: Bahnschrift, "Segoe UI", sans-serif; font-weight: 600; }
+  .ui { color: var(--platinum); background: var(--panel-2); border: 1px solid var(--line); border-radius: 4px; padding: 0 6px; white-space: nowrap; }
+  kbd { border: 1px solid var(--line); border-bottom-width: 3px; border-radius: 4px; padding: 0 6px; background: var(--panel); }
+  code { font-family: Consolas, monospace; font-size: 14px; background: var(--panel); padding: 1px 5px; border-radius: 4px; overflow-wrap: anywhere; }
+  table { border-collapse: collapse; margin: 14px 0; width: 100%; max-width: 900px; font-size: 15px; }
+  th, td { text-align: left; vertical-align: top; padding: 8px 10px; border-bottom: 1px solid var(--line); }
+  th { color: var(--platinum); font-family: Bahnschrift, sans-serif; text-transform: uppercase; font-size: 14px; letter-spacing: .05em; }
+  .grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; max-width: 980px; }
+  .grid2 figure { margin: 0; }
+  .changes h3 { margin-top: 20px; }
+  .top { display: inline-block; margin-top: 18px; font-size: 13px; color: var(--muted); }
+  @media (max-width: 900px) {
+    .layout { grid-template-columns: 1fr; }
+    nav.toc { position: static; height: auto; border-right: 0; border-bottom: 1px solid var(--line); }
+    main { padding: 24px 16px 60px; }
+    header.hero h1 { font-size: 40px; }
+  }
+  @media print {
+    body { background: #fff; color: #000; }
+    nav.toc, .top { display: none; }
+    .layout { display: block; }
+    h2, h3, header.hero h1 { color: #000; }
+    section { break-inside: auto; } figure { break-inside: avoid; }
+    .tip, .note, .warn { background: #f4f4f4; }
+  }
+</style>
+</head>
+<body>
+<div class="layout">
+<nav class="toc" aria-label="Chapters">
+  <div class="brand">Peak Hour<span>User manual</span></div>
+  <ol>
+    <li><a href="#install">Install &amp; first start</a></li>
+    <li><a href="#tour">Getting around</a></li>
+    <li><a href="#add-music">Adding your music</a></li>
+    <li><a href="#library">Library</a></li>
+    <li><a href="#video">Video tracks</a></li>
+    <li><a href="#studio">Studio: building a set</a></li>
+    <li><a href="#export">Sending sets to your DJ software</a></li>
+    <li><a href="#performance">Performance &amp; Live Assist</a></li>
+    <li><a href="#playlists">Playlists &amp; favourites</a></li>
+    <li><a href="#health">Library Health</a></li>
+    <li><a href="#ai">AI Assist (Claude or ChatGPT)</a></li>
+    <li><a href="#laptops">Other laptops</a></li>
+    <li><a href="#settings">Settings</a></li>
+    <li><a href="#help">Troubleshooting</a></li>
+    <li><a href="#whats-new">What's new</a></li>
+  </ol>
+</nav>
+
+<main>
+<header class="hero" id="top">
+  <h1>Peak Hour User Manual</h1>
+  <p>PEAK HOUR turns your music folders and DJ libraries into ready-to-play sets, and works alongside Serato DJ Pro, VirtualDJ and djay Pro on Windows. This manual walks through every part of it, step by step.</p>
+  <span class="stamp">For PEAK HOUR 1.0.5 for Windows · Last updated 31 October 2026</span>
+</header>
+
+<div class="note"><b>Your music is safe.</b> PEAK HOUR reads your music files but never edits, moves or deletes them on its own. Fixes (years, BPM, titles and so on) are kept inside PEAK HOUR until you choose to send them to your DJ software, and every send shows you a preview first.</div>
+
+<!-- 1 -->
+<section id="install">
+<h2>Install &amp; first start</h2>
+<h3>Install PEAK HOUR</h3>
+<ol class="steps">
+  <li>Double-click <b>PEAK HOUR Setup 1.0.5-win.exe</b>. No administrator rights are needed.</li>
+  <li>If Windows shows <b>"Windows protected your PC"</b>, click <span class="ui">More info</span>, then <span class="ui">Run anyway</span>. Windows shows this because PEAK HOUR is not yet signed with a publisher certificate.</li>
+  <li>A black <b>PEAK HOUR Setup</b> window unpacks the program and shows a progress bar. This takes a minute or two.</li>
+  <li>When you see <b>"PEAK HOUR is installed"</b>, click <span class="ui">OK</span>. Open PEAK HOUR from the Start menu or the new desktop icon.</li>
+</ol>
+<p>PEAK HOUR opens in its own Microsoft Edge window, with no tabs or address bar, separate from your everyday browsing. To use Google Chrome instead, see <a href="#browser">Use Chrome instead of Edge</a>. Closing the window closes PEAK HOUR.</p>
+<div class="tip"><b>Updating</b> Run the new Setup the same way. Close PEAK HOUR first; if it is still open, Setup says <i>"Close PEAK HOUR, then run Setup again."</i> Your library, playlists, settings and recordings are kept.</div>
+<table>
+  <tr><th>What</th><th>Where it lives</th></tr>
+  <tr><td>The program</td><td><code>%LOCALAPPDATA%\Programs\PEAK HOUR</code></td></tr>
+  <tr><td>Your PEAK HOUR data (library, playlists, settings, backups)</td><td><code>%LOCALAPPDATA%\AXIOM DJ</code></td></tr>
+  <tr><td>Your set recordings</td><td><code>Music\AXIOM DJ\Recordings</code> (you can change this in Settings)</td></tr>
+</table>
+<p>To remove PEAK HOUR, open Windows <b>Settings → Apps</b>, choose <b>PEAK HOUR</b> and click <span class="ui">Uninstall</span>. Your music and your PEAK HOUR data folder are left in place.</p>
+
+<h3>The welcome tour</h3>
+<p>The first time PEAK HOUR opens, a short tour introduces each area. Click <span class="ui">Next</span> to go through it, or <span class="ui">Skip Tour</span>. You can watch it again any time from <b>Settings → System → App Walkthrough → Launch Walkthrough</b>. Most pages also have a red <span class="ui">?</span> button with a guide for that page.</p>
+<figure><img src="img/welcome.jpg" alt="The PEAK HOUR welcome tour"><figcaption>The welcome tour. The list on the right shows its seven steps.</figcaption></figure>
+<a class="top" href="#top">Back to top ↑</a>
+</section>
+
+<!-- 2 -->
+<section id="tour">
+<h2>Getting around</h2>
+<figure><img src="img/home.jpg" alt="PEAK HOUR start screen with the sidebar on the left"><figcaption>The start screen, with the main menu on the left and the player along the bottom.</figcaption></figure>
+<table>
+  <tr><th>Part of the screen</th><th>What it does</th></tr>
+  <tr><td><b>Library</b></td><td>All your songs and videos: search, sort, preview and pick songs.</td></tr>
+  <tr><td><b>Studio</b> <span class="ui">01</span></td><td>Build and order a set. The small <span class="ui">01</span> menu opens the Studio DAW and saved DAW projects.</td></tr>
+  <tr><td><b>Export</b> <span class="ui">02</span></td><td>Send the current set to Serato, djay or VirtualDJ.</td></tr>
+  <tr><td><b>Performance</b></td><td>Your live screen: what's playing, what to play next, recording and session notes.</td></tr>
+  <tr><td><b>Playlists</b></td><td>Saved sets (crates), Build Set From CSV and your Favourites.</td></tr>
+  <tr><td><b>Health</b></td><td>Find and fix missing BPM, key and years, duplicates, missing files and beat grids.</td></tr>
+  <tr><td><b>Tracks counter</b></td><td>How many tracks are in your library. Drop a music folder on it to add music.</td></tr>
+  <tr><td>Moon button</td><td>Switches between the night (dark) and day (light) look.</td></tr>
+  <tr><td>Gear button</td><td>Opens <a href="#settings">Settings</a>.</td></tr>
+  <tr><td><b>Player bar</b> (bottom)</td><td>Plays the song you preview: play/pause, <span class="ui">15s</span> back, <span class="ui">30s</span> forward, <span class="ui">+ Add to set</span>, <span class="ui">Autoplay</span> and volume.</td></tr>
+</table>
+<p>Each page carries a hip-hop region sticker under the menu: Library is <b>East Coast</b>, Studio <b>West Coast</b>, Performance <b>Dirty South</b>, Playlists <b>Texas</b> and Health <b>Midwest</b>.</p>
+<p>The start screen asks how you want to begin: <b>Build a fresh set</b> (start from a room brief such as Wedding, Family-friendly, Open format or Global) or <b>Not sure what to play?</b> (answer a few quick questions and PEAK HOUR suggests a direction and songs to start with).</p>
+<a class="top" href="#top">Back to top ↑</a>
+</section>
+
+<!-- 3 -->
+<section id="add-music">
+<h2>Adding your music</h2>
+<ol class="steps">
+  <li>Click <span class="ui">ADD YOUR MUSIC</span> under the menu, or <span class="ui">Choose Music Source</span> at the top of Library, or <b>Settings → Add Music Library</b>.</li>
+  <li>Pick where your music comes from:
+    <ul>
+      <li><b>Music Folder</b>: any folder on this PC or an external drive. Click <span class="ui">Select Music Folder</span> and choose the folder in the Windows window.</li>
+      <li><b>Serato Database V2</b>: brings in your Serato crates, BPM, key, year, cues and history. Click <span class="ui">Select Database V2</span> and choose the <code>_Serato_</code> folder's <code>database V2</code> file.</li>
+      <li><b>VirtualDJ Library</b>: brings in title, artist, BPM, key, year and cues from every drive. Click <span class="ui">Connect VirtualDJ</span>.</li>
+    </ul>
+    Serato and VirtualDJ are only read; PEAK HOUR does not change them here.</li>
+  <li>The <b>Adding music</b> window shows two steps: <i>Step 1 of 2: finding your music</i>, then <i>Step 2 of 2: reading track details (BPM, key, year)</i>, with a percentage and track count.</li>
+  <li>You don't have to wait. Click <span class="ui">Hide progress</span> to keep working; a thin progress meter stays at the top of the window until the import finishes.</li>
+</ol>
+<div class="grid2">
+  <figure><img src="img/sources.jpg" alt="Choose Music Source window"><figcaption>Choose Music Source.</figcaption></figure>
+  <figure><img src="img/sources-more.jpg" alt="Choose Music Source, scrolled to the VirtualDJ card"><figcaption>Scroll down for VirtualDJ (and, on the main PC, Other laptops).</figcaption></figure>
+</div>
+<div class="tip"><b>Quick way</b> Drag a music folder from File Explorer and drop it on the <b>TRACKS</b> counter in the sidebar.</div>
+<div class="warn"><b>Big libraries on USB drives</b> The first import of a large drive (20,000+ files) can take a while, especially on exFAT USB drives. Leave the drive plugged in until the meter finishes. If the drive later gets a different letter (for example E: becomes F:), use <b>Settings → Rescan Library</b>.</div>
+<p><b>Rescan Library</b> (in Settings) refreshes PEAK HOUR after you add, move or reconnect music folders. It keeps your videos and removes only songs whose files are really gone.</p>
+<a class="top" href="#top">Back to top ↑</a>
+</section>
+
+<!-- 4 -->
+<section id="library">
+<h2>Library</h2>
+<figure><img src="img/library.jpg" alt="The Library page"><figcaption>Library: search across the top, sorting and tools below it, then your tracks.</figcaption></figure>
+<h3>Find songs</h3>
+<ul>
+  <li><b>Search</b>: type an artist, title, genre, era or tempo. Examples: <code>RNB</code>, <code>90s</code>, <code>100-105 BPM</code>.</li>
+  <li><b>List / Album Art</b>: switch between the track list and a cover-art grid.</li>
+  <li><b>Sort Library</b>: <span class="ui">BPM</span>, <span class="ui">Key</span>, <span class="ui">Year</span>, <span class="ui">Genre</span>, or <span class="ui">Clear</span>. You can also click a column heading; <kbd>Ctrl</kbd>-click a second heading to sort by both.</li>
+  <li><b>Recently Added</b> shows your newest songs first. <b>Fresh Picks</b> shuffles in a new selection of songs to try.</li>
+</ul>
+
+<h3>Show only one kind of file (Type)</h3>
+<p>Next to Sort Library, the <b>Type</b> list separates your files by kind:</p>
+<ul>
+  <li><b>All files</b>: everything.</li>
+  <li><b>All audio</b> or <b>All video</b>: just songs, or just music videos.</li>
+  <li>One format, such as <b>MP3</b>, <b>WAV</b>, <b>M4A</b>, <b>MP4</b>, <b>VOB</b> or <b>AVI</b>. Each shows how many you have, and only formats in your library are listed.</li>
+</ul>
+<p>The list, search and counts all follow your choice, and PEAK HOUR remembers it next time.</p>
+<figure class="small"><img src="img/library-type.jpg" alt="Type set to All video (4)"><figcaption>Type set to <b>All video</b>.</figcaption></figure>
+<div class="note"><b>Pictures</b> JPEGs and other picture files aren't tracks, so they don't appear in the Type list. Cover art inside your songs shows on the tracks themselves.</div>
+
+<h3>Each track row</h3>
+<ul>
+  <li><b>Play</b> (on the cover): previews the song in the player bar. Video tracks open the <a href="#video">video window</a>.</li>
+  <li><b>Key</b> (for example <span class="ui">8A</span>): the song's key in Camelot notation. <span class="ui">Find</span> means the key is missing; click it to prepare the song.</li>
+  <li><span class="ui">ADD</span>: adds the song to your Studio set.</li>
+  <li>Star: adds it to your Favourites.</li>
+  <li>The tick box on the left selects several songs at once.</li>
+</ul>
+<p>If you add a song that has no BPM yet, PEAK HOUR offers to <b>Prepare this track</b>. Click <span class="ui">Prepare &amp; Add</span>: the song goes into your set and its BPM is worked out in the background. Only PEAK HOUR's own notes change; the audio file stays untouched.</p>
+<figure class="small"><img src="img/prepare-track.jpg" alt="Prepare this track dialog"><figcaption>Prepare this track.</figcaption></figure>
+
+<h3>Library tools</h3>
+<table>
+  <tr><th>Button</th><th>What it does</th></tr>
+  <tr><td><span class="ui">Track Prep</span></td><td>Lists songs missing BPM, key or year. <span class="ui">Scan + Update Missing Metadata</span> fills them in. <span class="ui">Back to Library</span> returns.</td></tr>
+  <tr><td><span class="ui">Show Setup</span></td><td>Choose BPM, era, music style and room settings (<b>Vibe</b>, <b>Room</b>, <b>Range</b>) so the list matches the gig. <span class="ui">Hide Setup</span> closes them.</td></tr>
+  <tr><td><span class="ui">Set Prep Options</span></td><td>Narrows the list for the set you're preparing: <b>All</b>, <b>Best Fits</b>, <b>Singalong</b> (records people know), <b>Dancefloor Ready</b>, <b>Peak Party</b> or <b>Final Run</b> (a strong finish).</td></tr>
+  <tr><td><span class="ui">Paste a Playlist</span></td><td>Paste a song list, upload a file, or use a Spotify, Apple Music or YouTube link. <span class="ui">Check My Library</span> shows which songs you own, which need review and which are missing.</td></tr>
+  <tr><td><span class="ui">Matching Songs</span></td><td>Opens a side panel of songs that mix well with the one you're previewing.</td></tr>
+</table>
+<div class="grid2">
+  <figure><img src="img/track-prep.jpg" alt="Track Prep"><figcaption>Track Prep.</figcaption></figure>
+  <figure><img src="img/paste-playlist.jpg" alt="Paste a Playlist"><figcaption>Paste a Playlist.</figcaption></figure>
+</div>
+<a class="top" href="#top">Back to top ↑</a>
+</section>
+
+<!-- 5 -->
+<section id="video">
+<h2>Video tracks</h2>
+<p>Click play on a video track (MP4, M4V, MOV, AVI, VOB, MPG and so on) and it opens in the video window.</p>
+<figure><img src="img/video-preview.jpg" alt="The video window with Play audio only and Close buttons"><figcaption>The video window.</figcaption></figure>
+<ul>
+  <li><b>Most music videos (MP4) start in about 3 seconds</b>, straight from your drive. The first one after plugging in a USB drive can take a few seconds longer while the drive wakes up.</li>
+  <li>Older formats such as <b>VOB, AVI and MPEG</b> are converted first. The window says <i>"Converting this video so it can play… this can take a minute."</i></li>
+  <li>If a video can't play directly, PEAK HOUR converts it automatically.</li>
+</ul>
+<h3>Play just the sound</h3>
+<ol class="steps">
+  <li><b>For one video:</b> click <span class="ui">Play audio only</span> in the video window. The video closes and its sound plays in the normal player in under a second.</li>
+  <li><b>For every video:</b> tick <b>Always play audio only for video tracks</b> at the bottom of the video window, or turn on <b>Settings → Library &amp; Data → Play Video Tracks As Audio Only</b>. Video tracks then skip the video window entirely. Turn it off the same way.</li>
+</ol>
+<p>To see only your videos, set the Library's <a href="#library">Type</a> list to <b>All video</b>.</p>
+<a class="top" href="#top">Back to top ↑</a>
+</section>
+
+<!-- 6 -->
+<section id="studio">
+<h2>Studio: building a set</h2>
+<figure><img src="img/studio-set.jpg" alt="Studio with a set of songs"><figcaption>A set in Studio, arranged from Intro through Build, Peak and Drive to Outro.</figcaption></figure>
+<h3>Build a set by hand</h3>
+<ol class="steps">
+  <li>In Library, click <span class="ui">ADD</span> on each song you want (or preview it and click <span class="ui">+ Add to set</span> in the player bar).</li>
+  <li>Open <b>Studio</b>. Drag songs by the handle on the left to reorder them, or click <span class="ui">Suggest Order</span> to let PEAK HOUR order them for smooth mixing.</li>
+  <li>Use the <span class="ui">×</span> to remove a song, <span class="ui">Edit</span> to change its details, <span class="ui">Version</span> to swap to another version (clean, intro, extended), and <span class="ui">Matching Songs</span> to find a song that fits next.</li>
+  <li>Click <span class="ui">Save Set</span>. Studio also autosaves on this PC while you work.</li>
+</ol>
+<p>The top bar shows the <b>Set Score</b> (how well the songs flow), the number of tracks and the set length. <b>Set Brief</b> → <span class="ui">Edit</span> describes the gig so suggestions fit it.</p>
+
+<h3>Let PEAK HOUR build it: Magic Set</h3>
+<ol class="steps">
+  <li>In Studio, click <span class="ui">Magic Set</span>.</li>
+  <li>Choose the <b>Duration</b>, the <b>Avg Mix</b> length and the <b>BPM range</b> (start and end).</li>
+  <li>Name the timeline sections if you like (Warm up, Halfway there, End of set) and add a <span class="ui">+ Mid Point</span>.</li>
+  <li>Click <span class="ui">Generate Set</span>, or <span class="ui">Build Around These Tracks</span> to keep the songs already in your set and fill around them.</li>
+  <li>Check the timeline (red = strong transition, blue = compatible, amber = needs review), then click <span class="ui">Back to Studio</span>.</li>
+</ol>
+<figure><img src="img/magic-set.jpg" alt="Magic Set"><figcaption>Magic Set.</figcaption></figure>
+<div class="tip"><b>Better results</b> Magic Set uses BPM and key. Fill in missing ones first with <a href="#library">Track Prep</a> or <a href="#health">Health</a>.</div>
+
+<h3>Studio DAW (mixtapes and edits)</h3>
+<p>Click <span class="ui">Studio DAW</span> in Studio, or the <span class="ui">01</span> menu next to Studio → <b>Studio DAW</b> / <b>Open DAW Project</b>. The DAW opens your set as a mix you can trim, line up and play. Export the mix as <b>WAV</b> or <b>MP3 (320 kbps)</b>: Windows asks where to save, and you can add the finished mix to your library.</p>
+<figure class="small"><img src="img/studio-tools.jpg" alt="Studio 01 menu"><figcaption>The Studio <span class="ui">01</span> menu.</figcaption></figure>
+<a class="top" href="#top">Back to top ↑</a>
+</section>
+
+<!-- 7 -->
+<section id="export">
+<h2>Sending sets to your DJ software</h2>
+<p>You can send the current Studio set from two places: the sidebar <b>Export</b> menu, or the <span class="ui">Export</span> button at the top of Studio.</p>
+<div class="grid2">
+  <figure><img src="img/export-menu.jpg" alt="Sidebar Export menu"><figcaption>Sidebar Export menu: Serato, djay, VirtualDJ.</figcaption></figure>
+  <figure><img src="img/studio-export.jpg" alt="Studio Export menu"><figcaption>Studio's Export menu: DJ software and files.</figcaption></figure>
+</div>
+<table>
+  <tr><th>Send to</th><th>How</th><th>Good to know</th></tr>
+  <tr><td><b>Serato DJ Pro</b></td><td><span class="ui">Handoff to Serato</span> (or <i>Add this set to Serato</i>)</td><td>Close Serato first. PEAK HOUR backs up Serato's library, adds the crate, checks it and puts the backup back if anything goes wrong.</td></tr>
+  <tr><td><b>djay Pro</b></td><td><span class="ui">Handoff to djay</span></td><td>Only songs already in djay's collection can be added; PEAK HOUR tells you about any that aren't.</td></tr>
+  <tr><td><b>VirtualDJ</b></td><td><span class="ui">Handoff to VirtualDJ</span> in the sidebar menu, or <b>Export to VirtualDJ</b> from a saved playlist</td><td>Creates a new list in VirtualDJ's <b>MyLists</b>. If a list with that name already exists, choose another name.</td></tr>
+  <tr><td>Files</td><td><span class="ui">CSV</span>, <span class="ui">XML</span>, <span class="ui">M3U</span></td><td>Save the set as a file for other software or for sharing.</td></tr>
+</table>
+<p>Afterwards PEAK HOUR can reopen your DJ software for you.</p>
+<a class="top" href="#top">Back to top ↑</a>
+</section>
+
+<!-- 8 -->
+<section id="performance">
+<h2>Performance &amp; Live Assist</h2>
+<figure><img src="img/performance.jpg" alt="Performance page"><figcaption>Performance.</figcaption></figure>
+<h3>During a gig</h3>
+<ol class="steps">
+  <li>Open <b>Performance</b> and click <span class="ui">DJ Auto Off</span> so it reads <span class="ui">DJ Auto On</span>. While Performance is open, PEAK HOUR then follows the song playing in Serato or VirtualDJ. You can also preview a track in Library or Studio and click <span class="ui">Use Track</span>.</li>
+  <li><b>Recommended Next</b> lists songs that fit after it. Click <span class="ui">Refresh</span> for more.</li>
+  <li>Steer the suggestions on the right: <b>Target BPM</b>, <b>Energy</b> (down, Mid, up), <b>Time</b> (<span class="ui">Half Time</span> / <span class="ui">Double Time</span>) and <b>Safety</b> → <span class="ui">Clean only</span>.</li>
+  <li><b>Quiet Coach</b> adds tips from your playing history when you turn it on.</li>
+  <li><b>Session Controls</b>: <span class="ui">Mark Played</span>, <span class="ui">Send to Studio</span>, <span class="ui">Session Receipt</span> (what you played), <span class="ui">Save Session</span> and <span class="ui">Reset Session</span>.</li>
+</ol>
+<p>If many songs are missing years, a banner offers <span class="ui">Fix Years</span>: correct years make suggestions better.</p>
+<h3>Live Assist window</h3>
+<p><span class="ui">Open Live Assist</span> opens a small window of suggestions you can keep beside your DJ software.</p>
+<ul>
+  <li><b>Ctrl+F shortcut:</b> with <b>Settings → Workflow → Ctrl+F Shows Live Assist</b> on, pressing <kbd>Ctrl</kbd>+<kbd>F</kbd> to search in Serato, VirtualDJ or djay brings Live Assist up beside it. Your typing still goes to the DJ software.</li>
+  <li><b>Automatic Live Assist:</b> when a new song starts playing, PEAK HOUR can open Live Assist and minimise itself.</li>
+</ul>
+<h3>Record your set</h3>
+<ol class="steps">
+  <li>Open <b>Settings → Workflow → Set Recording</b>.</li>
+  <li>Choose what to record: the sound your DJ software plays (Serato, VirtualDJ, djay, rekordbox or Traktor), straight from Windows, or your controller or audio interface.</li>
+  <li>Pick <b>WAV</b> or <b>MP3</b>, then click <span class="ui">Test Signal</span> to check the level.</li>
+  <li>Start and stop recording from <b>Performance → Set Recording → Open Recorder</b>. Recordings are saved to the folder shown under <b>Saves to</b>.</li>
+</ol>
+<figure class="small"><img src="img/settings-workflow.jpg" alt="Settings, Workflow"><figcaption>Settings → Workflow: Live Assist and Set Recording.</figcaption></figure>
+<a class="top" href="#top">Back to top ↑</a>
+</section>
+
+<!-- 9 -->
+<section id="playlists">
+<h2>Playlists &amp; favourites</h2>
+<figure><img src="img/playlists.jpg" alt="Playlists page"><figcaption>Playlists: your saved sets (crates) on the left.</figcaption></figure>
+<ul>
+  <li><span class="ui">Save Current Set</span> saves the Studio set as a playlist.</li>
+  <li>Click a playlist to listen to it, rename it, delete it (with <span class="ui">Undo</span>), open it in Studio or export it (including <b>Export to VirtualDJ</b>).</li>
+  <li><span class="ui">Import Sets</span> brings in sets saved from PEAK HOUR before. <span class="ui">Refresh</span> reloads the list.</li>
+  <li>Playlists made by <a href="#ai">AI Assist</a> appear here too.</li>
+</ul>
+<p>The sidebar <b>Playlists</b> menu has two more tools:</p>
+<ul>
+  <li><b>Build Set From CSV</b>: turn a spreadsheet song list into a set.</li>
+  <li><b>Favourites</b>: every song you starred. From here you can <span class="ui">Export to Serato</span> or <span class="ui">Clear All</span>.</li>
+</ul>
+<figure class="small"><img src="img/playlists-menu.jpg" alt="Sidebar Playlists menu"><figcaption>The sidebar Playlists menu.</figcaption></figure>
+<a class="top" href="#top">Back to top ↑</a>
+</section>
+
+<!-- 10 -->
+<section id="health">
+<h2>Library Health</h2>
+<figure><img src="img/health.jpg" alt="Library Health"><figcaption>Library Health: the overview, the tools, and the queue on the right.</figcaption></figure>
+<ol class="steps">
+  <li>Open <b>Health</b> and click <span class="ui">Scan Health</span>. Your files stay unchanged.</li>
+  <li>The overview shows how many repairs are ready and how many songs need your decision.</li>
+  <li>Click <span class="ui">Fix Health</span> to make the ready repairs, and <span class="ui">Review N Tracks</span> to decide on the rest.</li>
+  <li>Repairs are saved in PEAK HOUR. To send them to your DJ software, use <b>Sync to DJ</b> (below) or the <span class="ui">Publish</span> tab.</li>
+</ol>
+<h3>The tools</h3>
+<table>
+  <tr><th>Group</th><th>Tools</th></tr>
+  <tr><td><b>Clean up</b></td><td><b>Library Detox</b> (drops, stingers, samples and long mixes you may want to set aside; a Restore Bin brings them back), <b>Duplicates + Organisation</b> (removed duplicates go to the Windows Recycle Bin), <b>Missing Files</b>, <b>Generated Storage</b>.</td></tr>
+  <tr><td><b>Fix details</b></td><td><b>Metadata</b> (tidy titles and artists), <b>Fix Eras</b> → <span class="ui">Find Original Years</span> (original release years instead of reissue dates), <b>BPM + Key Vault</b>, <b>Beatgrid Doctor</b> → <span class="ui">Check Beatgrids</span> for Serato, djay and VirtualDJ.</td></tr>
+  <tr><td><b>Sync to DJ</b></td><td><b>Send to VirtualDJ</b>, <b>Serato + djay Refresh</b>, <b>DJ Transfer</b> (playlists, play counts, beat grids).</td></tr>
+  <tr><td><b>Ready to play</b></td><td><b>Audio Readiness</b> → <span class="ui">Check Audio</span> (Windows audio and your output device), <b>New Music Inbox</b> (review and prepare newly added songs).</td></tr>
+</table>
+<h3>Send fixes to VirtualDJ</h3>
+<ol class="steps">
+  <li>Close VirtualDJ.</li>
+  <li>In <b>Health → Sync to DJ → Send to VirtualDJ</b>, tick what to copy: <b>Cue points</b> (from Serato, djay or PEAK HOUR, into empty cue slots only), <b>Beat grid repairs</b> and <b>Play counts</b>.</li>
+  <li>Click <span class="ui">Preview VirtualDJ Changes</span> and read the list.</li>
+  <li>Confirm to write. PEAK HOUR backs up VirtualDJ's database first, checks the result, and offers <span class="ui">Undo</span> until VirtualDJ saves again.</li>
+</ol>
+<div class="note"><b>Safe by default</b> Health never edits your music files. Changes to Serato, djay or VirtualDJ happen only when you confirm a preview, with a backup made first.</div>
+<a class="top" href="#top">Back to top ↑</a>
+</section>
+
+<!-- 11 -->
+<section id="ai">
+<h2>AI Assist (Claude or ChatGPT)</h2>
+<p>AI Assist lets Claude or ChatGPT suggest release years, tidy titles and artists, fill in genres and energy, and build playlists from songs you own. You review every suggestion; nothing changes until you apply it.</p>
+<p>Open it from <b>Settings → Library &amp; Data → AI Assist → Open AI Assist</b>.</p>
+
+<h3>1. Connect</h3>
+<figure><img src="img/ai-connect.jpg" alt="AI Assist, Connect tab"><figcaption>Connect: one box for Claude, one for ChatGPT.</figcaption></figure>
+<ol class="steps">
+  <li>Get an API key: for Claude at <b>console.anthropic.com</b>, for ChatGPT at <b>platform.openai.com</b>. Add some prepaid credit to that account.</li>
+  <li>Paste the key into <b>API key</b> and click <span class="ui">Save key</span>. It is stored encrypted on this PC only.</li>
+  <li>Choose a <b>Model</b> (the "best" one is most accurate; the "lowest cost" one is cheapest) and click <span class="ui">Test</span>.</li>
+  <li>If you add both, pick one with <b>Use by default</b>.</li>
+</ol>
+<div class="warn"><b>API key, not your chat login</b> A ChatGPT Plus or Claude Pro subscription can't be used here; AI Assist needs an API key, which is billed separately by OpenAI or Anthropic. If you see a <b>no credit</b> message, add credit on that site's billing page.</div>
+
+<h3>2. Check my library</h3>
+<ol class="steps">
+  <li>Choose what to <b>Check</b>: <b>Release years</b>, <b>Titles &amp; artists</b>, <b>Genres</b> or <b>Energy</b>.</li>
+  <li>Choose <b>Which tracks</b> (<i>Only the ones that need it</i> or <i>All tracks</i>) and how many (<b>Up to</b>).</li>
+  <li>Choose which AI to <b>Use</b>, then click <span class="ui">Start</span>. Songs are sent 40 at a time; you can stop at any point.</li>
+</ol>
+<figure><img src="img/ai-check.jpg" alt="AI Assist, Check my library tab"><figcaption>Check my library.</figcaption></figure>
+
+<h3>3. Review &amp; apply</h3>
+<ol class="steps">
+  <li>Use <b>Show</b> to list suggestions <i>Waiting for review</i>, only <i>High confidence</i> ones, or <i>All</i>. Each row shows the song, what it has <b>Now</b>, the <b>Suggested</b> change, how <b>Sure</b> the AI is and <b>Why</b>.</li>
+  <li>Tick the suggestions you agree with and click <span class="ui">Apply ticked</span>. The window shows <i>"Saving X of N…"</i> while it works. Use <span class="ui">Skip ticked</span> for ones you don't want.</li>
+  <li>Changes are saved in PEAK HOUR only. Your music files and DJ software are not touched; publish from <a href="#health">Health</a> when you're ready.</li>
+</ol>
+<figure><img src="img/ai-review.jpg" alt="AI Assist, Review and apply tab"><figcaption>Review &amp; apply.</figcaption></figure>
+
+<h3>4. Build a playlist</h3>
+<ol class="steps">
+  <li>Describe the playlist, for example <i>"90s East Coast hip-hop warm-up that builds into a peak, then 2000s club anthems"</i>.</li>
+  <li>Set the number of <b>Tracks</b>, and optionally a <b>BPM</b> and <b>Years</b> range.</li>
+  <li>Click <span class="ui">Build playlist</span>. The AI picks only from your own library and puts the songs in a playable order.</li>
+  <li>Look over the list, then save it. It appears in <a href="#playlists">Playlists</a>.</li>
+</ol>
+<figure><img src="img/ai-playlist.jpg" alt="AI Assist, Build a playlist tab"><figcaption>Build a playlist.</figcaption></figure>
+<a class="top" href="#top">Back to top ↑</a>
+</section>
+
+<!-- 12 -->
+<section id="laptops">
+<h2>Other laptops</h2>
+<p>Other laptops on your home Wi-Fi can use PEAK HOUR running on your main PC, each with its own separate library.</p>
+<ol class="steps">
+  <li>On the main PC, open <b>Choose Music Source</b>. The <b>Other laptops</b> card shows the address to use, such as <code>http://192.168.0.128:8080/</code>.</li>
+  <li>On the laptop, open that address in Edge or Chrome.</li>
+  <li>On the laptop, go to <b>Library → Choose Music Source</b> and upload that laptop's <b>VirtualDJ</b> or <b>Serato</b> database. The music files themselves stay on the laptop.</li>
+</ol>
+<p>Only devices on your home network can connect, and they can't change anything on the main PC.</p>
+<a class="top" href="#top">Back to top ↑</a>
+</section>
+
+<!-- 13 -->
+<section id="settings">
+<h2>Settings</h2>
+<p>Click the gear button. Settings are applied as soon as you change them. Use the tabs (<b>Library</b>, <b>Workflow</b>, <b>Interface</b>, <b>System</b>) or the search box.</p>
+<figure><img src="img/settings.jpg" alt="Settings, Control Room"><figcaption>Settings ("Control Room").</figcaption></figure>
+<table>
+  <tr><th>Setting</th><th>What it's for</th></tr>
+  <tr><td>Add Music Library · Library Health · Rescan Library</td><td>See <a href="#add-music">Adding your music</a> and <a href="#health">Library Health</a>.</td></tr>
+  <tr><td>Stress-Test Report</td><td><span class="ui">Make Report</span> checks how PEAK HOUR handles this PC's library (every file type, files that fail to open, slow screens, errors) and saves one zip file to the Desktop to send for support. Nothing in your music or DJ software is changed.</td></tr>
+  <tr><td>Play Video Tracks As Audio Only</td><td>See <a href="#video">Video tracks</a>.</td></tr>
+  <tr><td>AI Assist</td><td>See <a href="#ai">AI Assist</a>.</td></tr>
+  <tr><td>Library Matching Songs</td><td>Show or hide the Matching Songs panel in Library.</td></tr>
+  <tr><td>Music Sources</td><td>Your record pools for missing tracks. PEAK HOUR opens them in your browser and never stores your login.</td></tr>
+  <tr><td>Dropbox Backup &amp; Restore · Open Backups</td><td>Keep copies of your PEAK HOUR library information, playlists and unfinished sets.</td></tr>
+  <tr><td>Workflow</td><td>Automatic Live Assist, Ctrl+F Shows Live Assist, Set Recording, colour matching your DJ software, and where PEAK HOUR opens once your music is ready.</td></tr>
+  <tr><td>Interface</td><td>Where Matching Songs sits, and text size (<span class="ui">−</span> / <span class="ui">+</span>).</td></tr>
+  <tr><td>System</td><td>Artwork on/off, the add-to-set animation, a browser check, <b>App Walkthrough</b>, <b>Open PEAK HOUR In</b> (Edge or Chrome), <b>User Manual</b> (this page), and the installed version and build.</td></tr>
+</table>
+<h3 id="browser">Use Chrome instead of Edge</h3>
+<ol class="steps">
+  <li>Open <b>Settings → System</b> and find <b>Open PEAK HOUR In</b>.</li>
+  <li>Choose <b>Google Chrome</b> (or <b>Microsoft Edge</b> to switch back). A browser that isn't installed on this PC is shown as <i>(not installed)</i> and can't be picked.</li>
+  <li>Close PEAK HOUR and open it again. It now opens in a Chrome window, and Live Assist opens in Chrome too.</li>
+</ol>
+<figure class="small"><img src="img/settings-browser.jpg" alt="Open PEAK HOUR In setting set to Google Chrome"><figcaption>Chrome chosen while PEAK HOUR is still open in Edge: the change applies at the next start.</figcaption></figure>
+<div class="note"><b>Good to know</b> The PEAK HOUR window uses its own Chrome profile, so your Chrome tabs, sign-ins, bookmarks and extensions stay out of it. Your library, playlists, sets and settings are the same in either browser. A few choices remembered by the window itself (the welcome tour, the Library <b>Type</b> filter, <b>Always play audio only</b>) start fresh the first time you switch. If neither Edge nor Chrome is installed, PEAK HOUR opens in your default browser.</div>
+<a class="top" href="#top">Back to top ↑</a>
+</section>
+
+<!-- 14 -->
+<section id="help">
+<h2>Troubleshooting</h2>
+<table>
+  <tr><th>Problem</th><th>What to do</th></tr>
+  <tr><td>"Windows protected your PC" when installing</td><td>Click <b>More info → Run anyway</b>.</td></tr>
+  <tr><td>Setup says "Close PEAK HOUR, then run Setup again."</td><td>Close PEAK HOUR (and any Live Assist window), then run Setup again.</td></tr>
+  <tr><td>Setup's black window seems frozen</td><td>If its title starts with <b>Select</b>, press <kbd>Esc</kbd>. Otherwise give it a minute; the progress bar moves in steps.</td></tr>
+  <tr><td>Import from a USB drive is slow</td><td>Large exFAT drives are slow to read the first time. Click <b>Hide progress</b> and keep working; leave the drive connected.</td></tr>
+  <tr><td>Songs show as missing after moving a drive</td><td><b>Settings → Rescan Library</b>.</td></tr>
+  <tr><td>A video won't play</td><td>Click <b>Play audio only</b>, or wait for the conversion message to finish.</td></tr>
+  <tr><td>Serato export refused</td><td>Close Serato DJ Pro and try again.</td></tr>
+  <tr><td>AI Assist says no credit or rate limit</td><td>Add credit to your OpenAI or Anthropic account, or wait a minute and run the check again.</td></tr>
+  <tr><td>Something else looks wrong</td><td><b>Settings → Stress-Test Report → Make Report</b>, and send the zip it saves on your Desktop.</td></tr>
+</table>
+<a class="top" href="#top">Back to top ↑</a>
+</section>
+
+<!-- 15 -->
+<section id="whats-new" class="changes">
+<h2>What's new</h2>
+<p>Newest first. This list grows with every update.</p>
+<h3>1.0.5 · 31 October 2026</h3>
+<ul>
+  <li><b>Open PEAK HOUR in Chrome</b>: Settings → System → Open PEAK HOUR In lets you use Google Chrome instead of Microsoft Edge.</li>
+  <li><b>User manual</b>: this guide, opened from Settings → System → User Manual.</li>
+  <li><b>Faster video previews</b>: most music videos start in about 3 seconds instead of about 50. New <b>Play audio only</b> button and an <b>always audio only</b> option.</li>
+  <li><b>Type filter</b> in Library: show all audio, all video, or one format such as MP3 or VOB.</li>
+  <li><b>AI Assist</b> with Claude or ChatGPT: release years, titles and artists, genres, energy, and AI-built playlists.</li>
+  <li><b>Import window</b>: clear two-step progress, and <b>Hide progress</b> now really hides it, leaving a small meter at the top.</li>
+  <li><b>Big libraries</b>: Health checks, track lists and the app itself are much faster on large USB libraries.</li>
+  <li><b>Stress-Test Report</b> in Settings.</li>
+  <li><b>Setup</b>: progress bar while unpacking, and no more freezing when the Setup window is clicked.</li>
+</ul>
+<h3>Earlier 1.0.5 builds</h3>
+<ul>
+  <li>Red-and-platinum PEAK HOUR look, with region stickers on each page.</li>
+  <li>VirtualDJ: connect your library, beat grid check, send cues, grid repairs and play counts, export sets to MyLists.</li>
+  <li>Other laptops on the home network, each with its own library.</li>
+  <li>Windows versions of Mac-only features: File Explorer, Recycle Bin, Windows audio check, recording from DJ software, MP3 mix export, VST3 effects.</li>
+</ul>
+<a class="top" href="#top">Back to top ↑</a>
+</section>
+</main>
+</div>
+</body>
+</html>

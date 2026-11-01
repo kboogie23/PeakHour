@@ -1,0 +1,50 @@
+.first-login-preview[hidden], .first-login-recovery[hidden] { display: none; }
+#settings-account-logout[hidden] { display: none !important; }
+html[data-axiom-login="checking"] body::after { content: ''; position: fixed; inset: 0; z-index: 2147482999; background: #101315; }
+.first-login-preview {
+    position: fixed;
+    inset: 0;
+    z-index: 2147483000;
+    display: grid;
+    place-items: center;
+    overflow-y: auto;
+    padding: 24px;
+    color: #f5f7f5;
+    background: linear-gradient(135deg, #1a1e20 0%, #0c0e0f 48%, #171b1d 100%);
+    font-family: 'Barlow', sans-serif;
+}
+.first-login-form {
+    width: min(100%, 430px);
+    padding: 32px 34px 24px;
+    border: 1px solid #2c373c;
+    border-radius: 8px;
+    background: #101317;
+    box-shadow: 0 20px 64px #0008;
+}
+.first-login-brand { display: block; width: 104px; height: 104px; object-fit: contain; margin: 0 auto 14px; }
+.first-login-form h1 { margin: 0; color: #f3f5f4; font: 400 30px/1.1 'Bebas Neue', Impact, sans-serif; letter-spacing: 0; text-align: center; text-transform: uppercase; }
+.first-login-form > p:first-of-type { margin: 8px 0 30px; color: #aebdc5; font-size: 15px; line-height: 1.3; text-align: center; }
+.first-login-fields { display: grid; gap: 8px; }
+.first-login-fields label { margin-top: 4px; color: #aebdc5; font: 400 18px/1.2 'Bebas Neue', Impact, sans-serif; letter-spacing: 0; }
+.first-login-fields input { width: 100%; height: 42px; padding: 10px 13px; border: 1px solid #34414b; border-radius: 4px; outline: 0; background: #171d23; color: #f7f9f8; font: 15px 'Barlow', sans-serif; }
+.first-login-fields input::placeholder { color: #81929e; }
+.first-login-fields input:focus-visible { border-color: #a3ff00; box-shadow: 0 0 0 2px #a3ff0033; }
+.first-login-submit { width: 100%; min-height: 44px; margin-top: 30px; border: 1px solid #a3ff00; border-radius: 4px; background: #a3ff00; color: #000; font: 400 22px/1 'Bebas Neue', Impact, sans-serif; letter-spacing: 0; cursor: pointer; }
+html body #first-login-preview button { font-family: 'Barlow', sans-serif !important; text-transform: none !important; }
+html body #first-login-preview .first-login-submit { font-family: 'Bebas Neue', Impact, sans-serif !important; color: #000 !important; }
+.first-login-submit:hover, .first-login-submit:focus-visible { border-color: #c7ff69; background: #c7ff69; color: #000; }
+.first-login-submit:disabled { opacity: .6; cursor: progress; }
+.first-login-recovery { display: block; margin: 18px auto 0; border: 0; background: none; color: #9fadb6; font: 500 14px/1.2 'Barlow', sans-serif; cursor: pointer; }
+.first-login-switch { margin: 28px 0 0; color: #a5b4bd; font-size: 14px; text-align: center; }
+.first-login-switch button { border: 0; background: none; color: #a3ff00; font: 600 14px 'Barlow', sans-serif; cursor: pointer; }
+.first-login-recovery:hover, .first-login-switch button:hover { text-decoration: underline; }
+.first-login-feedback { min-height: 16px; margin: 12px 0 0; color: #e7c16e; font-size: 12px; line-height: 1.35; text-align: center; }
+.first-login-feedback.error { color: #ffb6a9; }
+.first-login-footer { margin-top: 16px; padding-top: 14px; border-top: 1px solid #263036; color: #788992; font-size: 11px; text-align: center; }
+.first-login-footer span { padding: 0 8px; color: #52646a; }
+.first-login-preview :is(button, input):focus-visible { outline: 2px solid #a3ff00; outline-offset: 2px; }
+@media (max-width: 520px) {
+    .first-login-preview { padding: 12px; }
+    .first-login-form { padding: 28px 22px 20px; }
+    .first-login-brand { width: 88px; height: 88px; }
+}

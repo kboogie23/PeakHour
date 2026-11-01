@@ -1,0 +1,1750 @@
+
+
+body.health-upgrade-preview-mode #health-inbox-detail .health-smart-cleanup-head .health-smart-cleanup-nav {
+  border-color: var(--smart-line-strong);
+  color: var(--smart-accent);
+}
+
+body.health-upgrade-preview-mode #health-inbox-detail .health-smart-cleanup-head .health-smart-cleanup-exit,
+body.health-upgrade-preview-mode #health-inbox-detail .health-smart-cleanup-head .health-smart-cleanup-restore {
+  color: var(--smart-muted);
+}
+
+body.health-upgrade-preview-mode #health-inbox-detail .health-smart-cleanup-panel .health-genre-outcome-preview {
+  margin: 0;
+  padding: 11px 13px;
+  border: 1px solid var(--smart-line);
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.018);
+  color: var(--smart-copy);
+  font-family: "Barlow", sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.035em;
+  line-height: 1.35;
+  text-transform: none;
+}
+
+body.health-upgrade-preview-mode #health-inbox-detail .health-smart-cleanup-panel .health-genre-outcome-preview strong,
+body.health-upgrade-preview-mode #health-inbox-detail .health-smart-cleanup-panel .health-genre-outcome-preview b {
+  color: var(--smart-ink);
+  font-weight: 900;
+}
+
+body.health-upgrade-preview-mode #health-inbox-detail .health-smart-cleanup-groups {
+  gap: 10px;
+  margin-top: 12px;
+  max-height: min(560px, 60vh);
+  padding-right: 5px;
+}
+
+body.health-upgrade-preview-mode #health-inbox-detail .health-smart-cleanup-group {
+  overflow: hidden;
+  border: 1px solid var(--smart-line);
+  border-radius: 3px;
+  background: var(--smart-surface-raised);
+  transition: border-color 150ms ease, background 150ms ease, transform 150ms ease;
+}
+
+body.health-upgrade-preview-mode #health-inbox-detail .health-smart-cleanup-group:hover {
+  border-color: var(--smart-line-strong);
+  background: var(--smart-surface-soft);
+  transform: translateY(-1px);
+}
+
+body.health-upgrade-preview-mode #health-inbox-detail .health-smart-cleanup-group > header {
+  min-height: auto;
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+
+body.health-upgrade-preview-mode #health-inbox-detail .health-smart-cleanup-lane-open {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 22px;
+  width: 100%;
+  min-height: 70px;
+  padding: 14px 16px 12px;
+}
+
+body.health-upgrade-preview-mode #health-inbox-detail .health-smart-cleanup-lane-open > span {
+  gap: 6px;
+}
+
+body.health-upgrade-preview-mode #health-inbox-detail .health-smart-cleanup-lane-open strong {
+  color: var(--smart-ink);
+  font-size: 23px;
+  letter-spacing: 0.055em;
+}
+
+body.health-upgrade-preview-mode #health-inbox-detail .health-smart-cleanup-lane-open small {
+  color: var(--smart-copy);
+  font-family: "Barlow", sans-serif;
+  font-size: 9px;
+  font-weight: 750;
+  letter-spacing: 0.04em;
+  line-height: 1.35;
+  text-transform: uppercase;
+}
+
+body.health-upgrade-preview-mode #health-inbox-detail .health-smart-cleanup-lane-open em {
+  min-width: 112px;
+  min-height: 38px;
+  display: grid;
+  place-items: center;
+  padding: 0 14px;
+  border: 1px solid var(--smart-line-strong);
+  border-radius: 2px;
+  color: var(--smart-accent);
+  font-family: "Barlow", sans-serif;
+  font-size: 9px;
+  letter-spacing: 0.09em;
+}
+
+body.health-upgrade-preview-mode #health-inbox-detail .health-smart-cleanup-lane-summary {
+  margin: 0;
+  padding: 9px 16px 11px;
+  border-top: 1px solid rgba(222, 238, 218, 0.08);
+  color: var(--smart-muted);
+  font-family: "Barlow", sans-serif;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.035em;
+  line-height: 1.35;
+  text-transform: none;
+}
+
+body.health-upgrade-preview-mode #health-inbox-detail .health-smart-cleanup-refine {
+  gap: 18px;
+  margin-top: 14px;
+  padding: 18px;
+  border: 1px solid var(--smart-line);
+  border-radius: 3px;
+  background: var(--smart-surface-raised);
+}
+
+body.health-upgrade-preview-mode #health-inbox-detail .health-smart-cleanup-refine > span > strong {
+  color: var(--smart-ink);
+  font-size: 25px;
+  letter-spacing: 0.055em;
+}
+
+body.health-upgrade-preview-mode #health-inbox-detail .health-smart-cleanup-refine > span > small {
+  max-width: 760px;
+  color: var(--smart-copy);
+  font-family: "Barlow", sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.035em;
+  line-height: 1.45;
+  text-transform: none;
+}
+
+body.health-upgrade-preview-mode #health-inbox-detail .health-smart-cleanup-refine-grid {
+  gap: 16px;
+  grid-template-columns: minmax(280px, 0.95fr) minmax(280px, 1.05fr);
+}
+
+body.health-upgrade-preview-mode #health-inbox-detail .health-smart-cleanup-tick-box {
+  gap: 8px;
+  max-height: 340px;
+  padding: 12px;
+  border: 1px solid var(--smart-line);
+  border-radius: 2px;
+  background: #070d09;
+}
+
+body.health-upgrade-preview-mode #health-inbox-detail .health-smart-cleanup-tick-box > div {
+  top: -12px;
+  margin: -12px -12px 2px;
+  padding: 12px;
+  border-bottom: 1px solid var(--smart-line);
+  background: #070d09;
+}
+
+body.health-upgrade-preview-mode #health-inbox-detail .health-smart-cleanup-tick-box > div strong,
+body.health-upgrade-preview-mode #health-inbox-detail .health-smart-cleanup-refine label > span {
+  color: var(--smart-ink);
+  font-family: "Barlow", sans-serif;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.09em;
+  line-height: 1;
+}
+
+body.health-upgrade-preview-mode #health-inbox-detail .health-smart-cleanup-tick-box > div button {
+  min-height: 34px;
+  padding: 0 10px;
+  border: 1px solid var(--smart-line);
+  border-radius: 2px;
+  background: var(--smart-surface-raised);
+  color: var(--smart-copy);
+  font-family: "Barlow", sans-serif;
+  font-size: 8px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+}
+
+body.health-upgrade-preview-mode #health-inbox-detail .health-smart-cleanup-tick-box > div button:hover {
+  border-color: var(--smart-line-strong);
+  color: var(--smart-accent);
+}
+
+body.health-upgrade-preview-mode #health-inbox-detail .health-smart-cleanup-tick-row {
+  min-height: 48px;
+  padding: 9px 10px;
+  border: 1px solid var(--smart-line);
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.018);
+}
+
+body.health-upgrade-preview-mode #health-inbox-detail .health-smart-cleanup-tick-row:has(input:checked) {
+  border-color: rgba(163, 255, 0, 0.28);
+  background: rgba(163, 255, 0, 0.045);
+}
+
+body.health-upgrade-preview-mode #health-inbox-detail .health-smart-cleanup-tick-row span {
+  color: var(--smart-ink);
+  font-family: "Barlow", sans-serif;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+}
+
+body.health-upgrade-preview-mode #health-inbox-detail .health-smart-cleanup-tick-row b {
+  color: var(--smart-accent);
+  font-family: "Barlow", sans-serif;
+  font-size: 10px;
+  font-weight: 900;
+}
+
+body.health-upgrade-preview-mode #health-inbox-detail .health-smart-cleanup-tick-row button {
+  min-height: 30px;
+  padding: 0 9px;
+  border: 1px solid rgba(255, 177, 68, 0.24);
+  border-radius: 2px;
+  background: transparent;
+  color: rgba(255, 194, 111, 0.74);
+  font-family: "Barlow", sans-serif;
+  font-size: 8px;
+  font-weight: 900;
+  letter-spacing: 0.07em;
+}
+
+body.health-upgrade-preview-mode #health-inbox-detail .health-smart-cleanup-refine-grid > label {
+  align-content: start;
+  display: grid;
+  gap: 12px;
+  padding: 14px;
+  border: 1px solid var(--smart-line);
+  border-radius: 2px;
+  background: #070d09;
+}
+
+body.health-upgrade-preview-mode #health-inbox-detail .health-smart-cleanup-target-buttons {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+body.health-upgrade-preview-mode #health-inbox-detail .health-smart-cleanup-target-buttons button {
+  min-height: 40px;
+  padding: 0 12px;
+  border: 1px solid var(--smart-line);
+  border-radius: 2px;
+  background: var(--smart-surface-raised);
+  color: var(--smart-copy);
+  font-family: "Barlow", sans-serif;
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 0.07em;
+}
+
+body.health-upgrade-preview-mode #health-inbox-detail .health-smart-cleanup-target-buttons button:hover {
+  border-color: var(--smart-line-strong);
+  color: var(--smart-ink);
+}
+
+body.health-upgrade-preview-mode #health-inbox-detail .health-smart-cleanup-target-buttons button.is-selected {
+  border-color: var(--smart-accent);
+  background: var(--smart-accent);
+  color: #071005;
+}
+
+body.health-upgrade-preview-mode #health-inbox-detail .health-smart-cleanup-refine input[type="text"] {
+  width: 100%;
+  min-height: 44px;
+  padding: 0 12px;
+  border: 1px solid var(--smart-line);
+  border-radius: 2px;
+  background: var(--smart-surface-raised);
+  color: var(--smart-ink);
+  font-family: "Barlow", sans-serif;
+  font-size: 11px;
+  font-weight: 750;
+  outline: none;
+}
+
+body.health-upgrade-preview-mode #health-inbox-detail .health-smart-cleanup-refine input[type="text"]:focus {
+  border-color: var(--smart-line-strong);
+  box-shadow: 0 0 0 2px rgba(163, 255, 0, 0.08);
+}
+
+body.health-upgrade-preview-mode #health-inbox-detail .health-smart-cleanup-apply-zone {
+  position: static;
+  gap: 18px;
+  margin-top: 14px;
+  padding: 15px 16px;
+  border: 1px solid var(--smart-line);
+  border-left: 3px solid var(--smart-accent);
+  border-radius: 3px;
+  background: var(--smart-surface-raised);
+  box-shadow: none;
+}
+
+body.health-upgrade-preview-mode #health-inbox-detail .health-smart-cleanup-apply-zone strong {
+  color: var(--smart-ink);
+  font-size: 21px;
+  letter-spacing: 0.055em;
+}
+
+body.health-upgrade-preview-mode #health-inbox-detail .health-smart-cleanup-apply-zone small {
+  color: var(--smart-copy);
+  font-family: "Barlow", sans-serif;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.035em;
+  line-height: 1.4;
+  text-transform: none;
+}
+
+body.health-upgrade-preview-mode #health-inbox-detail .health-smart-cleanup-apply-zone #health-smart-cleanup-apply {
+  min-width: 220px;
+  min-height: 46px;
+  padding: 0 16px;
+  border: 1px solid var(--smart-line);
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.035) !important;
+  color: var(--smart-muted) !important;
+  box-shadow: none !important;
+  font-family: "Barlow", sans-serif;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+}
+
+body.health-upgrade-preview-mode #health-inbox-detail .health-smart-cleanup-apply-zone #health-smart-cleanup-apply:not(:disabled) {
+  border-color: var(--smart-accent);
+  background: var(--smart-accent) !important;
+  color: #071005 !important;
+  box-shadow: 0 10px 24px rgba(163, 255, 0, 0.12) !important;
+}
+
+body.light-mode.health-upgrade-preview-mode #health-inbox-detail .health-smart-cleanup-callout,
+body.light-mode.health-upgrade-preview-mode #health-inbox-detail .health-smart-cleanup-panel {
+  --smart-accent: #0b4fb1;
+  --smart-ink: #10213a;
+  --smart-copy: rgba(12, 37, 73, 0.70);
+  --smart-muted: rgba(12, 37, 73, 0.48);
+  --smart-line: rgba(11, 79, 177, 0.16);
+  --smart-line-strong: rgba(11, 79, 177, 0.38);
+  --smart-surface: #ffffff;
+  --smart-surface-raised: #f6f9fd;
+  --smart-surface-soft: #edf4fc;
+}
+
+body.light-mode.health-upgrade-preview-mode #health-inbox-detail .health-smart-cleanup-callout,
+body.light-mode.health-upgrade-preview-mode #health-inbox-detail .health-smart-cleanup-panel,
+body.light-mode.health-upgrade-preview-mode #health-inbox-detail .health-smart-cleanup-refine,
+body.light-mode.health-upgrade-preview-mode #health-inbox-detail .health-smart-cleanup-apply-zone {
+  background: var(--smart-surface) !important;
+  box-shadow: 0 12px 30px rgba(11, 79, 177, 0.055);
+}
+
+body.light-mode.health-upgrade-preview-mode #health-inbox-detail .health-smart-cleanup-tick-box,
+body.light-mode.health-upgrade-preview-mode #health-inbox-detail .health-smart-cleanup-tick-box > div,
+body.light-mode.health-upgrade-preview-mode #health-inbox-detail .health-smart-cleanup-refine-grid > label {
+  background: #ffffff;
+}
+
+body.light-mode.health-upgrade-preview-mode #health-inbox-detail .health-smart-cleanup-tick-row,
+body.light-mode.health-upgrade-preview-mode #health-inbox-detail .health-smart-cleanup-panel .health-genre-outcome-preview {
+  background: #f8fafd;
+}
+
+body.light-mode.health-upgrade-preview-mode #health-inbox-detail .health-smart-cleanup-tick-row:has(input:checked) {
+  border-color: rgba(11, 79, 177, 0.3);
+  background: rgba(11, 79, 177, 0.055);
+}
+
+body.light-mode.health-upgrade-preview-mode #health-inbox-detail .health-smart-cleanup-target-buttons button.is-selected,
+body.light-mode.health-upgrade-preview-mode #health-inbox-detail .health-smart-cleanup-apply-zone #health-smart-cleanup-apply:not(:disabled) {
+  border-color: var(--smart-accent);
+  background: var(--smart-accent) !important;
+  color: #ffffff !important;
+}
+
+body.light-mode.health-upgrade-preview-mode #health-inbox-detail .health-smart-cleanup-callout button,
+body.light-mode.health-upgrade-preview-mode #health-inbox-detail .health-smart-cleanup-callout button:hover {
+  border-color: var(--smart-accent);
+  background: var(--smart-accent);
+  color: #ffffff;
+}
+
+body.light-mode.health-upgrade-preview-mode #health-inbox-detail .health-smart-cleanup-refine input[type="text"] {
+  background: #ffffff;
+}
+
+@media (max-width: 980px) {
+  body.health-upgrade-preview-mode #health-inbox-detail .health-smart-cleanup-refine-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 760px) {
+  body.health-upgrade-preview-mode #health-inbox-detail .health-smart-cleanup-callout,
+  body.health-upgrade-preview-mode #health-inbox-detail .health-smart-cleanup-head,
+  body.health-upgrade-preview-mode #health-inbox-detail .health-smart-cleanup-apply-zone {
+    grid-template-columns: 1fr;
+  }
+
+  body.health-upgrade-preview-mode #health-inbox-detail .health-smart-cleanup-head {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  body.health-upgrade-preview-mode #health-inbox-detail .health-smart-cleanup-head > div {
+    justify-content: stretch;
+  }
+
+  body.health-upgrade-preview-mode #health-inbox-detail .health-smart-cleanup-head button,
+  body.health-upgrade-preview-mode #health-inbox-detail .health-smart-cleanup-apply-zone #health-smart-cleanup-apply {
+    width: 100% !important;
+  }
+
+  body.health-upgrade-preview-mode #health-inbox-detail .health-smart-cleanup-lane-open {
+    grid-template-columns: 1fr;
+  }
+
+  body.health-upgrade-preview-mode #health-inbox-detail .health-smart-cleanup-lane-open em {
+    width: 100%;
+  }
+}
+
+/* ==========================================================================
+   Health readiness journey — approved veteran-DJ audit concept
+   One job, three truthful states: readiness, repairing, receipt.
+   ========================================================================== */
+#health-inbox-app.health-approved-shell {
+  --health-journey-accent: #a3ff00;
+  --health-journey-cyan: #25d9ff;
+  --health-journey-warn: #ffb33f;
+  --health-journey-danger: #ff6868;
+  --health-journey-surface: #07100b;
+  --health-journey-raised: #0b1510;
+  --health-journey-line: rgba(220, 239, 216, 0.14);
+  --health-journey-copy: rgba(237, 245, 234, 0.66);
+  width: min(100%, 1320px);
+  margin: 0 auto;
+  padding: 20px 22px 72px;
+  background: #030705;
+}
+
+#health-inbox-app .health-readiness-header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(220px, 310px);
+  align-items: end;
+  gap: 28px;
+  padding: 30px 32px;
+  border: 1px solid rgba(163, 255, 0, 0.28);
+  border-left: 4px solid var(--health-journey-accent);
+  border-radius: 6px;
+  background:
+    radial-gradient(circle at 100% 0, rgba(163, 255, 0, 0.08), transparent 38%),
+    linear-gradient(135deg, #071009 0%, #040806 72%);
+  box-shadow: 0 22px 48px rgba(0, 0, 0, 0.28);
+}
+
+#health-inbox-app .health-readiness-copy {
+  min-width: 0;
+}
+
+#health-inbox-app .health-readiness-kicker,
+#health-inbox-app .health-approved-kicker {
+  display: block;
+  margin: 0 0 9px;
+  color: var(--health-journey-accent);
+  font-family: "Barlow", sans-serif;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.16em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+#health-inbox-app .health-approved-title-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+#health-inbox-app #health-readiness-title {
+  margin: 0;
+  color: #f4f8f1;
+  font-family: "Bebas Neue", Impact, sans-serif;
+  font-size: clamp(40px, 4.2vw, 66px);
+  font-weight: 400;
+  letter-spacing: 0.018em;
+  line-height: 0.96;
+  text-transform: uppercase;
+}
+
+#health-inbox-app .health-readiness-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-height: 30px;
+  padding: 0 10px;
+  border: 1px solid rgba(163, 255, 0, 0.26);
+  background: rgba(163, 255, 0, 0.055);
+  color: rgba(234, 244, 230, 0.72);
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+#health-inbox-app .health-readiness-badge strong {
+  color: var(--health-journey-accent);
+  font-family: "Bebas Neue", Impact, sans-serif;
+  font-size: 22px;
+  font-weight: 400;
+  line-height: 1;
+}
+
+#health-inbox-app #health-readiness-copy {
+  max-width: 780px;
+  margin: 13px 0 0;
+  color: var(--health-journey-copy);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.55;
+}
+
+#health-inbox-app .health-approved-summary {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 15px;
+  color: rgba(237, 245, 234, 0.5);
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.055em;
+  text-transform: uppercase;
+}
+
+#health-inbox-app .health-approved-summary b {
+  color: #eef5eb;
+}
+
+#health-inbox-app .health-approved-summary i {
+  color: rgba(163, 255, 0, 0.54);
+  font-style: normal;
+}
+
+#health-inbox-app .health-readiness-actions {
+  display: grid;
+  gap: 10px;
+}
+
+#health-inbox-app .health-readiness-next-copy {
+  display: block;
+  margin: 0 0 2px;
+  color: rgba(237, 245, 234, 0.62);
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 0.09em;
+  line-height: 1.35;
+  text-transform: uppercase;
+}
+
+#health-inbox-app .health-readiness-next-copy.hidden {
+  display: none;
+}
+
+#health-inbox-app :is(.health-readiness-primary, .health-readiness-secondary, .health-readiness-tertiary) {
+  min-height: 46px;
+  padding: 0 18px;
+  border-radius: 3px;
+  font-family: "Barlow", sans-serif;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+#health-inbox-app .health-readiness-primary {
+  border: 1px solid var(--health-journey-accent);
+  background: var(--health-journey-accent);
+  color: #071005;
+  box-shadow: 0 14px 30px rgba(163, 255, 0, 0.12);
+}
+
+#health-inbox-app .health-readiness-secondary {
+  border: 1px solid rgba(37, 217, 255, 0.48);
+  background: rgba(37, 217, 255, 0.035);
+  color: var(--health-journey-cyan);
+}
+
+#health-inbox-app .health-readiness-tertiary {
+  min-height: 34px;
+  border: 0;
+  background: transparent;
+  color: rgba(237, 245, 234, 0.54);
+  font-size: 9px;
+  box-shadow: none;
+}
+
+#health-inbox-app .health-readiness-tertiary:is(:hover, :focus-visible) {
+  color: #eef5eb;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+#health-inbox-app :is(.health-readiness-primary, .health-readiness-secondary, .health-readiness-tertiary):disabled {
+  border-color: rgba(220, 239, 216, 0.12);
+  background: rgba(220, 239, 216, 0.05);
+  color: rgba(237, 245, 234, 0.34);
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
+#health-inbox-app .health-readiness-plan {
+  display: grid;
+  grid-template-columns: minmax(220px, 0.9fr) minmax(360px, 1.5fr) minmax(240px, 0.9fr);
+  gap: 18px;
+  align-items: center;
+  margin-top: 12px;
+  padding: 18px 20px;
+  border: 1px solid rgba(37, 217, 255, 0.34);
+  border-left: 3px solid var(--health-journey-cyan);
+  border-radius: 5px;
+  background: linear-gradient(120deg, rgba(7, 20, 18, 0.98), rgba(5, 12, 9, 0.98));
+  box-shadow: 0 18px 38px rgba(0, 0, 0, 0.18);
+  outline: none;
+}
+
+#health-inbox-app .health-readiness-plan.hidden {
+  display: none;
+}
+
+#health-inbox-app .health-readiness-plan-kicker {
+  display: block;
+  color: var(--health-journey-cyan);
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+#health-inbox-app .health-readiness-plan h3 {
+  margin: 5px 0 0;
+  color: #eef5eb;
+  font-family: "Bebas Neue", sans-serif;
+  font-size: clamp(24px, 2vw, 34px);
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+#health-inbox-app .health-readiness-plan-copy p {
+  margin: 8px 0 0;
+  color: rgba(237, 245, 234, 0.62);
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 1.45;
+}
+
+#health-inbox-app .health-readiness-plan-lanes {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+#health-inbox-app .health-readiness-plan-lane {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 2px 10px;
+  align-items: baseline;
+  min-width: 0;
+  padding: 10px 12px;
+  border: 1px solid rgba(220, 239, 216, 0.12);
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.025);
+}
+
+#health-inbox-app .health-readiness-plan-lane span {
+  color: #eef5eb;
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+#health-inbox-app .health-readiness-plan-lane strong {
+  color: var(--health-journey-accent);
+  font-family: "Bebas Neue", sans-serif;
+  font-size: 23px;
+  font-weight: 400;
+  line-height: 0.85;
+}
+
+#health-inbox-app .health-readiness-plan-lane small {
+  grid-column: 1 / -1;
+  color: rgba(237, 245, 234, 0.48);
+  font-size: 8px;
+  font-weight: 700;
+}
+
+#health-inbox-app .health-readiness-plan-empty {
+  grid-column: 1 / -1;
+  padding: 14px;
+  color: rgba(237, 245, 234, 0.62);
+  font-size: 10px;
+  font-weight: 700;
+  text-align: center;
+}
+
+#health-inbox-app .health-readiness-plan-safety {
+  display: grid;
+  gap: 4px;
+  padding-left: 16px;
+  border-left: 1px solid rgba(220, 239, 216, 0.12);
+}
+
+#health-inbox-app .health-readiness-plan-safety strong {
+  color: #eef5eb;
+  font-size: 10px;
+  font-weight: 900;
+}
+
+#health-inbox-app .health-readiness-plan-safety span {
+  color: rgba(237, 245, 234, 0.52);
+  font-size: 9px;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+#health-inbox-app .health-readiness-plan-actions {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(220, 239, 216, 0.1);
+}
+
+#health-inbox-app :is(.health-readiness-plan-close, .health-readiness-plan-start) {
+  min-height: 40px;
+  padding: 0 18px;
+  border-radius: 3px;
+  font-family: "Barlow", sans-serif;
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+#health-inbox-app .health-readiness-plan-close {
+  border: 1px solid rgba(220, 239, 216, 0.18);
+  background: transparent;
+  color: rgba(237, 245, 234, 0.68);
+}
+
+#health-inbox-app .health-readiness-plan-start {
+  min-width: 210px;
+  border: 1px solid var(--health-journey-accent);
+  background: var(--health-journey-accent);
+  color: #071005;
+}
+
+#health-inbox-app .health-readiness-plan-start:disabled {
+  border-color: rgba(220, 239, 216, 0.12);
+  background: rgba(220, 239, 216, 0.06);
+  color: rgba(237, 245, 234, 0.34);
+  cursor: not-allowed;
+}
+
+@media (max-width: 1120px) {
+  #health-inbox-app .health-readiness-plan {
+    grid-template-columns: 1fr 1.35fr;
+  }
+
+  #health-inbox-app .health-readiness-plan-safety {
+    grid-column: 1 / -1;
+    padding: 12px 0 0;
+    border-top: 1px solid rgba(220, 239, 216, 0.1);
+    border-left: 0;
+  }
+}
+
+#health-inbox-app .health-approved-lanes {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  margin: 14px 0 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+
+#health-inbox-app .health-approved-lanes .health-repair-center-card {
+  position: relative;
+  display: grid;
+  grid-template-rows: auto auto 1fr auto;
+  align-content: start;
+  min-width: 0;
+  min-height: 142px;
+  padding: 17px 18px 14px;
+  border: 1px solid var(--health-journey-line);
+  border-radius: 5px;
+  background: linear-gradient(145deg, rgba(13, 24, 17, 0.98), rgba(6, 12, 8, 0.98));
+  color: #eef5eb;
+  text-align: left;
+  box-shadow: none;
+}
+
+#health-inbox-app .health-approved-lanes .health-repair-center-card:is(:hover, :focus-visible, .active) {
+  border-color: rgba(163, 255, 0, 0.46);
+  background: linear-gradient(145deg, rgba(18, 35, 22, 0.98), rgba(7, 14, 9, 0.98));
+  transform: translateY(-1px);
+}
+
+#health-inbox-app .health-approved-lanes .health-repair-center-card > span:first-child {
+  color: rgba(244, 248, 242, 0.92);
+  font-family: "Bebas Neue", Impact, sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+#health-inbox-app .health-approved-lanes .health-repair-center-card > strong {
+  margin: 7px 0 5px;
+  color: var(--health-journey-accent);
+  font-family: "Bebas Neue", Impact, sans-serif;
+  font-size: 38px;
+  font-weight: 400;
+  line-height: 0.95;
+}
+
+#health-inbox-app .health-approved-lanes .health-repair-center-card.file > strong {
+  color: var(--health-journey-danger);
+}
+
+#health-inbox-app .health-approved-lanes .health-repair-center-card small {
+  color: rgba(237, 245, 234, 0.48);
+  font-size: 9px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+#health-inbox-app .health-approved-lane-control {
+  display: none !important;
+}
+
+#health-inbox-app .health-repair-card-clear,
+#health-inbox-app .health-repair-card-action {
+  color: rgba(237, 245, 234, 0.58);
+  font-size: 8px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+#health-inbox-app .health-new-music-intake {
+  margin-top: 14px;
+  border-color: var(--health-journey-line);
+  background: rgba(255, 255, 255, 0.018);
+}
+
+#health-inbox-app .health-approved-console {
+  display: grid;
+  grid-template-columns: minmax(0, 0.72fr) minmax(0, 1.28fr);
+  gap: 12px;
+  margin-top: 14px;
+  border: 0;
+  background: transparent;
+}
+
+#health-inbox-app .health-approved-console > article {
+  border: 1px solid var(--health-journey-line);
+  border-radius: 5px;
+  background: var(--health-journey-raised);
+}
+
+#health-inbox-app .health-approved-console[data-health-job-state="idle"] .health-approved-working,
+#health-inbox-app .health-approved-console[data-health-job-state="idle"] .health-approved-results {
+  display: none;
+}
+
+#health-inbox-app .health-approved-console[data-health-job-state="idle"] {
+  display: none;
+}
+
+#health-inbox-app .health-approved-console[data-health-job-state="idle"] .health-approved-task {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px 24px;
+  padding: 18px 20px;
+}
+
+#health-inbox-app .health-approved-console[data-health-job-state="idle"] .health-approved-task > :is(.health-approved-kicker, .health-approved-task-heading, .health-approved-task-actions, .health-approved-checks-toggle, .health-approved-checks) {
+  display: none;
+}
+
+#health-inbox-app .health-approved-console[data-health-job-state="idle"] .health-approved-task-copy {
+  margin: 0;
+  color: rgba(237, 245, 234, 0.7);
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+#health-inbox-app .health-approved-console[data-health-job-state="idle"] .health-approved-task-copy::before {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--health-journey-accent);
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  content: "Why this matters";
+}
+
+#health-inbox-app .health-approved-console[data-health-job-state="idle"] .health-approved-trust {
+  min-width: 310px;
+  margin: 0;
+  border-left: 1px solid var(--health-journey-line);
+  padding-left: 20px;
+}
+
+#health-inbox-app[data-health-job-state="active"] :is(.health-approved-lanes, .health-new-music-intake, .health-approved-set-building) {
+  display: none;
+}
+
+#health-inbox-app .health-approved-console[data-health-job-state="active"] {
+  grid-template-columns: 1fr;
+}
+
+#health-inbox-app .health-approved-console[data-health-job-state="active"] :is(.health-approved-task, .health-approved-results) {
+  display: none;
+}
+
+#health-inbox-app .health-approved-console[data-health-job-state="active"] .health-approved-working {
+  min-height: 320px;
+  padding: 24px;
+  border-color: rgba(37, 217, 255, 0.52);
+  background:
+    radial-gradient(circle at 100% 0, rgba(37, 217, 255, 0.1), transparent 36%),
+    #071014;
+}
+
+#health-inbox-app .health-approved-console[data-health-job-state="finished"] .health-approved-working-head {
+  grid-template-columns: 1fr;
+  gap: 14px;
+}
+
+#health-inbox-app .health-approved-console[data-health-job-state="finished"] .health-approved-live-metrics {
+  grid-template-columns: minmax(78px, 1.15fr) repeat(4, minmax(42px, 0.7fr));
+}
+
+#health-inbox-app .health-approved-console[data-health-job-state="active"] .health-approved-working-status,
+#health-inbox-app .health-approved-console[data-health-job-state="active"] .health-approved-stageboard .active small {
+  color: var(--health-journey-cyan);
+}
+
+#health-inbox-app .health-approved-console[data-health-job-state="active"] .health-approved-inline-meter span {
+  background: var(--health-journey-cyan);
+  box-shadow: 0 0 18px rgba(37, 217, 255, 0.36);
+}
+
+#health-inbox-app .health-approved-console[data-health-job-state="finished"] {
+  grid-template-columns: minmax(0, 0.88fr) minmax(0, 1.12fr);
+}
+
+#health-inbox-app .health-approved-console[data-health-job-state="finished"] .health-approved-task {
+  display: none;
+}
+
+#health-inbox-app .health-approved-console[data-health-job-state="finished"] .health-approved-working {
+  border-color: rgba(163, 255, 0, 0.28);
+}
+
+#health-inbox-app .health-approved-console[data-health-job-state="finished"] .health-approved-live-metrics > span:nth-child(3) strong {
+  color: var(--health-journey-accent);
+}
+
+#health-inbox-app .health-approved-console[data-health-job-state="finished"] .health-approved-live-metrics > span:nth-child(4) strong,
+#health-inbox-app .health-approved-console[data-health-job-state="finished"] #health-approved-tab-review.active {
+  color: var(--health-journey-warn);
+}
+
+#health-inbox-app .health-approved-set-building,
+#health-inbox-app .health-approved-tools {
+  margin-top: 14px;
+}
+
+#health-inbox-app .health-approved-tools,
+body.health-sidebar-upgrade-preview-mode #health-inbox-app .health-approved-tools {
+  display: grid;
+  grid-template-columns: 1fr;
+  border: 1px solid var(--health-journey-line);
+  border-radius: 5px;
+  overflow: hidden;
+  background: #060a07;
+}
+
+#health-inbox-app .health-approved-tools .health-approved-tools-head {
+  grid-column: 1;
+  padding: 17px 20px;
+  border-bottom: 1px solid var(--health-journey-line);
+}
+
+#health-inbox-app .health-approved-tools .health-inbox-nav,
+body.health-sidebar-upgrade-preview-mode #health-inbox-app .health-approved-tools .health-inbox-nav {
+  grid-column: 1;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  padding: 12px;
+  border: 0;
+  border-bottom: 1px solid var(--health-journey-line);
+  background: transparent;
+}
+
+#health-inbox-app .health-approved-tools .health-workspace-group,
+body.health-sidebar-upgrade-preview-mode #health-inbox-app .health-approved-tools .health-workspace-group {
+  display: grid;
+  grid-template-columns: 32px minmax(0, 1fr);
+  align-content: start;
+  min-height: 150px;
+  padding: 16px;
+  border: 1px solid var(--health-journey-line);
+  border-radius: 5px;
+  background: linear-gradient(145deg, rgba(14, 26, 18, 0.98), rgba(7, 13, 9, 0.98));
+}
+
+#health-inbox-app .health-approved-tools .health-workspace-number {
+  grid-column: 1;
+  align-self: start;
+}
+
+#health-inbox-app .health-approved-tools .health-workspace-copy {
+  grid-column: 2;
+  min-width: 0;
+}
+
+#health-inbox-app .health-approved-tools .health-workspace-copy strong {
+  color: #eef5eb;
+  font-family: "Bebas Neue", Impact, sans-serif;
+  font-size: 24px;
+  font-weight: 400;
+  line-height: 1;
+}
+
+#health-inbox-app .health-approved-tools .health-workspace-copy small {
+  display: block;
+  margin-top: 6px;
+  color: rgba(237, 245, 234, 0.5);
+  font-size: 9px;
+  line-height: 1.35;
+}
+
+#health-inbox-app .health-approved-tools .health-workspace-actions {
+  grid-column: 1 / -1;
+  align-self: end;
+  margin-top: 13px;
+}
+
+#health-inbox-app .health-approved-tools .health-workspace-actions button,
+body.health-sidebar-upgrade-preview-mode #health-inbox-app .health-approved-tools .health-workspace-actions button {
+  min-height: 36px;
+  border: 1px solid rgba(163, 255, 0, 0.2);
+  background: rgba(163, 255, 0, 0.035);
+  color: rgba(237, 245, 234, 0.72);
+}
+
+#health-inbox-app .health-approved-tools .health-workspace-actions button:is(:hover, :focus-visible, .active) {
+  border-color: rgba(163, 255, 0, 0.52);
+  color: var(--health-journey-accent);
+}
+
+#health-inbox-app .health-approved-tools .health-approved-provider-status {
+  grid-column: 1 / -1;
+  min-height: 34px;
+  padding: 8px 10px;
+}
+
+#health-inbox-app .health-approved-tools .health-inbox-detail {
+  grid-column: 1;
+  min-height: 220px;
+  padding: 24px;
+  border: 0;
+  background: #07100b;
+}
+
+#health-inbox-app[data-health-job-state="finished"] .health-approved-tools .health-inbox-nav {
+  border-top: 2px solid rgba(163, 255, 0, 0.36);
+}
+
+body.light-mode #health-inbox-app.health-approved-shell {
+  --health-journey-accent: #0b4fb1;
+  --health-journey-cyan: #056b8b;
+  --health-journey-warn: #9a5a00;
+  --health-journey-danger: #b42318;
+  --health-journey-surface: #ffffff;
+  --health-journey-raised: #f5f8fc;
+  --health-journey-line: rgba(11, 79, 177, 0.16);
+  --health-journey-copy: rgba(12, 37, 73, 0.7);
+  background: #edf3fb;
+}
+
+body.light-mode #health-inbox-app .health-readiness-header {
+  border-color: rgba(11, 79, 177, 0.2);
+  border-left-color: #0b4fb1;
+  background:
+    radial-gradient(circle at 100% 0, rgba(11, 79, 177, 0.1), transparent 38%),
+    linear-gradient(135deg, #ffffff 0%, #f3f7fd 72%);
+  box-shadow: 0 18px 38px rgba(22, 56, 101, 0.08);
+}
+
+body.light-mode #health-inbox-app #health-readiness-title,
+body.light-mode #health-inbox-app .health-approved-summary b,
+body.light-mode #health-inbox-app .health-approved-tools .health-workspace-copy strong {
+  color: #07111f;
+}
+
+body.light-mode #health-inbox-app :is(#health-readiness-copy, .health-approved-summary, .health-approved-lanes .health-repair-center-card small, .health-approved-tools .health-workspace-copy small) {
+  color: rgba(12, 37, 73, 0.67);
+}
+
+body.light-mode #health-inbox-app .health-readiness-badge {
+  border-color: rgba(11, 79, 177, 0.22);
+  background: rgba(11, 79, 177, 0.05);
+  color: #28476d;
+}
+
+body.light-mode #health-inbox-app .health-readiness-primary {
+  border-color: #0b4fb1 !important;
+  background: #0b4fb1 !important;
+  color: #ffffff !important;
+  box-shadow: 0 12px 28px rgba(11, 79, 177, 0.14);
+}
+
+body.light-mode #health-inbox-app .health-readiness-secondary {
+  border-color: rgba(11, 79, 177, 0.34) !important;
+  background: #ffffff !important;
+  color: #0b4fb1 !important;
+}
+
+body.light-mode #health-inbox-app .health-readiness-next-copy {
+  color: #405976;
+}
+
+body.light-mode #health-inbox-app .health-readiness-tertiary {
+  border-color: transparent !important;
+  background: transparent !important;
+  color: #526c8e !important;
+}
+
+body.light-mode #health-inbox-app .health-readiness-tertiary:is(:hover, :focus-visible) {
+  color: #0b4fb1 !important;
+}
+
+body.light-mode #health-inbox-app .health-readiness-plan {
+  border-color: rgba(11, 79, 177, 0.26);
+  border-left-color: #0b4fb1;
+  background: linear-gradient(120deg, #ffffff, #f4f8fd);
+  box-shadow: 0 18px 36px rgba(22, 56, 101, 0.08);
+}
+
+body.light-mode #health-inbox-app .health-readiness-plan-kicker {
+  color: #0b4fb1;
+}
+
+body.light-mode #health-inbox-app .health-readiness-plan h3,
+body.light-mode #health-inbox-app .health-readiness-plan-lane span,
+body.light-mode #health-inbox-app .health-readiness-plan-safety strong {
+  color: #07111f;
+}
+
+body.light-mode #health-inbox-app .health-readiness-plan-copy p,
+body.light-mode #health-inbox-app .health-readiness-plan-lane small,
+body.light-mode #health-inbox-app .health-readiness-plan-safety span,
+body.light-mode #health-inbox-app .health-readiness-plan-empty {
+  color: rgba(12, 37, 73, 0.68);
+}
+
+body.light-mode #health-inbox-app .health-readiness-plan-lane {
+  border-color: rgba(11, 79, 177, 0.14);
+  background: #ffffff;
+}
+
+body.light-mode #health-inbox-app .health-readiness-plan-lane strong {
+  color: #0b4fb1;
+}
+
+body.light-mode #health-inbox-app .health-readiness-plan-safety {
+  border-color: rgba(11, 79, 177, 0.14);
+}
+
+body.light-mode #health-inbox-app .health-readiness-plan-actions {
+  border-color: rgba(11, 79, 177, 0.12);
+}
+
+body.light-mode #health-inbox-app .health-readiness-plan-close {
+  border-color: rgba(11, 79, 177, 0.3);
+  background: #ffffff;
+  color: #0b4fb1;
+}
+
+body.light-mode #health-inbox-app .health-readiness-plan-start {
+  border-color: #0b4fb1 !important;
+  background: #0b4fb1 !important;
+  color: #ffffff !important;
+}
+
+body.light-mode #health-inbox-app .health-readiness-plan-start:disabled {
+  border-color: rgba(11, 79, 177, 0.12) !important;
+  background: rgba(11, 79, 177, 0.05) !important;
+  color: rgba(12, 37, 73, 0.38) !important;
+}
+
+body.light-mode #health-inbox-app .health-approved-lanes .health-repair-center-card,
+body.light-mode #health-inbox-app .health-approved-console > article,
+body.light-mode #health-inbox-app .health-approved-tools .health-workspace-group,
+body.light-mode.health-sidebar-upgrade-preview-mode #health-inbox-app .health-approved-tools .health-workspace-group {
+  border-color: rgba(11, 79, 177, 0.14);
+  background: #ffffff;
+  color: #10213a;
+  box-shadow: 0 9px 24px rgba(22, 56, 101, 0.055);
+}
+
+body.light-mode #health-inbox-app .health-approved-lanes .health-repair-center-card:is(:hover, :focus-visible, .active) {
+  border-color: rgba(11, 79, 177, 0.42);
+  background: #f7faff;
+}
+
+body.light-mode #health-inbox-app .health-approved-lanes .health-repair-center-card > span:first-child,
+body.light-mode #health-inbox-app .health-repair-card-clear,
+body.light-mode #health-inbox-app .health-repair-card-action {
+  color: rgba(12, 37, 73, 0.62);
+}
+
+body.light-mode #health-inbox-app .health-approved-console[data-health-job-state="idle"] .health-approved-task-copy,
+body.light-mode #health-inbox-app .health-approved-trust :is(strong, small) {
+  color: #29425f;
+}
+
+body.light-mode #health-inbox-app .health-approved-console[data-health-job-state="active"] .health-approved-working {
+  border-color: rgba(11, 79, 177, 0.38);
+  background: #f4f8fd;
+}
+
+body.light-mode #health-inbox-app .health-approved-tools,
+body.light-mode.health-sidebar-upgrade-preview-mode #health-inbox-app .health-approved-tools,
+body.light-mode #health-inbox-app .health-approved-tools .health-inbox-detail {
+  border-color: rgba(11, 79, 177, 0.16);
+  background: #ffffff;
+}
+
+body.light-mode #health-inbox-app .health-approved-tools .health-workspace-actions button,
+body.light-mode.health-sidebar-upgrade-preview-mode #health-inbox-app .health-approved-tools .health-workspace-actions button {
+  border-color: rgba(11, 79, 177, 0.22);
+  background: #f8fbff;
+  color: #0b4fb1;
+}
+
+@media (max-width: 1100px) {
+  #health-inbox-app .health-approved-lanes,
+  #health-inbox-app .health-approved-tools .health-inbox-nav,
+  body.health-sidebar-upgrade-preview-mode #health-inbox-app .health-approved-tools .health-inbox-nav {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  #health-inbox-app .health-approved-console[data-health-job-state="finished"] {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 760px) {
+  #health-inbox-app.health-approved-shell {
+    padding: 12px 12px 56px;
+  }
+
+  #health-inbox-app .health-readiness-header {
+    grid-template-columns: 1fr;
+    align-items: stretch;
+    padding: 22px 18px;
+  }
+
+  #health-inbox-app .health-approved-lanes,
+  #health-inbox-app .health-approved-tools .health-inbox-nav,
+  body.health-sidebar-upgrade-preview-mode #health-inbox-app .health-approved-tools .health-inbox-nav {
+    grid-template-columns: 1fr;
+  }
+
+  #health-inbox-app .health-approved-console[data-health-job-state="idle"] .health-approved-task {
+    grid-template-columns: 1fr;
+  }
+
+  #health-inbox-app .health-approved-console[data-health-job-state="idle"] .health-approved-trust {
+    min-width: 0;
+    border-top: 1px solid var(--health-journey-line);
+    border-left: 0;
+    padding-top: 14px;
+    padding-left: 0;
+  }
+}
+
+/* Health Steel — approved 2026-08-27 overview and live New Music workflow.
+   Steel stays structural; repair cards, the stage rail, and queue remain matte. */
+#health-inbox-app.health-approved-shell {
+  --health-steel: url("/static/textures/axiom-brushed-black-steel.png");
+  background: #010302;
+}
+
+#health-inbox-app .health-readiness-header {
+  align-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-left: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  background-image:
+    linear-gradient(110deg, rgba(4, 7, 5, 0.72), rgba(7, 11, 8, 0.9)),
+    var(--health-steel);
+  background-size: auto, auto 100%;
+  box-shadow: inset 0 1px rgba(255, 255, 255, 0.06), 0 18px 44px rgba(0, 0, 0, 0.34);
+}
+
+#health-inbox-app .health-readiness-action-module {
+  display: grid;
+  grid-template-columns: 82px minmax(0, 1fr);
+  align-items: center;
+  min-height: 76px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 3px;
+  background-image:
+    linear-gradient(rgba(5, 8, 6, 0.5), rgba(5, 8, 6, 0.82)),
+    var(--health-steel);
+  background-size: auto, auto 100%;
+  box-shadow: inset 0 1px rgba(255, 255, 255, 0.055);
+}
+
+#health-inbox-app .health-readiness-badge {
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 3px;
+  min-height: 76px;
+  padding: 0 12px;
+  border: 0;
+  border-right: 1px solid rgba(255, 255, 255, 0.16);
+  background: transparent;
+}
+
+#health-inbox-app .health-readiness-badge strong {
+  font-size: 42px;
+  line-height: 0.82;
+}
+
+#health-inbox-app .health-readiness-badge small,
+#health-inbox-app .health-readiness-live-copy :is(strong, small) {
+  display: block;
+  text-transform: uppercase;
+}
+
+#health-inbox-app .health-readiness-badge small {
+  color: rgba(245, 248, 243, 0.84);
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+}
+
+#health-inbox-app .health-readiness-live-copy {
+  display: block;
+  padding: 0 16px;
+  text-align: center;
+}
+
+#health-inbox-app .health-readiness-live-copy strong {
+  color: #f4f8f1;
+  font-family: "Bebas Neue", Impact, sans-serif;
+  font-size: 18px;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+}
+
+#health-inbox-app .health-readiness-live-copy small {
+  margin-top: 5px;
+  color: var(--health-journey-accent);
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+}
+
+#health-inbox-app .health-readiness-stop {
+  display: none;
+  min-height: 46px;
+  border: 1px solid var(--health-journey-cyan);
+  border-radius: 3px;
+  background: var(--health-journey-cyan);
+  color: #fff;
+  font-family: "Barlow", sans-serif;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  box-shadow: 0 0 24px rgba(37, 217, 255, 0.18);
+}
+
+#health-inbox-app[data-health-job-state="active"] .health-readiness-stop {
+  display: block;
+}
+
+#health-inbox-app[data-health-job-state="active"] :is(.health-readiness-primary, .health-readiness-secondary, .health-readiness-tertiary, .health-readiness-next-copy),
+#health-inbox-app[data-health-job-state="active"] .health-approved-summary {
+  display: none !important;
+}
+
+#health-inbox-app .health-approved-lanes {
+  grid-template-columns: minmax(150px, 0.72fr) minmax(210px, 1.18fr) minmax(210px, 1.18fr) minmax(150px, 0.72fr);
+}
+
+#health-inbox-app .health-approved-lanes .health-repair-center-card {
+  border-radius: 3px;
+  background: #050806;
+}
+
+#health-inbox-app .health-approved-console[data-health-job-state="idle"] .health-approved-task {
+  min-height: 72px;
+  padding: 16px 20px;
+}
+
+#health-inbox-app .health-approved-console[data-health-job-state="active"] .health-approved-working {
+  min-height: 0;
+  padding: 16px 18px 14px;
+  border-color: rgba(255, 255, 255, 0.19);
+  border-radius: 4px;
+  background: #030504;
+}
+
+#health-inbox-app .health-approved-working-head {
+  display: grid;
+  grid-template-columns: minmax(230px, 1fr) minmax(430px, 0.92fr);
+  align-items: center;
+  gap: 24px;
+}
+
+#health-inbox-app .health-approved-working-intro > strong,
+#health-inbox-app .health-approved-working-intro > small {
+  display: block;
+}
+
+#health-inbox-app .health-approved-working-intro > strong {
+  color: #f4f7f2;
+  font-family: "Bebas Neue", Impact, sans-serif;
+  font-size: 29px;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  line-height: 0.95;
+  text-transform: uppercase;
+}
+
+#health-inbox-app .health-approved-working-intro > small {
+  margin-top: 6px;
+  max-width: 560px;
+  color: rgba(237, 245, 234, 0.61);
+  font-size: 9px;
+  font-weight: 600;
+  line-height: 1.45;
+}
+
+#health-inbox-app .health-approved-working-head .health-approved-kicker {
+  margin-bottom: 7px;
+}
+
+#health-inbox-app .health-approved-live-metrics {
+  display: grid;
+  grid-template-columns: minmax(118px, 1.25fr) repeat(4, minmax(54px, 0.72fr));
+  gap: 0;
+  margin: 0;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 3px;
+  background-image:
+    linear-gradient(rgba(6, 9, 7, 0.46), rgba(6, 9, 7, 0.8)),
+    var(--health-steel);
+  background-size: auto, auto 100%;
+}
+
+#health-inbox-app .health-approved-live-metrics > span {
+  display: grid;
+  place-items: center;
+  align-content: center;
+  min-height: 65px;
+  padding: 8px 6px;
+  border-left: 1px solid rgba(255, 255, 255, 0.13);
+  background: transparent;
+}
+
+#health-inbox-app .health-approved-live-metrics .health-approved-live-metrics-label {
+  border-left: 0;
+  color: rgba(244, 248, 241, 0.86);
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+#health-inbox-app .health-approved-live-metrics strong {
+  margin: 0;
+  color: var(--health-journey-accent);
+  font-size: 25px;
+  line-height: 0.9;
+}
+
+#health-inbox-app .health-approved-live-metrics small {
+  margin-top: 5px;
+  color: rgba(244, 248, 241, 0.72);
+  font-size: 7px;
+  font-weight: 900;
+}
+
+#health-inbox-app .health-approved-live-metrics > span:nth-of-type(4) strong {
+  color: var(--health-journey-warn);
+}
+
+#health-inbox-app .health-approved-live-metrics > span:nth-of-type(5) strong {
+  color: rgba(244, 248, 241, 0.44);
+}
+
+#health-inbox-app #health-approved-metric-queued {
+  display: none !important;
+}
+
+#health-inbox-app .health-approved-working-status {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+}
+
+#health-inbox-app .health-approved-stageboard {
+  margin-top: 16px;
+  padding: 10px 0 3px;
+}
+
+#health-inbox-app .health-approved-stageboard::before {
+  left: 7.5%;
+  right: 7.5%;
+  top: 34px;
+  height: 3px;
+  background: linear-gradient(90deg, var(--health-journey-accent) 0%, var(--health-journey-accent) calc(var(--health-stage, 0) * 25%), rgba(255,255,255,.22) calc(var(--health-stage, 0) * 25%), rgba(255,255,255,.22) 100%);
+}
+
+#health-inbox-app .health-approved-stageboard[data-stage-progress="0"] { --health-stage: 0; }
+#health-inbox-app .health-approved-stageboard[data-stage-progress="1"] { --health-stage: 1; }
+#health-inbox-app .health-approved-stageboard[data-stage-progress="2"] { --health-stage: 2; }
+#health-inbox-app .health-approved-stageboard[data-stage-progress="3"] { --health-stage: 3; }
+#health-inbox-app .health-approved-stageboard[data-stage-progress="4"] { --health-stage: 4; }
+#health-inbox-app .health-approved-stageboard[data-stage-progress="5"] { --health-stage: 4; }
+
+#health-inbox-app .health-approved-stageboard > span {
+  isolation: isolate;
+  gap: 5px;
+  color: rgba(244, 248, 241, 0.46);
+  transform: translateY(0) scale(1);
+  transition: color 220ms ease, transform 260ms ease;
+}
+
+#health-inbox-app .health-approved-stageboard > span::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  top: 0;
+  width: 46px;
+  height: 46px;
+  box-sizing: border-box;
+  border: 2px solid rgba(255, 255, 255, 0.22);
+  border-radius: 50%;
+  background: #050706;
+  transition: width 260ms ease, height 260ms ease, border-color 220ms ease, box-shadow 260ms ease;
+}
+
+#health-inbox-app .health-approved-stageboard img {
+  width: 46px;
+  height: 46px;
+  padding: 15px;
+  border: 0;
+  background: transparent;
+  opacity: 0.56;
+  transition: width 260ms ease, height 260ms ease, padding 260ms ease, opacity 220ms ease, filter 220ms ease, box-shadow 260ms ease;
+}
+
+#health-inbox-app .health-approved-stageboard small {
+  color: inherit;
+  font-family: "Bebas Neue", Impact, sans-serif;
+  font-size: 14px;
+  letter-spacing: 0.035em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+#health-inbox-app .health-approved-stageboard em {
+  color: rgba(244, 248, 241, 0.64);
+  font-size: 8px;
+  font-style: normal;
+  line-height: 1.25;
+}
+
+#health-inbox-app .health-approved-stageboard .done,
+#health-inbox-app .health-approved-stageboard .active {
+  color: var(--health-journey-accent);
+}
+
+#health-inbox-app .health-approved-stageboard .done img,
+#health-inbox-app .health-approved-stageboard .active img {
+  border-color: transparent;
+}
+
+#health-inbox-app .health-approved-stageboard :is(.done, .active)::before {
+  border-color: var(--health-journey-accent);
+}
+
+#health-inbox-app .health-approved-stageboard .active {
+  z-index: 2;
+  transform: scale(1.08);
+}
+
+#health-inbox-app .health-approved-stageboard .active img {
+  width: 54px;
+  height: 54px;
+  padding: 18px;
+  background: transparent;
+  box-shadow: none;
+}
+
+#health-inbox-app .health-approved-stageboard .active::before {
+  width: 54px;
+  height: 54px;
+  border-width: 8px;
+  background: #050706;
+  box-shadow: 0 0 22px rgba(163,255,0,.58), 0 0 46px rgba(163,255,0,.22);
+  animation: health-stage-halo 1.35s ease-in-out infinite;
+}
+
+@keyframes health-stage-halo {
+  0%, 100% { box-shadow: 0 0 18px rgba(163,255,0,.42), 0 0 38px rgba(163,255,0,.16); }
+  50% { box-shadow: 0 0 28px rgba(163,255,0,.72), 0 0 54px rgba(163,255,0,.28); }
+}
+
+#health-inbox-app .health-approved-current-strip {
+  display: grid;
+  grid-template-columns: minmax(230px, 1fr) 92px minmax(240px, 1.5fr) 110px;
+  align-items: center;
+  gap: 16px;
+  min-height: 72px;
+  margin-top: 12px;
+  padding: 10px 18px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 3px;
+  background-image:
+    linear-gradient(rgba(5, 8, 6, 0.44), rgba(5, 8, 6, 0.78)),
+    var(--health-steel);
+  background-size: auto, auto 100%;
+}
+
+#health-inbox-app .health-approved-now-track {
+  grid-template-columns: 0 minmax(0, 1fr);
+  gap: 0;
+  margin: 0;
+}
+
+#health-inbox-app .health-approved-now-track > img {
+  width: 0;
+  height: 0;
+  opacity: 0;
+}
+
+#health-inbox-app .health-approved-now-track :is(small, strong, em),
+#health-inbox-app .health-approved-time-block :is(small, strong) {
+  display: block;
+}
+
+#health-inbox-app .health-approved-now-track small,
+#health-inbox-app .health-approved-time-block small {
+  color: rgba(244, 248, 241, 0.68);
+  font-size: 8px;
+  font-style: normal;
+  font-weight: 900;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+#health-inbox-app .health-approved-now-track strong {
+  margin-top: 5px;
+  color: #fff;
+  font-family: "Bebas Neue", Impact, sans-serif;
+  font-size: 21px;
+  font-weight: 400;
+}
+
+#health-inbox-app .health-approved-now-track em {
+  margin-top: 2px;
+  overflow: hidden;
+  color: rgba(244, 248, 241, 0.68);
+  font-size: 9px;
+  font-style: normal;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+#health-inbox-app .health-approved-time-block {
+  padding-left: 16px;
+  border-left: 1px solid rgba(255, 255, 255, 0.14);
+}
+
+#health-inbox-app .health-approved-time-block strong {
+  margin-top: 5px;
+  color: #fff;
+  font-family: "Bebas Neue", Impact, sans-serif;
+  font-size: 18px;
+  font-weight: 400;
+}
+
+#health-inbox-app .health-approved-time-block.remaining {
+  text-align: right;
+}
+
+#health-inbox-app .health-approved-progress-block {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+}
+
+#health-inbox-app .health-approved-inline-meter {
+  height: 7px;
+  margin: 0;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.17);
+}

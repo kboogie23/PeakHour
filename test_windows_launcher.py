@@ -1,0 +1,69 @@
+import os,pathlib,socket,subprocess,sys,tempfile,time,urllib.request,urllib.error
+root=pathlib.Path(__file__).resolve().parent;sys.path.insert(0,str(root/'axiom-win-probe'))
+import axiom_windows_launcher as L
+def free():
+ with socket.socket() as s:s.bind(('127.0.0.1',0));return s.getsockname()[1]
+def get(port,host=None):
+ request=urllib.request.Request(f'http://127.0.0.1:{port}/',headers={'Host':host or f'127.0.0.1:{port}'})
+ try:
+  with urllib.request.urlopen(request,timeout=10) as r:return r.status,r.read()
+ except urllib.error.HTTPError as e:return e.code,b''
+with tempfile.TemporaryDirectory(dir=root) as d:
+ local=pathlib.Path(d)/'AppData'/'Local';local.mkdir(parents=True)
+ old=os.environ.get('LOCALAPPDATA');os.environ['LOCALAPPDATA']=str(local)
+ try:
+  # Port choice never takes over a busy port
+  with socket.socket() as busy:
+   busy.bind(('127.0.0.1',0));busy.listen();taken=busy.getsockname()[1]
+   assert not L.port_is_free(taken) and L.free_port()!=taken
+  # Single instance lock and published port
+  first,second=L.SingleInstance(),L.SingleInstance()
+  assert first.acquire() and not second.acquire()
+  first.publish(4321);assert second.running_port()==4321
+  first.release();assert second.acquire() and second.running_port() is None;second.release()
+  # VirtualDJ policy: safe locations plus VirtualDJ's own home only
+  vdj=local/'VirtualDJ';vdj.mkdir();db=vdj/'database.xml';db.write_text('<x/>');other=local/'Other.xml';other.write_text('<x/>')
+  policy=L.virtualdj_policy(lambda p:False)
+  assert policy(db) and not policy(other) and not policy(vdj/'missing.xml')
+  assert L.data_root()==local/'AXIOM DJ'
+  command=L.edge_command('msedge.exe','http://127.0.0.1:8080/',local/'AXIOM DJ'/'Window')
+  assert '--app=http://127.0.0.1:8080/' in command and '--start-maximized' in command and f'--user-data-dir={local/"AXIOM DJ"/"Window"}' in command
+ finally:
+  if old is None:os.environ.pop('LOCALAPPDATA',None)
+  else:os.environ['LOCALAPPDATA']=old
+ # The launcher itself, headless, with isolated app data
+ port=free();env=dict(os.environ,LOCALAPPDATA=str(local),USERPROFILE=d,AXIOM_PORT=str(port),AXIOM_NO_OPEN='1',AXIOM_HUB='0')
+ python=root/'axiom-win-env'/'Scripts'/'python.exe';script=root/'axiom-win-probe'/'axiom_windows_launcher.py'
+ server=subprocess.Popen([str(python),str(script)],env=env,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
+ try:
+  deadline=time.monotonic()+90
+  while time.monotonic()<deadline:
+   try:
+    status,body=get(port)
+    if status==200:break
+   except OSError:pass
+   time.sleep(0.3)
+  assert status==200 and b'AXIOM' in body,status
+  import json
+  with urllib.request.urlopen(f'http://127.0.0.1:{port}/api/license/status',timeout=10) as r:licence=json.loads(r.read())
+  assert licence['status']=='dev_unlocked' and licence['usable'] and not licence['required']  # activation off for now
+  assert get(port,f'localhost:{port}')[0]==200 and get(port,f'evil.example:{port}')[0]==403
+  assert (local/'AXIOM DJ'/'launcher.port').read_text()==str(port)
+  # A second launch reuses the running AXIOM and exits
+  again=subprocess.run([str(python),str(script)],env=env,timeout=60)
+  assert again.returncode==0 and server.poll() is None
+  log=(local/'AXIOM DJ'/'Logs'/'launch.log').read_text(encoding='utf-8')
+  assert f'AXIOM server running at http://127.0.0.1:{port}/' in log and 'Another AXIOM launcher is running' in log
+  assert (local/'AXIOM DJ'/'Video Cache').is_dir() and (pathlib.Path(d)/'Music'/'AXIOM DJ'/'Recordings').is_dir()
+ finally:
+  # The venv python.exe is a redirector that runs the real interpreter as a child: end the tree
+  subprocess.run(['taskkill','/F','/T','/PID',str(server.pid)],capture_output=True);server.wait(timeout=20)
+  os.environ['LOCALAPPDATA']=str(local);lock=L.SingleInstance();deadline=time.monotonic()+20
+  try:
+   while not lock.acquire() and time.monotonic()<deadline:time.sleep(0.2)
+   assert time.monotonic()<deadline,'launcher still holds its lock after exit'
+   lock.release()
+  finally:
+   if old is None:os.environ.pop('LOCALAPPDATA',None)
+   else:os.environ['LOCALAPPDATA']=old
+print('PASS: Windows launcher starts AXIOM on loopback, rejects foreign hosts, keeps one instance, never takes a busy port')

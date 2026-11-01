@@ -1,0 +1,54 @@
+<style id="library-expanded-control-readability-v1">
+  /* Expanded Library tools must divide the row by label need instead of giving
+     a short sort value the same width as the primary filter and scan action. */
+  html body
+    #tab-content-library.library-cockpit#tab-content-library#tab-content-library#tab-content-library
+    #library-brief-lens#library-brief-lens#library-brief-lens#library-brief-lens[data-library-brief-panel="preparation"][data-library-prep-scan-visible="true"]
+    #library-preparation-toolbar#library-preparation-toolbar.library-preparation-toolbar {
+    grid-template-columns: minmax(190px, 1.15fr) minmax(140px, .78fr) minmax(200px, 1.1fr) !important;
+    grid-template-rows: 44px !important;
+    align-items: center !important;
+  }
+
+  html body
+    #tab-content-library.library-cockpit#tab-content-library#tab-content-library#tab-content-library
+    #library-brief-lens#library-brief-lens#library-brief-lens#library-brief-lens[data-library-brief-panel="preparation"][data-library-prep-scan-visible="true"]
+    #library-preparation-toolbar#library-preparation-toolbar
+    > #library-preparation-scan-visible#library-preparation-scan-visible {
+    grid-column: 3 !important;
+    grid-row: 1 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    height: 40px !important;
+    min-height: 40px !important;
+    padding: 0 14px !important;
+    font-size: 16px !important;
+    line-height: 1 !important;
+    letter-spacing: 0 !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+    white-space: nowrap !important;
+  }
+
+  /* Owner-requested +4px lift for the compact Setup group headers. */
+  html body.library-setup-open
+    #tab-content-library.library-cockpit#tab-content-library#tab-content-library#tab-content-library
+    #library-brief-lens#library-brief-lens#library-brief-lens[data-library-brief-panel="setup"]
+    .library-brief-control-grid > .library-setup-control-group > summary {
+    min-height: 42px !important;
+    height: 42px !important;
+    padding: 0 14px !important;
+  }
+
+  html body.library-setup-open
+    #tab-content-library.library-cockpit#tab-content-library#tab-content-library#tab-content-library
+    #library-brief-lens#library-brief-lens#library-brief-lens[data-library-brief-panel="setup"]
+    .library-brief-control-grid > .library-setup-control-group > summary > strong {
+    font-size: 20px !important;
+    line-height: 1 !important;
+    letter-spacing: 0 !important;
+  }
+</style>

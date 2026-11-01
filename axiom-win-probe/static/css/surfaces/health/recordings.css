@@ -1,0 +1,13 @@
+#health-recordings {
+    margin-bottom: 18px;
+    padding: 16px 20px;
+    border: 1px solid var(--border, #30352c);
+    border-radius: 12px;
+}
+#health-recordings summary { cursor: pointer; font-weight: 600; }
+#health-recordings p { margin: 12px 0; font-size: 14px; }
+#health-recordings select {
+    max-width: 100%; padding: 8px; border-radius: 6px;
+    background: #10150d; color: #f1f5ed; border: 1px solid #454d3e;
+}
+body.light-mode #health-recordings select { background: #fff; color: #071005; }

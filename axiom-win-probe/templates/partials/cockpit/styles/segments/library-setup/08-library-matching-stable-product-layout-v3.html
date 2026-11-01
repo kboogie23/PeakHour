@@ -1,0 +1,485 @@
+
+
+<style id="library-matching-stable-product-layout-v3">
+  /* Product-design stabilizer for Library + Matching Songs split mode. */
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) {
+    --split-row-h: 88px;
+    --split-art: 62px;
+    --split-gap: 12px;
+  }
+
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) .library-results-column {
+    min-width: 0 !important;
+    overflow: hidden !important;
+  }
+
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) #search-results {
+    min-width: 0 !important;
+    overflow-x: hidden !important;
+  }
+
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) #search-results > .library-track-card,
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) #search-results > .vampire-row.library-track-card {
+    display: grid !important;
+    grid-template-columns: 34px var(--split-art) minmax(0, 1fr) 56px 58px 62px 28px !important;
+    column-gap: var(--split-gap) !important;
+    align-items: center !important;
+    min-width: 0 !important;
+    width: 100% !important;
+    height: var(--split-row-h) !important;
+    min-height: var(--split-row-h) !important;
+    padding: 10px 10px 10px 0 !important;
+    overflow: hidden !important;
+    box-sizing: border-box !important;
+  }
+
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) .library-track-card::before {
+    content: none !important;
+  }
+
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) .library-selection-rail {
+    grid-column: 1 !important;
+    grid-row: 1 !important;
+    width: 34px !important;
+    height: var(--split-row-h) !important;
+    min-height: var(--split-row-h) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    margin: -10px 0 !important;
+    padding: 0 !important;
+  }
+
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) .library-track-card:not(.selected) .library-selection-rail,
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) .library-track-card:not(.is-selected) .library-selection-rail {
+    opacity: 0 !important;
+    pointer-events: none !important;
+  }
+
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) .track-art-wrap,
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) .library-track-artwork,
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) .album-art,
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) .track-art,
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) .artwork-cell {
+    grid-column: 2 !important;
+    grid-row: 1 !important;
+    width: var(--split-art) !important;
+    height: var(--split-art) !important;
+    min-width: var(--split-art) !important;
+    max-width: var(--split-art) !important;
+    align-self: center !important;
+    justify-self: center !important;
+    overflow: hidden !important;
+  }
+
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) .track-art-wrap img,
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) .library-track-artwork img,
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) .album-art img,
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) .track-art img,
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) .artwork-cell img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+  }
+
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) .play-btn,
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) .track-play-btn,
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) .library-play-btn {
+    width: 42px !important;
+    height: 42px !important;
+    min-width: 42px !important;
+    min-height: 42px !important;
+  }
+
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) .library-track-main {
+    grid-column: 3 !important;
+    grid-row: 1 !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    width: 100% !important;
+    height: auto !important;
+    align-self: center !important;
+    justify-self: stretch !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    gap: 4px !important;
+    overflow: hidden !important;
+    padding-left: 10px !important;
+  }
+
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) .library-track-identity {
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    align-items: flex-start !important;
+    gap: 4px !important;
+    min-width: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow: hidden !important;
+    position: static !important;
+    transform: none !important;
+  }
+
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) .library-track-title {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+    font-family: 'Bebas Neue', 'Arial Narrow', sans-serif !important;
+    font-size: clamp(18px, 1.45vw, 24px) !important;
+    line-height: .95 !important;
+    letter-spacing: .035em !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) .library-track-artist {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+    font-family: 'Barlow', sans-serif !important;
+    font-size: clamp(12px, .95vw, 15px) !important;
+    line-height: 1.05 !important;
+    letter-spacing: .16em !important;
+    color: rgba(238, 246, 238, .68) !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) .library-row-meta-stack,
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) .library-track-identity .library-meta-line {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    gap: 8px !important;
+    min-width: 0 !important;
+    width: 100% !important;
+    height: 18px !important;
+    overflow: hidden !important;
+    margin-top: 1px !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+  }
+
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) .library-row-meta-stack:empty,
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) .library-track-identity .library-meta-line:empty {
+    display: none !important;
+  }
+
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) .library-row-meta-stack .library-dna-chip,
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) .library-track-identity .library-dna-chip,
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) .library-row-meta-stack .dna-badge,
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) .library-track-identity .dna-badge {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex: 0 1 auto !important;
+    max-width: 96px !important;
+    min-width: 0 !important;
+    height: 18px !important;
+    padding: 0 8px !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+    font-size: 9px !important;
+    line-height: 18px !important;
+    letter-spacing: .18em !important;
+  }
+
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) .library-row-meta-stack .library-year,
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) .library-track-identity .library-year,
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) .library-row-meta-stack [data-year],
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) .library-track-identity [data-year] {
+    display: inline-flex !important;
+    flex: 0 0 auto !important;
+    align-items: center !important;
+    height: 18px !important;
+    font-family: 'Bebas Neue', 'Arial Narrow', sans-serif !important;
+    font-size: 16px !important;
+    line-height: 18px !important;
+    letter-spacing: .08em !important;
+    color: rgba(255, 255, 255, .88) !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+  }
+
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) .library-track-detail-lane {
+    display: contents !important;
+  }
+
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) .library-track-detail-lane > :not(.library-meta-line):not(.library-row-meta-stack) {
+    display: none !important;
+  }
+
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) .library-track-detail-lane .library-meta-line,
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) .library-track-detail-lane .library-row-meta-stack {
+    grid-column: 3 !important;
+    grid-row: 1 !important;
+    align-self: end !important;
+    margin-left: 10px !important;
+    margin-bottom: 13px !important;
+    max-width: calc(100% - 12px) !important;
+    pointer-events: auto !important;
+  }
+
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) .library-bpm-cell,
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) .library-bpm-cell.library-bpm-editable {
+    grid-column: 4 !important;
+    grid-row: 1 !important;
+    width: 56px !important;
+    height: 54px !important;
+    min-width: 56px !important;
+    max-width: 56px !important;
+    align-self: center !important;
+    justify-self: center !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border: 1px solid rgba(225, 236, 226, .22) !important;
+    background: rgba(0, 0, 0, .36) !important;
+    box-shadow: none !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+    text-align: center !important;
+  }
+
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) .library-bpm-cell .library-bpm-value,
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) .library-bpm-cell .bpm-block {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 100% !important;
+    height: 34px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    text-align: center !important;
+    font-size: 25px !important;
+    line-height: 1 !important;
+    letter-spacing: .02em !important;
+    border: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+  }
+
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) .library-bpm-cell .library-bpm-label,
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) .library-bpm-cell .bpm-label,
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) .library-bpm-cell small {
+    display: block !important;
+    width: 100% !important;
+    margin: -1px 0 0 !important;
+    text-align: center !important;
+    font-family: 'Barlow', sans-serif !important;
+    font-size: 8px !important;
+    line-height: 1 !important;
+    letter-spacing: .16em !important;
+    color: rgba(238, 246, 238, .54) !important;
+  }
+
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) .library-key-cell,
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) .library-key-metric {
+    grid-column: 5 !important;
+    grid-row: 1 !important;
+    width: 58px !important;
+    height: 54px !important;
+    min-width: 58px !important;
+    max-width: 58px !important;
+    align-self: center !important;
+    justify-self: center !important;
+    font-size: 24px !important;
+    line-height: 1 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) .library-key-cell small,
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) .library-key-cell .key-label {
+    font-size: 8px !important;
+    line-height: 1 !important;
+    letter-spacing: .16em !important;
+  }
+
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) .library-add-btn,
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) .hud-pill.library-add-btn {
+    grid-column: 6 !important;
+    grid-row: 1 !important;
+    width: 62px !important;
+    height: 54px !important;
+    min-width: 62px !important;
+    max-width: 62px !important;
+    align-self: center !important;
+    justify-self: center !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    font-size: 14px !important;
+    line-height: 1 !important;
+  }
+
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) .fav-star-btn {
+    grid-column: 7 !important;
+    grid-row: 1 !important;
+    width: 28px !important;
+    height: 42px !important;
+    min-width: 28px !important;
+    max-width: 28px !important;
+    align-self: center !important;
+    justify-self: center !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    font-size: 27px !important;
+    line-height: 1 !important;
+    opacity: .42 !important;
+  }
+
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) .library-bpm-tools,
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) .library-mini-waveform,
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) .library-more-btn {
+    display: none !important;
+  }
+
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) #smart-links-panel {
+    flex: 0 0 350px !important;
+    width: 350px !important;
+    min-width: 330px !important;
+    max-width: 360px !important;
+    overflow: hidden !important;
+  }
+
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) #lib-suggestions-list {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 8px !important;
+    overflow-x: hidden !important;
+    padding-right: 4px !important;
+  }
+
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) #lib-suggestions-list .vampire-row {
+    display: grid !important;
+    grid-template-columns: 50px minmax(0, 1fr) 50px !important;
+    column-gap: 10px !important;
+    align-items: center !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    height: 66px !important;
+    min-height: 66px !important;
+    max-height: 66px !important;
+    padding: 8px 8px 8px 10px !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+    border-left: 4px solid rgba(163, 255, 0, .75) !important;
+    background: linear-gradient(90deg, rgba(20, 44, 18, .52), rgba(15, 17, 15, .84)) !important;
+  }
+
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) #lib-suggestions-list .vampire-row .recommendation-art,
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) #lib-suggestions-list .vampire-row .track-art-wrap,
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) #lib-suggestions-list .vampire-row .album-art {
+    grid-column: 1 !important;
+    grid-row: 1 !important;
+    width: 46px !important;
+    height: 46px !important;
+    min-width: 46px !important;
+    max-width: 46px !important;
+    align-self: center !important;
+    justify-self: center !important;
+  }
+
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) #lib-suggestions-list .vampire-row .play-btn,
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) #lib-suggestions-list .vampire-row .track-play-btn,
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) #lib-suggestions-list .vampire-row .library-play-btn {
+    width: 30px !important;
+    height: 30px !important;
+    min-width: 30px !important;
+    min-height: 30px !important;
+  }
+
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) #lib-suggestions-list .vampire-row .recommendation-main {
+    grid-column: 2 !important;
+    grid-row: 1 !important;
+    min-width: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    gap: 5px !important;
+    overflow: hidden !important;
+  }
+
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) #lib-suggestions-list .vampire-row .recommendation-title {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+    font-family: 'Bebas Neue', 'Arial Narrow', sans-serif !important;
+    font-size: 15px !important;
+    line-height: .95 !important;
+    letter-spacing: .035em !important;
+  }
+
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) #lib-suggestions-list .vampire-row .recommendation-artist,
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) #lib-suggestions-list .vampire-row .recommendation-subtitle,
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) #lib-suggestions-list .vampire-row .track-artist {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+    font-family: 'Barlow', sans-serif !important;
+    font-size: 9px !important;
+    line-height: 1 !important;
+    letter-spacing: .12em !important;
+    color: rgba(238, 246, 238, .64) !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+  }
+
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) #lib-suggestions-list .vampire-row .recommendation-meta {
+    display: contents !important;
+  }
+
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) #lib-suggestions-list .vampire-row .recommendation-bpm,
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) #lib-suggestions-list .vampire-row .recommendation-key-metric,
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) #lib-suggestions-list .vampire-row .recommendation-role,
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) #lib-suggestions-list .vampire-row .recommendation-score,
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) #lib-suggestions-list .vampire-row .fav-star-btn {
+    display: none !important;
+  }
+
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) #lib-suggestions-list .vampire-row [id^="lib-sugg-add"],
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) #lib-suggestions-list .vampire-row .library-add-btn,
+  #tab-content-library:has(#smart-links-panel:not(.hidden)) #lib-suggestions-list .vampire-row .recommendation-add-btn {
+    grid-column: 3 !important;
+    grid-row: 1 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 48px !important;
+    height: 38px !important;
+    min-width: 48px !important;
+    max-width: 48px !important;
+    align-self: center !important;
+    justify-self: end !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border-radius: 7px !important;
+    font-size: 15px !important;
+    line-height: 1 !important;
+    transform: none !important;
+  }
+</style>

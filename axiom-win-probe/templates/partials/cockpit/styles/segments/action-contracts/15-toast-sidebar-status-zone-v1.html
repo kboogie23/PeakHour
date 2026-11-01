@@ -1,0 +1,61 @@
+<style id="toast-sidebar-status-zone-v1">
+  /* Transient notifications belong in the persistent engine-status zone, not
+     over page-level controls in the top-right corner. */
+  html body #toast-container#toast-container {
+    position: fixed !important;
+    inset: auto auto 24px 18px !important;
+    width: 252px !important;
+    max-width: calc(18rem - 36px) !important;
+    gap: 6px !important;
+    z-index: 16050 !important;
+    pointer-events: none;
+  }
+
+  html body #toast-container#toast-container > * {
+    min-height: 46px !important;
+    padding: 11px 14px !important;
+    border: 1px solid rgba(163, 255, 0, .42) !important;
+    border-radius: 5px !important;
+    background: rgba(5, 9, 7, .97) !important;
+    color: var(--accent) !important;
+    -webkit-text-fill-color: var(--accent) !important;
+    font-family: 'Barlow', Arial, sans-serif !important;
+    font-size: 9px !important;
+    font-weight: 800 !important;
+    line-height: 1.35 !important;
+    letter-spacing: .075em !important;
+    text-align: left !important;
+    box-shadow: 0 10px 24px rgba(0, 0, 0, .3) !important;
+    box-sizing: border-box !important;
+    pointer-events: auto;
+  }
+
+  html body.light-mode #toast-container#toast-container > * {
+    border-color: rgba(0, 71, 171, .34) !important;
+    background: rgba(255, 255, 255, .98) !important;
+    color: #0047ab !important;
+    -webkit-text-fill-color: #0047ab !important;
+    box-shadow: 0 10px 24px rgba(28, 64, 120, .16) !important;
+  }
+
+  html body #toast-container#toast-container > .text-red-400 {
+    border-color: rgba(255, 59, 48, .48) !important;
+    color: #ff6b63 !important;
+    -webkit-text-fill-color: #ff6b63 !important;
+  }
+
+  html body.light-mode #toast-container#toast-container > .text-red-400 {
+    border-color: rgba(180, 35, 24, .36) !important;
+    background: #fff7f6 !important;
+    color: #b42318 !important;
+    -webkit-text-fill-color: #b42318 !important;
+  }
+
+  @media (max-width: 760px) {
+    html body #toast-container#toast-container {
+      inset: auto 16px 78px 16px !important;
+      width: auto !important;
+      max-width: none !important;
+    }
+  }
+</style>

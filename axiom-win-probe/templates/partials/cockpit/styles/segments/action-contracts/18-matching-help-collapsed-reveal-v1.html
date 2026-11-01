@@ -1,0 +1,82 @@
+<style id="matching-help-collapsed-reveal-v1">
+  /* Use the same quiet-at-rest Help control as Library and Studio. Matching
+     Songs keeps the compact question mark until hover or keyboard focus. */
+  html body #replacement-modal#replacement-modal.anchor-dj-modal
+    .anchor-dj-topline
+    #btn-matching-guide.anchor-close-btn.axiom-help-btn {
+    position: relative !important;
+    width: 42px !important;
+    min-width: 42px !important;
+    max-width: 42px !important;
+    height: 42px !important;
+    min-height: 42px !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    border: 1px solid var(--accent) !important;
+    border-radius: 8px !important;
+    background: var(--accent) !important;
+    color: #071005 !important;
+    transition: width 180ms ease, max-width 180ms ease, height 180ms ease,
+      border-radius 180ms ease, background-color 180ms ease !important;
+  }
+
+  html body #replacement-modal#replacement-modal.anchor-dj-modal
+    .anchor-dj-topline
+    #btn-matching-guide.anchor-close-btn.axiom-help-btn:is(:hover, :focus-visible) {
+    width: 96px !important;
+    min-width: 96px !important;
+    max-width: 96px !important;
+    height: 48px !important;
+    min-height: 48px !important;
+    border-color: var(--accent) !important;
+    border-radius: 8px !important;
+    background: var(--accent) !important;
+    color: #071005 !important;
+  }
+
+  #btn-matching-guide#btn-matching-guide > .matching-help-compact-mark,
+  #btn-matching-guide#btn-matching-guide > .matching-help-expanded-label {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    color: #071005 !important;
+    font-family: 'Bebas Neue', Impact, sans-serif !important;
+    font-size: 18px !important;
+    font-weight: 400 !important;
+    line-height: 1 !important;
+    transition: opacity 130ms ease, transform 180ms ease;
+  }
+
+  #btn-matching-guide#btn-matching-guide > .matching-help-compact-mark {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  #btn-matching-guide#btn-matching-guide > .matching-help-expanded-label {
+    opacity: 0;
+    transform: translateX(6px);
+  }
+
+  #btn-matching-guide#btn-matching-guide:is(:hover, :focus-visible)
+    > .matching-help-compact-mark {
+    opacity: 0;
+    transform: translateX(-6px);
+  }
+
+  #btn-matching-guide#btn-matching-guide:is(:hover, :focus-visible)
+    > .matching-help-expanded-label {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html body #replacement-modal#replacement-modal.anchor-dj-modal
+      .anchor-dj-topline
+      #btn-matching-guide.anchor-close-btn.axiom-help-btn,
+    #btn-matching-guide#btn-matching-guide > .matching-help-compact-mark,
+    #btn-matching-guide#btn-matching-guide > .matching-help-expanded-label {
+      transition: none !important;
+    }
+  }
+</style>

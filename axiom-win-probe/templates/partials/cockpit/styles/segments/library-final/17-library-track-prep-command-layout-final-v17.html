@@ -1,0 +1,833 @@
+<style id="library-track-prep-command-layout-final-v17">
+  /* Track Prep is a focused Library workspace. Matching Songs is not useful
+     while repairing metadata, so let Track Prep use the full results width and
+     restore the rail automatically when the user returns to Library. */
+  #library-preparation-filter-menu > summary::-webkit-details-marker,
+  #library-preparation-sort-menu > summary::-webkit-details-marker,
+  #library-brief-lane-dropdown > summary::-webkit-details-marker {
+    display: none;
+  }
+
+  html body:has(#library-brief-lens[data-library-brief-panel="preparation"])
+    #tab-content-library.library-cockpit#tab-content-library
+    > .library-main-grid {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  html body:has(#library-brief-lens[data-library-brief-panel="preparation"])
+    #tab-content-library.library-cockpit#tab-content-library
+    #smart-links-panel.recommendations-panel {
+    display: none !important;
+  }
+
+  #library-preparation-page-title {
+    display: none;
+  }
+
+  html body:has(#library-brief-lens[data-library-brief-panel="preparation"])
+    #tab-content-library.library-cockpit#tab-content-library
+    .library-control-row > #library-preparation-page-title {
+    display: inline-flex !important;
+    flex: 0 0 132px !important;
+    align-items: center !important;
+    justify-content: flex-end !important;
+    width: 132px !important;
+    min-width: 132px !important;
+    height: 42px !important;
+    margin: 0 8px 0 auto !important;
+    color: var(--accent) !important;
+    -webkit-text-fill-color: var(--accent) !important;
+    font-family: 'Bebas Neue', Impact, sans-serif !important;
+    font-size: 23px !important;
+    font-weight: 400 !important;
+    letter-spacing: .055em !important;
+    line-height: 1 !important;
+    text-align: right !important;
+    text-transform: uppercase !important;
+    white-space: nowrap !important;
+  }
+
+  html body
+    #tab-content-library.library-cockpit#tab-content-library#tab-content-library
+    .library-results-column > #library-brief-lens#library-brief-lens#library-brief-lens[data-library-brief-panel="preparation"]
+  {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) 150px minmax(0, 1fr) 116px 120px !important;
+    grid-template-rows: 52px !important;
+    grid-auto-rows: auto !important;
+    align-items: center !important;
+    column-gap: 6px !important;
+    row-gap: 0 !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    height: auto !important;
+    min-height: 66px !important;
+    max-height: none !important;
+    margin: 0 !important;
+    padding: 6px 8px !important;
+    box-sizing: border-box !important;
+    overflow: visible !important;
+  }
+
+  /* The expanded Set Prep shell owns a decorative horizontal divider. Track
+     Prep reuses the same settings container, so the broad :has() rule used to
+     draw that divider through the scan receipt. Keep it out of this workspace. */
+  html body
+    #tab-content-library.library-cockpit#tab-content-library
+    #library-brief-lens#library-brief-lens[data-library-brief-panel="preparation"]::after {
+    content: none !important;
+    display: none !important;
+  }
+
+  html body
+    #tab-content-library.library-cockpit#tab-content-library
+    #library-brief-lens[data-library-brief-panel="preparation"]
+    > :is(#library-brief-topline, .library-brief-panel),
+  html body
+    #tab-content-library.library-cockpit#tab-content-library
+    #library-brief-lens[data-library-brief-panel="preparation"]
+    > .library-brief-panel > #library-brief-settings,
+  html body
+    #tab-content-library.library-cockpit#tab-content-library#tab-content-library
+    #library-brief-lens#library-brief-lens[data-library-brief-panel="preparation"]
+    > .library-brief-panel > #library-brief-settings#library-brief-settings:not(.hidden),
+  html body
+    #tab-content-library.library-cockpit#tab-content-library
+    #library-brief-lens[data-library-brief-panel="preparation"]
+    #library-preparation-toolbar.library-preparation-toolbar,
+  html body
+    #tab-content-library.library-cockpit#tab-content-library
+    #library-brief-lens[data-library-brief-panel="preparation"]
+    :is(#library-setup-utility-bar, #library-brief-action-rail) {
+    display: contents !important;
+  }
+
+  html body
+    #tab-content-library.library-cockpit#tab-content-library
+    #library-brief-lens[data-library-brief-panel="preparation"]
+    #library-brief-topline > .library-brief-copy,
+  html body
+    #tab-content-library.library-cockpit#tab-content-library
+    #library-brief-lens[data-library-brief-panel="preparation"]
+    :is(#library-brief-actions-toggle, #library-fresh-rotate, .library-gap-launch, #library-recent-toggle),
+  html body
+    #tab-content-library.library-cockpit#tab-content-library
+    #library-brief-lens[data-library-brief-panel="preparation"]
+    #library-setup-utility-bar > :is(.library-setup-health, .library-setup-fit, #library-setup-view-tracks),
+  html body
+    #tab-content-library.library-cockpit#tab-content-library
+    #library-brief-lens[data-library-brief-panel="preparation"]
+    :is(.library-preparation-toolbar-copy, .library-brief-control-grid, #library-brief-active-summary, #library-brief-copy) {
+    display: none !important;
+  }
+
+  html body
+    #tab-content-library.library-cockpit#tab-content-library
+    #library-brief-lens[data-library-brief-panel="preparation"]
+    #library-preparation-toolbar > label {
+    display: grid !important;
+    grid-template-rows: 10px 32px !important;
+    align-self: center !important;
+    gap: 2px !important;
+    min-width: 0 !important;
+    height: 44px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  html body
+    #tab-content-library.library-cockpit#tab-content-library
+    #library-brief-lens[data-library-brief-panel="preparation"]
+    #library-preparation-toolbar > label:nth-of-type(1) {
+    grid-column: 1 !important;
+    grid-row: 1 !important;
+  }
+
+  html body
+    #tab-content-library.library-cockpit#tab-content-library
+    #library-brief-lens[data-library-brief-panel="preparation"]
+    #library-preparation-toolbar > label:nth-of-type(2) {
+    grid-column: 2 !important;
+    grid-row: 1 !important;
+  }
+
+  html body
+    #tab-content-library.library-cockpit#tab-content-library
+    #library-brief-lens[data-library-brief-panel="preparation"]
+    #library-preparation-toolbar > label > span {
+    display: block !important;
+    min-height: 10px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    color: var(--accent) !important;
+    font-family: 'Bebas Neue', Impact, sans-serif !important;
+    font-size: 11px !important;
+    font-weight: 400 !important;
+    letter-spacing: .08em !important;
+    line-height: 10px !important;
+    text-transform: uppercase !important;
+  }
+
+  html body
+    #tab-content-library.library-cockpit#tab-content-library
+    #library-brief-lens[data-library-brief-panel="preparation"]
+    #library-preparation-toolbar > label > select {
+    display: block !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    height: 32px !important;
+    min-height: 32px !important;
+    max-height: 32px !important;
+    margin: 0 !important;
+    padding: 0 24px 0 8px !important;
+    overflow: hidden !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    font-family: 'Bebas Neue', Impact, sans-serif !important;
+    font-size: 15px !important;
+    letter-spacing: .045em !important;
+    line-height: 32px !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+    box-shadow: none !important;
+  }
+
+  html body
+    #tab-content-library.library-cockpit#tab-content-library
+    #library-brief-lens[data-library-brief-panel="preparation"]
+    #library-preparation-toolbar > label.library-preparation-menu-field {
+    position: relative !important;
+    overflow: visible !important;
+  }
+
+  html body
+    #tab-content-library.library-cockpit#tab-content-library
+    #library-brief-lens[data-library-brief-panel="preparation"]
+    #library-preparation-toolbar > label > select.library-preparation-native-select {
+    position: absolute !important;
+    width: 1px !important;
+    min-width: 1px !important;
+    height: 1px !important;
+    min-height: 1px !important;
+    margin: -1px !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    clip: rect(0 0 0 0) !important;
+    clip-path: inset(50%) !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    white-space: nowrap !important;
+  }
+
+  html body
+    #tab-content-library.library-cockpit#tab-content-library
+    #library-brief-lens[data-library-brief-panel="preparation"]
+    .library-preparation-menu {
+    position: relative !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    height: 32px !important;
+    margin: 0 !important;
+    overflow: visible !important;
+    z-index: 270 !important;
+  }
+
+  html body
+    #tab-content-library.library-cockpit#tab-content-library
+    #library-brief-lens[data-library-brief-panel="preparation"]
+    .library-preparation-menu > summary {
+    /* Older macOS WebKit does not reliably lay out summary as a grid. */
+    display: block !important;
+    position: relative !important;
+    list-style: none !important;
+    grid-template-columns: minmax(0, 1fr) 28px !important;
+    align-items: center !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    height: 32px !important;
+    min-height: 32px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: visible !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    outline: none !important;
+  }
+
+  html body
+    #tab-content-library.library-cockpit#tab-content-library
+    #library-brief-lens[data-library-brief-panel="preparation"]
+    .library-preparation-menu > summary > span {
+    display: block !important;
+    align-items: center !important;
+    width: calc(100% - 28px) !important;
+    min-width: 0 !important;
+    height: 32px !important;
+    padding: 0 8px !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+    border: 1px solid rgba(174,188,181,.28) !important;
+    border-right: 0 !important;
+    background: #090c09 !important;
+    color: #f4f7ef !important;
+    -webkit-text-fill-color: #f4f7ef !important;
+    font-family: 'Bebas Neue', Impact, sans-serif !important;
+    font-size: 15px !important;
+    font-weight: 400 !important;
+    letter-spacing: .045em !important;
+    line-height: 32px !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+  }
+
+  html body
+    #tab-content-library.library-cockpit#tab-content-library
+    #library-brief-lens[data-library-brief-panel="preparation"]
+    .library-preparation-menu > summary > img {
+    position: absolute !important;
+    right: 0 !important;
+    top: 0px !important;
+    align-self: stretch !important;
+    width: 28px !important;
+    min-width: 28px !important;
+    height: 32px !important;
+    min-height: 32px !important;
+    margin: 0 !important;
+    padding: 9px 7px !important;
+    box-sizing: border-box !important;
+    border: 1px solid rgba(174,188,181,.28) !important;
+    border-left: 0 !important;
+    background: #090c09 !important;
+    transition: transform 150ms ease !important;
+  }
+
+  html body
+    #tab-content-library.library-cockpit#tab-content-library
+    #library-brief-lens[data-library-brief-panel="preparation"]
+    .library-preparation-menu[open] > summary > img {
+    transform: rotate(180deg) !important;
+  }
+
+  html body
+    #tab-content-library.library-cockpit#tab-content-library
+    #library-brief-lens[data-library-brief-panel="preparation"]
+    .library-preparation-menu > summary:focus-visible > :is(span, img),
+  html body
+    #tab-content-library.library-cockpit#tab-content-library
+    #library-brief-lens[data-library-brief-panel="preparation"]
+    .library-preparation-menu[open] > summary > :is(span, img) {
+    border-color: var(--accent) !important;
+  }
+
+  html body
+    #tab-content-library.library-cockpit#tab-content-library
+    #library-brief-lens[data-library-brief-panel="preparation"]:has(.library-preparation-menu[open]) {
+    z-index: 260 !important;
+  }
+
+  html body
+    #tab-content-library.library-cockpit#tab-content-library
+    #library-brief-lens[data-library-brief-panel="preparation"]
+    .library-preparation-menu[open] > .library-preparation-menu-options {
+    position: absolute !important;
+    top: calc(100% + 6px) !important;
+    left: 0 !important;
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    width: min(310px, calc(100vw - 32px)) !important;
+    min-width: min(310px, calc(100vw - 32px)) !important;
+    max-width: min(310px, calc(100vw - 32px)) !important;
+    max-height: 330px !important;
+    padding: 7px !important;
+    box-sizing: border-box !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    border: 1px solid rgba(174,188,181,.38) !important;
+    border-top: 2px solid var(--accent) !important;
+    border-radius: 2px !important;
+    background: linear-gradient(180deg, rgba(18,23,21,.995), rgba(4,8,7,.995)) !important;
+    box-shadow: 0 24px 48px rgba(0,0,0,.78), inset 0 1px 0 rgba(255,255,255,.1), inset 0 -1px 0 rgba(255,255,255,.035) !important;
+    z-index: 300 !important;
+  }
+
+  html body
+    #tab-content-library.library-cockpit#tab-content-library
+    #library-brief-lens[data-library-brief-panel="preparation"]
+    .library-preparation-menu-options > .library-preparation-menu-heading {
+    display: block !important;
+    padding: 6px 10px 8px !important;
+    color: rgba(213,222,217,.58) !important;
+    -webkit-text-fill-color: rgba(213,222,217,.58) !important;
+    font-family: 'Barlow', Arial, sans-serif !important;
+    font-size: 9px !important;
+    font-weight: 700 !important;
+    letter-spacing: .14em !important;
+    line-height: 1 !important;
+    text-transform: uppercase !important;
+  }
+
+  html body
+    #tab-content-library.library-cockpit#tab-content-library
+    #library-brief-lens[data-library-brief-panel="preparation"]
+    .library-preparation-menu-options > .library-brief-chip {
+    display: grid !important;
+    grid-template-columns: 28px minmax(0, 1fr) auto !important;
+    align-items: center !important;
+    gap: 10px !important;
+    width: 100% !important;
+    min-height: 52px !important;
+    margin: 0 !important;
+    padding: 7px 10px !important;
+    color: #f2f7f1 !important;
+    -webkit-text-fill-color: #f2f7f1 !important;
+    background: transparent !important;
+    border: 0 !important;
+    border-bottom: 1px solid rgba(255,255,255,.075) !important;
+    border-radius: 0 !important;
+    text-align: left !important;
+    box-shadow: none !important;
+    transition: background-color 140ms ease, box-shadow 140ms ease !important;
+  }
+
+  html body
+    #tab-content-library.library-cockpit#tab-content-library
+    #library-brief-lens[data-library-brief-panel="preparation"]
+    .library-preparation-menu-options > .library-brief-chip:last-child {
+    border-bottom: 0 !important;
+  }
+
+  html body
+    #tab-content-library.library-cockpit#tab-content-library
+    #library-brief-lens[data-library-brief-panel="preparation"]
+    .library-preparation-menu-options .library-brief-chip-index {
+    color: rgba(211,221,215,.46) !important;
+    -webkit-text-fill-color: rgba(211,221,215,.46) !important;
+    font-family: 'Bebas Neue', Impact, sans-serif !important;
+    font-size: 13px !important;
+    letter-spacing: .08em !important;
+  }
+
+  html body
+    #tab-content-library.library-cockpit#tab-content-library
+    #library-brief-lens[data-library-brief-panel="preparation"]
+    .library-preparation-menu-options .library-brief-chip-copy {
+    display: flex !important;
+    min-width: 0 !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 2px !important;
+  }
+
+  html body
+    #tab-content-library.library-cockpit#tab-content-library
+    #library-brief-lens[data-library-brief-panel="preparation"]
+    .library-preparation-menu-options .library-brief-chip-copy strong {
+    max-width: 100% !important;
+    overflow: hidden !important;
+    font-family: 'Bebas Neue', Impact, sans-serif !important;
+    font-size: 14px !important;
+    font-weight: 400 !important;
+    letter-spacing: .065em !important;
+    line-height: 1.05 !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+  }
+
+  html body
+    #tab-content-library.library-cockpit#tab-content-library
+    #library-brief-lens[data-library-brief-panel="preparation"]
+    .library-preparation-menu-options .library-brief-chip-copy small {
+    max-width: 100% !important;
+    overflow: hidden !important;
+    color: rgba(216,225,220,.58) !important;
+    -webkit-text-fill-color: rgba(216,225,220,.58) !important;
+    font-family: 'Barlow', Arial, sans-serif !important;
+    font-size: 10px !important;
+    font-weight: 500 !important;
+    letter-spacing: 0 !important;
+    line-height: 1.15 !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+  }
+
+  html body
+    #tab-content-library.library-cockpit#tab-content-library
+    #library-brief-lens[data-library-brief-panel="preparation"]
+    .library-preparation-menu-options .library-brief-chip-state {
+    min-width: 38px !important;
+    color: var(--accent) !important;
+    -webkit-text-fill-color: var(--accent) !important;
+    font-family: 'Barlow', Arial, sans-serif !important;
+    font-size: 9px !important;
+    font-weight: 800 !important;
+    letter-spacing: .08em !important;
+    line-height: 1 !important;
+    text-align: right !important;
+    text-transform: uppercase !important;
+  }
+
+  html body
+    #tab-content-library.library-cockpit#tab-content-library
+    #library-brief-lens[data-library-brief-panel="preparation"]
+    .library-preparation-menu-options .library-brief-chip:is(:hover, :focus-visible) {
+    background: rgba(255,255,255,.045) !important;
+    box-shadow: inset 2px 0 rgba(163,255,0,.55) !important;
+    outline: none !important;
+  }
+
+  html body
+    #tab-content-library.library-cockpit#tab-content-library
+    #library-brief-lens[data-library-brief-panel="preparation"]
+    .library-preparation-menu-options .library-brief-chip.active {
+    background: linear-gradient(90deg, rgba(163,255,0,.13), rgba(163,255,0,.02) 72%, transparent) !important;
+    box-shadow: inset 3px 0 var(--accent) !important;
+  }
+
+  html body
+    #tab-content-library.library-cockpit#tab-content-library
+    #library-brief-lens[data-library-brief-panel="preparation"]
+    .library-preparation-menu-options .library-brief-chip.active :is(.library-brief-chip-index, .library-brief-chip-copy strong) {
+    color: var(--accent) !important;
+    -webkit-text-fill-color: var(--accent) !important;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    html body
+      #tab-content-library.library-cockpit#tab-content-library
+      #library-brief-lens[data-library-brief-panel="preparation"]
+      .library-preparation-menu[open] > .library-preparation-menu-options {
+      animation: librarySetPrepMenuReveal 150ms cubic-bezier(.2,.8,.2,1) both !important;
+      transform-origin: top left !important;
+    }
+  }
+
+  html body
+    #tab-content-library.library-cockpit#tab-content-library
+    #library-brief-lens[data-library-brief-panel="preparation"]
+    #library-preparation-scan-visible {
+    grid-column: 3 !important;
+    grid-row: 1 !important;
+    align-self: center !important;
+    justify-self: stretch !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    height: 36px !important;
+    min-height: 36px !important;
+    margin: 0 !important;
+    padding: 0 8px !important;
+    overflow: hidden !important;
+    font-family: 'Bebas Neue', Impact, sans-serif !important;
+    font-size: 15px !important;
+    letter-spacing: .045em !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+  }
+
+  html body
+    #tab-content-library.library-cockpit#tab-content-library
+    #library-brief-lens[data-library-brief-panel="preparation"]
+    #library-preparation-scan-visible[hidden] {
+    display: none !important;
+  }
+
+  html body
+    #tab-content-library.library-cockpit#tab-content-library#tab-content-library
+    .library-results-column > #library-brief-lens#library-brief-lens#library-brief-lens[data-library-brief-panel="preparation"]:has(#library-preparation-scan-visible[hidden]) {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) 116px 120px !important;
+  }
+
+  html body
+    #tab-content-library.library-cockpit#tab-content-library
+    #library-brief-lens#library-brief-lens[data-library-brief-panel="preparation"]:has(#library-preparation-scan-visible[hidden])
+    #library-brief-topline#library-brief-topline #library-setup-utility-bar
+    > #library-brief-lane-dropdown#library-brief-lane-dropdown {
+    grid-column: 3 !important;
+  }
+
+  html body
+    #tab-content-library.library-cockpit#tab-content-library
+    #library-brief-lens#library-brief-lens[data-library-brief-panel="preparation"]:has(#library-preparation-scan-visible[hidden])
+    #library-brief-topline#library-brief-topline #library-setup-utility-bar
+    > #library-brief-collapse#library-brief-collapse {
+    grid-column: 4 !important;
+  }
+
+  html body
+    #tab-content-library.library-cockpit#tab-content-library
+    #library-brief-lens#library-brief-lens[data-library-brief-panel="preparation"]:has(#library-preparation-scan-visible[hidden])
+    #library-brief-topline#library-brief-topline #library-brief-action-rail
+    > #library-preparation-toggle#library-preparation-toggle {
+    grid-column: 5 !important;
+  }
+
+  html body
+    #tab-content-library.library-cockpit#tab-content-library
+    #library-brief-lens#library-brief-lens[data-library-brief-panel="preparation"]
+    #library-brief-topline#library-brief-topline #library-setup-utility-bar
+    > #library-brief-lane-dropdown#library-brief-lane-dropdown {
+    grid-column: 4 !important;
+    grid-row: 1 !important;
+    align-self: center !important;
+    justify-self: stretch !important;
+    display: block !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    height: 44px !important;
+    margin: 0 !important;
+  }
+
+  .library-preparation-options-label {
+    display: none;
+  }
+
+  html body
+    #tab-content-library.library-cockpit#tab-content-library
+    #library-brief-lens[data-library-brief-panel="preparation"]
+    #library-brief-lane-dropdown > summary {
+    /* Older macOS WebKit does not reliably lay out summary as a grid. */
+    display: block !important;
+    position: relative !important;
+    list-style: none !important;
+    grid-template-columns: minmax(0, 1fr) 28px !important;
+    grid-template-rows: 10px 32px !important;
+    gap: 2px 0 !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    height: 44px !important;
+    min-height: 44px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: visible !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    outline: none !important;
+  }
+
+  html body
+    #tab-content-library.library-cockpit#tab-content-library
+    #library-brief-lens[data-library-brief-panel="preparation"]
+    #library-brief-lane-dropdown > summary > span {
+    position: absolute !important;
+    left: 0 !important;
+    top: 12px !important;
+    grid-column: 1 !important;
+    grid-row: 2 !important;
+    display: block !important;
+    align-items: center !important;
+    width: calc(100% - 28px) !important;
+    min-width: 0 !important;
+    height: 32px !important;
+    min-height: 32px !important;
+    margin: 0 !important;
+    padding: 0 8px !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+    border: 1px solid rgba(174,188,181,.28) !important;
+    border-right: 0 !important;
+    background: #090c09 !important;
+    font-family: 'Bebas Neue', Impact, sans-serif !important;
+    font-size: 15px !important;
+    letter-spacing: .03em !important;
+    line-height: 32px !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+  }
+
+  html body
+    #tab-content-library.library-cockpit#tab-content-library
+    #library-brief-lens[data-library-brief-panel="preparation"]
+    #library-brief-lane-dropdown > summary > .library-preparation-options-label {
+    grid-column: 1 / -1 !important;
+    grid-row: 1 !important;
+    display: block !important;
+    min-height: 10px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    color: var(--accent) !important;
+    -webkit-text-fill-color: var(--accent) !important;
+    font-family: 'Bebas Neue', Impact, sans-serif !important;
+    font-size: 11px !important;
+    font-weight: 400 !important;
+    letter-spacing: .08em !important;
+    line-height: 10px !important;
+    text-transform: uppercase !important;
+  }
+
+  html body
+    #tab-content-library.library-cockpit#tab-content-library
+    #library-brief-lens[data-library-brief-panel="preparation"]
+    #library-brief-lane-dropdown > summary > img {
+    grid-column: 2 !important;
+    grid-row: 2 !important;
+    position: absolute !important;
+    right: 0 !important;
+    top: 12px !important;
+    align-self: stretch !important;
+    width: 28px !important;
+    min-width: 28px !important;
+    height: 32px !important;
+    min-height: 32px !important;
+    margin: 0 !important;
+    padding: 9px 7px !important;
+    box-sizing: border-box !important;
+    border: 1px solid rgba(174,188,181,.28) !important;
+    border-left: 0 !important;
+    background: #090c09 !important;
+  }
+
+  html body
+    #tab-content-library.library-cockpit#tab-content-library
+    #library-brief-lens[data-library-brief-panel="preparation"]
+    #library-brief-lane-dropdown > summary:focus-visible > :is(span, img),
+  html body
+    #tab-content-library.library-cockpit#tab-content-library
+    #library-brief-lens[data-library-brief-panel="preparation"]
+    #library-brief-lane-dropdown[open] > summary > :is(span, img) {
+    border-color: var(--accent) !important;
+  }
+
+  html body
+    #tab-content-library.library-cockpit#tab-content-library
+    #library-brief-lens#library-brief-lens[data-library-brief-panel="preparation"]
+    #library-brief-topline#library-brief-topline #library-setup-utility-bar
+    > #library-brief-collapse#library-brief-collapse {
+    grid-column: 5 !important;
+    grid-row: 1 !important;
+    position: static !important;
+    align-self: center !important;
+    justify-self: stretch !important;
+    display: inline-flex !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    height: 36px !important;
+    min-height: 36px !important;
+    margin: 0 !important;
+    padding: 0 10px !important;
+    border: 1px solid rgba(163,255,0,.72) !important;
+    background: rgba(7,16,5,.92) !important;
+    color: var(--accent) !important;
+    -webkit-text-fill-color: var(--accent) !important;
+    font-family: 'Bebas Neue', Impact, sans-serif !important;
+    font-size: 15px !important;
+    line-height: 15px !important;
+    text-shadow: none !important;
+  }
+
+  html body
+    #tab-content-library.library-cockpit#tab-content-library
+    #library-brief-lens#library-brief-lens[data-library-brief-panel="preparation"]
+    #library-brief-topline#library-brief-topline #library-brief-action-rail
+    > #library-preparation-toggle#library-preparation-toggle {
+    grid-column: 6 !important;
+    grid-row: 1 !important;
+    position: static !important;
+    align-self: center !important;
+    justify-self: stretch !important;
+    display: inline-flex !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    height: 36px !important;
+    min-height: 36px !important;
+    margin: 0 !important;
+    padding: 0 12px !important;
+    border: 1px solid var(--accent) !important;
+    background: var(--accent) !important;
+    color: #071005 !important;
+    -webkit-text-fill-color: #071005 !important;
+    font-family: 'Bebas Neue', Impact, sans-serif !important;
+    font-size: 15px !important;
+    line-height: 15px !important;
+    text-shadow: none !important;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.45), 0 5px 14px rgba(0,0,0,.28) !important;
+  }
+
+  html body
+    #tab-content-library.library-cockpit#tab-content-library
+    #library-brief-lens[data-library-brief-panel="preparation"]
+    #library-preparation-toggle > span {
+    color: #071005 !important;
+    -webkit-text-fill-color: #071005 !important;
+    font-family: 'Bebas Neue', Impact, sans-serif !important;
+    font-size: 15px !important;
+    line-height: 15px !important;
+  }
+
+  html body:has(#library-brief-lens[data-library-brief-panel="preparation"])
+    #search-results .library-no-results .library-track-prep-complete-title {
+    font-family: 'Bebas Neue', Impact, sans-serif !important;
+    font-size: 24px !important;
+    line-height: 29px !important;
+  }
+
+  html body
+    #tab-content-library.library-cockpit#tab-content-library
+    #library-brief-lens[data-library-brief-panel="preparation"]
+    #library-preparation-inherited-filters {
+    grid-column: 1 / -1 !important;
+    grid-row: 2 !important;
+    margin-top: 6px !important;
+  }
+
+  html body
+    #tab-content-library.library-cockpit#tab-content-library
+    #library-brief-lens[data-library-brief-panel="preparation"]
+    #library-preparation-scan-receipt {
+    grid-column: 1 / -1 !important;
+    grid-row: 3 !important;
+    margin-top: 6px !important;
+  }
+
+  @media (max-width: 1100px) {
+    html body
+      #tab-content-library.library-cockpit#tab-content-library#tab-content-library
+      .library-results-column > #library-brief-lens#library-brief-lens#library-brief-lens[data-library-brief-panel="preparation"] {
+      grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    }
+
+    html body
+      #tab-content-library.library-cockpit#tab-content-library#tab-content-library
+      .library-results-column > #library-brief-lens#library-brief-lens#library-brief-lens[data-library-brief-panel="preparation"]:has(#library-preparation-scan-visible[hidden]) {
+      grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    }
+
+    html body #tab-content-library.library-cockpit
+      #library-brief-lens[data-library-brief-panel="preparation"]
+      #library-preparation-toolbar > label:nth-of-type(1),
+    html body #tab-content-library.library-cockpit
+      #library-brief-lens[data-library-brief-panel="preparation"]
+      #library-preparation-toolbar > label:nth-of-type(2),
+    html body #tab-content-library.library-cockpit
+      #library-brief-lens[data-library-brief-panel="preparation"]
+      #library-preparation-scan-visible {
+      grid-row: 1 !important;
+    }
+
+    html body #tab-content-library.library-cockpit
+      #library-brief-lens[data-library-brief-panel="preparation"]
+      #library-brief-lane-dropdown {
+      grid-column: 1 !important;
+      grid-row: 2 !important;
+    }
+
+    html body #tab-content-library.library-cockpit
+      #library-brief-lens[data-library-brief-panel="preparation"]
+      #library-brief-collapse {
+      grid-column: 2 !important;
+      grid-row: 2 !important;
+    }
+
+    html body #tab-content-library.library-cockpit
+      #library-brief-lens[data-library-brief-panel="preparation"]
+      #library-preparation-toggle {
+      grid-column: 3 !important;
+      grid-row: 2 !important;
+    }
+  }
+</style>

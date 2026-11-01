@@ -1,0 +1,204 @@
+    <div id="tab-content-duplicates" class="tab-content hidden flex-1 overflow-hidden flex flex-col library-cockpit health-review-page">
+      <div class="health-review-page-head">
+        <button type="button" onclick="showTab('health')" class="health-review-back">
+          <img src="/static/icons/chevron-down.svg" alt="" aria-hidden="true">
+          Back to Health
+        </button>
+        <div class="health-review-title-line">
+          <h2 id="duplicates-review-title">Duplicate Resolver</h2>
+          <span id="duplicates-review-ready-badge" class="hidden">Ready to scan</span>
+        </div>
+        <p id="duplicates-review-copy">Keep the best copies. Trash extra files, move them to Desktop, or remove software entries only.</p>
+        <button type="button" class="health-clean-review-button" onclick="openDuplicateMoveHistory()">File Move History</button>
+      </div>
+
+      <div class="duplicate-review-controls duplicate-review-controls-internal" aria-hidden="true">
+        <div class="duplicate-review-mode">
+          <label for="dupes-strictness">Match rules</label>
+          <select id="dupes-strictness">
+            <option value="loose">Loose — title and artist</option>
+            <option value="medium" selected>Medium — song family</option>
+            <option value="strict">Strict — exact match</option>
+          </select>
+        </div>
+        <button id="dupes-scan-btn" type="button" onclick="scanDuplicates(this)" class="health-clean-review-button primary">Scan Library</button>
+      </div>
+
+      <div class="flex-1 overflow-y-auto min-h-0 styled-scrollbar" id="duplicates-container">
+        <div class="duplicate-review-shell">
+          <div class="duplicate-review-empty">
+            <img src="/static/icons/disc-3.svg" alt="" aria-hidden="true">
+            <div><strong>Ready to compare your library</strong><p>AXIOM checks its library index and recommends which copy to keep. Nothing is deleted from disk.</p></div>
+          </div>
+        </div>
+      </div>
+      <button id="dupes-resolve-btn" type="button" onclick="resolveDuplicates('axiom', this)" class="hidden">Move selected to Restore Bin</button>
+      <button id="dupes-resolve-djay-btn" type="button" onclick="resolveDuplicates('axiom', this)" class="hidden">Move selected to Restore Bin</button>
+    </div>
+
+    <div id="tab-content-health-review" class="tab-content hidden flex-1 overflow-hidden flex flex-col library-cockpit health-review-page">
+      <div class="health-review-page-head">
+        <button type="button" onclick="currentHealthCleanupReview = null; showTab('health')" class="health-review-back">
+          <img src="/static/icons/chevron-down.svg" alt="" aria-hidden="true">
+          Back to Health
+        </button>
+        <div class="health-review-title-line">
+          <h2 id="health-review-title">Health Review</h2>
+          <span id="health-review-ready-badge" class="hidden"></span>
+        </div>
+        <p id="health-review-copy">Review library maintenance candidates.</p>
+        <button id="health-metadata-rules-button" type="button" class="health-metadata-rules-button hidden" onclick="toggleHealthMetadataRulesPanel()" aria-controls="health-metadata-rules-panel" aria-expanded="false">
+          <img src="/static/icons/settings.svg" alt="" aria-hidden="true">
+          <span>Metadata Rules</span>
+        </button>
+      </div>
+
+      <aside id="health-metadata-rules-panel" class="health-metadata-rules-panel hidden" aria-labelledby="health-metadata-rules-title" aria-hidden="true">
+        <header class="health-metadata-rules-head">
+          <div>
+            <span>Title &amp; Artist Cleanup</span>
+            <h3 id="health-metadata-rules-title">Cleanup Rules</h3>
+            <p>Tell AXIOM what to look for and how your tracks should be cleaned.</p>
+          </div>
+        </header>
+
+        <nav class="health-cleanup-rules-tabs" aria-label="Cleanup rule setup">
+          <button type="button" class="active" data-cleanup-rules-tab="look" onclick="setHealthMetadataRulesTab('look', this)">What To Look For</button>
+          <button type="button" data-cleanup-rules-tab="clean" onclick="setHealthMetadataRulesTab('clean', this)">How To Clean It</button>
+          <button type="button" data-cleanup-rules-tab="safe" onclick="setHealthMetadataRulesTab('safe', this)">Keep Safe</button>
+        </nav>
+        <p id="health-cleanup-rules-helper" class="health-cleanup-rules-helper">AXIOM will show you every change before anything is saved.</p>
+
+        <div class="health-cleanup-rules-workbench">
+          <section id="health-cleanup-rules-library" class="health-cleanup-rules-library" aria-label="Saved cleanup rules">
+            <section class="health-metadata-rule-create" aria-label="Add cleanup rule">
+              <div class="health-metadata-rule-create-grid">
+                <input id="health-metadata-rule-name" type="text" maxlength="80" placeholder="Artist name or DJ version wording" autocomplete="off" onkeydown="if(event.key === 'Enter'){ event.preventDefault(); addHealthMetadataRule(); }">
+                <select id="health-metadata-rule-designation" aria-label="Rule designation">
+                  <option value="artist">DJ / Producer / Editor</option>
+                  <option value="tool">Edit &amp; Version Wording</option>
+                </select>
+                <button id="health-metadata-rule-add" type="button" onclick="addHealthMetadataRule()">Add A New Cleanup</button>
+              </div>
+            </section>
+            <div class="health-metadata-rules-toolbar">
+              <label class="sr-only" for="health-metadata-rules-search">Find a saved cleanup</label>
+              <input id="health-metadata-rules-search" type="search" placeholder="Find a saved cleanup" oninput="renderHealthMetadataRules()">
+              <div id="health-metadata-rules-summary" aria-live="polite">Loading rules…</div>
+            </div>
+            <section id="health-metadata-merge-panel" class="health-metadata-merge-panel" aria-live="polite">
+              <div><strong id="health-metadata-merge-title">Merge cleanup wording</strong><small id="health-metadata-merge-copy">Select two or more names or two or more version words, then choose one display label.</small></div>
+              <input id="health-metadata-merge-name" type="text" maxlength="80" placeholder="Display as, e.g. Dj owe or Slam Edit">
+              <button id="health-metadata-merge-apply" type="button" onclick="mergeSelectedHealthMetadataRules(this)" disabled>Merge Selected</button>
+            </section>
+            <div id="health-metadata-rules-list" class="health-metadata-rules-list styled-scrollbar" aria-live="polite"></div>
+          </section>
+
+          <section class="health-cleanup-rules-editor" aria-live="polite">
+            <div class="health-cleanup-rules-pane active" data-cleanup-rules-pane="look">
+              <h4>Edit This Cleanup</h4>
+              <div class="health-cleanup-rule-fields">
+                <label>What should AXIOM look for?<input id="health-cleanup-rule-edit-name" type="text" maxlength="80" placeholder="Choose a cleanup on the left" oninput="updateHealthCleanupRulePreview()"></label>
+                <label>Display merged wording as<input id="health-cleanup-rule-edit-canonical" type="text" maxlength="80" placeholder="Optional display label" oninput="updateHealthCleanupRulePreview()"></label>
+                <label>Also match these variants<input id="health-cleanup-rule-edit-aliases" type="text" maxlength="240" placeholder="Comma-separated variants"></label>
+                <label>What is it?<select id="health-cleanup-rule-edit-designation" onchange="updateHealthCleanupRulePreview()"><option value="artist">DJ / Producer / Editor</option><option value="tool">Edit &amp; Version Wording</option></select></label>
+                <label>How should AXIOM find it?<select id="health-cleanup-rule-edit-match"><option value="exact">Match these exact words</option><option value="contains">Wording appears anywhere</option><option value="starts_with">Wording starts the field</option><option value="ends_with">Wording ends the field</option></select></label>
+              </div>
+              <div class="health-cleanup-rule-check-row">
+                <label><input id="health-cleanup-rule-edit-future" type="checkbox" checked> Use this for new tracks too</label>
+                <button type="button" onclick="checkHealthMetadataRuleMatches(this)">Check My Library Now</button>
+              </div>
+              <div class="health-cleanup-rule-match-count"><strong id="health-cleanup-rule-match-count">0</strong><span>matching tracks found</span></div>
+              <section class="health-cleanup-rule-preview">
+                <h5>This Is What Will Change</h5>
+                <div><span><b>Before</b><strong id="health-cleanup-rule-before-title">Title: Signal Fire (Music Junkie Slam Edit)</strong><small id="health-cleanup-rule-before-artist">Artist: Original Artist</small></span><i aria-hidden="true">→</i><span><b>After</b><strong id="health-cleanup-rule-after-title">Title: Signal Fire (Slam Edit)</strong><small id="health-cleanup-rule-after-artist">Artist: Original Artist (Music Junkie)</small></span></div>
+              </section>
+              <p class="health-cleanup-rule-notice">Nothing has changed yet. You will approve these tracks first.</p>
+              <footer class="health-cleanup-rule-actions"><button type="button" class="primary" onclick="reviewHealthMetadataRuleMatches()">Review Matching Tracks</button><button type="button" onclick="saveSelectedHealthMetadataRule(this)">Save Changes</button><button type="button" onclick="toggleHealthMetadataRulesPanel(false)">Cancel</button></footer>
+            </div>
+
+            <div class="health-cleanup-rules-pane" data-cleanup-rules-pane="clean">
+              <h4>Choose Where It Sits</h4>
+              <p>Pick the example that looks right. AXIOM will use it for matching tracks.</p>
+              <section class="health-cleanup-placement-group">
+                <h5>DJ / Producer / Editor Name</h5>
+                <p>Where should the name sit?</p>
+                <div class="health-cleanup-choice-grid">
+                  <button type="button" data-rule-choice="artist_position" data-value="before_artist" onclick="selectHealthCleanupRuleChoice(this)"><span>Before Artist Name</span><strong>(DJ OWE) Tupac</strong></button>
+                  <button type="button" data-rule-choice="artist_position" data-value="after_artist" onclick="selectHealthCleanupRuleChoice(this)"><span>After Artist Name</span><strong>Tupac (DJ OWE)</strong></button>
+                </div>
+              </section>
+              <section class="health-cleanup-placement-group">
+                <h5>Edit &amp; Version Words</h5>
+                <p>Where should the song version sit?</p>
+                <div class="health-cleanup-choice-grid">
+                  <button type="button" data-rule-choice="version_position" data-value="before_title" onclick="selectHealthCleanupRuleChoice(this)"><span>Before Song Title</span><strong>(Acap Intro) Hit Em Up</strong></button>
+                  <button type="button" data-rule-choice="version_position" data-value="after_title" onclick="selectHealthCleanupRuleChoice(this)"><span>After Song Title</span><strong>Hit Em Up (Acap Intro)</strong></button>
+                </div>
+                <p class="health-cleanup-bracket-label">How should the extra words look?</p>
+                <div class="health-cleanup-bracket-grid">
+                  <button type="button" data-rule-choice="brackets" data-value="round" onclick="selectHealthCleanupRuleChoice(this)">(Round brackets)</button>
+                  <button type="button" data-rule-choice="brackets" data-value="square" onclick="selectHealthCleanupRuleChoice(this)">[Square brackets]</button>
+                  <button type="button" data-rule-choice="brackets" data-value="none" onclick="selectHealthCleanupRuleChoice(this)">No brackets</button>
+                </div>
+              </section>
+              <label class="health-cleanup-layout-future"><input id="health-cleanup-rule-layout-future" type="checkbox" checked> Use this layout for new matching tracks too</label>
+              <section class="health-cleanup-layout-preview"><h5>This Is What Will Change</h5><div><span><b>Before</b><strong>(DJ OWE) Tupac – Hit Em Up (Acap Intro)</strong></span><i aria-hidden="true">→</i><span><b>After</b><strong id="health-cleanup-layout-after">Tupac (DJ OWE) – Hit Em Up (Acap Intro)</strong></span></div></section>
+              <p class="health-cleanup-rule-notice">Nothing has changed yet. You will approve every matching track first.</p>
+              <footer class="health-cleanup-rule-actions"><button type="button" class="primary" onclick="reviewHealthMetadataRuleMatches()">Review Matching Tracks</button><button type="button" onclick="saveSelectedHealthMetadataRule(this)">Save This Cleanup</button><button type="button" onclick="toggleHealthMetadataRulesPanel(false)">Cancel</button></footer>
+            </div>
+
+            <div class="health-cleanup-rules-pane" data-cleanup-rules-pane="safe">
+              <div class="health-cleanup-safe-grid">
+                <section>
+                  <h4>Always Safe</h4>
+                  <div class="health-cleanup-locked-row"><span><strong>Source Audio Files</strong><small>AXIOM never changes your music files.</small></span><b>Always Untouched</b><em>Locked</em></div>
+                  <div class="health-cleanup-locked-row"><span><strong>Serato &amp; djay Libraries</strong><small>AXIOM never edits your DJ software.</small></span><b>Always Untouched</b><em>Locked</em></div>
+                  <h4>Your Safety Setup</h4>
+                  <div id="health-cleanup-safety-summary" class="health-cleanup-safety-summary"></div>
+                  <button type="button" class="health-cleanup-reset-safety" onclick="resetHealthCleanupSafety()">Reset My Choices</button>
+                </section>
+                <section>
+                  <h4>When Should AXIOM Ask?</h4>
+                  <p>You stay in control before anything is saved.</p>
+                  <div class="health-cleanup-safety-control locked"><span><strong>Show Me Every Change First</strong><small>Review the Before and After result.</small></span><b>Always On</b></div>
+                  <div class="health-cleanup-safety-control"><span><strong>Ask Before A Large Cleanup</strong><small>Pause when this many tracks are selected.</small></span><input id="health-cleanup-safe-large" type="checkbox" checked onchange="renderHealthCleanupSafety()"><select id="health-cleanup-safe-threshold" onchange="renderHealthCleanupSafety()"><option value="25">25 tracks or more</option><option value="50">50 tracks or more</option><option value="100">100 tracks or more</option></select></div>
+                  <div class="health-cleanup-safety-control"><span><strong>Skip It If AXIOM Isn't Sure</strong><small>Leave unclear tracks unchanged for me to review.</small></span><input id="health-cleanup-safe-unclear" type="checkbox" checked onchange="renderHealthCleanupSafety()"></div>
+                  <h4>Leave These Alone</h4>
+                  <p>Add a name, phrase or track AXIOM should never clean.</p>
+                  <div class="health-cleanup-safe-create"><input id="health-cleanup-safe-name" type="text" placeholder="Type a name, phrase or track title"><select id="health-cleanup-safe-type"><option value="phrase">Name or phrase</option><option value="track">One track</option></select><button type="button" onclick="addHealthCleanupProtectedItem()">Add To Safe List</button></div>
+                  <div id="health-cleanup-safe-list" class="health-cleanup-safe-list"></div>
+                  <h4>Easy To Undo</h4>
+                  <div class="health-cleanup-locked-row"><span><strong>Keep The Original Title &amp; Artist</strong><small>AXIOM keeps the Before version so you can restore it later.</small></span><b>Always On</b><em>Locked</em></div>
+                </section>
+              </div>
+              <footer class="health-cleanup-safety-footer"><span><strong>Your Cleanup Safety</strong><small id="health-cleanup-safety-footer-copy"></small></span><button type="button" class="primary" onclick="saveHealthCleanupSafety(this)">Save My Safety Settings</button><button type="button" onclick="toggleHealthMetadataRulesPanel(false)">Cancel</button></footer>
+            </div>
+          </section>
+        </div>
+
+        <footer class="health-metadata-rules-foot"><p>Your source audio and DJ libraries stay untouched.</p></footer>
+      </aside>
+
+      <div class="flex-1 overflow-y-auto min-h-0 styled-scrollbar" id="health-review-container">
+        <!-- Injected via JS -->
+      </div>
+    </div>
+
+    <div id="tab-content-era-review" class="tab-content hidden flex-1 overflow-hidden flex flex-col library-cockpit health-review-page">
+      <div class="health-review-page-head">
+        <button type="button" onclick="returnToHealthEra()" class="health-review-back">
+          <img src="/static/icons/chevron-down.svg" alt="" aria-hidden="true">
+          Back to Health Era
+        </button>
+        <div class="health-review-title-line">
+          <h2 id="era-review-title">Fix Eras</h2>
+          <span id="era-review-ready-badge">Ready to scan</span>
+        </div>
+        <p id="era-review-copy">Check the suggested eras, then apply the changes you agree with.</p>
+      </div>
+
+      <div class="flex-1 overflow-y-auto min-h-0 styled-scrollbar" id="era-review-container">
+        <!-- Injected via JS -->
+      </div>
+    </div>

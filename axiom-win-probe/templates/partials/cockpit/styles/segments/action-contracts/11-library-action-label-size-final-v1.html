@@ -1,0 +1,30 @@
+<style id="library-action-label-size-final-v1">
+  /* The four annotated Library action labels share one readable display size.
+     Preserve their existing button geometry, icons, colours, and interactions. */
+  html body #tab-content-library.library-cockpit#tab-content-library
+    #library-brief-lens#library-brief-lens[data-library-brief-panel="closed"]
+    :is(#library-preparation-toggle, #library-brief-collapse, .library-gap-launch, #library-fresh-rotate),
+  html body #tab-content-library.library-cockpit#tab-content-library
+    #library-brief-lens#library-brief-lens[data-library-brief-panel="closed"]
+    :is(#library-preparation-toggle, #library-brief-collapse, .library-gap-launch, #library-fresh-rotate) > span {
+    font-family: 'Bebas Neue', Impact, sans-serif !important;
+    font-size: 15px !important;
+    font-weight: 400 !important;
+    line-height: 15px !important;
+  }
+
+  html body #tab-content-library.library-cockpit#tab-content-library
+    #library-brief-lens#library-brief-lens[data-library-brief-panel="closed"]
+    #library-brief-topline {
+    grid-template-columns: minmax(170px, 1fr) 152px 116px 142px 116px 148px !important;
+  }
+
+  html body #tab-content-library.library-cockpit#tab-content-library
+    #library-brief-lens#library-brief-lens[data-library-brief-panel="closed"]
+    .library-gap-launch.library-gap-launch {
+    width: 100% !important;
+    min-width: 0 !important;
+    padding-inline: 8px !important;
+    gap: 6px !important;
+  }
+</style>

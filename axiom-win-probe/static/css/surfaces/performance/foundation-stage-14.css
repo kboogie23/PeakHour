@@ -1,0 +1,685 @@
+
+    /* Command Deck final visual alignment.
+       Keep the real Performance handlers, but make the in-app surface follow
+       the approved Matching Songs / Live Assist language instead of the old
+       utility-dashboard styling. */
+    #tab-content-performance.performance-cockpit {
+      --command-accent: var(--accent);
+      --command-panel: rgba(29, 33, 29, 0.92);
+      --command-panel-soft: color-mix(in srgb, var(--accent-glow-base) 7%, transparent);
+      --command-line: color-mix(in srgb, var(--accent-glow-base) 24%, transparent);
+      --command-muted: rgba(244, 247, 239, 0.58);
+      --command-neutral-border: rgba(244, 247, 239, 0.18);
+      color: #f4f7ef;
+      font-family: 'Barlow', sans-serif;
+    }
+
+    #tab-content-performance.performance-cockpit .performance-command-head {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+
+    #tab-content-performance.performance-cockpit .performance-hero,
+    #tab-content-performance.performance-cockpit .performance-command-card,
+    #tab-content-performance.performance-cockpit .performance-control-room,
+    #tab-content-performance.performance-cockpit .performance-panel {
+      border-radius: 12px;
+      border-color: var(--command-line);
+      background:
+        linear-gradient(135deg, color-mix(in srgb, var(--accent-glow-base) 11%, transparent), rgba(244,247,239,0.035) 42%, rgba(0,0,0,0.34)),
+        var(--command-panel);
+      box-shadow: 0 24px 70px rgba(0,0,0,0.38), inset 0 1px 0 rgba(244,247,239,0.055);
+    }
+
+    #tab-content-performance.performance-cockpit .performance-hero {
+      min-height: 172px;
+      padding: 24px 26px;
+      border-left: 6px solid var(--command-accent);
+    }
+
+    #tab-content-performance.performance-cockpit.provider-djay .performance-hero,
+    #tab-content-performance.performance-cockpit.provider-djay .performance-now-track,
+    #tab-content-performance.performance-cockpit.provider-djay .performance-suggestion-card.gig-djay,
+    #tab-content-performance.performance-cockpit.provider-djay .performance-gig-profile {
+      border-color: rgba(255, 138, 31, 0.86);
+      background:
+        linear-gradient(135deg, rgba(255,138,31,0.18), rgba(255,138,31,0.055) 42%, rgba(0,0,0,0.28)),
+        rgba(32, 19, 9, 0.9);
+    }
+
+    #tab-content-performance.performance-cockpit.provider-serato .performance-hero,
+    #tab-content-performance.performance-cockpit.provider-serato .performance-now-track,
+    #tab-content-performance.performance-cockpit.provider-serato .performance-suggestion-card.gig-serato,
+    #tab-content-performance.performance-cockpit.provider-serato .performance-gig-profile {
+      border-color: rgba(34, 167, 255, 0.86);
+      background:
+        linear-gradient(135deg, rgba(34,167,255,0.18), rgba(34,167,255,0.055) 42%, rgba(0,0,0,0.28)),
+        rgba(7, 18, 29, 0.9);
+    }
+
+    #tab-content-performance.performance-cockpit .performance-title,
+    #tab-content-performance.performance-cockpit .performance-track-title,
+    #tab-content-performance.performance-cockpit .performance-command-card h3,
+    #tab-content-performance.performance-cockpit .performance-panel-titlebar strong,
+    #tab-content-performance.performance-cockpit .performance-refine-board strong,
+    #tab-content-performance.performance-cockpit .performance-suggestion-title {
+      font-family: 'Bebas Neue', sans-serif;
+      color: #fff;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+    }
+
+    #tab-content-performance.performance-cockpit .performance-title {
+      font-size: clamp(62px, 6.7vw, 104px);
+      line-height: 0.86;
+      margin: 16px 0 8px;
+    }
+
+    #tab-content-performance.performance-cockpit .performance-hero-eyebrow,
+    #tab-content-performance.performance-cockpit .performance-live-status,
+    #tab-content-performance.performance-cockpit .performance-gig-profile-head span,
+    #tab-content-performance.performance-cockpit .performance-signal span,
+    #tab-content-performance.performance-cockpit .performance-playing-bpm-control span,
+    #tab-content-performance.performance-cockpit .performance-lane-summary,
+    #tab-content-performance.performance-cockpit .performance-meta-line,
+    #tab-content-performance.performance-cockpit button,
+    #tab-content-performance.performance-cockpit select,
+    #tab-content-performance.performance-cockpit input {
+      font-family: 'Barlow', sans-serif;
+      font-weight: 950;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    #tab-content-performance.performance-cockpit .performance-time-correction {
+      align-items: center;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 8px;
+    }
+
+    #tab-content-performance.performance-cockpit .performance-time-correction span {
+      color: var(--command-muted);
+      flex: 1 1 100%;
+      font-size: 9px;
+    }
+
+    #tab-content-performance.performance-cockpit .performance-time-correction button {
+      border: 1px solid color-mix(in srgb, var(--accent-glow-base) 34%, transparent);
+      border-radius: 8px;
+      color: var(--accent);
+      background: color-mix(in srgb, var(--accent-glow-base) 6%, transparent);
+      font-size: 9px;
+      padding: 6px 8px;
+    }
+
+    #tab-content-performance.performance-cockpit .performance-hero-copy,
+    #tab-content-performance.performance-cockpit .performance-command-card p,
+    #tab-content-performance.performance-cockpit .performance-panel-titlebar span,
+    #tab-content-performance.performance-cockpit .performance-refine-board span,
+    #tab-content-performance.performance-cockpit .performance-gig-profile-summary {
+      color: var(--command-muted);
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    #tab-content-performance.performance-cockpit .performance-command-card {
+      display: grid;
+      grid-template-columns: minmax(260px, 0.75fr) minmax(0, 1.25fr);
+      align-items: end;
+      min-height: 104px;
+      padding: 18px;
+    }
+
+    #tab-content-performance.performance-cockpit .performance-command-actions {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    #tab-content-performance.performance-cockpit .performance-shell {
+      grid-template-columns: minmax(410px, 0.82fr) minmax(0, 1.18fr);
+      gap: 16px;
+      min-height: 680px;
+    }
+
+    #tab-content-performance.performance-cockpit .performance-now-card,
+    #tab-content-performance.performance-cockpit .performance-recommendation-deck {
+      padding: 18px;
+      border-color: var(--command-neutral-border);
+      background: rgba(18, 21, 18, 0.86);
+    }
+
+    #tab-content-performance.performance-cockpit .performance-panel-titlebar {
+      align-items: center;
+      padding-bottom: 14px;
+      margin-bottom: 14px;
+    }
+
+    #tab-content-performance.performance-cockpit .performance-panel-titlebar strong {
+      font-size: 34px;
+      line-height: 0.9;
+    }
+
+    #tab-content-performance.performance-cockpit .performance-now-track {
+      min-height: 112px;
+      border-radius: 10px;
+      background: color-mix(in srgb, var(--accent-glow-base) 7%, transparent);
+    }
+
+    #tab-content-performance.performance-cockpit .performance-track-title {
+      font-size: 40px;
+      line-height: 0.9;
+    }
+
+    #tab-content-performance.performance-cockpit .performance-gig-profile,
+    #tab-content-performance.performance-cockpit .performance-refine-board,
+    #tab-content-performance.performance-cockpit .performance-playing-bpm-control,
+    #tab-content-performance.performance-cockpit .performance-suggestions {
+      border-radius: 8px;
+      border-color: var(--command-neutral-border);
+      background: rgba(0, 0, 0, 0.26);
+    }
+
+    #tab-content-performance.performance-cockpit .performance-signal-grid {
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    #tab-content-performance.performance-cockpit .performance-signal {
+      min-height: 74px;
+      border-radius: 6px;
+      background: rgba(244, 247, 239, 0.045);
+    }
+
+    #tab-content-performance.performance-cockpit .performance-action,
+    #tab-content-performance.performance-cockpit .performance-filter-chip,
+    #tab-content-performance.performance-cockpit .performance-mini-btn {
+      border-radius: 5px !important;
+      border-color: var(--command-neutral-border) !important;
+      background: rgba(244, 247, 239, 0.045) !important;
+      color: rgba(244, 247, 239, 0.78) !important;
+      box-shadow: none !important;
+      min-height: 42px;
+    }
+
+    #tab-content-performance.performance-cockpit .performance-action.primary,
+    #tab-content-performance.performance-cockpit .performance-filter-chip.active,
+    #tab-content-performance.performance-cockpit .performance-filter-chip[aria-pressed="true"],
+    #tab-content-performance.performance-cockpit #performance-clean-only.active,
+    #tab-content-performance.performance-cockpit #performance-clean-only[aria-pressed="true"] {
+      border-color: var(--command-accent) !important;
+      background: var(--command-accent) !important;
+      color: #071005 !important;
+      box-shadow: 0 0 20px color-mix(in srgb, var(--accent-glow-base) 18%, transparent) !important;
+    }
+
+    #tab-content-performance.performance-cockpit.provider-djay .performance-action:not(.primary):not(.active),
+    #tab-content-performance.performance-cockpit.provider-djay .performance-filter-chip:not(.active):not([aria-pressed="true"]),
+    #tab-content-performance.performance-cockpit.provider-djay .performance-mini-btn:not(.active),
+    #tab-content-performance.performance-cockpit.provider-serato .performance-action:not(.primary):not(.active),
+    #tab-content-performance.performance-cockpit.provider-serato .performance-filter-chip:not(.active):not([aria-pressed="true"]),
+    #tab-content-performance.performance-cockpit.provider-serato .performance-mini-btn:not(.active) {
+      border-color: rgba(244, 247, 239, 0.18) !important;
+      background: rgba(244, 247, 239, 0.045) !important;
+      color: rgba(244, 247, 239, 0.76) !important;
+    }
+
+    #tab-content-performance.performance-cockpit .performance-recommendation-deck {
+      min-height: 680px;
+    }
+
+    #tab-content-performance.performance-cockpit .performance-suggestions {
+      padding: 16px;
+      border-style: dashed;
+    }
+
+    #tab-content-performance.performance-cockpit .performance-suggestion-card {
+      border-radius: 7px;
+      padding: 18px;
+      background: rgba(244, 247, 239, 0.055);
+    }
+
+    #tab-content-performance.performance-cockpit .performance-suggestion-card.is-priority {
+      border-left-width: 7px;
+      background: color-mix(in srgb, var(--accent-glow-base) 11%, transparent);
+    }
+
+    #tab-content-performance.performance-cockpit .performance-suggestion-title {
+      font-size: 34px !important;
+      line-height: 0.92;
+    }
+
+    #tab-content-performance.performance-cockpit .performance-status-pill {
+      border-radius: 5px;
+    }
+
+    @media (max-width: 1280px) {
+      #tab-content-performance.performance-cockpit .performance-command-card,
+      #tab-content-performance.performance-cockpit .performance-command-actions {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    /* Command Deck hierarchy pass: this is the in-app control surface, not a
+       small pop-out. Keep the Live Assist DNA, but restore product hierarchy. */
+    #tab-content-performance.performance-cockpit {
+      --command-green: var(--accent);
+      --command-ink: #f4f7ef;
+      --command-muted: rgba(244, 247, 239, 0.58);
+      --command-panel: rgba(10, 14, 11, 0.92);
+      --command-line: color-mix(in srgb, var(--accent-glow-base) 24%, transparent);
+      background:
+        radial-gradient(circle at 18% 2%, color-mix(in srgb, var(--accent-glow-base) 18%, transparent), transparent 34%),
+        radial-gradient(circle at 80% 10%, rgba(34,167,255,0.08), transparent 28%),
+        linear-gradient(180deg, #050805 0%, #020403 54%, #010201 100%) !important;
+      color: var(--command-ink);
+      font-family: 'Barlow', sans-serif;
+    }
+
+    #tab-content-performance.performance-cockpit .performance-command-head {
+      display: grid;
+      grid-template-columns: minmax(0, 1.45fr) minmax(340px, 0.55fr);
+      gap: 18px;
+      margin-bottom: 20px;
+    }
+
+    #tab-content-performance.performance-cockpit .performance-hero {
+      min-height: 270px;
+      padding: 34px;
+      border-radius: 18px;
+      border: 1px solid color-mix(in srgb, var(--accent-glow-base) 44%, transparent);
+      border-left: 8px solid var(--command-green);
+      background:
+        linear-gradient(135deg, color-mix(in srgb, var(--accent-glow-base) 16%, transparent), rgba(255,255,255,0.035) 44%, rgba(0,0,0,0.32)),
+        rgba(9, 14, 9, 0.92);
+      box-shadow: 0 30px 90px rgba(0,0,0,0.42), 0 0 42px color-mix(in srgb, var(--accent-glow-base) 9%, transparent);
+    }
+
+    #tab-content-performance.performance-cockpit.provider-djay .performance-hero {
+      border-color: rgba(255,138,31,0.88);
+      border-left-color: #ff8a1f;
+      background:
+        linear-gradient(135deg, rgba(255,138,31,0.18), rgba(255,138,31,0.055) 42%, rgba(0,0,0,0.34)),
+        rgba(20, 11, 5, 0.92);
+    }
+
+    #tab-content-performance.performance-cockpit.provider-serato .performance-hero {
+      border-color: rgba(34,167,255,0.88);
+      border-left-color: #22a7ff;
+      background:
+        linear-gradient(135deg, rgba(34,167,255,0.18), rgba(34,167,255,0.055) 42%, rgba(0,0,0,0.34)),
+        rgba(5, 11, 18, 0.92);
+    }
+
+    #tab-content-performance.performance-cockpit .performance-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(82px, 9vw, 132px);
+      letter-spacing: 0.015em;
+      line-height: 0.76;
+      margin: 22px 0 16px;
+      text-transform: uppercase;
+    }
+
+    #tab-content-performance.performance-cockpit .performance-hero-eyebrow,
+    #tab-content-performance.performance-cockpit .performance-live-status,
+    #tab-content-performance.performance-cockpit button,
+    #tab-content-performance.performance-cockpit select,
+    #tab-content-performance.performance-cockpit input {
+      font-family: 'Barlow', sans-serif;
+      font-weight: 950;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+    }
+
+    #tab-content-performance.performance-cockpit .performance-hero-copy {
+      max-width: 780px;
+      color: rgba(244,247,239,0.7);
+      font-size: 13px;
+      font-weight: 850;
+      letter-spacing: 0.04em;
+      line-height: 1.55;
+      text-transform: uppercase;
+    }
+
+    #tab-content-performance.performance-cockpit .performance-hero-actions {
+      display: grid;
+      grid-template-columns: minmax(220px, 1.25fr) repeat(2, minmax(150px, 0.8fr));
+      gap: 10px;
+      margin-top: 28px;
+    }
+
+    #tab-content-performance.performance-cockpit .performance-action {
+      min-height: 54px;
+      border-radius: 8px;
+      border: 1px solid rgba(244,247,239,0.18);
+      background: rgba(244,247,239,0.045);
+      color: rgba(244,247,239,0.82);
+      box-shadow: none;
+    }
+
+    #tab-content-performance.performance-cockpit .performance-action.primary {
+      min-height: 64px;
+      background: var(--command-green);
+      border-color: var(--command-green);
+      color: #071005;
+      font-size: 13px;
+      box-shadow: 0 0 28px color-mix(in srgb, var(--accent-glow-base) 20%, transparent);
+    }
+
+    #tab-content-performance.performance-cockpit .performance-command-card {
+      padding: 24px;
+      border-radius: 18px;
+      border: 1px solid rgba(244,247,239,0.14);
+      background: rgba(18, 22, 18, 0.9);
+    }
+
+    #tab-content-performance.performance-cockpit .performance-command-card h3 {
+      font-family: 'Bebas Neue', sans-serif;
+      color: #fff;
+      font-size: 54px;
+      letter-spacing: 0.04em;
+      line-height: 0.82;
+      margin-top: 12px;
+      text-transform: uppercase;
+    }
+
+    #tab-content-performance.performance-cockpit .performance-command-card p,
+    #tab-content-performance.performance-cockpit .performance-panel-titlebar span,
+    #tab-content-performance.performance-cockpit .performance-refine-board span {
+      color: var(--command-muted);
+      font-size: 10px;
+      font-weight: 850;
+      letter-spacing: 0.07em;
+      line-height: 1.45;
+      text-transform: uppercase;
+    }
+
+    #tab-content-performance.performance-cockpit .performance-command-actions {
+      grid-template-columns: 1fr;
+      gap: 8px;
+    }
+
+    #tab-content-performance.performance-cockpit .performance-command-actions .performance-action {
+      min-height: 46px;
+    }
+
+    #tab-content-performance.performance-cockpit .performance-shell {
+      grid-template-columns: minmax(420px, 0.86fr) minmax(0, 1.14fr);
+      gap: 18px;
+    }
+
+    #tab-content-performance.performance-cockpit .performance-now-card,
+    #tab-content-performance.performance-cockpit .performance-recommendation-deck {
+      border-radius: 16px;
+      border: 1px solid rgba(244,247,239,0.14);
+      background: rgba(14, 17, 15, 0.88);
+      box-shadow: inset 0 1px 0 rgba(244,247,239,0.04);
+    }
+
+    #tab-content-performance.performance-cockpit .performance-panel-titlebar {
+      align-items: center;
+      margin-bottom: 16px;
+      padding-bottom: 16px;
+    }
+
+    #tab-content-performance.performance-cockpit .performance-panel-titlebar strong {
+      font-family: 'Bebas Neue', sans-serif;
+      color: #fff;
+      font-size: 46px;
+      letter-spacing: 0.035em;
+      line-height: 0.85;
+      text-transform: uppercase;
+    }
+
+    #tab-content-performance.performance-cockpit .performance-recommendation-deck .performance-panel-titlebar strong {
+      font-size: 64px;
+    }
+
+    #tab-content-performance.performance-cockpit .performance-now-track {
+      min-height: 150px;
+      grid-template-columns: 112px minmax(0, 1fr);
+      gap: 18px;
+      border-radius: 12px;
+      border: 1px solid color-mix(in srgb, var(--accent-glow-base) 40%, transparent);
+      background: linear-gradient(135deg, color-mix(in srgb, var(--accent-glow-base) 12%, transparent), rgba(244,247,239,0.035));
+    }
+
+    #tab-content-performance.performance-cockpit .performance-now-track .artwork-fallback {
+      width: 112px;
+      height: 112px;
+      min-width: 112px;
+      border-radius: 10px;
+      font-size: 34px;
+    }
+
+    #tab-content-performance.performance-cockpit .performance-track-title {
+      font-family: 'Bebas Neue', sans-serif;
+      color: #fff;
+      font-size: 46px;
+      letter-spacing: 0.03em;
+      line-height: 0.86;
+      text-transform: uppercase;
+    }
+
+    #tab-content-performance.performance-cockpit .performance-gig-profile,
+    #tab-content-performance.performance-cockpit .performance-playing-bpm-control,
+    #tab-content-performance.performance-cockpit .performance-refine-board,
+    #tab-content-performance.performance-cockpit .performance-suggestions {
+      border-radius: 10px;
+      border-color: rgba(244,247,239,0.13);
+      background: rgba(0,0,0,0.24);
+    }
+
+    #tab-content-performance.performance-cockpit .performance-signal-grid {
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    #tab-content-performance.performance-cockpit .performance-signal {
+      min-height: 78px;
+      border-radius: 8px;
+      background: rgba(244,247,239,0.04);
+    }
+
+    #tab-content-performance.performance-cockpit .performance-filter-row {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    #tab-content-performance.performance-cockpit .performance-filter-chip,
+    #tab-content-performance.performance-cockpit .performance-mini-btn {
+      min-height: 42px;
+      border-radius: 6px;
+      border-color: rgba(244,247,239,0.16);
+      background: rgba(244,247,239,0.045);
+      color: rgba(244,247,239,0.76);
+      box-shadow: none;
+    }
+
+    #tab-content-performance.performance-cockpit .performance-filter-chip.active,
+    #tab-content-performance.performance-cockpit .performance-filter-chip[aria-pressed="true"],
+    #tab-content-performance.performance-cockpit #performance-clean-only.active,
+    #tab-content-performance.performance-cockpit #performance-clean-only[aria-pressed="true"] {
+      border-color: var(--command-green);
+      background: var(--command-green);
+      color: #071005;
+    }
+
+    #tab-content-performance.performance-cockpit .performance-suggestions {
+      padding: 16px;
+      border-style: dashed;
+    }
+
+    #tab-content-performance.performance-cockpit .performance-suggestion-card {
+      border-radius: 10px;
+      padding: 20px;
+      background: rgba(244,247,239,0.045);
+    }
+
+    #tab-content-performance.performance-cockpit .performance-suggestion-card.is-priority {
+      border-left-width: 8px;
+      background: linear-gradient(135deg, color-mix(in srgb, var(--accent-glow-base) 13%, transparent), rgba(244,247,239,0.045));
+    }
+
+    #tab-content-performance.performance-cockpit .performance-suggestion-title {
+      font-family: 'Bebas Neue', sans-serif;
+      color: #fff;
+      font-size: 38px !important;
+      letter-spacing: 0.03em;
+      line-height: 0.9;
+      text-transform: uppercase;
+    }
+
+    @media (max-width: 1280px) {
+      #tab-content-performance.performance-cockpit .performance-command-head,
+      #tab-content-performance.performance-cockpit .performance-shell {
+        grid-template-columns: 1fr;
+      }
+
+      #tab-content-performance.performance-cockpit .performance-command-actions,
+      #tab-content-performance.performance-cockpit .performance-hero-actions {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    /* Command Deck typography reset. This removes the old Performance utility
+       font feel and pins the page to AXIOM's current theme: Bebas for loud
+       product/song hierarchy, Barlow for controls and readable metadata. */
+    #tab-content-performance.performance-cockpit,
+    #tab-content-performance.performance-cockpit p,
+    #tab-content-performance.performance-cockpit span,
+    #tab-content-performance.performance-cockpit small,
+    #tab-content-performance.performance-cockpit label,
+    #tab-content-performance.performance-cockpit input,
+    #tab-content-performance.performance-cockpit select,
+    #tab-content-performance.performance-cockpit option,
+    #tab-content-performance.performance-cockpit textarea,
+    #tab-content-performance.performance-cockpit .performance-meta-line,
+    #tab-content-performance.performance-cockpit .performance-lane-summary,
+    #tab-content-performance.performance-cockpit .performance-gig-profile-summary,
+    #tab-content-performance.performance-cockpit .performance-signal,
+    #tab-content-performance.performance-cockpit .performance-audit-note,
+    #tab-content-performance.performance-cockpit .performance-note-input {
+      font-family: 'Barlow', sans-serif !important;
+    }
+
+    #tab-content-performance.performance-cockpit button,
+    #tab-content-performance.performance-cockpit .performance-action,
+    #tab-content-performance.performance-cockpit .performance-filter-chip,
+    #tab-content-performance.performance-cockpit .performance-mini-btn {
+      font-family: 'Barlow', sans-serif !important;
+      font-weight: 950 !important;
+      letter-spacing: 0.08em !important;
+      text-transform: uppercase !important;
+    }
+
+    #tab-content-performance.performance-cockpit h1,
+    #tab-content-performance.performance-cockpit h2,
+    #tab-content-performance.performance-cockpit h3,
+    #tab-content-performance.performance-cockpit h4,
+    #tab-content-performance.performance-cockpit strong,
+    #tab-content-performance.performance-cockpit .performance-title,
+    #tab-content-performance.performance-cockpit .performance-track-title,
+    #tab-content-performance.performance-cockpit .performance-suggestion-title,
+    #tab-content-performance.performance-cockpit .performance-panel-titlebar strong,
+    #tab-content-performance.performance-cockpit .performance-command-card h3,
+    #tab-content-performance.performance-cockpit .performance-refine-board strong {
+      font-family: 'Bebas Neue', sans-serif !important;
+      font-weight: 400 !important;
+      letter-spacing: 0.035em !important;
+      text-transform: uppercase !important;
+    }
+
+    #tab-content-performance.performance-cockpit .performance-signal strong,
+    #tab-content-performance.performance-cockpit .performance-gig-profile-head span,
+    #tab-content-performance.performance-cockpit .performance-playing-bpm-control span,
+    #tab-content-performance.performance-cockpit .performance-hero-eyebrow,
+    #tab-content-performance.performance-cockpit .performance-live-status,
+    #tab-content-performance.performance-cockpit .performance-status-pill {
+      font-family: 'Barlow', sans-serif !important;
+      font-weight: 950 !important;
+      letter-spacing: 0.11em !important;
+      text-transform: uppercase !important;
+    }
+
+    /* Command Deck must scroll as its own app surface. The outer cockpit shell
+       is fixed-height because the sidebar/player stay pinned, so give this tab
+       an explicit viewport lane rather than relying on page-level scrolling. */
+    #tab-content-performance.performance-cockpit {
+      height: calc(100dvh - 118px) !important;
+      max-height: calc(100dvh - 118px) !important;
+      min-height: 0 !important;
+      overflow-x: hidden !important;
+      overflow-y: scroll !important;
+      overscroll-behavior: contain;
+      padding-bottom: 280px !important;
+      scroll-padding-bottom: 280px;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-gutter: stable;
+      box-sizing: border-box;
+    }
+
+    #tab-content-performance.performance-cockpit .performance-shell,
+    #tab-content-performance.performance-cockpit .performance-now-card,
+    #tab-content-performance.performance-cockpit .performance-recommendation-deck {
+      min-height: 0 !important;
+    }
+
+/* Performance option 3: steel playing surface and an ordered track desk. */
+html body #tab-content-performance.performance-cockpit:is(.performance-layout-compact,:not(.performance-layout-compact)) .performance-command-head {grid-template-columns:auto minmax(0,1fr) auto auto!important;align-items:center!important;gap:12px!important}
+html body #tab-content-performance.performance-cockpit:is(.performance-layout-compact,:not(.performance-layout-compact)) .performance-desk-heading {margin:0;font:400 26px/1 'Bebas Neue',sans-serif;color:#f4f6ef}
+html body #tab-content-performance.performance-cockpit:is(.performance-layout-compact,:not(.performance-layout-compact)) .performance-command-status {min-width:0;gap:8px!important}
+html body #tab-content-performance.performance-cockpit:is(.performance-layout-compact,:not(.performance-layout-compact)) .performance-main-column {grid-template-rows:auto auto auto minmax(0,1fr)!important;gap:9px!important}
+html body #tab-content-performance.performance-cockpit:is(.performance-layout-compact,:not(.performance-layout-compact)) .performance-current-panel {background:#252729 url('/static/textures/axiom-brushed-gunmetal-steel.png') center/cover!important}
+html body #tab-content-performance.performance-cockpit:is(.performance-layout-compact,:not(.performance-layout-compact)) .performance-current-panel :is(.performance-track-title,.performance-current-heading) {color:#f4f6ef!important}
+html body #tab-content-performance.performance-cockpit:is(.performance-layout-compact,:not(.performance-layout-compact)) .performance-live-crates-panel {display:grid!important;grid-template-columns:1fr!important;gap:6px!important;padding:10px!important;height:auto!important;min-height:0!important}
+html body #tab-content-performance.performance-cockpit:is(.performance-layout-compact,:not(.performance-layout-compact)) .performance-live-crates-panel .performance-gig-profile-head {display:flex!important;align-items:center!important;justify-content:space-between!important}
+html body #tab-content-performance.performance-cockpit:is(.performance-layout-compact,:not(.performance-layout-compact)) .performance-live-crates-panel .performance-gig-profile-controls {display:grid!important;grid-template-columns:minmax(0,1fr) 130px 110px!important;margin:0!important}
+html body #tab-content-performance.performance-cockpit:is(.performance-layout-compact,:not(.performance-layout-compact)) .performance-live-crates-panel .performance-gig-profile-summary {display:none!important}
+html body #tab-content-performance.performance-cockpit:is(.performance-layout-compact,:not(.performance-layout-compact)) .performance-suggestion-card {display:grid!important;grid-template-columns:24px 48px minmax(0,1fr) 230px 136px!important;align-items:center!important;gap:9px!important;min-height:68px!important;padding:7px 8px!important;border-radius:4px!important;background:#080a09!important;border:0!important;border-bottom:1px solid #ffffff20!important;box-shadow:none!important}
+html body #tab-content-performance.performance-cockpit:is(.performance-layout-compact,:not(.performance-layout-compact)) .performance-suggestion-card:is(.is-priority,.is-selected,.is-cued) {outline:1px solid #a3ff00!important;outline-offset:-1px;background:#11160b!important}
+html body #tab-content-performance.performance-cockpit:is(.performance-layout-compact,:not(.performance-layout-compact)) .performance-suggestion-card .track-artwork-shell {width:46px!important;min-width:46px!important;height:46px!important}
+html body #tab-content-performance.performance-cockpit:is(.performance-layout-compact,:not(.performance-layout-compact)) .performance-desk-rank {color:#c0c4bd;font:400 18px 'Bebas Neue',sans-serif;text-align:center}
+html body #tab-content-performance.performance-cockpit:is(.performance-layout-compact,:not(.performance-layout-compact)) .performance-suggestion-title {font-size:21px!important;line-height:1.05!important;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+html body #tab-content-performance.performance-cockpit:is(.performance-layout-compact,:not(.performance-layout-compact)) .performance-desk-title>p:not(.performance-suggestion-title) {font-size:11px!important;letter-spacing:.03em!important}
+html body #tab-content-performance.performance-cockpit:is(.performance-layout-compact,:not(.performance-layout-compact)) .performance-desk-title :is(.performance-rank,.performance-meta-line,.performance-bpm-readout,.performance-decision-line,.performance-cue) {display:none!important}
+html body #tab-content-performance.performance-cockpit:is(.performance-layout-compact,:not(.performance-layout-compact)) .performance-desk-metadata,
+html body #tab-content-performance.performance-cockpit:is(.performance-layout-compact,:not(.performance-layout-compact)) .performance-desk-table-head>div {display:grid;grid-template-columns:38px 44px 42px minmax(0,1fr);align-items:center;gap:7px;font:400 16px 'Bebas Neue',sans-serif;color:#e4e7df}
+html body #tab-content-performance.performance-cockpit:is(.performance-layout-compact,:not(.performance-layout-compact)) .performance-desk-key {color:#66c5f6;border:1px solid #3083a0;border-radius:4px;padding:5px;text-align:center;background:#091721}
+html body #tab-content-performance.performance-cockpit:is(.performance-layout-compact,:not(.performance-layout-compact)) .performance-desk-fit {color:#a3ff00;font-size:14px;line-height:1.15}
+html body #tab-content-performance.performance-cockpit:is(.performance-layout-compact,:not(.performance-layout-compact)) .performance-pick-stack {grid-template-columns:56px 72px!important;width:136px!important;min-width:136px!important;gap:8px!important}
+html body #tab-content-performance.performance-cockpit:is(.performance-layout-compact,:not(.performance-layout-compact)) .performance-pick-stack button {height:34px!important;min-height:34px!important;font-size:15px!important}
+html body #tab-content-performance.performance-cockpit:is(.performance-layout-compact,:not(.performance-layout-compact)) .performance-desk-table-head {display:grid;grid-template-columns:24px minmax(0,1fr) 230px 136px;gap:9px;align-items:center;padding:8px;color:#9ca297;font:500 10px Barlow,sans-serif;text-transform:uppercase}
+html body #tab-content-performance.performance-cockpit:is(.performance-layout-compact,:not(.performance-layout-compact)) .performance-desk-table-head>div {font:500 10px Barlow,sans-serif;color:#9ca297}
+@media(max-width:1280px) {
+ html body #tab-content-performance.performance-cockpit:is(.performance-layout-compact,:not(.performance-layout-compact)) .performance-suggestion-card {grid-template-columns:20px 42px minmax(0,1fr) 174px 114px!important;gap:6px!important}
+ html body #tab-content-performance.performance-cockpit:is(.performance-layout-compact,:not(.performance-layout-compact)) .performance-desk-metadata,html body #tab-content-performance.performance-cockpit:is(.performance-layout-compact,:not(.performance-layout-compact)) .performance-desk-table-head>div {grid-template-columns:30px 36px 32px minmax(0,1fr);gap:4px;font-size:14px}
+ html body #tab-content-performance.performance-cockpit:is(.performance-layout-compact,:not(.performance-layout-compact)) .performance-pick-stack {width:114px!important;min-width:114px!important;grid-template-columns:46px 62px!important;gap:6px!important}
+ html body #tab-content-performance.performance-cockpit:is(.performance-layout-compact,:not(.performance-layout-compact)) .performance-desk-table-head {grid-template-columns:20px minmax(0,1fr) 174px 114px;gap:6px}
+ html body #tab-content-performance.performance-cockpit:is(.performance-layout-compact,:not(.performance-layout-compact)) .performance-command-head {gap:7px!important}
+ html body #tab-content-performance.performance-cockpit:is(.performance-layout-compact,:not(.performance-layout-compact)) .performance-desk-heading {font-size:22px}
+}
+html body #tab-content-performance.performance-cockpit:is(.performance-layout-compact,:not(.performance-layout-compact)).hidden {display:none!important}
+
+html body #tab-content-performance.performance-cockpit:is(.performance-layout-compact,:not(.performance-layout-compact)) .performance-suggestion-card>* {grid-row:1!important}
+html body #tab-content-performance.performance-cockpit:is(.performance-layout-compact,:not(.performance-layout-compact)) .performance-suggestion-card>.performance-desk-rank {grid-column:1!important}
+html body #tab-content-performance.performance-cockpit:is(.performance-layout-compact,:not(.performance-layout-compact)) .performance-suggestion-card>.track-artwork-shell {grid-column:2!important}
+html body #tab-content-performance.performance-cockpit:is(.performance-layout-compact,:not(.performance-layout-compact)) .performance-suggestion-card>.performance-desk-title {grid-column:3!important}
+html body #tab-content-performance.performance-cockpit:is(.performance-layout-compact,:not(.performance-layout-compact)) .performance-suggestion-card>.performance-desk-metadata {grid-column:4!important}
+html body #tab-content-performance.performance-cockpit:is(.performance-layout-compact,:not(.performance-layout-compact)) .performance-suggestion-card>.performance-pick-stack {grid-column:5!important}
+html body #tab-content-performance.performance-cockpit:is(.performance-layout-compact,:not(.performance-layout-compact)) .performance-now-track {padding-bottom:48px!important;min-height:148px!important}
+html body #tab-content-performance.performance-cockpit:is(.performance-layout-compact,:not(.performance-layout-compact)) .performance-current-heading {color:#f4f6ef!important}
+html body #tab-content-performance.performance-cockpit:is(.performance-layout-compact,:not(.performance-layout-compact)) .performance-now-track .performance-meta-line {position:static!important;margin-top:9px!important}
+
+html body #tab-content-performance.performance-cockpit:is(.performance-layout-compact,:not(.performance-layout-compact)) .performance-current-panel {display:flex!important;flex-direction:column!important;gap:7px!important;padding:12px!important}
+html body #tab-content-performance.performance-cockpit:is(.performance-layout-compact,:not(.performance-layout-compact)) .performance-current-heading {display:flex!important;align-items:center!important;justify-content:space-between!important}
+html body #tab-content-performance.performance-cockpit:is(.performance-layout-compact,:not(.performance-layout-compact)) .performance-current-heading>span {color:#f4f6ef!important;font:400 18px 'Bebas Neue',sans-serif!important;letter-spacing:.04em!important}
+html body #tab-content-performance.performance-cockpit:is(.performance-layout-compact,:not(.performance-layout-compact)) .performance-now-track {height:auto!important;min-height:104px!important;padding:0!important;grid-template-columns:104px minmax(0,1fr)!important;gap:14px!important;border:0!important;background:transparent!important}
+html body #tab-content-performance.performance-cockpit:is(.performance-layout-compact,:not(.performance-layout-compact)) .performance-now-track .performance-meta-chip {background:#111512!important;color:#f4f6ef!important;border:1px solid #73786d!important;font:500 12px Barlow,sans-serif!important;padding:5px 8px!important;min-height:27px!important}
+html body #tab-content-performance.performance-cockpit:is(.performance-layout-compact,:not(.performance-layout-compact)) .performance-deck-waveform {position:relative!important;inset:auto!important;width:calc(100% - 118px)!important;align-self:flex-end!important;height:46px!important;min-height:46px!important;margin:0!important;padding:0!important;background:#070a09!important;color:#b8c4b1!important;font:500 12px Barlow,sans-serif!important;justify-content:center!important;border:1px solid #ffffff24!important;border-radius:4px!important;overflow:hidden!important}
+
+html body #tab-content-performance.performance-cockpit:is(.performance-layout-compact,:not(.performance-layout-compact)) .performance-pick-stack button {white-space:nowrap!important;font:400 15px/1 'Bebas Neue',sans-serif!important;padding:0 5px!important;box-sizing:border-box!important;overflow:hidden!important}

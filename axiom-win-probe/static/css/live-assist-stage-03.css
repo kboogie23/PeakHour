@@ -1,0 +1,432 @@
+
+
+    .set-record-destination span {
+      color: var(--accent);
+      font-size: 8px;
+      font-weight: 950;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+    }
+
+    .set-record-destination strong {
+      min-width: 0;
+      overflow-wrap: anywhere;
+      color: rgba(255, 255, 255, 0.84);
+      font-size: 12px;
+      line-height: 1.35;
+    }
+
+    .set-record-ready {
+      min-height: 54px;
+      max-height: 82px;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      padding: 9px 10px;
+      border-radius: 0 6px 6px 0;
+      background: rgba(255, 255, 255, 0.035);
+      font-size: 12px;
+      line-height: 1.4;
+      letter-spacing: 0;
+      overflow-wrap: anywhere;
+      scrollbar-color: color-mix(in srgb, var(--accent-glow-base) 65%, transparent) rgba(255, 255, 255, 0.08);
+      scrollbar-width: thin;
+    }
+
+    .set-record-ready::-webkit-scrollbar { width: 5px; }
+    .set-record-ready::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.08); }
+    .set-record-ready::-webkit-scrollbar-thumb {
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--accent-glow-base) 65%, transparent);
+    }
+
+    body[data-assist-layout-resolved="compact"] .set-record-ready {
+      min-height: 50px;
+      max-height: 72px;
+      font-size: 11px;
+    }
+
+    .set-record-drawer-actions { margin-top: 8px; }
+
+    .set-record-drawer-actions > span {
+      min-width: 0;
+      color: rgba(255, 255, 255, 0.4);
+      font-size: 7px;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .set-record-action-group { display: flex; gap: 6px; }
+    .set-record-action-group button { min-height: 32px; padding-inline: 11px; }
+    #set-record-start {
+      border-color: #ff4860;
+      background: #ff4860;
+      color: #150306;
+    }
+    #set-record-start:disabled { cursor: not-allowed; opacity: 0.44; }
+
+    .set-record-receipt { border-color: color-mix(in srgb, var(--accent-glow-base) 48%, transparent); }
+    .set-record-receipt-copy { min-width: 0; }
+    .set-record-receipt strong,
+    .set-record-receipt small { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .set-record-receipt-actions { display: flex; gap: 6px; flex: 0 0 auto; }
+    .set-record-receipt-actions button { min-height: 30px; }
+
+    @media (max-width: 520px) {
+      .set-record-fields { grid-template-columns: 1fr; }
+      .set-record-drawer-actions { align-items: flex-end; }
+      .set-record-drawer-actions > span { display: none; }
+    }
+
+    @keyframes set-record-wait {
+      from { opacity: 0.16; }
+      to { opacity: 0.48; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .set-record-control[data-signal="none"] .set-record-meter i { animation: none; }
+    }
+
+    .coach-insights-toggle {
+      grid-column: 1 / -1;
+      display: grid !important;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 10px;
+      min-height: 38px !important;
+      height: 38px !important;
+      padding: 0 10px !important;
+      border-color: color-mix(in srgb, var(--accent-glow-base) 48%, transparent) !important;
+      background: color-mix(in srgb, var(--accent-glow-base) 10%, transparent) !important;
+      color: #f7f9f5 !important;
+      text-align: left;
+    }
+    .coach-insights-toggle span {
+      min-width: 0;
+      font: 900 9px/1 'Barlow', sans-serif;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+    .coach-insights-toggle b {
+      min-width: 31px;
+      color: var(--accent);
+      font: 900 9px/1 'Barlow', sans-serif;
+      letter-spacing: .1em;
+      text-align: right;
+      text-transform: uppercase;
+    }
+    .coach-insights-toggle[aria-checked="false"] {
+      border-color: rgba(255,255,255,.18) !important;
+      background: rgba(255,255,255,.045) !important;
+      color: rgba(255,255,255,.58) !important;
+    }
+    .coach-insights-toggle[aria-checked="false"] b { color: rgba(255,255,255,.46); }
+    .actions { position: relative !important; }
+    .actions .more-like-control { position: static !important; }
+    .more-like-menu,
+    .more-like-menu button,
+    .more-like-menu button span,
+    .more-like-menu button b {
+      font-family: "Bebas Neue", sans-serif !important;
+      font-weight: 400 !important;
+      letter-spacing: .04em !important;
+    }
+    .more-like-menu button { font-size: 13px !important; }
+    .coach-insights-toggle span,
+    .coach-insights-toggle b { font-size: 13px !important; }
+    .performance-coach-rail {
+      position: fixed;
+      top: 148px;
+      left: max(12px, calc(50% - 531px));
+      z-index: 220;
+      width: min(300px, calc(50vw - 239px));
+      min-width: 210px;
+      overflow:hidden; padding:13px 15px 14px; border:1px solid color-mix(in srgb, var(--accent-glow-base) 50%, transparent);
+      border-left:4px solid var(--accent); background:#050a07;
+      box-shadow:0 14px 28px rgba(0,0,0,.3),0 0 18px color-mix(in srgb, var(--accent-glow-base) 8%, transparent);
+      animation:coachRailIn .28s ease both;
+    }
+    .performance-coach-rail[hidden] { display:none !important; }
+    .performance-coach-rail small,.performance-coach-rail strong,.performance-coach-rail span { display:block; }
+    .performance-coach-rail small { color:var(--accent); font-size:8px; font-weight:900; letter-spacing:.14em; text-transform:uppercase; }
+    .performance-coach-rail strong { margin-top:6px; color:#fff; font:400 23px/.95 'Bebas Neue',sans-serif; letter-spacing:.03em; text-transform:uppercase; }
+    .performance-coach-rail span { margin-top:7px; color:rgba(255,255,255,.58); font-size:9px; line-height:1.4; }
+    @keyframes coachRailIn { from { opacity:0; transform:translateX(14px); } to { opacity:1; transform:translateX(0); } }
+
+    .assist-announcer {
+      position: absolute !important;
+      width: 1px !important;
+      height: 1px !important;
+      padding: 0 !important;
+      margin: -1px !important;
+      overflow: hidden !important;
+      clip: rect(0, 0, 0, 0) !important;
+      white-space: nowrap !important;
+      border: 0 !important;
+    }
+
+    /* Live Assist has five visible zones. Session analysis remains in the
+       main AXIOM Performance screen and must never create an implicit row. */
+    .shell,
+    body[data-popup-style="matching-songs"] .shell {
+      grid-template-rows: auto auto auto minmax(0, 1fr) auto !important;
+    }
+    .bpmbar,
+    body[data-popup-style="matching-songs"] .bpmbar {
+      align-self: start !important;
+    }
+    .results,
+    body[data-popup-style="matching-songs"] .results {
+      display: flex !important;
+      flex-direction: column !important;
+      min-height: 0 !important;
+    }
+    .list,
+    body[data-popup-style="matching-songs"] .list {
+      flex: 1 1 auto !important;
+    }
+    body.recording-drawer-open .results,
+    body.recording-drawer-open[data-popup-style="matching-songs"] .results {
+      display: none !important;
+    }
+    body.recording-drawer-open .shell,
+    body.recording-drawer-open[data-popup-style="matching-songs"] .shell {
+      grid-template-rows: auto auto auto minmax(0, 1fr) auto !important;
+    }
+    body.recording-drawer-open .set-record-drawer,
+    body.recording-drawer-open .set-record-receipt {
+      grid-row: 4 !important;
+      width: 100% !important;
+      margin: 0 !important;
+      align-self: start !important;
+    }
+
+    body.recording-drawer-open .set-record-drawer {
+      max-height: 100% !important;
+      overflow-y: auto !important;
+      overscroll-behavior: contain;
+    }
+
+    /* Live Assist is a single cockpit surface: every visible label, control,
+       provider row, field, menu, and helper line uses AXIOM's display face. */
+    body,
+    body *,
+    body input::placeholder,
+    body textarea::placeholder {
+      font-family: "Bebas Neue", sans-serif !important;
+    }
+
+    #half-button,
+    #double-button,
+    #refresh-button,
+    #clean-only-button,
+    #old-button,
+    #like-button {
+      font-size: 13px !important;
+      line-height: 1 !important;
+      white-space: nowrap !important;
+    }
+
+    #refresh-button span {
+      color: #f7f9f5 !important;
+      font-size: 13px !important;
+      line-height: 1 !important;
+      letter-spacing: 0 !important;
+    }
+
+    #like-plus-button {
+      display: grid !important;
+      place-items: center !important;
+      padding: 0 !important;
+    }
+
+    #like-plus-button > span {
+      line-height: 1 !important;
+      transform: none !important;
+    }
+
+    #pin-button {
+      font-size: 10px !important;
+      line-height: 1 !important;
+      white-space: nowrap !important;
+    }
+
+    body[data-playlist-style="matching-songs"] #gig-profile-close,
+    #gig-profile-sources .gig-profile-branch-head,
+    #gig-profile-sources .gig-profile-branch-head strong,
+    #gig-profile-sources .gig-profile-branch-head small {
+      font-size: 13px !important;
+    }
+
+    @media (max-width: 720px) {
+      .performance-coach-rail { display: none !important; }
+    }
+
+    /* Screen-aware Live Assist sizing. Native AppKit chooses the panel frame;
+       this density contract keeps the same five live-DJ zones usable inside
+       the smaller Air and 14-inch frame without scaling or hiding features. */
+    .assist-layout-control {
+      display: grid;
+      align-items: center;
+      width: 78px;
+      min-width: 0;
+    }
+
+    .assist-layout-control select {
+      width: 100%;
+      height: 28px;
+      padding: 0 20px 0 7px;
+      border: 1px solid color-mix(in srgb, var(--accent-glow-base) 34%, transparent);
+      border-radius: 3px;
+      background: #090d09;
+      color: rgba(244, 247, 239, 0.8);
+      font-size: 10px;
+      text-transform: uppercase;
+    }
+
+    .topbar {
+      grid-template-columns: 9px minmax(78px, 1fr) 78px auto 32px 32px !important;
+    }
+
+    #assist-search-access[hidden] { display: none !important; }
+    #assist-search-access:not([hidden]) {
+      background: var(--accent) !important;
+      color: #071005 !important;
+      font-size: 11px !important;
+    }
+
+    body[data-assist-layout-resolved="compact"]:not([data-assist-mode="collapsed"]) {
+      padding: 8px !important;
+    }
+
+    body[data-assist-layout-resolved="compact"] .shell,
+    body[data-assist-layout-resolved="compact"][data-popup-style="matching-songs"] .shell {
+      width: calc(100vw - 16px) !important;
+      height: calc(100vh - 16px) !important;
+      gap: 6px !important;
+      padding: 8px !important;
+      border-radius: 8px !important;
+    }
+
+    body[data-assist-layout-resolved="compact"] .topbar {
+      grid-template-columns: 8px minmax(70px, 1fr) 70px 42px 28px 28px !important;
+      gap: 4px !important;
+      padding-bottom: 5px !important;
+    }
+
+    body[data-assist-layout-resolved="compact"] .topbar h1,
+    body[data-assist-layout-resolved="compact"][data-popup-style="matching-songs"] .topbar h1 {
+      font-size: 17px !important;
+    }
+
+    body[data-assist-layout-resolved="compact"] .assist-layout-control {
+      width: 70px;
+    }
+
+    body[data-assist-layout-resolved="compact"] .assist-layout-control select {
+      height: 26px;
+      padding-left: 6px;
+      font-size: 9px;
+    }
+
+    body[data-assist-layout-resolved="compact"] #pin-button {
+      min-width: 0 !important;
+      width: 42px !important;
+      padding: 0 4px !important;
+      overflow: hidden !important;
+      font-size: 0 !important;
+    }
+
+    body[data-assist-layout-resolved="compact"] #pin-button::before {
+      content: "PIN";
+      font-size: 10px;
+    }
+
+    body[data-assist-layout-resolved="compact"] .topbar-icon,
+    body[data-assist-layout-resolved="compact"] .topbar > button:last-of-type {
+      width: 28px !important;
+      min-height: 26px !important;
+    }
+
+    body[data-assist-layout-resolved="compact"] .assist-now-playing,
+    body[data-assist-layout-resolved="compact"][data-popup-style="matching-songs"] .assist-now-playing {
+      min-height: 54px !important;
+      padding: 8px 9px !important;
+      border-radius: 7px !important;
+    }
+
+    body[data-assist-layout-resolved="compact"] .assist-now-playing strong {
+      font-size: clamp(18px, 5.4vw, 22px) !important;
+    }
+
+    body[data-assist-layout-resolved="compact"] .bpmbar,
+    body[data-assist-layout-resolved="compact"][data-popup-style="matching-songs"] .bpmbar {
+      grid-template-columns: minmax(104px, 1.55fr) repeat(3, minmax(62px, 1fr)) !important;
+      grid-template-rows: 38px 28px !important;
+      gap: 4px !important;
+    }
+
+    body[data-assist-layout-resolved="compact"] .bpm-wrap,
+    body[data-assist-layout-resolved="compact"] #half-button,
+    body[data-assist-layout-resolved="compact"] #double-button,
+    body[data-assist-layout-resolved="compact"] .refresh-control,
+    body[data-assist-layout-resolved="compact"] .refresh-main,
+    body[data-assist-layout-resolved="compact"] .set-record-control,
+    body[data-assist-layout-resolved="compact"][data-popup-style="matching-songs"] .bpm-wrap,
+    body[data-assist-layout-resolved="compact"][data-popup-style="matching-songs"] #half-button,
+    body[data-assist-layout-resolved="compact"][data-popup-style="matching-songs"] #double-button,
+    body[data-assist-layout-resolved="compact"][data-popup-style="matching-songs"] .refresh-control,
+    body[data-assist-layout-resolved="compact"][data-popup-style="matching-songs"] .refresh-main,
+    body[data-assist-layout-resolved="compact"][data-popup-style="matching-songs"] .set-record-control {
+      min-height: 38px !important;
+      height: 38px !important;
+    }
+
+    body[data-assist-layout-resolved="compact"] #gig-profile-button,
+    body[data-assist-layout-resolved="compact"] #assist-only-selected,
+    body[data-assist-layout-resolved="compact"][data-popup-style="matching-songs"] #gig-profile-button,
+    body[data-assist-layout-resolved="compact"][data-popup-style="matching-songs"] #assist-only-selected {
+      min-height: 28px !important;
+      height: 28px !important;
+    }
+
+    body[data-assist-layout-resolved="compact"] .results,
+    body[data-assist-layout-resolved="compact"][data-popup-style="matching-songs"] .results {
+      padding: 6px !important;
+      border-radius: 7px !important;
+    }
+
+    body[data-assist-layout-resolved="compact"] .status {
+      min-height: 13px !important;
+      margin-bottom: 3px !important;
+      font-size: 8px !important;
+    }
+
+    body[data-assist-layout-resolved="compact"] .track {
+      min-height: 48px !important;
+      padding: 7px !important;
+    }
+
+    body[data-assist-layout-resolved="compact"] .actions,
+    body[data-assist-layout-resolved="compact"] .live-feedback-row {
+      gap: 4px !important;
+    }
+
+    body[data-assist-layout-resolved="compact"] .actions button,
+    body[data-assist-layout-resolved="compact"] .actions .more-like-plus,
+    body[data-assist-layout-resolved="compact"][data-popup-style="matching-songs"] .actions button,
+    body[data-assist-layout-resolved="compact"][data-popup-style="matching-songs"] .actions .more-like-plus {
+      min-height: 34px !important;
+      height: 34px !important;
+      padding-inline: 4px !important;
+      font-size: 11px !important;
+    }
+
+    body[data-assist-layout-resolved="compact"] .more-like-control {
+      grid-template-columns: minmax(0, 1fr) 34px !important;
+      gap: 4px !important;
+    }
+
+    body[data-assist-layout-resolved="compact"] .more-like-plus {
+      width: 34px !important;
+    }

@@ -1,0 +1,148 @@
+<style id="library-player-daymode-readability-v1">
+  /* Receipts use the same pale surface as the transport in Day Mode. */
+  html body.light-mode #audio-player.library-player-upgrade.player-notification-active {
+    background: #f7f9fc !important;
+    border-top-color: #b8cbe5 !important;
+    box-shadow: 0 -6px 22px rgba(28, 64, 120, .10) !important;
+  }
+
+  html body.light-mode #audio-player.library-player-upgrade .player-notification-surface {
+    --player-notification-color: #0047ab;
+    background: #ffffff !important;
+    box-shadow: none !important;
+  }
+
+  html body.light-mode #audio-player.library-player-upgrade .player-notification-surface.is-error {
+    --player-notification-color: #b42335;
+  }
+
+  html body.light-mode #audio-player.library-player-upgrade .player-notification-surface.has-action {
+    --player-notification-color: #0047ab;
+  }
+
+  html body.light-mode #audio-player.library-player-upgrade .player-notification-copy strong {
+    color: #07111f !important;
+    -webkit-text-fill-color: #07111f !important;
+    text-shadow: none !important;
+  }
+
+  html body.light-mode #audio-player.library-player-upgrade :is(.player-notification-copy small, .player-notification-status) {
+    color: var(--player-notification-color) !important;
+    -webkit-text-fill-color: var(--player-notification-color) !important;
+    text-shadow: none !important;
+  }
+
+  html body.light-mode #audio-player.library-player-upgrade .player-notification-signal {
+    background: #eef3fb !important;
+    box-shadow: none !important;
+  }
+
+  html body.light-mode #audio-player.library-player-upgrade :is(.player-notification-signal i, .player-notification-timeline) {
+    box-shadow: none !important;
+  }
+
+  html body.light-mode #audio-player.library-player-upgrade :is(.player-notification-surface::before, .player-notification-signal::after) {
+    display: none !important;
+  }
+
+  html body.light-mode #audio-player.library-player-upgrade .player-notification-dismiss {
+    background: #eef3fb !important;
+    color: #26364d !important;
+    -webkit-text-fill-color: #26364d !important;
+    border-color: #b8cbe5 !important;
+  }
+
+  html body.light-mode #audio-player.library-player-upgrade .player-notification-dismiss:is(:hover, :focus-visible) {
+    background: #dce8f8 !important;
+    outline-color: #0047ab !important;
+  }
+
+  html body.light-mode #audio-player.library-player-upgrade .player-notification-action {
+    background: #0047ab !important;
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+  }
+
+  /* The notification surface deliberately restores a matte-black player after
+     each message. Day Mode reclaims the idle transport without changing Night
+     Mode or active notification states. */
+  html body.light-mode
+    #audio-player.library-player-upgrade:not(.player-notification-active) {
+    background: #ffffff !important;
+    color: #07111f !important;
+    border-top: 2px solid rgba(0, 71, 171, .72) !important;
+    box-shadow: 0 -14px 32px rgba(7, 17, 31, .12), inset 0 1px 0 rgba(255, 255, 255, .96) !important;
+  }
+
+  html body.light-mode
+    #audio-player.library-player-upgrade:not(.player-notification-active)
+    #ap-title {
+    color: #07111f !important;
+    -webkit-text-fill-color: #07111f !important;
+    text-shadow: none !important;
+  }
+
+  html body.light-mode
+    #audio-player.library-player-upgrade:not(.player-notification-active)
+    :is(#ap-artist, #ap-time, #ap-duration, .player-autoplay-toggle, .player-volume-zone svg) {
+    color: #40516a !important;
+    -webkit-text-fill-color: #40516a !important;
+    text-shadow: none !important;
+  }
+
+  html body.light-mode
+    #audio-player.library-player-upgrade:not(.player-notification-active)
+    .player-autoplay-toggle:hover {
+    color: #0047ab !important;
+    -webkit-text-fill-color: #0047ab !important;
+  }
+
+  html body.light-mode
+    #audio-player.library-player-upgrade:not(.player-notification-active)
+    :is(.player-left-zone > button:first-child, .player-add-btn) {
+    background: #0047ab !important;
+    border-color: #0047ab !important;
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+    box-shadow: 0 8px 20px rgba(0, 71, 171, .20) !important;
+  }
+
+  html body.light-mode
+    #audio-player.library-player-upgrade:not(.player-notification-active)
+    .player-refresh-btn {
+    background: #eef3fb !important;
+    border-color: rgba(0, 71, 171, .30) !important;
+    color: #0047ab !important;
+  }
+
+  html body.light-mode
+    #audio-player.library-player-upgrade:not(.player-notification-active)
+    .player-refresh-btn:hover {
+    background: #e1ebf8 !important;
+    border-color: #0047ab !important;
+    color: #00337c !important;
+  }
+
+  html body.light-mode
+    #audio-player.library-player-upgrade:not(.player-notification-active)
+    #studio-autoplay-toggle,
+  html body.light-mode
+    #audio-player.library-player-upgrade:not(.player-notification-active)
+    #ap-volume {
+    accent-color: #0047ab !important;
+  }
+
+  html body.light-mode
+    #audio-player.library-player-upgrade:not(.player-notification-active)
+    #progress-container {
+    background: #d8e2f0 !important;
+    box-shadow: inset 0 1px 2px rgba(7, 17, 31, .14) !important;
+  }
+
+  html body.light-mode
+    #audio-player.library-player-upgrade:not(.player-notification-active)
+    #ap-progress {
+    background: #0047ab !important;
+    box-shadow: none !important;
+  }
+</style>

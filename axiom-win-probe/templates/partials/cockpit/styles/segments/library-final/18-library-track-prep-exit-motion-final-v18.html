@@ -1,0 +1,36 @@
+<style id="library-track-prep-exit-motion-final-v18">
+  /* Back To Library clears the old Track Prep workspace before the next paint. Keep the
+     rebuilt Library surfaces invisible until their fresh result set is ready,
+     then reveal Library and Matching Songs together. */
+  html body.library-preparation-closing
+    #tab-content-library.library-cockpit#tab-content-library {
+    pointer-events: none !important;
+  }
+
+  html body.library-preparation-closing
+    #tab-content-library.library-cockpit#tab-content-library
+    :is(#library-brief-lens, #search-results, #smart-links-panel) {
+    opacity: 0 !important;
+    visibility: hidden !important;
+    transform: none !important;
+    transition: none !important;
+  }
+
+  html body:not(.library-preparation-closing)
+    #tab-content-library.library-cockpit#tab-content-library
+    :is(#library-brief-lens, #search-results, #smart-links-panel) {
+    transition: opacity 180ms ease, transform 180ms ease !important;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html body.library-preparation-closing
+      #tab-content-library.library-cockpit#tab-content-library
+      :is(#library-brief-lens, #search-results, #smart-links-panel),
+    html body:not(.library-preparation-closing)
+      #tab-content-library.library-cockpit#tab-content-library
+      :is(#library-brief-lens, #search-results, #smart-links-panel) {
+      transform: none !important;
+      transition: none !important;
+    }
+  }
+</style>

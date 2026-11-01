@@ -1,0 +1,242 @@
+<style id="library-track-prep-daymode-priority-v1">
+  /* Final cascade priority for the controls whose installed-WebKit layout
+     selectors intentionally repeat IDs. Keep this at the end of the cockpit
+     action contracts so those layout rules cannot restore Night colours. */
+  html body.light-mode.library-preparation-open
+    #tab-content-library#tab-content-library#tab-content-library.library-cockpit
+    #library-preparation-page-title#library-preparation-page-title {
+    color: #0047ab !important;
+    -webkit-text-fill-color: #0047ab !important;
+    text-shadow: none !important;
+  }
+
+  html body.light-mode
+    #tab-content-library#tab-content-library#tab-content-library.library-cockpit
+    #library-brief-lens#library-brief-lens#library-brief-lens[data-library-brief-panel="preparation"]
+    #library-brief-collapse#library-brief-collapse {
+    border-color: rgba(0, 71, 171, .34) !important;
+    background: #ffffff !important;
+    background-color: #ffffff !important;
+    background-image: none !important;
+    color: #0047ab !important;
+    -webkit-text-fill-color: #0047ab !important;
+    text-shadow: none !important;
+    box-shadow: none !important;
+  }
+
+  html body.light-mode
+    #tab-content-library#tab-content-library#tab-content-library.library-cockpit
+    #library-brief-lens#library-brief-lens#library-brief-lens[data-library-brief-panel="preparation"]
+    #library-brief-collapse#library-brief-collapse > span {
+    color: #0047ab !important;
+    -webkit-text-fill-color: #0047ab !important;
+    text-shadow: none !important;
+  }
+
+  html body.light-mode
+    #tab-content-library#tab-content-library#tab-content-library.library-cockpit
+    #library-brief-lens#library-brief-lens#library-brief-lens[data-library-brief-panel="preparation"]
+    #library-brief-collapse#library-brief-collapse > img {
+    filter: brightness(0) saturate(100%) invert(22%) sepia(99%) saturate(2459%) hue-rotate(205deg) brightness(79%) contrast(110%) !important;
+  }
+
+  html body.light-mode
+    #tab-content-library#tab-content-library#tab-content-library.library-cockpit
+    #library-brief-lens#library-brief-lens#library-brief-lens[data-library-brief-panel="preparation"]
+    #library-preparation-toggle#library-preparation-toggle {
+    border-color: #0047ab !important;
+    background: #0047ab !important;
+    background-color: #0047ab !important;
+    background-image: none !important;
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+    text-shadow: none !important;
+    box-shadow: 0 5px 14px rgba(0, 71, 171, .16) !important;
+  }
+
+  html body.light-mode
+    #tab-content-library#tab-content-library#tab-content-library.library-cockpit
+    #library-brief-lens#library-brief-lens#library-brief-lens[data-library-brief-panel="preparation"]
+    #library-preparation-toggle#library-preparation-toggle > span {
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+    text-shadow: none !important;
+  }
+
+  html body.light-mode
+    #tab-content-library#tab-content-library#tab-content-library.library-cockpit
+    #library-brief-lens#library-brief-lens#library-brief-lens[data-library-brief-panel="preparation"]
+    :is(#library-brief-collapse#library-brief-collapse, #library-preparation-toggle#library-preparation-toggle):is(:hover, :focus-visible) {
+    border-color: #003b8f !important;
+    background: #003b8f !important;
+    background-color: #003b8f !important;
+    background-image: none !important;
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+  }
+
+  html body.light-mode
+    #tab-content-library#tab-content-library#tab-content-library.library-cockpit
+    #library-brief-lens#library-brief-lens#library-brief-lens[data-library-brief-panel="preparation"]
+    :is(#library-brief-collapse#library-brief-collapse, #library-preparation-toggle#library-preparation-toggle):is(:hover, :focus-visible) > span {
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+  }
+
+  html body.light-mode
+    #tab-content-library#tab-content-library#tab-content-library.library-cockpit
+    #library-brief-lens#library-brief-lens#library-brief-lens[data-library-brief-panel="preparation"]
+    :is(.library-preparation-menu-options, #library-brief-chips) {
+    border-color: rgba(0, 71, 171, .28) !important;
+    border-top-color: #0047ab !important;
+    background: #ffffff !important;
+    box-shadow: 0 20px 42px rgba(28, 64, 120, .18) !important;
+  }
+
+  html body.light-mode
+    #tab-content-library#tab-content-library#tab-content-library.library-cockpit
+    #library-brief-lens#library-brief-lens#library-brief-lens[data-library-brief-panel="preparation"]
+    :is(.library-preparation-menu-options, #library-brief-chips) .library-brief-chip {
+    border-bottom-color: rgba(0, 71, 171, .12) !important;
+    background: #ffffff !important;
+    color: #07111f !important;
+    -webkit-text-fill-color: #07111f !important;
+  }
+
+  html body.light-mode
+    #tab-content-library#tab-content-library#tab-content-library.library-cockpit
+    #library-brief-lens#library-brief-lens#library-brief-lens[data-library-brief-panel="preparation"]
+    :is(.library-preparation-menu-options, #library-brief-chips) .library-brief-chip .library-brief-chip-copy strong {
+    color: #07111f !important;
+    -webkit-text-fill-color: #07111f !important;
+  }
+
+  html body.light-mode
+    #tab-content-library#tab-content-library#tab-content-library.library-cockpit
+    #library-brief-lens#library-brief-lens#library-brief-lens[data-library-brief-panel="preparation"]
+    :is(.library-preparation-menu-options, #library-brief-chips) .library-brief-chip :is(.library-brief-chip-index, .library-brief-chip-copy small) {
+    color: #53647a !important;
+    -webkit-text-fill-color: #53647a !important;
+  }
+
+  html body.light-mode
+    #tab-content-library#tab-content-library#tab-content-library.library-cockpit
+    #library-brief-lens#library-brief-lens#library-brief-lens[data-library-brief-panel="preparation"]
+    :is(.library-preparation-menu-options, #library-brief-chips) .library-brief-chip:is(:hover, :focus-visible, .active) {
+    background: #edf4ff !important;
+    box-shadow: inset 3px 0 #0047ab !important;
+  }
+
+  /* These two controls are positioned by unusually specific installed-WebKit
+     grid locks. Match that established path so the colour contract wins too. */
+  html body.light-mode
+    #tab-content-library#tab-content-library#tab-content-library#tab-content-library.library-cockpit
+    #library-brief-lens#library-brief-lens#library-brief-lens#library-brief-lens[data-library-brief-panel="preparation"]
+    #library-brief-topline#library-brief-topline
+    #library-setup-utility-bar#library-setup-utility-bar
+    > #library-brief-collapse#library-brief-collapse#library-brief-collapse {
+    border-color: rgba(0, 71, 171, .34) !important;
+    background: #ffffff !important;
+    background-color: #ffffff !important;
+    background-image: none !important;
+    color: #0047ab !important;
+    -webkit-text-fill-color: #0047ab !important;
+    box-shadow: none !important;
+  }
+
+  html body.light-mode
+    #tab-content-library#tab-content-library#tab-content-library#tab-content-library.library-cockpit
+    #library-brief-lens#library-brief-lens#library-brief-lens#library-brief-lens[data-library-brief-panel="preparation"]
+    #library-brief-topline#library-brief-topline
+    #library-setup-utility-bar#library-setup-utility-bar
+    > #library-brief-collapse#library-brief-collapse#library-brief-collapse > span {
+    color: #0047ab !important;
+    -webkit-text-fill-color: #0047ab !important;
+  }
+
+  html body.light-mode
+    #tab-content-library#tab-content-library#tab-content-library#tab-content-library.library-cockpit
+    #library-brief-lens#library-brief-lens#library-brief-lens#library-brief-lens[data-library-brief-panel="preparation"]
+    #library-brief-topline#library-brief-topline
+    #library-brief-action-rail#library-brief-action-rail
+    > #library-preparation-toggle#library-preparation-toggle#library-preparation-toggle {
+    border-color: #0047ab !important;
+    background: #0047ab !important;
+    background-color: #0047ab !important;
+    background-image: none !important;
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+    box-shadow: 0 5px 14px rgba(0, 71, 171, .16) !important;
+  }
+
+  html body.light-mode
+    #tab-content-library#tab-content-library#tab-content-library#tab-content-library.library-cockpit
+    #library-brief-lens#library-brief-lens#library-brief-lens#library-brief-lens[data-library-brief-panel="preparation"]
+    #library-brief-topline#library-brief-topline
+    #library-brief-action-rail#library-brief-action-rail
+    > #library-preparation-toggle#library-preparation-toggle#library-preparation-toggle > span {
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+  }
+
+  html body.light-mode
+    #tab-content-library#tab-content-library#tab-content-library#tab-content-library.library-cockpit
+    #library-brief-lens#library-brief-lens#library-brief-lens#library-brief-lens[data-library-brief-panel="preparation"]
+    #library-brief-lane-dropdown#library-brief-lane-dropdown#library-brief-lane-dropdown[open]
+    > #library-brief-chips#library-brief-chips {
+    border-color: rgba(0, 71, 171, .28) !important;
+    border-top-color: #0047ab !important;
+    background: #ffffff !important;
+    background-color: #ffffff !important;
+    background-image: none !important;
+    box-shadow: 0 20px 42px rgba(28, 64, 120, .18) !important;
+  }
+
+  html body.light-mode
+    #tab-content-library#tab-content-library#tab-content-library#tab-content-library.library-cockpit
+    #library-brief-lens#library-brief-lens#library-brief-lens#library-brief-lens[data-library-brief-panel="preparation"]
+    #library-brief-lane-dropdown#library-brief-lane-dropdown#library-brief-lane-dropdown[open]
+    > #library-brief-chips#library-brief-chips::before {
+    color: #53647a !important;
+    -webkit-text-fill-color: #53647a !important;
+  }
+
+  html body.light-mode
+    #tab-content-library#tab-content-library#tab-content-library#tab-content-library.library-cockpit
+    #library-brief-lens#library-brief-lens#library-brief-lens#library-brief-lens[data-library-brief-panel="preparation"]
+    #library-brief-lane-dropdown#library-brief-lane-dropdown#library-brief-lane-dropdown[open]
+    > #library-brief-chips#library-brief-chips .library-brief-chip {
+    border-bottom-color: rgba(0, 71, 171, .12) !important;
+    background: #ffffff !important;
+    color: #07111f !important;
+    -webkit-text-fill-color: #07111f !important;
+    box-shadow: none !important;
+  }
+
+  html body.light-mode
+    #tab-content-library#tab-content-library#tab-content-library#tab-content-library.library-cockpit
+    #library-brief-lens#library-brief-lens#library-brief-lens#library-brief-lens[data-library-brief-panel="preparation"]
+    #library-brief-lane-dropdown#library-brief-lane-dropdown#library-brief-lane-dropdown[open]
+    > #library-brief-chips#library-brief-chips .library-brief-chip .library-brief-chip-copy strong {
+    color: #07111f !important;
+    -webkit-text-fill-color: #07111f !important;
+  }
+
+  html body.light-mode
+    #tab-content-library#tab-content-library#tab-content-library#tab-content-library.library-cockpit
+    #library-brief-lens#library-brief-lens#library-brief-lens#library-brief-lens[data-library-brief-panel="preparation"]
+    #library-brief-lane-dropdown#library-brief-lane-dropdown#library-brief-lane-dropdown[open]
+    > #library-brief-chips#library-brief-chips .library-brief-chip :is(.library-brief-chip-index, .library-brief-chip-copy small) {
+    color: #53647a !important;
+    -webkit-text-fill-color: #53647a !important;
+  }
+
+  html body.light-mode
+    #tab-content-library#tab-content-library#tab-content-library#tab-content-library.library-cockpit
+    #library-brief-lens#library-brief-lens#library-brief-lens#library-brief-lens[data-library-brief-panel="preparation"]
+    #library-brief-lane-dropdown#library-brief-lane-dropdown#library-brief-lane-dropdown[open]
+    > #library-brief-chips#library-brief-chips .library-brief-chip:is(:hover, :focus-visible, .active) {
+    background: #edf4ff !important;
+    box-shadow: inset 3px 0 #0047ab !important;
+  }
+</style>

@@ -1,0 +1,268 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <link rel="icon" href="/favicon.ico">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PEAK HOUR Live Assist</title>
+  <script src="/static/js/shared/windows-rename.js?v=7"></script>
+  <script src="/static/js/shared/windows-hide-mac.js?v=3"></script>
+  <script>
+    (() => {
+      if (window.location.protocol === 'file:') {
+        window.location.replace('http://127.0.0.1:8081/live_assist_window?preview=app');
+      }
+    })();
+  </script>
+  <link href="/static/windows-fonts.css?v=1" rel="stylesheet">
+  <link rel="stylesheet" href="/static/css/live-assist.css?v=20260904-segmentation-v1">
+  <link rel="stylesheet" href="/static/css/live-assist-approved.css?v=20261007-mac-access-layout-v24">
+  <link rel="stylesheet" href="/static/css/live-assist-owner-layout.css?v=20261015-startup-v1">
+</head>
+<body data-assist-mode="collapsed">
+  <section id="performance-activation-bar" class="activation-bar" role="button" tabindex="0" aria-label="Expand PEAK HOUR Performance Mode">
+    <img class="activation-mark" src="/static/axiom-mark.png" alt="">
+    <span class="activation-live-dot" aria-hidden="true"></span>
+    <span class="activation-copy">
+      <strong>PEAK HOUR</strong>
+      <span>Performance Mode Active</span>
+    </span>
+    <button id="activation-expand-button" class="activation-expand" type="button" title="Expand Performance Mode" aria-label="Expand Performance Mode">
+      <img src="/static/icons/chevron-up.svg" alt="">
+    </button>
+  </section>
+
+  <main class="shell">
+    <header class="topbar">
+      <h1 class="assist-brand-title">
+        <img class="assist-brand-mark" src="{% if axiom_lite %}/static/axiom-mark.png{% else %}/static/axiom-pro-mark.png{% endif %}" alt="" aria-hidden="true">
+        <span class="assist-brand-name">PEAK HOUR</span><span class="assist-brand-divider" aria-hidden="true"></span><span class="assist-brand-product">Live Assist</span>
+      </h1>
+      <label class="assist-layout-control" title="Choose Live Assist window size">
+        <select id="assist-layout-select" aria-label="Live Assist window size">
+          <option value="auto">Auto Size</option>
+          <option value="full">Full Size</option>
+          <option value="compact">Compact</option>
+        </select>
+      </label>
+      <button id="pin-button" type="button" title="Keep On Top" aria-label="Keep On Top"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3h8l-2 3v5l4 4H6l4-4V6zM12 15v6" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg></button>
+      <button id="collapse-assist-button" class="topbar-icon" type="button" title="Collapse to Performance bar" aria-label="Collapse to Performance bar">
+        <span aria-hidden="true">−</span>
+      </button>
+      <button class="assist-hide-button" type="button" onclick="hideLiveAssistWindow()" title="Hide Live Assist" aria-label="Hide Live Assist"><span aria-hidden="true">×</span></button>
+
+    </header>
+
+    <section id="assist-mac-access" class="assist-mac-access" aria-label="Mac keyboard access" hidden>
+      <span id="assist-mac-access-status" role="status" aria-live="polite"></span>
+      <button id="assist-search-access" type="button" hidden title="Allow AXIOM in macOS Accessibility for Command-F. Keep AXIOM open; it connects when access is granted.">Allow access</button>
+    </section>
+
+    <section class="assist-now-playing" aria-label="Playing now">
+      <img id="assist-provider-logo" alt="" hidden>
+      <button id="assist-anchor-action" type="button" aria-label="Select Playing Now for feedback" aria-pressed="false">
+        <small id="assist-anchor-source">Playing now</small>
+        <strong id="assist-anchor-title"></strong>
+        <span id="assist-anchor-meta"></span>
+      </button>
+      <button id="refresh-button" class="deck-tempo" type="button" aria-label="Use current deck BPM"><strong id="live-deck-bpm">—</strong><span>Deck BPM</span></button>
+    </section>
+
+    <section class="bpmbar" aria-label="Tempo controls">
+      <input id="gig-profile-search" class="gig-profile-search" type="search" placeholder="Search playlists" aria-label="Search playlists">
+      <button id="gig-profile-refresh" type="button">Add from DJ software</button>
+      <button id="gig-profile-button" type="button">Live Crates</button>
+      <button id="gig-profile-close" type="button" title="Back to recommended songs" aria-label="Back to recommended songs">Back to songs</button>
+      <button id="assist-only-selected" type="button" aria-pressed="false">Only Selected</button>
+      <div class="record-maybe-pair"><button id="set-record-button" class="set-record-control" type="button" aria-label="Start recording this DJ set" aria-pressed="false">
+        <span class="set-record-idle"><i aria-hidden="true"></i><b hidden>Record Set</b></span>
+        <span class="set-record-live" aria-hidden="true">
+          <span class="set-record-meter"><i></i><i></i><i></i><i></i><i></i></span>
+          <b>REC</b>
+          <time id="set-record-time">00:00</time>
+        </span>
+      </button>
+      <button id="maybe-button" type="button" aria-label="Maybe Next" aria-expanded="false"><span class="thinking">🤔</span><span id="maybe-count">0</span></button></div>
+      <button id="half-button" type="button">Half Time</button>
+      <button id="double-button" type="button">Double Time</button>
+      <div class="refresh-control"><button id="assist-anchor-refresh" type="button" aria-label="More recommendations"><img src="/static/icons/rotate-cw.svg" alt="" aria-hidden="true"><span>More</span></button>
+        <button id="refresh-plus-button" hidden type="button">+</button><div id="refresh-menu" hidden><button id="refresh-bpm-button" type="button">Refresh BPM</button></div>
+      </div>
+    </section>
+
+    <section id="set-record-drawer" class="set-record-drawer" aria-label="Set recording setup" hidden>
+      <div class="set-record-drawer-head">
+        <div>
+          <strong>Set Recording</strong>
+          <small>Offline · Source audio untouched</small>
+        </div>
+        <button id="set-record-close" class="set-record-close" type="button" aria-label="Close set recording setup">Close</button>
+      </div>
+      <div class="set-record-source-modes" role="group" aria-label="Choose recording source type">
+        <button id="set-record-mode-application" type="button" data-record-source-mode="application" aria-pressed="true">DJ Software Audio</button>
+        <button id="set-record-mode-device" type="button" data-record-source-mode="device" aria-pressed="false">Controller / Interface</button>
+      </div>
+      <div class="set-record-fields">
+        <label>Exact Source
+          <select id="set-record-source" aria-label="Exact recording source">
+            <option value="">Checking recording sources...</option>
+          </select>
+        </label>
+        <label>File Format
+          <select id="set-record-format" aria-label="Set recording file format">
+            <option value="wav">WAV · Full Quality</option>
+            <option value="mp3">MP3 · 320 kbps</option>
+          </select>
+        </label>
+        <label>Streaming Feed
+          <select id="set-record-broadcast" aria-label="Share the clean recording feed with streaming apps">
+            <option value="off">Off</option>
+            <option value="on">On</option>
+          </select>
+        </label>
+      </div>
+      <div hidden class="set-record-destination" aria-label="Set recording save destination">
+        <span>Saves To</span>
+        <strong id="set-record-save-directory">~/Desktop</strong>
+      </div>
+      <div hidden id="set-record-ready" class="set-record-ready" data-ready="false" role="status">Choose a source to check readiness.</div>
+      <div class="set-record-drawer-actions">
+        <div class="record-level-control">
+          <div class="record-level-knob"><span class="record-level-pointer"></span><input id="record-level" type="range" min="-24" max="0" step="1" value="0" aria-label="Recording level in decibels"></div>
+          <label for="record-level">Recording Level<output id="record-level-value">0 dB</output></label>
+          <div class="record-signal-visual">
+            <div class="record-signal-head"><span id="record-signal-mode">Input peak</span><span id="record-signal-value">No signal</span></div>
+            <div id="record-signal-meter" class="record-signal-meter" role="meter" aria-label="Recording input peak" aria-valuemin="-60" aria-valuemax="0" aria-valuenow="-60" aria-valuetext="No signal"><span class="record-signal-fill"></span></div>
+            <div class="record-signal-scale" aria-hidden="true"><span>−60</span><span>−30</span><span>−12</span><span>0</span></div>
+          </div>
+        </div>
+        <div class="set-record-action-group">
+          <button id="set-record-test" type="button">Test Signal</button>
+          <button id="set-record-start" type="button" disabled>Start Recording</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="set-record-receipt" class="set-record-receipt" aria-label="Saved set recording" hidden>
+      <div class="set-record-receipt-copy">
+        <strong id="set-record-receipt-name">Set recording saved</strong>
+        <small id="set-record-receipt-meta">WAV · Desktop</small>
+      </div>
+      <div class="set-record-receipt-actions">
+        <button id="set-record-play" type="button">Play</button>
+        <button id="set-record-reveal" type="button">Reveal in Finder</button>
+        <button id="set-record-receipt-close" type="button">Dismiss</button>
+      </div>
+    </section>
+
+    <section class="results">
+      <div id="assist-announcer" class="assist-announcer" role="status" aria-live="polite"></div>
+      <section id="gig-profile-menu" class="gig-profile-menu" aria-label="Live Crates playlists" hidden>
+        <div id="gig-profile-sources" class="gig-profile-sources"></div>
+        <div class="gig-profile-menu-foot">
+          <span id="gig-profile-selection-count">0 selected</span>
+          <details id="assist-playlist-settings"><summary>Options</summary>
+            <div class="assist-playlist-settings-panel">
+            <div class="assist-playlist-settings-head">
+              <strong>Options</strong>
+              <button type="button" onclick="const settings = this.closest('details'); settings.open = false; settings.querySelector('summary').focus()">Close</button>
+            </div>
+            <div class="gig-profile-menu-head gig-profile-preset-row">
+              <div class="gig-profile-preset-field">
+                <label class="gig-profile-field-label" for="gig-profile-saved">Gig Presets</label>
+                <select id="gig-profile-saved" class="gig-profile-profile-select" aria-label="Gig Presets">
+                  <option value="">GIG PRESETS</option>
+                </select>
+              </div>
+              <button id="gig-profile-load" type="button">Load Preset</button>
+              <button id="gig-profile-save" type="button" aria-expanded="false" aria-controls="gig-profile-save-panel">Save Preset</button>
+            </div>
+            <div id="gig-profile-save-panel" class="gig-profile-save-panel" hidden>
+              <label class="gig-profile-field-label" for="gig-profile-name">Preset name</label>
+              <input id="gig-profile-name" class="gig-profile-name-input" type="text" maxlength="80" autocomplete="off" placeholder="Name this gig preset">
+              <button id="gig-profile-save-confirm" type="button">Save</button>
+              <button id="gig-profile-save-cancel" type="button">Cancel</button>
+            </div>
+
+              <div class="assist-playlist-option-buttons">
+                <button id="gig-profile-enabled" type="button" aria-pressed="false" data-state="Off">Use live playlists</button>
+                <button id="gig-profile-only-selected" type="button" aria-pressed="false" data-state="Off">Only selected playlists</button>
+                <button id="gig-profile-colors" type="button" aria-pressed="true" data-state="On">Track colours</button>
+              </div>
+              <div class="assist-playlist-bulk-actions">
+                <button id="gig-profile-select-all" type="button">Select all</button>
+                <button id="gig-profile-clear" type="button">Clear all</button>
+              </div>
+            </div>
+          </details>
+
+          <button id="gig-profile-reverse" type="button" onclick="toggleApprovedPlaylistOrder()" aria-label="Show bottom of playlist list first" aria-pressed="false" title="Show bottom first">
+            <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 4v16m-4-4 4 4 4-4M16 20V4m-4 4 4-4 4 4"/></svg>
+          </button>
+          <button id="gig-profile-apply" type="button">Apply Playlists</button>
+        </div>
+      </section>
+      <section id="maybe-drawer" hidden aria-label="Maybe Next"><header><strong>Maybe Next</strong><button id="maybe-emoji-button" type="button" aria-expanded="false" aria-controls="maybe-emoji-menu">Emoji <span id="maybe-emoji-current">🤔</span></button><button id="close-maybe" type="button" aria-label="Collapse Maybe Next">⌃</button></header><div id="maybe-emoji-menu" class="maybe-emoji-menu" hidden aria-label="Choose Maybe Next emoji"></div><div id="saved-list" aria-label="Maybe Next requests"></div><small class="assist-request-hint">Drop a song here from your DJ software for requests.</small></section>
+      <div id="list" class="list" aria-live="polite"></div>
+    </section>
+
+    <footer class="actions">
+      <div class="live-feedback-row">
+        <button id="clean-only-button" class="clean-only-button" type="button" aria-pressed="false">Dirty Music Allowed</button>
+        <button id="old-button" type="button">Too Old</button>
+        <div class="more-like-control">
+          <button id="like-button" type="button">More Like This</button>
+          <button id="like-plus-button" class="more-like-plus" type="button" title="More like this options" aria-label="More like this options" aria-expanded="false" style="border-color: rgba(163, 255, 0, 0.82); background: rgba(163, 255, 0, 0.13); box-shadow: inset 0 0 0 1px rgba(163, 255, 0, 0.26), 0 0 18px rgba(163, 255, 0, 0.16);">
+            <span aria-hidden="true" style="display: block; color: var(--accent); font-family: Barlow, sans-serif; font-size: 24px; font-weight: 900; line-height: 0.8; letter-spacing: 0; text-shadow: 0 0 14px rgba(163, 255, 0, 0.75); transform: translateY(-1px);">+</span>
+          </button>
+          <div id="more-like-menu" class="more-like-menu" hidden>
+            <div id="assist-similarity-summary" hidden aria-live="polite">
+              <span id="assist-similarity-label"></span>
+              <div class="assist-range-settings">
+                <span id="assist-year-lookback"><label for="assist-year-span">Lookback</label><select id="assist-year-span" aria-label="Release year lookback"><option value="2">2 years</option><option value="5">5 years</option><option value="10">10 years</option></select></span>
+                <button id="assist-reset-year-range" type="button" hidden>Reset years</button>
+              </div>
+            </div>
+            <button id="coach-insights-toggle" class="coach-insights-toggle" type="button" role="switch" aria-checked="false">
+              <span>Coach Messages</span><b>Off</b>
+            </button>
+            <label class="coach-set-reminder" for="coach-set-reminder">This set's reminder<select id="coach-set-reminder"><option value="">Off</option><option value="content">Content</option><option value="connection">Connection</option><option value="mic">Mic shout-out</option></select></label>
+            <div class="assist-year-control">
+              <button id="energy-button" type="button">More New</button>
+              <span id="assist-year-new-steps" class="assist-year-steps" hidden>
+                <button type="button" data-assist-year-step="-1" aria-label="Move release range older">−</button>
+                <button type="button" data-assist-year-step="1" aria-label="Move release range newer">+</button>
+              </span>
+            </div>
+            <div class="assist-year-control">
+              <button id="new-button" type="button">More Old</button>
+              <span id="assist-year-old-steps" class="assist-year-steps" hidden>
+                <button type="button" data-assist-year-step="-1" aria-label="Move release range older">−</button>
+                <button type="button" data-assist-year-step="1" aria-label="Move release range newer">+</button>
+              </span>
+            </div>
+            <button id="genre-flip-button" type="button">Genre Flip</button>
+            <button id="genre-button" type="button">Wrong Genre</button>
+            <button id="more-era-button" type="button">More This Era</button>
+            <button id="more-genre-button" type="button">More This Genre</button>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </main>
+
+  <section id="performance-coach-rail" class="performance-coach-rail" aria-live="polite" hidden>
+    <small>Quiet Coach</small>
+    <strong id="performance-coach-title"></strong>
+    <span id="performance-coach-detail"></span>
+  </section>
+
+  <script src="/static/js/shared/dj-track-colors.js?v=20260914"></script>
+  <script src="/static/js/shared/live-assist-similarity.js?v=20261008-axiom-era-v1"></script>
+  <script src="/static/js/live-assist-core.js?v=20261015-fast-load-v1"></script>
+  <script src="/static/js/live-assist-approved.js?v=20261008-axiom-era-v1"></script>
+  <script src="/static/js/live-assist-recording.js?v=20261015-fast-load-v1"></script>
+  <script src="/static/js/live-assist-owner-layout.js?v=20261015-startup-v1"></script>
+
+</body>
+</html>

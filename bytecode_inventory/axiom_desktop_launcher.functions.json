@@ -1,0 +1,191 @@
+[
+  {
+    "name": "<module>",
+    "qualname": "<module>",
+    "line": 1,
+    "names": [
+      "__doc__",
+      "__future__",
+      "annotations",
+      "os",
+      "platform",
+      "socket",
+      "subprocess",
+      "sys",
+      "threading",
+      "time",
+      "traceback",
+      "environ",
+      "setdefault",
+      "getattr",
+      "path",
+      "abspath",
+      "join",
+      "dirname",
+      "__file__",
+      "pardir",
+      "source_root",
+      "insert",
+      "__name__",
+      "argv",
+      "studio_daw.drum_beats",
+      "worker_main",
+      "SystemExit",
+      "get",
+      "HOST",
+      "int",
+      "PORT",
+      "URL",
+      "expanduser",
+      "LOG_FILE",
+      "LOG_DIR",
+      "_log",
+      "_show_dialog",
+      "_port_is_ready",
+      "_free_port",
+      "_open_url",
+      "_open_cockpit_when_ready",
+      "main"
+    ]
+  },
+  {
+    "name": "_log",
+    "qualname": "_log",
+    "line": 46,
+    "names": [
+      "os",
+      "makedirs",
+      "LOG_DIR",
+      "time",
+      "strftime",
+      "open",
+      "LOG_FILE",
+      "write"
+    ]
+  },
+  {
+    "name": "_show_dialog",
+    "qualname": "_show_dialog",
+    "line": 53,
+    "names": [
+      "sys",
+      "platform",
+      "str",
+      "replace",
+      "subprocess",
+      "run",
+      "DEVNULL"
+    ]
+  },
+  {
+    "name": "_port_is_ready",
+    "qualname": "_port_is_ready",
+    "line": 70,
+    "names": [
+      "socket",
+      "AF_INET",
+      "SOCK_STREAM",
+      "settimeout",
+      "connect_ex",
+      "HOST",
+      "PORT"
+    ]
+  },
+  {
+    "name": "_free_port",
+    "qualname": "_free_port",
+    "line": 76,
+    "names": [
+      "os",
+      "environ",
+      "get",
+      "sys",
+      "platform",
+      "subprocess",
+      "run",
+      "PORT",
+      "DEVNULL"
+    ]
+  },
+  {
+    "name": "_open_url",
+    "qualname": "_open_url",
+    "line": 94,
+    "names": [
+      "sys",
+      "platform",
+      "axiom_native_window",
+      "open_native_window",
+      "app",
+      "AXIOM_DISTRIBUTION_POLICY",
+      "URL",
+      "_log",
+      "lite",
+      "Exception",
+      "subprocess",
+      "run",
+      "DEVNULL",
+      "returncode",
+      "_show_dialog"
+    ]
+  },
+  {
+    "name": "_open_cockpit_when_ready",
+    "qualname": "_open_cockpit_when_ready",
+    "line": 122,
+    "names": [
+      "os",
+      "environ",
+      "get",
+      "range",
+      "_port_is_ready",
+      "time",
+      "sleep",
+      "_open_url",
+      "_log",
+      "URL",
+      "_show_dialog",
+      "LOG_FILE"
+    ]
+  },
+  {
+    "name": "main",
+    "qualname": "main",
+    "line": 140,
+    "names": [
+      "_log",
+      "platform",
+      "machine",
+      "sys",
+      "executable",
+      "getattr",
+      "_free_port",
+      "utils.macos_file_access",
+      "restore_native_file_access",
+      "utils.macos_export_access",
+      "restore_native_export_access",
+      "app",
+      "URL",
+      "threading",
+      "Thread",
+      "start",
+      "_open_cockpit_when_ready",
+      "join",
+      "Exception",
+      "traceback",
+      "format_exc",
+      "_show_dialog",
+      "LOG_FILE"
+    ]
+  },
+  {
+    "name": "<lambda>",
+    "qualname": "main.<locals>.<lambda>",
+    "line": 162,
+    "names": [
+      "run",
+      "HOST",
+      "PORT"
+    ]
+  }
+]

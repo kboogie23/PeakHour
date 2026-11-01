@@ -1,0 +1,904 @@
+
+
+body.light-mode #studio-start-view .command-copy {
+  color: rgba(7, 16, 24, 0.76) !important;
+}
+
+body.light-mode #studio-start-view .command-action-grid {
+  border-color: rgba(0, 104, 184, 0.22) !important;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(230, 246, 255, 0.62)) !important;
+  box-shadow:
+    0 22px 54px rgba(8, 34, 54, 0.13),
+    inset 0 1px 0 rgba(255, 255, 255, 0.92) !important;
+}
+
+body.light-mode #studio-start-view .command-action-card:first-child,
+body.light-mode #studio-start-view .command-action-card:last-child,
+body.light-mode #studio-start-view .command-action-card:not(.is-selected) {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(235, 245, 251, 0.98)) !important;
+  color: #071018 !important;
+}
+
+body.light-mode #studio-start-view .command-action-card.is-selected,
+body.light-mode #studio-start-view .command-action-card:first-child.is-selected,
+body.light-mode #studio-start-view .command-action-card:last-child.is-selected {
+  background: linear-gradient(110deg, #78d9ff 0%, #3cb8ff 52%, #9de9ff 100%) !important;
+  color: #05131c !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.68),
+    inset 0 -16px 32px rgba(0, 84, 140, 0.12) !important;
+}
+
+body.light-mode #studio-start-view .command-action-card:not(.is-selected) .command-card-kicker,
+body.light-mode #studio-start-view .command-action-card:not(.is-selected) .command-card-title {
+  color: #071018 !important;
+}
+
+body.light-mode #studio-start-view .command-action-card:not(.is-selected) .command-card-desc,
+body.light-mode #studio-start-view .command-action-card:not(.is-selected) .command-card-guidance,
+body.light-mode #studio-start-view .command-action-card:not(.is-selected) .command-card-guidance span {
+  color: rgba(7, 16, 24, 0.72) !important;
+}
+
+body.light-mode #studio-start-view .command-action-card.is-selected .command-card-kicker,
+body.light-mode #studio-start-view .command-action-card.is-selected .command-card-title,
+body.light-mode #studio-start-view .command-action-card.is-selected .command-card-desc,
+body.light-mode #studio-start-view .command-action-card.is-selected .command-card-guidance,
+body.light-mode #studio-start-view .command-action-card.is-selected .command-card-guidance span {
+  color: #05131c !important;
+}
+
+body.light-mode #studio-start-view .command-card-cta,
+body.light-mode #studio-start-view #btn-upload-csv.command-card-cta {
+  border-color: rgba(0, 104, 184, 0.42) !important;
+  background: rgba(255, 255, 255, 0.64) !important;
+  color: #005e9e !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.88) !important;
+}
+
+body.light-mode #studio-start-view .command-action-card.is-selected .command-card-cta,
+body.light-mode #studio-start-view .command-action-card.is-selected #btn-upload-csv.command-card-cta {
+  border-color: #05131c !important;
+  background: #05131c !important;
+  color: #ffffff !important;
+}
+
+body.light-mode #studio-start-view .command-path-or {
+  border-color: rgba(0, 104, 184, 0.34) !important;
+  background: #f7fbff !important;
+  color: #071018 !important;
+  box-shadow: 0 0 0 8px rgba(247, 251, 255, 0.92), 0 16px 32px rgba(8, 34, 54, 0.12) !important;
+}
+
+body.light-mode #studio-start-view .build-night-panel {
+  border-color: rgba(0, 104, 184, 0.18) !important;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.84), rgba(229, 246, 255, 0.62) 48%, rgba(255, 255, 255, 0.72)),
+    #f8fbff !important;
+  box-shadow:
+    0 22px 54px rgba(8, 34, 54, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.92) !important;
+}
+
+body.light-mode #studio-start-view .build-night-card {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.54), rgba(255, 255, 255, 0.16)) !important;
+}
+
+body.light-mode #studio-start-view .build-night-card:hover,
+body.light-mode #studio-start-view .build-night-card:focus-visible {
+  background: linear-gradient(180deg, rgba(0, 132, 255, 0.12), rgba(0, 132, 255, 0.035)) !important;
+  transform: translateY(-1px) !important;
+}
+
+body.light-mode #studio-start-view .build-night-icon {
+  padding: 5px !important;
+  border: 1px solid rgba(0, 104, 184, 0.18) !important;
+  background: rgba(0, 132, 255, 0.07) !important;
+  box-shadow: 0 14px 28px rgba(8, 34, 54, 0.12) !important;
+}
+
+body.light-mode #studio-start-view .build-night-card strong {
+  color: #071018 !important;
+  text-shadow: none !important;
+}
+
+body.light-mode #studio-start-view .build-night-card-copy > span {
+  color: rgba(7, 16, 24, 0.68) !important;
+}
+
+body.light-mode #studio-start-view .build-night-settings b {
+  border-color: rgba(0, 104, 184, 0.16) !important;
+  background: rgba(0, 132, 255, 0.055) !important;
+  color: rgba(7, 16, 24, 0.72) !important;
+}
+
+body.light-mode #studio-start-view .build-night-start {
+  color: #006ebd !important;
+}
+
+/* GUI overhaul pass: Axiom Start mission-card spacing tune, Day Mode. */
+body.light-mode #studio-start-view .build-night-grid {
+  background: rgba(255, 255, 255, 0.36) !important;
+}
+
+/* GUI overhaul pass: Axiom Start supporting typography tune, Day Mode. */
+body.light-mode #studio-start-view .command-card-desc,
+body.light-mode #studio-start-view .command-card-guidance,
+body.light-mode #studio-start-view .build-night-card-copy > span:not(.build-night-settings):not(.build-night-start) {
+  color: rgba(7, 16, 24, 0.72) !important;
+}
+
+/* GUI overhaul pass: Axiom Start typography correction, Day Mode. */
+body.light-mode #studio-start-view .command-copy,
+body.light-mode #studio-start-view .command-card-desc,
+body.light-mode #studio-start-view .command-card-guidance,
+body.light-mode #studio-start-view .build-night-card-copy > span:not(.build-night-settings):not(.build-night-start) {
+  color: rgba(7, 16, 24, 0.74) !important;
+}
+
+/* GUI overhaul pass: Axiom Start typography reset, Day Mode. */
+body.light-mode #studio-start-view .command-copy,
+body.light-mode #studio-start-view .command-card-desc,
+body.light-mode #studio-start-view .command-card-guidance,
+body.light-mode #studio-start-view .build-night-card-copy > span:not(.build-night-settings):not(.build-night-start) {
+  color: rgba(7, 16, 24, 0.76) !important;
+}
+
+/* GUI overhaul pass: Axiom Start font-system alignment, Day Mode. */
+body.light-mode #studio-start-view .command-copy,
+body.light-mode #studio-start-view .command-card-desc,
+body.light-mode #studio-start-view .command-card-guidance,
+body.light-mode #studio-start-view .build-night-card-copy > span:not(.build-night-settings):not(.build-night-start) {
+  color: rgba(7, 16, 24, 0.74) !important;
+}
+
+/* GUI overhaul pass: Axiom Start hero image blend restore, Day Mode. */
+body.light-mode #studio-start-view .command-terrain {
+  border: 0 !important;
+  background:
+    linear-gradient(90deg, rgba(247, 251, 255, 1) 0%, rgba(247, 251, 255, 0.78) 12%, rgba(247, 251, 255, 0.22) 38%, rgba(247, 251, 255, 0.04) 68%),
+    linear-gradient(180deg, rgba(247, 251, 255, 0.2), rgba(247, 251, 255, 0.08)),
+    url("/static/axiom-platform-hero.png") center right / cover no-repeat !important;
+  box-shadow: none !important;
+}
+
+/* GUI overhaul pass: Axiom Start mission-card description readability, Day Mode. */
+body.light-mode #studio-start-view .build-night-card-copy > span:not(.build-night-settings):not(.build-night-start) {
+  color: rgba(7, 16, 24, 0.76) !important;
+}
+
+/* GUI overhaul pass: Axiom Start mission description hover signal, Day Mode. */
+body.light-mode #studio-start-view .build-night-card:hover .build-night-card-copy > span:not(.build-night-settings):not(.build-night-start),
+body.light-mode #studio-start-view .build-night-card:focus-visible .build-night-card-copy > span:not(.build-night-settings):not(.build-night-start) {
+  color: #005e9e !important;
+  text-shadow: none !important;
+}
+
+/* GUI overhaul pass: Library inherits Matching Songs modal language, Day Mode. */
+body.light-mode #tab-content-library.library-cockpit {
+  background: #f4f7fb !important;
+}
+
+body.light-mode #tab-content-library .library-topbar,
+body.light-mode #tab-content-library :is(.library-control-row, .library-set-prep, .recommendations-panel, .smart-links-container) {
+  border-radius: 0 !important;
+  border-color: rgba(0, 71, 171, 0.16) !important;
+  background: #ffffff !important;
+  box-shadow: none !important;
+}
+
+body.light-mode #tab-content-library .library-search-shell,
+body.light-mode #tab-content-library .library-search-input {
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+body.light-mode #tab-content-library .library-search-input {
+  color: #07111f !important;
+  font-family: "Bebas Neue", sans-serif !important;
+  font-size: 18px !important;
+  letter-spacing: 0.065em !important;
+  text-transform: uppercase !important;
+}
+
+body.light-mode #tab-content-library .library-guide-btn,
+body.light-mode #tab-content-library .library-control-row button {
+  border-radius: 0 !important;
+  border-color: rgba(0, 71, 171, 0.34) !important;
+  background: rgba(0, 71, 171, 0.055) !important;
+  color: #0047ab !important;
+  box-shadow: none !important;
+  font-family: "Bebas Neue", sans-serif !important;
+  font-weight: 400 !important;
+  letter-spacing: 0.075em !important;
+}
+
+body.light-mode #tab-content-library #search-results .library-track-card,
+body.light-mode #tab-content-library #search-results .library-track-card.axiom-focus-deck-row {
+  min-height: 92px !important;
+  border-radius: 0 !important;
+  border: 0 !important;
+  border-bottom: 1px solid rgba(7, 17, 31, 0.12) !important;
+  background: rgba(255, 255, 255, 0.92) !important;
+  box-shadow: none !important;
+}
+
+body.light-mode #tab-content-library #search-results .library-track-card:hover,
+body.light-mode #tab-content-library #search-results .library-track-card.axiom-focus-deck-row:hover {
+  background: rgba(0, 132, 255, 0.06) !important;
+}
+
+body.light-mode #tab-content-library .library-track-title {
+  color: #07111f !important;
+  font-family: "Bebas Neue", sans-serif !important;
+  font-size: 22px !important;
+  letter-spacing: 0.035em !important;
+  text-transform: uppercase !important;
+}
+
+body.light-mode #tab-content-library .library-bpm-value,
+body.light-mode #tab-content-library .library-key-cell,
+body.light-mode #tab-content-library .library-add-btn,
+body.light-mode #tab-content-library :is(.library-health-chip, .library-dna-chip, .library-year-chip) {
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+body.light-mode #tab-content-library.library-cockpit #search-results .library-track-card.axiom-focus-deck-row.selected,
+body.light-mode #tab-content-library.library-cockpit #search-results .library-track-card:is(.selected, .playing-track, .library-track-playing) {
+  border: 0 !important;
+  border-top: 2px solid #0047ab !important;
+  border-right: 1px solid rgba(0, 71, 171, 0.44) !important;
+  border-bottom: 2px solid #0047ab !important;
+  border-radius: 0 !important;
+  background: linear-gradient(90deg, #ffffff, #e8f0ff 54%, #ffffff) !important;
+  box-shadow: 0 10px 24px rgba(7, 17, 31, 0.10) !important;
+}
+
+/* GUI overhaul pass: Library Set Prep lens redesign, Day Mode. */
+body.light-mode #library-brief-lens.library-brief-lens {
+  min-height: 86px !important;
+  padding: 16px 16px 14px !important;
+  border: 1px solid rgba(0, 71, 171, 0.18) !important;
+  border-radius: 0 !important;
+  background: linear-gradient(90deg, rgba(0, 104, 184, 0.08), rgba(255, 255, 255, 0.96) 28%, #ffffff) !important;
+  box-shadow: none !important;
+}
+
+body.light-mode #library-brief-lens.library-brief-lens::before {
+  content: "" !important;
+  position: absolute !important;
+  inset: 0 auto 0 0 !important;
+  width: 3px !important;
+  background: #0047ab !important;
+}
+
+body.light-mode #library-brief-lens :is(#library-brief-kicker, #library-brief-title) {
+  font-family: "Bebas Neue", sans-serif !important;
+  font-weight: 400 !important;
+  letter-spacing: 0.075em !important;
+  text-transform: uppercase !important;
+}
+
+body.light-mode #library-brief-kicker {
+  color: #0047ab !important;
+  font-size: 15px !important;
+}
+
+body.light-mode #library-brief-title {
+  color: #07111f !important;
+  font-size: 17px !important;
+}
+
+body.light-mode #library-brief-copy {
+  color: rgba(7, 17, 31, 0.64) !important;
+  font-family: "Barlow", sans-serif !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.055em !important;
+  line-height: 1.25 !important;
+  text-transform: uppercase !important;
+}
+
+body.light-mode #library-brief-lens .library-brief-chip.button--small,
+body.light-mode #library-brief-lens .library-fresh-rotate.button--small,
+body.light-mode #library-brief-lens :is(#library-brief-setup-btn, #library-fresh-rotate) {
+  min-height: 34px !important;
+  padding: 0 15px !important;
+  border-radius: 0 !important;
+  border: 1px solid rgba(7, 17, 31, 0.16) !important;
+  background: #ffffff !important;
+  color: #334155 !important;
+  box-shadow: none !important;
+  font-family: "Bebas Neue", sans-serif !important;
+  font-size: 16px !important;
+  font-weight: 400 !important;
+  letter-spacing: 0.07em !important;
+  text-transform: uppercase !important;
+}
+
+body.light-mode #library-brief-lens .library-brief-chip.button--small:not(.active):hover {
+  border-color: rgba(8, 145, 178, 0.45) !important;
+  background: rgba(8, 145, 178, 0.08) !important;
+  color: #087f96 !important;
+}
+
+body.light-mode #library-brief-lens .library-brief-chip.button--small.active {
+  border-color: #0047ab !important;
+  background: #0047ab !important;
+  color: #ffffff !important;
+}
+
+body.light-mode #library-brief-lens :is(#library-brief-setup-btn, .library-brief-setup-btn) {
+  border-color: rgba(0, 71, 171, 0.36) !important;
+  background: rgba(0, 71, 171, 0.06) !important;
+  color: #0047ab !important;
+}
+
+body.light-mode #library-brief-lens #library-fresh-rotate.library-fresh-rotate {
+  border-color: rgba(8, 145, 178, 0.42) !important;
+  background: rgba(8, 145, 178, 0.08) !important;
+  color: #087f96 !important;
+}
+
+/* GUI overhaul pass: Library no-black-on-black control guard, Day Mode. */
+body.light-mode #tab-content-library.library-cockpit #btn-library-guide.library-guide-btn {
+  border-color: rgba(0, 71, 171, 0.42) !important;
+  background: rgba(0, 71, 171, 0.08) !important;
+  color: #0047ab !important;
+}
+
+body.light-mode #tab-content-library.library-cockpit .library-add-folder.button--primary {
+  border: 1px solid #0047ab !important;
+  background: #0047ab !important;
+  color: #ffffff !important;
+  font-family: "Bebas Neue", sans-serif !important;
+  font-size: 16px !important;
+  font-weight: 400 !important;
+  letter-spacing: 0.075em !important;
+  text-transform: uppercase !important;
+}
+
+body.light-mode #library-brief-lens .library-brief-chip.button--small:not(.active):not(.library-fresh-rotate) {
+  border-color: rgba(7, 17, 31, 0.18) !important;
+  background: rgba(7, 17, 31, 0.045) !important;
+  color: #334155 !important;
+}
+
+body.light-mode #library-brief-lens #library-brief-collapse {
+  border-color: rgba(0, 71, 171, 0.38) !important;
+  background: rgba(0, 71, 171, 0.07) !important;
+  color: #0047ab !important;
+  border-radius: 0 !important;
+  font-family: "Bebas Neue", sans-serif !important;
+  font-size: 16px !important;
+  font-weight: 400 !important;
+  letter-spacing: 0.075em !important;
+  text-transform: uppercase !important;
+}
+
+body.light-mode #library-brief-lens #library-fresh-rotate.library-fresh-rotate {
+  border-color: rgba(8, 145, 178, 0.42) !important;
+  background: rgba(8, 145, 178, 0.08) !important;
+  color: #087f96 !important;
+}
+
+/* GUI overhaul pass: Library top controls overlap repair, Day Mode. */
+body.light-mode #tab-content-library.library-cockpit .library-topbar,
+body.light-mode #library-brief-lens.library-brief-lens {
+  overflow: visible !important;
+}
+
+/* GUI overhaul pass: Library search field separation, Day Mode. */
+body.light-mode #tab-content-library.library-cockpit .library-search-shell {
+  border: 1px solid rgba(0, 71, 171, 0.22) !important;
+  background: linear-gradient(90deg, rgba(0, 104, 184, 0.045), rgba(255, 255, 255, 0.9)), #ffffff !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9) !important;
+}
+
+body.light-mode #tab-content-library.library-cockpit .library-search-shell:focus-within {
+  border-color: rgba(8, 145, 178, 0.62) !important;
+  box-shadow: 0 0 0 1px rgba(8, 145, 178, 0.14) !important;
+}
+
+/* GUI overhaul pass: Library topbar outer-frame cleanup, Day Mode. */
+body.light-mode #tab-content-library.library-cockpit .library-topbar {
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+/* GUI overhaul pass: Library Set Prep lens full containment repair, Day Mode. */
+body.light-mode #tab-content-library.library-cockpit #library-brief-lens.library-brief-lens {
+  min-height: 166px !important;
+  height: auto !important;
+  padding: 28px 28px 28px 34px !important;
+  overflow: hidden !important;
+}
+
+/* GUI overhaul pass: Library Set Prep expanded control-room redesign, Day Mode. */
+body.light-mode #tab-content-library.library-cockpit #library-brief-lens.library-brief-lens:has(#library-brief-settings:not(.hidden)) {
+  min-height: 332px !important;
+  background: linear-gradient(90deg, rgba(0, 71, 171, 0.08), rgba(255, 255, 255, 0.98) 24%, #ffffff 76%) !important;
+}
+
+body.light-mode #tab-content-library.library-cockpit #library-brief-settings.library-brief-settings:not(.hidden) {
+  border: 1px solid rgba(0, 71, 171, 0.16) !important;
+  border-radius: 0 !important;
+  background: rgba(247, 251, 255, 0.88) !important;
+  box-shadow: none !important;
+}
+
+body.light-mode #tab-content-library.library-cockpit #library-brief-settings .library-bpm-filter-wrap {
+  border-color: rgba(0, 71, 171, 0.18) !important;
+  border-radius: 0 !important;
+  background: #ffffff !important;
+  box-shadow: none !important;
+}
+
+body.light-mode #tab-content-library.library-cockpit #library-brief-settings .library-bpm-filter-wrap > span {
+  color: #0047ab !important;
+  font-family: "Bebas Neue", sans-serif !important;
+  font-size: 16px !important;
+  font-weight: 400 !important;
+  letter-spacing: 0.08em !important;
+  text-transform: uppercase !important;
+}
+
+body.light-mode #tab-content-library.library-cockpit #library-brief-settings .library-brief-select {
+  height: 40px !important;
+  min-height: 40px !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background-color: #f3f7fb !important;
+  color: #07111f !important;
+  font-family: "Bebas Neue", sans-serif !important;
+  font-size: 15px !important;
+  font-weight: 400 !important;
+  letter-spacing: 0.055em !important;
+  text-transform: uppercase !important;
+  box-shadow: inset 0 0 0 1px rgba(0, 71, 171, 0.12) !important;
+}
+
+/* GUI overhaul pass: Library Set Prep expanded drawer rebuild, Day Mode. */
+body.light-mode #tab-content-library.library-cockpit #library-brief-lens.library-brief-lens:has(#library-brief-settings:not(.hidden)) {
+  min-height: 430px !important;
+  padding: 28px 30px 30px 36px !important;
+  border-color: rgba(0, 71, 171, 0.22) !important;
+  background: linear-gradient(90deg, rgba(0, 71, 171, 0.08), rgba(255, 255, 255, 0.98) 22%, #ffffff 100%) !important;
+}
+
+body.light-mode #tab-content-library.library-cockpit #library-brief-lens.library-brief-lens:has(#library-brief-settings:not(.hidden))::after {
+  background: rgba(0, 71, 171, 0.18) !important;
+}
+
+body.light-mode #tab-content-library.library-cockpit #library-brief-lens:has(#library-brief-settings:not(.hidden)) #library-brief-kicker {
+  color: #0047ab !important;
+}
+
+body.light-mode #tab-content-library.library-cockpit #library-brief-lens:has(#library-brief-settings:not(.hidden)) #library-brief-title {
+  color: #07111f !important;
+}
+
+body.light-mode #tab-content-library.library-cockpit #library-brief-settings .library-bpm-filter-wrap {
+  border-color: rgba(0, 71, 171, 0.18) !important;
+  background: #ffffff !important;
+}
+
+body.light-mode #tab-content-library.library-cockpit #library-brief-settings .library-bpm-filter-wrap > span {
+  color: #0047ab !important;
+}
+
+body.light-mode #tab-content-library.library-cockpit #library-brief-settings .library-brief-select {
+  border-color: rgba(0, 71, 171, 0.12) !important;
+  background-color: #f3f7fb !important;
+  color: #07111f !important;
+}
+
+/* GUI overhaul pass: Library Set Prep compact final system, Day Mode. */
+body.light-mode #tab-content-library.library-cockpit #library-brief-lens.library-brief-lens:not(:has(#library-brief-settings:not(.hidden))) {
+  min-height: 104px !important;
+  padding: 17px 20px 15px 28px !important;
+}
+
+body.light-mode #tab-content-library.library-cockpit #library-brief-lens.library-brief-lens:has(#library-brief-settings:not(.hidden)) {
+  min-height: 0 !important;
+  height: auto !important;
+  padding: 21px 24px 24px 30px !important;
+}
+
+body.light-mode #tab-content-library.library-cockpit #library-brief-settings .library-bpm-filter-wrap {
+  min-height: 76px !important;
+  padding: 11px 12px !important;
+}
+
+/* GUI overhaul pass: Library Set Prep collapsed single-line command strip, Day Mode. */
+body.light-mode #tab-content-library.library-cockpit #library-brief-lens.library-brief-lens:not(:has(#library-brief-settings:not(.hidden))) {
+  min-height: 66px !important;
+  padding: 16px 18px 16px 28px !important;
+}
+
+/* GUI overhaul pass: Library Set Prep collapsed flex-row correction, Day Mode. */
+body.light-mode #tab-content-library.library-cockpit #library-brief-lens.library-brief-lens:not(:has(#library-brief-settings:not(.hidden))) {
+  min-height: 62px !important;
+  padding: 14px 18px 14px 28px !important;
+}
+
+/* GUI overhaul pass: Library Set Prep expanded state hard reset, Day Mode. */
+body.light-mode #tab-content-library.library-cockpit #library-brief-lens.library-brief-lens:has(#library-brief-settings:not(.hidden)) {
+  min-height: 520px !important;
+  padding: 30px 32px 34px 38px !important;
+  border-color: rgba(0, 71, 171, 0.24) !important;
+  background: linear-gradient(90deg, rgba(0, 71, 171, 0.08), rgba(255, 255, 255, 0.98) 18%, #ffffff 100%) !important;
+}
+
+body.light-mode #tab-content-library.library-cockpit #library-brief-lens.library-brief-lens:has(#library-brief-settings:not(.hidden))::after {
+  background: rgba(0, 71, 171, 0.18) !important;
+}
+
+body.light-mode #tab-content-library.library-cockpit #library-brief-lens:has(#library-brief-settings:not(.hidden)) #library-brief-kicker {
+  color: #0047ab !important;
+}
+
+body.light-mode #tab-content-library.library-cockpit #library-brief-lens:has(#library-brief-settings:not(.hidden)) #library-brief-title {
+  color: #07111f !important;
+}
+
+body.light-mode #tab-content-library.library-cockpit #library-brief-settings .library-bpm-filter-wrap {
+  border-color: rgba(0, 71, 171, 0.18) !important;
+  background: #ffffff !important;
+}
+
+body.light-mode #tab-content-library.library-cockpit #library-brief-settings .library-bpm-filter-wrap > span {
+  color: #0047ab !important;
+}
+
+body.light-mode #tab-content-library.library-cockpit #library-brief-settings .library-brief-select {
+  border-color: rgba(0, 71, 171, 0.12) !important;
+  background-color: #f3f7fb !important;
+  color: #07111f !important;
+}
+
+/* GUI overhaul pass: Library setup cards populated-control treatment, Day Mode. */
+body.light-mode #tab-content-library.library-cockpit #library-brief-settings .library-bpm-filter-wrap {
+  background: linear-gradient(135deg, rgba(0, 71, 171, 0.055), rgba(8, 145, 178, 0.035)), #ffffff !important;
+}
+
+body.light-mode #tab-content-library.library-cockpit #library-brief-settings .library-brief-select {
+  border-color: rgba(0, 71, 171, 0.18) !important;
+  background: linear-gradient(90deg, rgba(0, 71, 171, 0.06), rgba(255, 255, 255, 0.9)), #f6f9fc !important;
+  color: #07111f !important;
+}
+
+/* GUI overhaul pass: Library Prep Mode blank-value guard, Day Mode. */
+body.light-mode #tab-content-library.library-cockpit #library-brief-intention.library-brief-select {
+  background: linear-gradient(90deg, rgba(0, 71, 171, 0.08), rgba(255, 255, 255, 0.9)), #f6f9fc !important;
+}
+
+/* GUI overhaul pass: Library Prep Mode explicit visible value layer, Day Mode. */
+body.light-mode #tab-content-library.library-cockpit #library-brief-settings .library-bpm-filter-wrap:has(#library-brief-intention)::after {
+  color: #07111f !important;
+}
+
+/* GUI overhaul pass: Library setup cards visible by default, Day Mode. */
+body.light-mode #tab-content-library.library-cockpit #library-brief-settings .library-bpm-filter-wrap {
+  border-color: rgba(0, 71, 171, 0.26) !important;
+  background: linear-gradient(135deg, rgba(0, 71, 171, 0.08), rgba(8, 145, 178, 0.045)), #ffffff !important;
+}
+
+body.light-mode #tab-content-library.library-cockpit #library-brief-settings .library-brief-select {
+  border-color: rgba(0, 71, 171, 0.18) !important;
+  background: linear-gradient(90deg, rgba(0, 71, 171, 0.07), rgba(255, 255, 255, 0.95)), #f6f9fc !important;
+  color: #07111f !important;
+}
+
+/* GUI overhaul pass: Library Prep Mode custom visible select face, Day Mode. */
+body.light-mode #tab-content-library.library-cockpit #library-brief-settings #library-brief-intention-display.library-brief-select-display {
+  border-color: rgba(0, 71, 171, 0.18) !important;
+  background: linear-gradient(90deg, rgba(0, 71, 171, 0.07), rgba(255, 255, 255, 0.95)), #f6f9fc !important;
+  color: #07111f !important;
+}
+
+body.light-mode #tab-content-library.library-cockpit #library-brief-settings #library-brief-intention-display.library-brief-select-display::after {
+  border-color: rgba(7, 17, 31, 0.78) !important;
+}
+
+/* Keep Prep Mode readable when the later night-mode select rules share the page. */
+html body.light-mode #tab-content-library.library-cockpit #library-brief-settings #library-brief-intention.library-brief-select,
+html body.light-mode #tab-content-library.library-cockpit #library-brief-settings #library-brief-intention.library-brief-select:disabled {
+  border-color: rgba(0, 71, 171, 0.22) !important;
+  background: linear-gradient(90deg, rgba(0, 71, 171, 0.07), rgba(255, 255, 255, 0.95)), #f6f9fc !important;
+  color: #07111f !important;
+  -webkit-text-fill-color: #07111f !important;
+  opacity: 1 !important;
+}
+
+html body.light-mode #tab-content-library.library-cockpit #library-brief-settings #library-brief-intention.library-brief-select option {
+  background: #ffffff !important;
+  color: #07111f !important;
+  -webkit-text-fill-color: #07111f !important;
+}
+/* GUI overhaul pass: Library genre/root badge colors, Day Mode. */
+body.light-mode #tab-content-library #search-results .library-dna-chip.dna-badge {
+  background: rgba(7, 17, 31, 0.055) !important;
+  color: #334155 !important;
+}
+
+body.light-mode #tab-content-library #search-results .library-dna-chip:is(.library-genre-global, .library-genre-global-lanes, .library-genre-african, .library-genre-afro, .library-genre-latin, .library-genre-dancehall, .library-genre-reggaeton) {
+  border-color: rgba(5, 150, 105, 0.34) !important;
+  background: rgba(5, 150, 105, 0.1) !important;
+  color: #047857 !important;
+}
+
+body.light-mode #tab-content-library #search-results .library-dna-chip:is(.library-genre-urban, .library-genre-r-b, .library-genre-hip-hop, .library-genre-rap, .library-genre-urban-weapon, .library-genre-urban-hybrid, .library-genre-urban-smooth) {
+  border-color: rgba(217, 119, 6, 0.34) !important;
+  background: rgba(217, 119, 6, 0.1) !important;
+  color: #b45309 !important;
+}
+
+body.light-mode #tab-content-library #search-results .library-dna-chip:is(.library-genre-dancefloor-ready, .library-genre-electronic, .library-genre-house, .library-genre-edm, .library-genre-dance, .library-genre-club) {
+  border-color: rgba(8, 145, 178, 0.34) !important;
+  background: rgba(8, 145, 178, 0.1) !important;
+  color: #087f96 !important;
+}
+
+body.light-mode #tab-content-library #search-results .library-dna-chip:is(.library-genre-pop, .library-genre-top-40) {
+  border-color: rgba(234, 88, 12, 0.34) !important;
+  background: rgba(234, 88, 12, 0.1) !important;
+  color: #c2410c !important;
+}
+
+body.light-mode #tab-content-library #search-results .library-dna-chip:is(.library-genre-retro, .library-genre-throwback, .library-genre-xmas) {
+  border-color: rgba(126, 34, 206, 0.3) !important;
+  background: rgba(126, 34, 206, 0.09) !important;
+  color: #7e22ce !important;
+}
+
+body.light-mode #tab-content-library #search-results .library-dna-chip:is(.library-genre-disco, .library-genre-retro, .library-genre-throwback, .library-genre-old-school, .library-genre-oldschool, .library-genre-70s, .library-genre-80s, .library-genre-90s) {
+  border-color: rgba(126, 34, 206, 0.3) !important;
+  background: rgba(126, 34, 206, 0.09) !important;
+  color: #7e22ce !important;
+}
+
+body.light-mode #tab-content-library #search-results .library-dna-chip:is(.library-genre-room-builder, .library-genre-singalong-potential, .library-genre-utility, .library-genre-refreshed) {
+  border-color: rgba(0, 71, 171, 0.26) !important;
+  background: rgba(0, 71, 171, 0.08) !important;
+  color: #0047ab !important;
+}
+/* GUI overhaul pass: Library rows need collision-proof lanes for titles, chips, and actions. */
+body.light-mode #tab-content-library #search-results .library-track-card {
+  overflow: hidden !important;
+}
+
+body.light-mode #tab-content-library #search-results .library-track-title,
+body.light-mode #tab-content-library #search-results .library-track-artist,
+body.light-mode #tab-content-library #search-results .library-dna-chip,
+body.light-mode #tab-content-library #search-results .dna-badge,
+body.light-mode #tab-content-library #search-results .set-ready-badge {
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+/* GUI overhaul pass: Library genre color map refined to DJ category language, Day Mode. */
+body.light-mode #tab-content-library #search-results .library-dna-chip.library-genre-urban {
+  border-color: rgba(219, 39, 119, 0.34) !important;
+  background: rgba(219, 39, 119, 0.1) !important;
+  color: #be185d !important;
+}
+
+body.light-mode #tab-content-library #search-results .library-dna-chip:is(.library-genre-rap, .library-genre-hip-hop, .library-genre-hiphop, .library-genre-uk, .library-genre-uk-rap, .library-genre-uk-garage, .library-genre-grime, .library-genre-drill, .library-genre-east-coast, .library-genre-west-coast, .library-genre-ratchet, .library-genre-jersey, .library-genre-afrobeats-uk, .library-genre-urban-weapon, .library-genre-urban-hybrid) {
+  border-color: rgba(234, 88, 12, 0.36) !important;
+  background: rgba(234, 88, 12, 0.1) !important;
+  color: #c2410c !important;
+}
+
+body.light-mode #tab-content-library #search-results .library-dna-chip:is(.library-genre-r-b, .library-genre-rnb, .library-genre-r-n-b, .library-genre-alternative-rnb, .library-genre-urban-smooth) {
+  border-color: rgba(219, 39, 119, 0.34) !important;
+  background: rgba(219, 39, 119, 0.1) !important;
+  color: #be185d !important;
+}
+
+body.light-mode #tab-content-library #search-results .library-dna-chip:is(.library-genre-edm, .library-genre-electronic, .library-genre-house, .library-genre-tech-house, .library-genre-deep-house, .library-genre-club, .library-genre-dancefloor-ready) {
+  border-color: rgba(202, 138, 4, 0.38) !important;
+  background: rgba(202, 138, 4, 0.12) !important;
+  color: #a16207 !important;
+}
+
+body.light-mode #tab-content-library #search-results .library-dna-chip:is(.library-genre-global, .library-genre-global-lanes, .library-genre-african, .library-genre-african, .library-genre-afro, .library-genre-afrobeat, .library-genre-afrobeats, .library-genre-amapiano, .library-genre-latin, .library-genre-dancehall, .library-genre-reggaeton, .library-genre-soca, .library-genre-international) {
+  border-color: rgba(5, 150, 105, 0.36) !important;
+  background: rgba(5, 150, 105, 0.1) !important;
+  color: #047857 !important;
+}
+
+body.light-mode #tab-content-library #search-results .library-dna-chip:is(.library-genre-top40, .library-genre-top-40, .library-genre-pop, .library-genre-dance, .library-genre-radio, .library-genre-mainstream) {
+  border-color: rgba(8, 145, 178, 0.36) !important;
+  background: rgba(8, 145, 178, 0.1) !important;
+  color: #087f96 !important;
+}
+
+/* GUI overhaul pass: first-class Library root lanes for Local Music and Mashup / Edits, Day Mode. */
+body.light-mode #tab-content-library #search-results .library-dna-chip:is(.library-genre-local-music, .library-genre-nz, .library-genre-new-zealand, .library-genre-aotearoa, .library-genre-poly, .library-genre-polynesian, .library-genre-pacific, .library-genre-samoa, .library-genre-samoan, .library-genre-tonga, .library-genre-tongan) {
+  border-color: rgba(13, 148, 136, 0.42) !important;
+  background: rgba(13, 148, 136, 0.12) !important;
+  color: #0f766e !important;
+}
+
+body.light-mode #tab-content-library #search-results .library-dna-chip:is(.library-genre-mashup-edits, .library-genre-mashup-and-edits, .library-genre-soundcloud, .library-genre-refreshed, .library-genre-mashup, .library-genre-mash-up, .library-genre-bootleg, .library-genre-edit-pack, .library-genre-edits-pack) {
+  border-color: rgba(14, 116, 144, 0.42) !important;
+  background: rgba(14, 116, 144, 0.12) !important;
+  color: #0e7490 !important;
+}
+
+/* Generated album placeholders carry a theme-native palette. Keep both
+   layers in the markup so changing themes updates immediately without a
+   Library reload or leaving Night Mode's green glow behind in Day Mode. */
+.generated-track-artwork-day {
+  display: none !important;
+}
+
+body.light-mode .generated-track-artwork-night {
+  display: none !important;
+}
+
+body.light-mode .generated-track-artwork-day {
+  display: block !important;
+}
+
+/* Day-mode companion for the selected Studio instrument rail. */
+html body.light-mode #studio-active-view #studio-mode-controls {
+  border-bottom-color: rgba(0, 71, 171, 0.16) !important;
+  background: #f7f9fc !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.82) !important;
+}
+
+html body.light-mode #studio-active-view .studio-mode-selector {
+  border-color: rgba(0, 71, 171, 0.24) !important;
+  background: #ffffff !important;
+  box-shadow: inset 0 -10px 24px rgba(7, 17, 31, 0.025) !important;
+}
+
+html body.light-mode #studio-active-view #studio-mode-controls .studio-mode-selector #studio-tab-manual.button--primary,
+html body.light-mode #studio-active-view #studio-mode-controls .studio-mode-selector #studio-tab-magic.button--secondary {
+  border-right-color: rgba(0, 71, 171, 0.20) !important;
+  background: #ffffff !important;
+  color: rgba(7, 17, 31, 0.68) !important;
+  box-shadow: none !important;
+}
+
+html body.light-mode #studio-active-view #studio-mode-controls .studio-mode-selector #studio-tab-magic.button--secondary:is(.active, [aria-pressed="true"]),
+html body.light-mode #studio-active-view #studio-mode-controls .studio-mode-selector #studio-tab-manual.button--primary:is(.active, [aria-pressed="true"]),
+html body.light-mode.studio-magic-mode #studio-active-view #studio-mode-controls .studio-mode-selector #studio-tab-magic.button--secondary,
+html body.light-mode:not(.studio-magic-mode) #studio-active-view #studio-mode-controls .studio-mode-selector #studio-tab-manual.button--primary {
+  background: #f5f8fd !important;
+  color: #07111f !important;
+  border-color: rgba(0, 71, 171, 0.20) !important;
+  box-shadow: inset 0 -1px 0 rgba(0, 71, 171, 0.08) !important;
+}
+
+html body.light-mode #studio-active-view #studio-mode-controls .studio-mode-selector #studio-tab-magic.button--secondary:is(.active, [aria-pressed="true"])::before,
+html body.light-mode #studio-active-view #studio-mode-controls .studio-mode-selector #studio-tab-manual.button--primary:is(.active, [aria-pressed="true"])::before {
+  background: #0047ab !important;
+  box-shadow: 0 0 9px rgba(0, 71, 171, 0.22) !important;
+}
+
+html body.light-mode #studio-active-view .studio-mode-icon {
+  filter: brightness(0) saturate(100%) invert(13%) sepia(15%) saturate(2102%) hue-rotate(170deg) brightness(96%) contrast(96%) !important;
+}
+
+html body.light-mode #studio-active-view #studio-mode-controls .studio-mode-selector #studio-tab-magic.button--secondary:is(.active, [aria-pressed="true"]) .studio-mode-icon,
+html body.light-mode #studio-active-view #btn-optimize.button--harmonic .studio-suggest-order-icon {
+  filter: brightness(0) saturate(100%) invert(20%) sepia(94%) saturate(2616%) hue-rotate(210deg) brightness(78%) contrast(109%) !important;
+}
+
+html body.light-mode #studio-active-view .studio-mode-divider {
+  background: rgba(0, 71, 171, 0.22) !important;
+  box-shadow: 1px 0 rgba(255, 255, 255, 0.8) !important;
+}
+
+html body.light-mode #studio-active-view #btn-optimize.button--harmonic,
+html body.light-mode #studio-active-view #studio-tab-route:not(.route-tab-hidden) {
+  border-color: rgba(0, 71, 171, 0.34) !important;
+  background: #ffffff !important;
+  color: #07111f !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9) !important;
+}
+
+html body.light-mode #studio-active-view #btn-optimize.button--harmonic:is(:hover, :focus-visible),
+html body.light-mode #studio-active-view #studio-tab-route:not(.route-tab-hidden):is(:hover, :focus-visible) {
+  border-color: #0047ab !important;
+  background: #eef4ff !important;
+  color: #0047ab !important;
+  box-shadow: inset 0 0 14px rgba(0, 71, 171, 0.055) !important;
+}
+
+/* The selected Magic Set steel rail remains a deliberately dark instrument in
+   Day Mode; the surrounding cockpit still follows the light blue contract. */
+html body.light-mode.studio-magic-mode #studio-active-view.graph-mode #studio-build-controls {
+  border-top-color: rgba(7, 17, 31, 0.34) !important;
+  border-bottom-color: rgba(7, 17, 31, 0.42) !important;
+  background-color: #121412 !important;
+  background-image: url("/static/textures/axiom-brushed-black-steel.png") !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+  background-size: cover !important;
+  color: #f5f7f4 !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    0 5px 14px rgba(7, 17, 31, 0.10) !important;
+}
+
+html body.light-mode.studio-magic-mode #studio-active-view.graph-mode #studio-build-controls :is(.magic-parameter-module, .magic-bpm-range) {
+  border-color: #343834 !important;
+  background: rgba(3, 5, 4, 0.91) !important;
+  color: #f5f7f4 !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.055),
+    inset 0 -10px 22px rgba(0, 0, 0, 0.22) !important;
+}
+
+html body.light-mode.studio-magic-mode #studio-active-view.graph-mode #studio-build-controls :is(.magic-parameter-module > label, .magic-module-label) {
+  color: #d9ddd8 !important;
+  -webkit-text-fill-color: #d9ddd8 !important;
+}
+
+html body.light-mode.studio-magic-mode #studio-active-view.graph-mode #studio-build-controls :is(select, input[type="number"]) {
+  border-color: #3a3e3a !important;
+  background: #050705 !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.035) !important;
+}
+
+html body.light-mode.studio-magic-mode #studio-active-view.graph-mode #studio-build-controls .magic-bpm-field > label {
+  color: rgba(235, 239, 233, 0.64) !important;
+  -webkit-text-fill-color: rgba(235, 239, 233, 0.64) !important;
+}
+
+html body.light-mode.studio-magic-mode #studio-active-view.graph-mode #studio-build-controls .magic-bpm-start {
+  border-right-color: rgba(255, 255, 255, 0.24) !important;
+}
+
+html body.light-mode.studio-magic-mode #studio-active-view.graph-mode #studio-build-controls .studio-magic-build-pair .magic-build-around-btn {
+  border-color: rgba(32, 223, 242, 0.74) !important;
+  background: rgba(3, 10, 11, 0.88) !important;
+  color: #20dff2 !important;
+  -webkit-text-fill-color: #20dff2 !important;
+}
+
+html body.light-mode.studio-magic-mode #studio-active-view.graph-mode #studio-build-controls .studio-magic-build-pair .magic-generate-btn {
+  border-color: #b7ff42 !important;
+  background: #a3ff00 !important;
+  color: #071005 !important;
+  -webkit-text-fill-color: #071005 !important;
+}
+
+html body.light-mode.studio-magic-mode #studio-active-view.graph-mode #btn-view-studio-set {
+  border-color: #b7ff42 !important;
+  background: #a3ff00 !important;
+  color: #071005 !important;
+  -webkit-text-fill-color: #071005 !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.56),
+    0 0 18px rgba(163, 255, 0, 0.16) !important;
+}
+
+html body.light-mode.studio-magic-mode #studio-active-view.graph-mode #btn-view-studio-set span {
+  color: #071005 !important;
+  -webkit-text-fill-color: #071005 !important;
+}
+
+html body.light-mode.studio-magic-mode #studio-active-view.graph-mode #studio-build-controls .magic-midpoint-btn {
+  border-color: #3a3e3a !important;
+  background: rgba(5, 7, 5, 0.90) !important;
+  color: #f1f4f0 !important;
+  -webkit-text-fill-color: #f1f4f0 !important;
+}
+
+html body.light-mode.studio-magic-mode #studio-active-view.graph-mode #studio-build-controls .magic-clear-btn {
+  border-color: rgba(182, 42, 42, 0.78) !important;
+  background: rgba(18, 4, 5, 0.90) !important;
+  color: #ff6464 !important;
+  -webkit-text-fill-color: #ff6464 !important;
+}
