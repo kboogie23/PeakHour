@@ -21,8 +21,10 @@ Differences from macOS, by design:
   code itself is unchanged.
 """
 import ctypes
+import io
 import msvcrt
 import os
+import re
 import socket
 import subprocess
 import sys
@@ -45,6 +47,64 @@ def data_root():
 
 def log_file():
     return data_root() / 'Logs' / 'launch.log'
+
+
+LOG_LIMIT = 5 * 1024 * 1024  # a log file is rotated once it is over this size
+LOG_FILES = 3  # current file plus two older ones: launch.log, launch.1.log, launch.2.log
+
+
+def rotate_log(path, limit=LOG_LIMIT, files=LOG_FILES):
+    """Move a log over the limit to <name>.1<ext> (older ones shift up, the oldest goes). The live file is moved
+    aside first: if another program holds it nothing is shifted and no older log is lost."""
+    path = Path(path)
+    try:
+        if path.stat().st_size <= limit:
+            return
+        moving = path.with_name(f'{path.name}.{os.getpid()}.rotating')
+        os.replace(path, moving)
+    except OSError:
+        return
+    try:
+        older = [path.with_name(f'{path.stem}.{n}{path.suffix}') for n in range(1, files)]
+        for number in range(len(older) - 1, 0, -1):
+            if older[number - 1].exists():
+                os.replace(older[number - 1], older[number])
+        os.replace(moving, older[0])
+    except OSError:
+        if not path.exists():  # could not shift: put the log back
+            try:
+                os.replace(moving, path)
+            except OSError:
+                pass
+
+
+class LogStream:
+    """stderr under pythonw: every write is appended to the current launch.log (no file is held open,
+    so the log can be rotated). One write at a time, so tracebacks from several threads do not interleave."""
+    encoding = 'utf-8'
+    errors = 'replace'
+
+    def __init__(self):
+        self._lock = threading.Lock()
+
+    def write(self, text):
+        text = text if isinstance(text, str) else str(text)
+        with self._lock:
+            try:
+                with open(log_file(), 'a', encoding='utf-8', errors='replace') as handle:
+                    handle.write(text)
+            except OSError:
+                pass
+        return len(text)
+
+    def flush(self):
+        pass
+
+    def isatty(self):
+        return False
+
+    def fileno(self):
+        raise io.UnsupportedOperation('fileno')
 
 
 def log(message):
@@ -300,21 +360,25 @@ def log_server_errors():
     """pythonw has no console: send AXIOM's warnings and request errors to the log."""
     import logging
     log_file().parent.mkdir(parents=True, exist_ok=True)
-    handler = logging.FileHandler(log_file(), encoding='utf-8')
+    from logging.handlers import RotatingFileHandler
+    handler = RotatingFileHandler(log_file(), maxBytes=LOG_LIMIT, backupCount=LOG_FILES - 1, encoding='utf-8')
+    handler.namer = lambda name: re.sub(r'\.log\.(\d+)$', r'.\1.log', name)  # launch.log.1 -> launch.1.log
     handler.setLevel(logging.WARNING)
     handler.setFormatter(logging.Formatter('%(asctime)s %(name)s %(levelname)s %(message)s', '%Y-%m-%d %H:%M:%S'))
     logging.getLogger().addHandler(handler)
     logging.getLogger('werkzeug').setLevel(logging.WARNING)  # no per-request lines in the log
     if sys.stderr is None:  # pythonw
-        sys.stderr = open(log_file(), 'a', encoding='utf-8', buffering=1)
+        sys.stderr = LogStream()
 
 
 def main():
-    log_server_errors()
     log('=' * 72)
     log(f'AXIOM launch requested executable={sys.executable}')
     instance = SingleInstance()
-    if not instance.acquire():
+    if instance.acquire():  # only the running launcher rotates the log and holds it open
+        rotate_log(log_file())
+        log_server_errors()
+    else:
         port = instance.running_port()
         if port == 0:  # the first PEAK HOUR is finishing a recording
             show_dialog(DISPLAY_NAME, 'PEAK HOUR is saving your recording. Please wait a moment, then open it again.')

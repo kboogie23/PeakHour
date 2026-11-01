@@ -14,9 +14,16 @@
     const toggle = document.getElementById('settings-video-audio-only-toggle');
     if (toggle) toggle.setAttribute('aria-pressed', on ? 'true' : 'false');
   }
-  async function release(id) {
+  // keepalive lets the request finish while the page unloads (the server also expires idle previews)
+  async function release(id, tries = 3) {
     if (!id) return;
-    try { await fetch(api + encodeURIComponent(id), { method: 'DELETE' }); } catch (_) {}
+    for (let attempt = 0; attempt < tries; attempt += 1) {
+      try {
+        const response = await fetch(api + encodeURIComponent(id), { method: 'DELETE', keepalive: true });
+        if (response.ok || response.status === 404) return;
+      } catch (_) {}
+      await new Promise(resolve => setTimeout(resolve, 500 * (attempt + 1)));
+    }
   }
   function clear() {
     generation += 1;
@@ -68,7 +75,10 @@
     const old = activeId; activeId = data.id; if (old) void release(old);
     player.src = api + encodeURIComponent(data.id);
     player.onloadedmetadata = () => { if (token === generation) status.textContent = data.mode === 'direct' ? '' : 'Preview ready'; };
-    player.onerror = () => {
+    player.onerror = async () => {
+      if (token !== generation) return;
+      // The server forgets previews it had to close (idle for hours, or room was needed): say so instead of converting
+      try { if ((await fetch(player.src, {headers: {Range: 'bytes=0-0'}})).status === 404) { if (token === generation) status.textContent = 'This preview was closed. Close this window and open the video again.'; return; } } catch (_) {}
       if (token !== generation) return;
       if (data.mode === 'direct') { show(path, true, token).catch(error => { if (token === generation) status.textContent = error.message; }); return; }
       status.textContent = 'Video preview could not be played. Use "Play audio only".';
@@ -88,6 +98,7 @@
       await show(path, false, token);
     } catch (error) { if (token === generation) status.textContent = error.message || 'Video preview failed'; }
   }
+  window.addEventListener('pagehide', () => { const id = activeId; activeId = null; if (id) void release(id, 1); });
   window.AxiomWindowsVideoPreview = {isVideo, open, setAudioOnly, audioOnly,
     // audio-player.js sends video tracks here only while this is true
     get enabled() { return enabled && !bypass && !audioOnly(); }};

@@ -53,12 +53,39 @@ TOKEN_HEADER = 'X-Axiom-Hub-Token'  # this run's secret: added by the hub, requi
 ALLOWED = ('/api/library/connect_dj_source', '/api/windows/remote/whoami')
 ACTIVE = {}  # 'registry': the running hub's DeviceRegistry, for the PC-local pairing endpoint
 SESSIONS_PER_DEVICE = 20
+LOG_LIMIT = 5 * 1024 * 1024  # an engine.log over this size is rotated when its engine starts
+LOG_FILES = 3  # engine.log, engine.1.log, engine.2.log
 BLOCKED = re.compile(r'choose|serato|djay|virtualdj|/export|export_|publish|recording|reveal|open_|dj_transfer|'
                      r'beatgrid_doctor|/stems|/plugins|mix-export|refresh_audio|coreaudio|add_folder|rescan|'
                      r'^/api/library/scan|ban_folder|/api/windows/|/api/library/stream|/api/video|waveform|'
                      r'^/api/audio/|/api/library/artwork|^/api/studio-daw/|upload_csv_path|import_release_years_csv|'
                      r'lite_migration|^/api/intelligence/|dupes/trash|dupes/software|'
                      r'fix_track|^/api/library/unified_health/|health/audio_sources', re.I)
+
+
+def rotate_log(path, limit=LOG_LIMIT, files=LOG_FILES):
+    """Move a log over the limit to <name>.1<ext> (older ones shift up, the oldest goes). The live file is moved
+    aside first: if another program holds it nothing is shifted and no older log is lost."""
+    path = Path(path)
+    try:
+        if path.stat().st_size <= limit:
+            return
+        moving = path.with_name(f'{path.name}.{os.getpid()}.rotating')
+        os.replace(path, moving)
+    except OSError:
+        return
+    try:
+        older = [path.with_name(f'{path.stem}.{n}{path.suffix}') for n in range(1, files)]
+        for number in range(len(older) - 1, 0, -1):
+            if older[number - 1].exists():
+                os.replace(older[number - 1], older[number])
+        os.replace(moving, older[0])
+    except OSError:
+        if not path.exists():  # could not shift: put the log back
+            try:
+                os.replace(moving, path)
+            except OSError:
+                pass
 
 
 def is_home_address(address):
@@ -215,6 +242,7 @@ class DeviceRegistry:
             with socket.socket() as probe:
                 probe.bind(('127.0.0.1', 0))
                 port = probe.getsockname()[1]
+            rotate_log(folder / 'engine.log')
             log = open(folder / 'engine.log', 'ab')
             env = dict(os.environ, AXIOM_DEVICE_ID=device_id, AXIOM_DEVICE_NAME=self.devices[device_id]['name'],
                        AXIOM_HUB_TOKEN=self.token)

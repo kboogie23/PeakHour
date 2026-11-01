@@ -27,6 +27,33 @@ APP = WORK / 'axiom-win-probe'
 VENV = WORK / 'axiom-win-env'
 DIST = WORK / 'dist'
 SKIP_APP = {('data', 'theme-cache')}  # rebuilt on first run
+
+# Left out of the packaged Python (runtime/) to keep the installer small. Each entry was checked: nothing in
+# PEAK HOUR (plain source, AXIOM's compiled core in axiom-win-probe/*.pyc, bytecode_inventory/) or in the
+# libraries it loads imports them at run time. Deliberately KEPT even though they look removable:
+#   pandas, pdfplumber, pdfminer, pypdfium2   roster.pyc (AXIOM core) imports pandas and pdfplumber
+#   narwhals                                  sklearn.utils.validation imports it (librosa -> sklearn)
+#   tkinter, tcl/                             windows_dialogs.py uses tkinter
+#   imageio_ffmpeg's ffmpeg.exe AND av.libs   launcher/windows_audio use the exe; windows_media_worker does `import av`
+#   *.pyi stubs                               lazy_loader (librosa, ...) reads them at import: librosa fails without
+#   __pycache__ of libraries                  saves ~10 MB zipped, but every first start would recompile them
+#   dawdreamer/faustlibraries, numba headers  loaded at run time
+# SKIP_*_PATHS entries match only that exact path relative to the copied root (so 'include' removes the base
+# Python's include/ but never numba's or dawdreamer's include folders). SKIP_PACKAGE_NAMES/SUFFIXES/PREFIXES match at any depth.
+SKIP_PYTHON_PATHS = {'include', 'libs', 'Scripts',                        # C headers, import libraries, pip.exe
+                     'Lib/ensurepip', 'Lib/idlelib', 'Lib/lib2to3', 'Lib/turtledemo', 'Lib/venv', 'Lib/msilib',
+                     'Lib/test', 'tcl/tix8.4.3', 'tcl/nmake'}
+SKIP_PACKAGE_PATHS = {'numpy/_core/include', 'numpy/_core/lib', 'numpy/random/lib'}  # build-only headers/.lib files
+SKIP_PACKAGE_NAMES = {'tests', 'pip'}                                     # libraries' own test suites; pip
+SKIP_PACKAGE_SUFFIXES = ('.whl',)                                         # a 0-byte scipy wheel marker
+SKIP_PACKAGE_PREFIXES = ('pip-',)                                         # pip-<v>.dist-info
+SKIP_PYTHON_FILES = ('_ctypes_test.pyd', '_test')                         # CPython's own test extension modules
+# After staging, these must import in the packaged Python (kept) and these must be gone (excluded).
+REQUIRED_MODULES = ('flask', 'numpy', 'sounddevice', 'soundfile', 'pedalboard', 'dawdreamer', 'imageio_ffmpeg', 'defusedxml',
+                    'anthropic', 'openai', 'pandas', 'pdfplumber', 'pdfminer', 'pypdfium2', 'narwhals', 'av', 'scipy', 'sklearn',
+                    'librosa', 'numba', 'llvmlite', 'joblib', 'PIL', 'cryptography', 'keyring', 'mutagen', 'serato_tools',
+                    'mltseratotags', 'rtmidi', 'soxr', 'requests', 'tkinter', '_tkinter', 'sqlite3', 'ssl', 'ctypes', 'unittest')
+EXCLUDED_MODULES = ('pip', 'ensurepip', 'idlelib', 'venv', 'lib2to3')
 SKIP_FILES = {'make_90s_art.py', 'make_peak_hour_logo.py', 'make_region_backgrounds.py', 'make_regions_art.py'}
 
 
@@ -47,21 +74,55 @@ def ignore_app(folder, names):
     return skipped | {name for name in names if name.endswith(('.partial', '.tmp'))}
 
 
+def ignore_runtime(root, skip_paths, package=False):
+    """copytree ignore function for runtime/: the base Python (package=False) or site-packages (package=True)."""
+    root = Path(root)
+
+    def ignore(folder, names):
+        rel = Path(folder).relative_to(root).as_posix()
+        skipped = set()
+        for name in names:
+            path = name if rel == '.' else f'{rel}/{name}'
+            if path in skip_paths:
+                skipped.add(name)
+            elif package and (name in SKIP_PACKAGE_NAMES and (Path(folder) / name).is_dir() or name.endswith(SKIP_PACKAGE_SUFFIXES)
+                              or name.startswith(SKIP_PACKAGE_PREFIXES)):
+                skipped.add(name)
+            elif not package and rel == 'Lib/site-packages' and name.startswith(SKIP_PACKAGE_PREFIXES):
+                skipped.add(name)  # pip-<v>.dist-info of the base Python's own (pip-less) site-packages
+            elif not package and rel == 'DLLs' and name.startswith(SKIP_PYTHON_FILES):
+                skipped.add(name)
+            elif not package and rel == 'tcl' and name.endswith(('.lib', '.sh')):
+                skipped.add(name)
+        return skipped
+    return ignore
+
+
 def stage(target):
     if target.exists():
         shutil.rmtree(target)
     runtime = target / 'runtime'
-    shutil.copytree(base_python(), runtime)
-    shutil.copytree(VENV / 'Lib' / 'site-packages', runtime / 'Lib' / 'site-packages', dirs_exist_ok=True)
+    python = base_python()
+    shutil.copytree(python, runtime, ignore=ignore_runtime(python, SKIP_PYTHON_PATHS | {'Lib/site-packages/pip'}))
+    packages = VENV / 'Lib' / 'site-packages'
+    shutil.copytree(packages, runtime / 'Lib' / 'site-packages', dirs_exist_ok=True,
+                    ignore=ignore_runtime(packages, SKIP_PACKAGE_PATHS, package=True))
     shutil.copytree(APP, target / 'app', ignore=ignore_app)
     shutil.copy2(WORK / 'installer' / 'uninstall.ps1', target / 'uninstall.ps1')
     (target / 'version.txt').write_text(version(), encoding='utf-8')
     # The packaged Python must find the libraries without the workspace's virtual environment.
-    check = subprocess.run([str(runtime / 'python.exe'), '-I', '-c',
-                            'import flask, numpy, sounddevice, soundfile, pedalboard, dawdreamer, imageio_ffmpeg, defusedxml, anthropic, openai; print("ok")'],
-                           capture_output=True, text=True, timeout=120)
+    code = ('import importlib, importlib.util\n'
+            f'for name in {REQUIRED_MODULES!r}: importlib.import_module(name)\n'
+            f'gone = [name for name in {EXCLUDED_MODULES!r} if importlib.util.find_spec(name)]\n'
+            'assert not gone, "excluded modules are still packaged: %s" % gone\n'
+            'print("ok")')
+    check = subprocess.run([str(runtime / 'python.exe'), '-I', '-c', code], capture_output=True, text=True, timeout=300)
     if check.stdout.strip() != 'ok':
         raise SystemExit('The packaged Python cannot load PEAK HOUR\'s libraries:\n' + check.stderr)
+    leftovers = [p for p in ('include', 'libs', 'Scripts', 'Lib/ensurepip', 'Lib/idlelib', 'Lib/test') if (runtime / p).exists()]
+    leftovers += [str(p.relative_to(runtime)) for p in (runtime / 'Lib' / 'site-packages').rglob('tests') if p.is_dir()]
+    if leftovers:
+        raise SystemExit('Excluded folders are still in the package: ' + ', '.join(leftovers[:10]))
 
 
 def pack(folder, archive):

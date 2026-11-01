@@ -111,6 +111,107 @@ try:
  assert repair_grid({'grid':{'mode':'straight','bpm':120,'beat_anchors':[{'beat':4,'seconds':0.5}]}})=={'spb':0.5,'first':0.5,'bpm':120.0}
  assert repair_grid({'grid':{'mode':'fluid','bpm':120,'beat_anchors':[{'beat':0,'seconds':0.1}]}}) is None
  assert repair_grid({'grid':{'mode':'straight','bpm':120,'terminal_bpm':121,'beat_anchors':[{'beat':0,'seconds':0.1}]}}) is None
+ # Writing reuses the plans its preview made (no second read of every audio file) as long as nothing they came from has changed
+ def make_db(parent,count,name='database.xml'):
+  parent.mkdir(parents=True,exist_ok=True);rows=['<?xml version="1.0" encoding="UTF-8"?>','<VirtualDJ_Database Version="2023">'];paths=[]
+  for i in range(count):
+   f=parent/f'track {i}.mp3';f.write_bytes(b'\xff\xfb'+bytes([i%251])*2000);paths.append(str(f))
+   rows+=[f' <Song FilePath="{str(f)}" FileSize="2002">',f'  <Tags Author="A{i}" Title="T{i}" />','  <Infos SongLength="200.0" PlayCount="1" />',
+          '  <Poi Pos="1.000" Num="1" Type="cue" />',' </Song>']
+  target=parent/name;target.write_bytes('\r\n'.join(rows+['</VirtualDJ_Database>','']).encode('utf-8'));return target,paths
+ reads=[]
+ class CueApp:
+  shift=0
+  def read_serato_cues(self,path):
+   reads.append(path);end=time.perf_counter()+0.002
+   while time.perf_counter()<end:pass  # stands in for parsing the tags of a real audio file
+   return [{'label':'Drop','time_ms':30000+self.shift,'index':2}]
+  def _load_djay_cues_for_path(self,path):return []
+  def read_cues(self,path):return []
+ import time
+ big_db,big_files=make_db(folder/'big',2000);big_original=big_db.read_bytes()
+ app=CueApp();big=W.VirtualDJWriter(app,folder/'big-writes',databases=lambda:[big_db],ensure_closed=lambda:None)
+ big._sources=lambda kinds:{'serato':{},'djay':{},'grids':{}}
+ t0=time.perf_counter();pv=big.preview(['cues']);t_preview=time.perf_counter()-t0;assert pv['counts']['cues']==2000 and len(reads)==2000
+ del reads[:];t0=time.perf_counter();big._plans(['cues']);t_replan=time.perf_counter()-t0  # what writing used to do first
+ assert len(reads)==2000;del reads[:]
+ t0=time.perf_counter();r=big.apply(['cues'],pv['preview_token']);t_apply=time.perf_counter()-t0
+ assert r['success'] and r['written']==2000 and reads==[] and big_db.read_bytes()!=big_original and big.undo_status()['available']
+ print('virtualdj write, 2000 tracks (2 ms simulated tag read each): preview %.2fs; replanning for apply used to cost %.2fs (2000 file reads), apply now %.2fs (0 reads)'%(t_preview,t_replan,t_apply))
+ assert t_apply<t_replan
+ big.undo();assert big_db.read_bytes()==big_original
+ # Anything changed since the preview: the plans are not reused and the old checks apply
+ def fresh_preview(kinds=('cues',)):
+  del reads[:];return big.preview(list(kinds))
+ pv=fresh_preview();open(big_files[7],'ab').write(b'x');del reads[:]  # an audio file changed
+ r=big.apply(['cues'],pv['preview_token']);assert r['success'] and len(reads)==2000  # planned again; same cues, same token: written
+ big.undo()
+ pv=fresh_preview();app.shift=500  # the cue source gives other cues now, and the audio file moved on too
+ os.utime(big_files[9],(1,1))
+ try:big.apply(['cues'],pv['preview_token']);raise AssertionError('stale preview was written')
+ except W.VirtualDJWriteError as e:assert 'Preview again' in str(e)
+ assert big_db.read_bytes()==big_original;app.shift=0
+ pv=fresh_preview();big_db.write_bytes(big_original+b'\r\n')  # VirtualDJ saved its database
+ try:big.apply(['cues'],pv['preview_token']);raise AssertionError('changed database was written')
+ except W.VirtualDJWriteError as e:assert 'Preview again' in str(e)
+ assert big_db.read_bytes()==big_original+b'\r\n';big_db.write_bytes(big_original)
+ pv=fresh_preview();big._previews[pv['preview_token']]['at']-=W.PREVIEW_SECONDS+1;del reads[:]  # expired: planned again
+ r=big.apply(['cues'],pv['preview_token']);assert r['success'] and len(reads)==2000;big.undo()
+ for kinds in (['cues'],['play_counts'],['grids'],['cues','play_counts'],['cues','grids']):big.preview(kinds)
+ assert len(big._previews)<=W.PREVIEWS_KEPT,len(big._previews)
+ # The kept preview is small, expires on insert, and also depends on djay's library file and AXIOM's saved-cue files
+ import pickle,utils.cues as UC
+ assert W.PREVIEWS_KEPT==1
+ pv=fresh_preview();entry=big._previews[pv['preview_token']];assert len(big._previews)==1
+ (kept,)=entry['plans'];assert kept['before'] is None and len(kept['before_sha'])==64 and kept['after']
+ old_style=len(big_original)+len(kept['after']);now_style=len(pickle.dumps(entry))
+ print('virtualdj write preview cache, 2000 tracks: database %d bytes; kept before the fix (before+after bytes, up to 3 previews) %d bytes each; now %d bytes in total for 1 preview (%d of them the new text, the rest signatures and rows)'%(len(big_original),old_style,now_style,len(kept['after'])))
+ idle_db,_f=make_db(folder/'idle',1);idle=W.VirtualDJWriter(CueApp(),folder/'idle-writes',databases=lambda:[idle_db],ensure_closed=lambda:None)
+ idle._sources=lambda kinds:{'serato':{},'djay':{},'grids':{}};idle.preview(['play_counts'])
+ (kept,)=next(iter(idle._previews.values()))['plans'];assert kept['rows']==[] and kept['after'] is None and kept['before'] is None
+ big._previews['stale']={'at':time.monotonic()-W.PREVIEW_SECONDS-1}  # an expired entry
+ big.preview(['cues']);assert 'stale' not in big._previews and len(big._previews)==1  # expired entries go on insert
+ djay_db=folder/'MediaLibrary.db';djay_db.write_bytes(b'one');app.DJAY_MEDIA_LIBRARY_DB=str(djay_db)
+ pv=fresh_preview();del reads[:];r=big.apply(['cues'],pv['preview_token']);assert r['success'] and reads==[];big.undo()  # unchanged djay file: reused
+ pv=fresh_preview();djay_db.write_bytes(b'two!');del reads[:]  # djay changed since the preview
+ r=big.apply(['cues'],pv['preview_token']);assert r['success'] and len(reads)==2000;big.undo()  # planned again (same result here, so written)
+ cue_dir=folder/'axiom-cues';cue_dir.mkdir();real_sidecar=UC.sidecar_path_for
+ UC.sidecar_path_for=lambda path:str(cue_dir/(hashlib.sha256(path.encode()).hexdigest()+'.cues.json'))
+ try:
+  pv=fresh_preview();(cue_dir/(hashlib.sha256(big_files[3].encode()).hexdigest()+'.cues.json')).write_text('[]');del reads[:]  # AXIOM saved cues for a song
+  r=big.apply(['cues'],pv['preview_token']);assert r['success'] and len(reads)==2000;big.undo()
+  pv=fresh_preview();del reads[:];r=big.apply(['cues'],pv['preview_token']);assert r['success'] and reads==[];big.undo()
+ finally:UC.sidecar_path_for=real_sidecar
+ # A failed swap leaves no stage file; a failed rollback does not hide the first error; a bad read-back is rolled back
+ small,_ = make_db(folder/'s1',3);small2,_ = make_db(folder/'s2',3)
+ two=W.VirtualDJWriter(CueApp(),folder/'two-writes',databases=lambda:[small,small2],ensure_closed=lambda:None)
+ two._sources=lambda kinds:{'serato':{},'djay':{},'grids':{}}
+ o1,o2=small.read_bytes(),small2.read_bytes();real_replace=os.replace
+ def boom(a,b):raise OSError('disk full')
+ os.replace=boom
+ try:W._replace(small,b'new');raise AssertionError('swap should fail')
+ except OSError as e:assert 'disk full' in str(e)
+ finally:os.replace=real_replace
+ assert not list(small.parent.glob('*.axiom-*.tmp')) and small.read_bytes()==o1
+ pv=two.preview(['cues']);calls=[];real=W._replace
+ def flaky(target,data):
+  calls.append(target)
+  if len(calls)==2:raise OSError('disk full')
+  if len(calls)==3:raise OSError('file locked')
+  return real(target,data)
+ W._replace=flaky
+ try:two.apply(['cues'],pv['preview_token']);raise AssertionError('should fail')
+ except W.VirtualDJWriteError as e:assert 'disk full' in str(e) and str(small) in str(e),str(e)  # the first error, plus what could not be put back
+ finally:W._replace=real
+ assert not list(small.parent.glob('*.axiom-*.tmp')) and small2.read_bytes()==o2
+ small.write_bytes(o1);pv=two.preview(['cues']);calls[:]=[]
+ def wrong(target,data):return real(target,data[:-5] if len(calls.append(1) or calls)==1 else data)  # first database is written damaged
+ W._replace=wrong
+ try:two.apply(['cues'],pv['preview_token']);raise AssertionError('damaged write accepted')
+ except W.VirtualDJWriteError as e:assert 'did not read back' in str(e)
+ finally:W._replace=real
+ assert small.read_bytes()==o1 and small2.read_bytes()==o2 and not list(small.parent.glob('*.axiom-*.tmp'))
+ print('PASS: virtualdj write: stage file cleaned up, first error kept when rollback fails, bad read-back rolled back')
  import shutil;shutil.rmtree(folder)
  print('PASS: VirtualDJ write-back changes only planned song lines, keeps existing cues, raises counts only, refuses stale grids, undoes exactly')
 except BaseException:

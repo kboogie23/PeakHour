@@ -122,6 +122,8 @@ try:
         assert flag in cookie_header, cookie_header
     mike = cookie_header.split(';')[0]
     (device_id, device), = registry.devices.items()
+    engine_folder = registry.folder(device_id); engine_folder.mkdir(parents=True, exist_ok=True)
+    (engine_folder / 'engine.log').write_bytes(b'x' * (H.LOG_LIMIT + 1))  # an engine.log that grew past the limit
     token = mike.split('=', 1)[1]
     assert device_id not in cookie_header and len(token) >= 40 and token != device_id
     stored = (folder / 'devices.json').read_text(encoding='utf-8')
@@ -162,6 +164,21 @@ try:
     assert status == 200 and echo['path'] == '/api/favorites?x=1' and echo['host'].startswith('127.0.0.1:') and echo['host'] != f'127.0.0.1:{port}'
     assert echo['cookie'] == 'session=abc' and 'engine=1' in hdr.get('Set-Cookie', '')  # hub cookie hidden; engine cookies pass
     assert echo['token'] == registry.token and len(registry.token) == 64  # the engine gets this run's secret ...
+    assert (engine_folder / 'engine.1.log').stat().st_size == H.LOG_LIMIT + 1 and (engine_folder / 'engine.log').stat().st_size < 1000  # rotated at engine start
+    rot = folder / 'rotate'; rot.mkdir()
+    sizes = []
+    for n in range(5):  # rotation keeps engine.log + 2 older files, never more
+        (rot / 'engine.log').write_bytes(bytes([65 + n]) * (H.LOG_LIMIT + 1)); H.rotate_log(rot / 'engine.log')
+        sizes.append(sorted(f.name for f in rot.iterdir()))
+    assert sizes[-1] == ['engine.1.log', 'engine.2.log'] and (rot / 'engine.1.log').read_bytes()[:1] == b'E' and (rot / 'engine.2.log').read_bytes()[:1] == b'D'
+    (rot / 'engine.log').write_bytes(b'small'); H.rotate_log(rot / 'engine.log'); assert (rot / 'engine.log').read_bytes() == b'small'
+    H.rotate_log(rot / 'missing.log')  # nothing to rotate is fine
+    for name, mark in (('engine.1.log', b'one'), ('engine.2.log', b'two')):
+        (rot / name).write_bytes(mark)
+    (rot / 'engine.log').write_bytes(b'L' * (H.LOG_LIMIT + 1))
+    with open(rot / 'engine.log', 'ab'):  # a log that is still open elsewhere is left alone and no older log is lost
+        H.rotate_log(rot / 'engine.log')
+        assert (rot / 'engine.1.log').read_bytes() == b'one' and (rot / 'engine.2.log').read_bytes() == b'two' and not list(rot.glob('*.rotating'))
     echo = json.loads(request(port, 'GET', '/api/x', headers=dict(base, Cookie=mike, **{'X-Axiom-Hub-Token': 'guess'}))[2])
     assert echo['token'] == registry.token  # ... and a client's own copy is dropped
     body = os.urandom(5 * 1024 * 1024)
