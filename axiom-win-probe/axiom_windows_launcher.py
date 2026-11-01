@@ -291,6 +291,34 @@ def finish_recording(axiom, instance=None, wav_seconds=60, mp3_seconds=1900):
             'The files in the recordings folder were left as they are and can be recovered.')
 
 
+def stop_background_jobs(axiom, port):
+    """Closing the window stops AXIOM's background library work (Health scan, year research) the way their Stop
+    buttons do; completed work stays saved. Without this their worker threads kept PEAK HOUR running for hours
+    after the window closed, competing with the next PEAK HOUR for the CPU and blocking Setup."""
+    base = f'http://{HOST}:{port}'
+    client = axiom.app.test_client()
+    for route in ('/api/library/unified_health/stop', '/api/library/year_research/cancel'):
+        try:
+            client.post(route, base_url=base, headers={'Origin': base}, json={})
+        except Exception:
+            log(f'Could not stop {route} while closing:\n' + traceback.format_exc())
+
+
+def exit_when_done(code, seconds=15):
+    """Exit once the remaining worker threads finish, or after `seconds` anyway: AXIOM's workers are not daemon
+    threads, so Python would otherwise wait for a long analysis to end. The library is always written atomically."""
+    deadline = time.monotonic() + seconds
+    for thread in threading.enumerate():
+        if thread is not threading.main_thread() and not thread.daemon:
+            thread.join(max(0, deadline - time.monotonic()))
+    busy = [t.name for t in threading.enumerate() if t is not threading.main_thread() and not t.daemon and t.is_alive()]
+    if busy:
+        log(f'Background work still running {seconds} s after closing ({", ".join(busy)}); exiting anyway.')
+    sys.stdout and sys.stdout.flush()
+    sys.stderr and sys.stderr.flush()
+    os._exit(code)
+
+
 # A minimised or covered window must keep polling the DJ software (Live Assist follows it all night).
 KEEP_AWAKE = ['--disable-background-timer-throttling', '--disable-renderer-backgrounding',
               '--disable-backgrounding-occluded-windows']
@@ -444,6 +472,7 @@ def main():
     finally:
         if axiom is not None:
             finish_recording(axiom, instance)  # also when startup failed or something else ended the launcher
+            stop_background_jobs(axiom, port)
         if hub:
             hub[0].shutdown()
             hub[1].stop_all()
@@ -453,4 +482,4 @@ def main():
 
 
 if __name__ == '__main__':
-    sys.exit(main())
+    exit_when_done(main())
