@@ -253,9 +253,17 @@ class ProcessLoopbackStream:
                     origin = at
                 expected = int(round((at - origin) * self.samplerate / 10_000_000))
                 if expected - written > GAP_FRAMES:
-                    silence = np.zeros((expected - written, self.channels), np.float32)
-                    self.callback(silence, len(silence), None, None)
-                    written += len(silence)
+                    missing = expected - written
+                    # A recorder that understands gaps takes the length alone (an hour of silence would be 1.4 GB);
+                    # any other callback gets the silence in blocks of at most one second.
+                    add_gap = getattr(getattr(self.callback, '__self__', None), 'add_gap', None)
+                    if add_gap is not None:
+                        add_gap(missing)
+                    else:
+                        for start in range(0, missing, self.samplerate):
+                            silence = np.zeros((min(self.samplerate, missing - start), self.channels), np.float32)
+                            self.callback(silence, len(silence), None, None)
+                    written += missing
                 if self.channels == 1:
                     block = block.mean(axis=1, keepdims=True)
                 self.callback(block, count, None, None)

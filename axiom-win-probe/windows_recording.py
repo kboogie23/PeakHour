@@ -34,6 +34,7 @@ class WindowsRecordingManager(SetRecordingManager):
         self._find_cable = cable_finder
         self._feed_factory = feed_factory
         self._feed = None
+        self._finalizing = False  # True while a stopped take is being encoded to MP3 (the lock is free meanwhile)
 
     def _restore_state(self):
         # An interrupted WAV may have an unfinalized header. Keep its exact
@@ -177,6 +178,8 @@ class WindowsRecordingManager(SetRecordingManager):
         with self._lock:
             if self._capture is not None:
                 raise RuntimeError('A recording is already active')
+            if self._finalizing:
+                raise RuntimeError('The previous recording is still being saved. Try again in a moment.')
             settings = self.load_settings()
             mode = source_mode or settings.get('source_mode', 'application')
             format = settings.get('format', 'wav')
@@ -283,8 +286,11 @@ class WindowsRecordingManager(SetRecordingManager):
                 level = level_state(db)
                 state.update(elapsed_seconds=int(info['seconds']), peak_dbfs=level['dbfs'],
                              signal_level=level['level'], signal=level['signal'], signal_label=level['label'])
+                state.update(dropouts=info.get('dropouts', 0))
                 if info['error']:
-                    state.update(error=info['error'], message='Recording input error; stop to recover the partial file')
+                    state.update(error=info['error'], message='Recording input error; stop to save what was recorded')
+                elif info.get('limit_reached'):
+                    state.update(error=info['warning'], message='Recording is full; stop to save it')
             state.pop('started_monotonic', None)
             state.update(ffmpeg_available=bool(self._ffmpeg), system_audio_available=True, save_directory=self.desktop_dir)
             return state
@@ -305,16 +311,53 @@ class WindowsRecordingManager(SetRecordingManager):
                 raise RuntimeError(str(exc)) from exc
             self._stop_feed()
             info = capture.status()
+            dropouts = info.get('dropouts', 0)
             message, error, format = 'Recording saved', '', 'wav'
-            if self._state.get('format') == 'mp3':
-                try:
-                    saved, format = self._encode_mp3(saved), 'mp3'
-                except Exception as exc:
-                    message, error = 'Recording saved as WAV', 'MP3 encoding failed; the WAV was kept: ' + str(exc)
+            if dropouts:
+                message = f'Recording saved with {dropouts} short dropout{"" if dropouts == 1 else "s"}'
+            if info.get('error') or info.get('limit_reached'):  # saved, but the take ended early
+                error = (info.get('error') or info['warning']) + '; the audio recorded up to then was saved.'
+            if self._state.get('format') != 'mp3':
+                self._state.update(status='saved', recording=False, saved_path=saved, format=format, dropouts=dropouts,
+                                   elapsed_seconds=int(info['seconds']), message=message, error=error)
+                self._persist_state()
+                return self.status()
+            # The encode can take many minutes: let status() polls through while it runs.
+            self._finalizing = True
+            # Saved on disk first as a finished WAV, so a crash during the encode is not "interrupted".
+            self._state.update(status='saved', recording=False, saved_path=saved, format='wav', dropouts=dropouts,
+                               elapsed_seconds=int(info['seconds']), message='Encoding MP3', error=error)
+            self._persist_state()
+            self._state.update(status='stopping')
+        try:
+            try:
+                saved, format = self._encode_mp3(saved), 'mp3'
+            except Exception as exc:
+                message, error = ('Recording saved as WAV',
+                                  (error + ' ' if error else '') + 'MP3 encoding failed; the WAV was kept: ' + str(exc))
+        finally:
+            with self._lock:
+                self._finalizing = False
+        with self._lock:
             self._state.update(status='saved', recording=False, saved_path=saved, format=format,
-                               elapsed_seconds=int(info['seconds']), message=message, error=error)
+                               message=message, error=error)
             self._persist_state()
             return self.status()
+
+    def stop_if_recording(self, wait_seconds=1800):
+        """Finish a take that is still running (the window closed); None when nothing was recording.
+        Waits for an MP3 encode that is already under way."""
+        deadline = time.monotonic() + wait_seconds
+        while True:
+            with self._lock:  # a stop already running holds the lock until it has set _finalizing
+                if not self._finalizing:
+                    if self._capture is None:
+                        return None
+                    break
+            if time.monotonic() >= deadline:
+                raise RuntimeError('The recording was still being saved when the wait ended.')
+            time.sleep(0.2)
+        return self.stop()
 
     def test_input(self, provider='', source_mode='', source_id='', left_channel=None, right_channel=None):
         """Listen to the chosen input for three seconds without creating an audio file."""

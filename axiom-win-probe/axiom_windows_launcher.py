@@ -195,6 +195,42 @@ def build_app(port, device=False):
     return axiom
 
 
+def finish_recording(axiom, instance=None, wav_seconds=60, mp3_seconds=1900):
+    """Closing the window must not lose a set that is still being recorded: stop it cleanly so the
+    WAV is finalised and renamed. If that fails, the partial file is left where it is for recovery.
+    The stop runs in a thread with a time limit (a stuck driver must not keep PEAK HOUR open forever);
+    while it runs a second launch is told the recording is being saved instead of opening a window."""
+    manager = getattr(axiom, 'SET_RECORDING_MANAGER', None)
+    stop = getattr(manager, 'stop_if_recording', None)
+    if stop is None:
+        return
+
+    def work():
+        try:
+            result = stop()
+        except Exception:
+            log('A recording was in progress and could not be stopped cleanly; the partial file was left for recovery:\n' + traceback.format_exc())
+            return
+        if result:
+            log(f'A recording was in progress; stopped and saved it ({result.get("saved_path") or "path unknown"}, '
+                f'{result.get("dropouts", 0)} short dropouts)')
+    try:
+        mp3 = manager.status().get('format') == 'mp3'
+    except Exception:
+        mp3 = False
+    if instance is not None:
+        try:
+            instance.publish(0)  # port 0: "saving your recording" (see main)
+        except OSError:
+            pass
+    worker = threading.Thread(target=work, name='axiom-finish-recording', daemon=True)
+    worker.start()
+    worker.join(mp3_seconds if mp3 else wav_seconds)
+    if worker.is_alive():
+        log(f'Stopping the recording took longer than {mp3_seconds if mp3 else wav_seconds} s; closing anyway. '
+            'The files in the recordings folder were left as they are and can be recovered.')
+
+
 def edge_command(edge, url, profile):
     """App window for the cockpit (Edge or Chrome take the same switches): its own profile, opened
     maximized like the full-size macOS window (Edge's default placement could sit off to the right)."""
@@ -280,6 +316,9 @@ def main():
     instance = SingleInstance()
     if not instance.acquire():
         port = instance.running_port()
+        if port == 0:  # the first PEAK HOUR is finishing a recording
+            show_dialog(DISPLAY_NAME, 'PEAK HOUR is saving your recording. Please wait a moment, then open it again.')
+            return 0
         url = f'http://{HOST}:{port}/' if port else None
         log(f'Another AXIOM launcher is running (port {port})')
         if url and is_axiom(url):
@@ -288,7 +327,7 @@ def main():
         else:
             show_dialog(DISPLAY_NAME, 'PEAK HOUR is already starting. Please wait a moment, then try again.')
         return 0
-    server = hub = None
+    server = hub = axiom = None
     try:
         port = PREFERRED_PORT if port_is_free(PREFERRED_PORT) else free_port()
         if port != PREFERRED_PORT:
@@ -325,6 +364,7 @@ def main():
         else:
             show_dialog(DISPLAY_NAME, f'PEAK HOUR is running at {url}\n\nKeep this message open while you use PEAK HOUR.\nClick OK to quit PEAK HOUR.')
         log('AXIOM window closed; stopping')
+        finish_recording(axiom, instance)
         return 0
     except Exception:
         detail = traceback.format_exc()
@@ -332,6 +372,8 @@ def main():
         show_dialog(DISPLAY_NAME, f'PEAK HOUR could not start.\n\nDetails are in:\n{log_file()}')
         return 1
     finally:
+        if axiom is not None:
+            finish_recording(axiom, instance)  # also when startup failed or something else ended the launcher
         if hub:
             hub[0].shutdown()
             hub[1].stop_all()
