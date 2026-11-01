@@ -60,13 +60,13 @@ def pull(app, apply=False, databases=database_paths):
             if not current:
                 changes.update(bpm=bpm, energy=app.classify_energy(bpm), bpm_source='virtualdj_database')
             elif abs(current - bpm) > 0.5 and abs(current - 2 * bpm) > 1 and abs(2 * current - bpm) > 1:
-                conflicts.append(f'BPM: AXIOM {current:g}, VirtualDJ {bpm:g}')
+                conflicts.append(f'BPM: PEAK HOUR {current:g}, VirtualDJ {bpm:g}')
         camelot = app.get_camelot(vdj['key']) if vdj.get('key') else None
         if camelot:
             if not track.get('camelot'):
                 changes.update(camelot=camelot, key_raw=vdj['key'], key_source='virtualdj_database')
             elif str(track.get('camelot')).upper() != str(camelot).upper():
-                conflicts.append(f"Key: AXIOM {track.get('camelot')}, VirtualDJ {camelot}")
+                conflicts.append(f"Key: PEAK HOUR {track.get('camelot')}, VirtualDJ {camelot}")
         year = app.coerce_release_year(vdj['year']) if vdj.get('year') else None
         if year:
             current = app.coerce_release_year(track.get('year')) if track.get('year') else None
@@ -74,7 +74,7 @@ def pull(app, apply=False, databases=database_paths):
                 changes.update(year=year, era=app.get_era_from_year(year), year_source='virtualdj_database',
                                year_updated_at=now)
             elif current != year:
-                conflicts.append(f'Year: AXIOM {current}, VirtualDJ {year}')
+                conflicts.append(f'Year: PEAK HOUR {current}, VirtualDJ {year}')
         for field in ('bpm', 'camelot', 'year'):
             if field in changes:
                 summary['key' if field == 'camelot' else field] += 1
@@ -91,7 +91,7 @@ def pull(app, apply=False, databases=database_paths):
         app.safe_write_json(app.CACHE_PATH, cache)
     return {'success': True, 'apply': bool(apply), 'summary': summary, 'rows': rows, 'database_errors': errors,
             'source_audio_untouched': True, 'dj_library_untouched': True,
-            'writes_to': 'AXIOM library cache' if apply else 'nothing (preview)'}
+            'writes_to': 'PEAK HOUR library cache' if apply else 'nothing (preview)'}
 
 
 def create_health_blueprint(app, license_guard, databases=database_paths):

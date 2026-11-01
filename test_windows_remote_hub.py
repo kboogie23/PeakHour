@@ -191,7 +191,7 @@ try:
         assert request(port, 'POST', '/api/favorites', b'{}', dict(base, Cookie=mike, Origin=origin))[0] == 403, origin
     assert request(port, 'POST', '/api/favorites', b'{}', dict(base, Cookie=mike, Origin=f'http://127.0.0.1:{port}/'))[0] == 200
     status, _, data = request(port, 'POST', '/api/windows/virtualdj/lists', b'{}', dict(base, Cookie=mike))
-    assert status == 403 and b'only on the AXIOM PC' in data
+    assert status == 403 and b'only on the PEAK HOUR PC' in data
     assert request(port, 'GET', '/api/windows/remote/pairing', headers=dict(base, Cookie=mike))[0] == 403  # not for laptops
     for _ in range(5):  # a refused large upload still gets AXIOM's answer, not a reset connection
         status, _, data = request(port, 'POST', '/api/library/rescan', body, dict(base, Cookie=mike))

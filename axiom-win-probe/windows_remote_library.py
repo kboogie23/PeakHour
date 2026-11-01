@@ -77,7 +77,7 @@ def make_connect_view(app, original):
                         break
                     written += len(chunk)
                     if written > UPLOAD_LIMIT:
-                        raise ValueError('That database is larger than AXIOM accepts (256 MB).')
+                        raise ValueError('That database is larger than PEAK HOUR accepts (256 MB).')
                     handle.write(chunk)
             tracks = virtualdj_tracks(app, target) if source == 'virtualdj' else serato_tracks(app, target)
             if not tracks:

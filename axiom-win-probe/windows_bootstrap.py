@@ -44,6 +44,8 @@ def build_backend(*, recording_settings, recording_directory, capture_factory=No
     install_posix()
     from windows_exports import install as install_exports
     install_exports(app)
+    from windows_brand import install as install_brand
+    install_brand(app)  # PEAK HOUR names on downloaded files
     from windows_apps import install as install_apps
     install_apps(app)
     from windows_year_fixes import install as install_year_fixes

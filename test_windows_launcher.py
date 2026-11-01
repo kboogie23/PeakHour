@@ -110,7 +110,7 @@ with tempfile.TemporaryDirectory(dir=root) as d:
   again=subprocess.run([str(python),str(script)],env=env,timeout=60)
   assert again.returncode==0 and server.poll() is None
   log=(local/'AXIOM DJ'/'Logs'/'launch.log').read_text(encoding='utf-8')
-  assert f'AXIOM server running at http://127.0.0.1:{port}/' in log and 'Another AXIOM launcher is running' in log
+  assert f'PEAK HOUR server running at http://127.0.0.1:{port}/' in log and 'Another PEAK HOUR launcher is running' in log
   assert 'Other laptops' not in log and 'No home network' not in log and 'Pairing code' not in log and not (local/'AXIOM DJ'/'hub.json').exists()  # hub off by default
   assert (local/'AXIOM DJ'/'Video Cache').is_dir() and (pathlib.Path(d)/'Music'/'AXIOM DJ'/'Recordings').is_dir()
  finally:

@@ -282,7 +282,7 @@ def _plan_song(element, kinds, sources, app):
                 current = int(infos.get('PlayCount'))
             except ValueError:
                 current = None
-                skipped.append('Play count: VirtualDJ has a count AXIOM cannot read')
+                skipped.append('Play count: VirtualDJ has a count PEAK HOUR cannot read')
         if current is not None and best > current:
             changes.append({'kind': 'play_counts', 'before': current, 'after': best,
                             'source': 'Serato' if serato >= djay else 'djay'})
@@ -397,7 +397,7 @@ def verify(plan, scratch):
         changes = planned.get(_key(old['path']))
         if not changes:
             if old != new:
-                raise VirtualDJWriteError('A song AXIOM did not plan to change would change')
+                raise VirtualDJWriteError('A song PEAK HOUR did not plan to change would change')
             continue
         kinds = {c['kind'] for c in changes}
         sections_old, sections_new = old['source_sections'], new['source_sections']
@@ -585,7 +585,7 @@ class VirtualDJWriter:
                 for plan, entry in zip(changed, receipt['databases']):
                     target = Path(plan['database'])
                     if _sha(target.read_bytes()) != entry['before_sha256']:
-                        raise VirtualDJWriteError('VirtualDJ changed its database while AXIOM was writing')
+                        raise VirtualDJWriteError('VirtualDJ changed its database while PEAK HOUR was writing')
                     _replace(target, plan['after'])
                     written.append(entry)
                     if _sha(target.read_bytes()) != entry['after_sha256']:
@@ -603,7 +603,7 @@ class VirtualDJWriter:
                 except OSError:
                     pass
                 if failed:
-                    raise VirtualDJWriteError(f'{error} AXIOM could not put back {", ".join(failed)}; '
+                    raise VirtualDJWriteError(f'{error} PEAK HOUR could not put back {", ".join(failed)}; '
                                               f'the backup is in {folder}.') from error
                 raise
             with self._previews_lock:

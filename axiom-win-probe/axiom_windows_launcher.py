@@ -373,7 +373,7 @@ def log_server_errors():
 
 def main():
     log('=' * 72)
-    log(f'AXIOM launch requested executable={sys.executable}')
+    log(f'PEAK HOUR launch requested executable={sys.executable}')
     instance = SingleInstance()
     if instance.acquire():  # only the running launcher rotates the log and holds it open
         rotate_log(log_file())
@@ -384,7 +384,7 @@ def main():
             show_dialog(DISPLAY_NAME, 'PEAK HOUR is saving your recording. Please wait a moment, then open it again.')
             return 0
         url = f'http://{HOST}:{port}/' if port else None
-        log(f'Another AXIOM launcher is running (port {port})')
+        log(f'Another PEAK HOUR launcher is running (port {port})')
         if url and is_axiom(url):
             if os.environ.get('AXIOM_NO_OPEN') != '1':
                 open_window(url)
@@ -402,9 +402,9 @@ def main():
         server = make_server(HOST, port, axiom.app, threaded=True)
         threading.Thread(target=server.serve_forever, name='axiom-server', daemon=True).start()
         if not wait_for_server(port):
-            raise RuntimeError(f'AXIOM did not start listening at {url}')
+            raise RuntimeError(f'PEAK HOUR did not start listening at {url}')
         instance.publish(port)
-        log(f'AXIOM server running at {url}')
+        log(f'PEAK HOUR server running at {url}')
         if os.environ.get('AXIOM_HUB') == '1':  # opt-in: other laptops on the home network
             try:
                 from windows_remote_hub import start_hub
@@ -427,12 +427,12 @@ def main():
                 time.sleep(1)
         else:
             show_dialog(DISPLAY_NAME, f'PEAK HOUR is running at {url}\n\nKeep this message open while you use PEAK HOUR.\nClick OK to quit PEAK HOUR.')
-        log('AXIOM window closed; stopping')
+        log('PEAK HOUR window closed; stopping')
         finish_recording(axiom, instance)
         return 0
     except Exception:
         detail = traceback.format_exc()
-        log('AXIOM failed to start:\n' + detail)
+        log('PEAK HOUR failed to start:\n' + detail)
         show_dialog(DISPLAY_NAME, f'PEAK HOUR could not start.\n\nDetails are in:\n{log_file()}')
         return 1
     finally:

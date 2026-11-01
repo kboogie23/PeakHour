@@ -1,0 +1,70 @@
+{
+  "release_title": "PEAK HOUR 1.0.5",
+  "release_splash_presentation": "sonic-2026",
+  "release_summary": "Export saved playlists to your DJ software, keep your Studio edits safe, and get clearer, more reliable DJ exports.",
+  "release_features": [
+    {
+      "title": "Export From Playlists",
+      "brief": "Send a saved set straight to Serato, djay Pro or VirtualDJ.",
+      "description": "Choose Export on a saved playlist and pick your DJ software. Your current Studio set stays untouched."
+    },
+    {
+      "title": "djay Export Compatibility",
+      "brief": "Read more native playlist records safely.",
+      "description": "Improved native playlist decoding and shared-folder handling retain existing djay data. Unsupported records stop safely with a complete, copyable explanation."
+    },
+    {
+      "title": "Your Studio Edits Stay Yours",
+      "brief": "Late Magic Set results cannot replace newer work.",
+      "description": "Changing or clearing your set, curve, anchor or brief while a build is running preserves those changes. Repeated build clicks are guarded and failed requests can be retried."
+    },
+    {
+      "title": "Verified Playlist Saves",
+      "brief": "Confirm the songs and their order were saved.",
+      "description": "PEAK HOUR checks the complete stored playlist and protects unreadable saved data from being replaced. Genuine storage problems explain how to keep a backup."
+    },
+    {
+      "title": "Clearer Export Results",
+      "brief": "See what was delivered and what needs attention.",
+      "description": "Export receipts include tracks missing from djay. A report-file problem no longer labels an already verified playlist export as failed. Serato is checked again before committing an export."
+    },
+    {
+      "title": "Exact Version In Settings",
+      "brief": "Identify the installed version and build.",
+      "description": "Settings displays PEAK HOUR 1.0.5 and its exact build number."
+    },
+    {
+      "title": "Recording Keeps Going",
+      "brief": "A short audio glitch no longer ends your recording.",
+      "description": "A short audio glitch no longer fails a whole set. It is counted as a dropout and the recording is saved. Closing PEAK HOUR while recording now stops and saves the recording."
+    },
+    {
+      "title": "Safer Duplicate Clean-up",
+      "brief": "Files on USB sticks, SD cards and network drives are left alone.",
+      "description": "These drives have no Recycle Bin, so duplicate clean-up no longer deletes files from them. PEAK HOUR tells you so and leaves those files alone."
+    }
+  ],
+  "release_business": [
+    {
+      "title": "30 Days Free",
+      "brief": "Every engine is available during your trial. No card is needed to start.",
+      "description": "Your 30-day trial begins when PEAK HOUR accepts your DJ OWE account activation. Downloading or activating does not start a subscription or an automatic charge."
+    },
+    {
+      "title": "One Subscription",
+      "brief": "Every engine is included while your PEAK HOUR subscription is active.",
+      "description": "Monthly and annual PEAK HOUR subscriptions include Studio DAW, Performance, Health, and Magic Set + Paste a Playlist while active. This is separate from DJ OWE Record Pool Core Members."
+    },
+    {
+      "title": "Own Your Engines",
+      "brief": "An engine you buy remains usable without a subscription.",
+      "description": "Buy a single engine or the Complete Toolkit to keep using the included tools after a subscription ends. Ownership includes the library, project, save, and export functions required for those tools. Other engines remain locked unless you subscribe or own them."
+    },
+    {
+      "title": "Your Work Stays Yours",
+      "brief": "Your library, saved sets, and DAW projects are preserved.",
+      "description": "A trial or subscription ending does not delete your work. You can review and restore access through your DJ OWE account."
+    }
+  ],
+  "release_closing": "PEAK HOUR for Windows. Your existing music, playlists and projects stay in place."
+}

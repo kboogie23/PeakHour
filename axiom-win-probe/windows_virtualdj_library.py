@@ -91,13 +91,13 @@ def connect(app, paths=None):
     tracks, read, errors = read_tracks(app, paths)
     if not tracks:
         detail = ' ' + errors[0] if errors else ''
-        return {'success': False, 'error': 'AXIOM could not find VirtualDJ tracks on this PC.' + detail,
+        return {'success': False, 'error': 'PEAK HOUR could not find VirtualDJ tracks on this PC.' + detail,
                 'source_audio_untouched': True, 'dj_source_untouched': True}
     cache, added, updated, policy, trimmed = app._merge_connected_dj_tracks(tracks, 'virtualdj')
     result = {'success': True, 'connection_source': 'virtualdj', 'scanned_count': len(tracks), 'added_count': added,
               'updated_count': updated, 'total_tracks': cache.get('total_tracks', 0), 'databases_read': read,
               'database_errors': errors, 'source_audio_untouched': True, 'dj_source_untouched': True,
-              'message': f'VirtualDJ connected. AXIOM read {len(tracks)} tracks from {read} VirtualDJ '
+              'message': f'VirtualDJ connected. PEAK HOUR read {len(tracks)} tracks from {read} VirtualDJ '
                          f"database{'s' if read != 1 else ''} and added them to your library."}
     result.update(app._track_limit_payload(policy, trimmed))  # as AXIOM's connect_dj_source does
     return result

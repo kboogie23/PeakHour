@@ -153,7 +153,7 @@ class Pairing:
             now = time.monotonic()
             if now >= self.expires:  # not a wrong guess: a new code is made (and logged) for the next try
                 self._renew()
-                return False, 'That pairing code has expired. Enter the new code shown on the AXIOM PC.'
+                return False, 'That pairing code has expired. Enter the new code shown on the PEAK HOUR PC.'
             recent = [t for t in self.failures.get(address, []) if now - t < self.ttl]
             self.failures = {a: [t for t in ts if now - t < self.ttl] for a, ts in self.failures.items()}
             self.failures = {a: ts for a, ts in self.failures.items() if ts}
@@ -161,7 +161,7 @@ class Pairing:
                 return False, 'Too many wrong codes. Wait a few minutes, then try again.'
             if not re.fullmatch(r'\d{6}', code or '') or not hmac.compare_digest(code.encode(), self.code.encode()):
                 self.failures[address] = recent + [now]
-                return False, 'That pairing code is not right, or it has expired. Check the code shown on the AXIOM PC.'
+                return False, 'That pairing code is not right, or it has expired. Check the code shown on the PEAK HOUR PC.'
             self._renew()  # single use
             self.failures.pop(address, None)
             return True, ''
@@ -254,13 +254,13 @@ class DeviceRegistry:
         deadline = time.monotonic() + self.ready_timeout
         while time.monotonic() < deadline:
             if process.poll() is not None:
-                raise RuntimeError('This library\'s AXIOM engine stopped while starting; see its engine.log.')
+                raise RuntimeError('This library\'s PEAK HOUR engine stopped while starting; see its engine.log.')
             with socket.socket() as probe:
                 probe.settimeout(0.5)
                 if probe.connect_ex(('127.0.0.1', port)) == 0:
                     return port
             time.sleep(0.25)
-        raise RuntimeError('This library\'s AXIOM engine did not start in time.')
+        raise RuntimeError('This library\'s PEAK HOUR engine did not start in time.')
 
     def stop_all(self):
         # A venv's python.exe / pythonw.exe is a small launcher that runs the real interpreter as its
@@ -281,17 +281,17 @@ class DeviceRegistry:
 def setup_page(message=''):
     escape = lambda s: str(s).replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;').replace('"', '&quot;')
     return f'''<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>AXIOM library</title><style>
+<title>PEAK HOUR library</title><style>
 body{{margin:0;min-height:100vh;display:grid;place-items:center;background:#0b0f0a;color:#eef5e9;font:16px system-ui,sans-serif}}
 main{{width:min(440px,calc(100% - 32px));background:#141b12;border:1px solid #2d3a26;border-radius:14px;padding:28px}}
 h1{{margin:0 0 6px;font-size:22px;letter-spacing:.08em}}p{{color:#b9c6b0;line-height:1.45}}
 input{{width:100%;box-sizing:border-box;padding:12px;border-radius:8px;border:1px solid #3c4b33;background:#0b0f0a;color:inherit;font-size:16px}}
 button{{margin-top:12px;width:100%;padding:12px;border:0;border-radius:8px;background:#b7f34a;color:#0b0f0a;font-weight:700;font-size:15px;cursor:pointer}}
 .error{{color:#ff9a7a}}
-</style></head><body><main><h1>AXIOM</h1>
-<p>Each laptop keeps its own AXIOM library on this PC. On the AXIOM PC, open Library &gt; Add music to see a pairing code. Enter it here and name this laptop's library (use the same name to open an existing library again), then upload its VirtualDJ, Serato or rekordbox database.</p>
+</style></head><body><main><h1>PEAK HOUR</h1>
+<p>Each laptop keeps its own PEAK HOUR library on this PC. On the PEAK HOUR PC, open Library &gt; Add music to see a pairing code. Enter it here and name this laptop's library (use the same name to open an existing library again), then upload its VirtualDJ, Serato or rekordbox database.</p>
 {f'<p class="error">{escape(message)}</p>' if message else ''}
-<form method="post" action="/__axiom/device"><input name="code" placeholder="Pairing code from the AXIOM PC" inputmode="numeric" maxlength="6" autocomplete="off" required autofocus><br><br><input name="name" placeholder="Library name, e.g. Mike's laptop" maxlength="60" required><button>Pair this laptop</button></form>
+<form method="post" action="/__axiom/device"><input name="code" placeholder="Pairing code from the PEAK HOUR PC" inputmode="numeric" maxlength="6" autocomplete="off" required autofocus><br><br><input name="name" placeholder="Library name, e.g. Mike's laptop" maxlength="60" required><button>Pair this laptop</button></form>
 </main></body></html>'''.encode('utf-8')
 
 
@@ -346,9 +346,9 @@ class HubHandler(BaseHTTPRequestHandler):
             self.close_connection = True
             return self._send(400, json.dumps({'success': False, 'error': 'That request is not valid.'}).encode('utf-8'))
         if (self.headers.get('Host') or '').lower() != self.expected_host:  # also stops DNS rebinding
-            return self._refuse(403, 'Open AXIOM by the address shown on the AXIOM PC.')
+            return self._refuse(403, 'Open PEAK HOUR by the address shown on the PEAK HOUR PC.')
         if not is_home_address(self.client_address[0]):
-            return self._refuse(403, 'AXIOM only serves laptops on your home network.')
+            return self._refuse(403, 'PEAK HOUR only serves laptops on your home network.')
         if not plain_target(self.path):
             return self._refuse(400, 'That address is not valid.')
         hub_origin = f'http://{self.expected_host}'
@@ -360,11 +360,11 @@ class HubHandler(BaseHTTPRequestHandler):
         device = self._cookie_device()
         if device is None:
             if self.path.startswith('/api/'):
-                return self._refuse(401, 'Open AXIOM in the browser and choose this laptop\'s library first.')
+                return self._refuse(401, 'Open PEAK HOUR in the browser and choose this laptop\'s library first.')
             self._drain()
             return self._send(200, setup_page(), 'text/html; charset=utf-8')
         if blocked(self.path):
-            return self._refuse(403, 'This works only on the AXIOM PC itself. Your library here is unchanged.')
+            return self._refuse(403, 'This works only on the PEAK HOUR PC itself. Your library here is unchanged.')
         try:
             port = self.registry.backend(device)
         except (RuntimeError, KeyError, OSError) as exc:

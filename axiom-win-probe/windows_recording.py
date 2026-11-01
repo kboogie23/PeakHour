@@ -208,7 +208,7 @@ class WindowsRecordingManager(SetRecordingManager):
                 raise RuntimeError('Selected input channels are unavailable.')
             os.makedirs(self.desktop_dir, exist_ok=True)
             stamp = datetime.datetime.now().strftime('%Y-%m-%d %H-%M-%S')
-            output = os.path.join(self.desktop_dir, f'AXIOM Set {stamp} {uuid.uuid4().hex[:8]}.wav')
+            output = os.path.join(self.desktop_dir, f'PEAK HOUR Set {stamp} {uuid.uuid4().hex[:8]}.wav')
             capture = self._capture_factory()
             try:
                 self._attach_feed(capture, device['samplerate'], settings)
@@ -251,7 +251,7 @@ class WindowsRecordingManager(SetRecordingManager):
             raise RuntimeError(f'Open {self._provider_label(self._provider_key(provider))} before recording its audio.')
         os.makedirs(self.desktop_dir, exist_ok=True)
         stamp = datetime.datetime.now().strftime('%Y-%m-%d %H-%M-%S')
-        output = os.path.join(self.desktop_dir, f'AXIOM Set {stamp} {uuid.uuid4().hex[:8]}.wav')
+        output = os.path.join(self.desktop_dir, f'PEAK HOUR Set {stamp} {uuid.uuid4().hex[:8]}.wav')
         capture = self._app_capture_factory(app['pid'])
         try:
             self._attach_feed(capture, 48000, settings)

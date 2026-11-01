@@ -10,7 +10,7 @@ class NoAudioDeck:
     """Stands in for the deck in a laptop's engine: nothing plays on this PC's speakers."""
 
     def _refuse(self, *args, **kwargs):
-        raise PermissionError('Audio playback on the AXIOM PC is not available from another laptop.')
+        raise PermissionError('Audio playback on the PEAK HOUR PC is not available from another laptop.')
 
     play = pause = resume = stop = seek = seek_relative = set_volume = _refuse
 

@@ -69,7 +69,7 @@ def live_payload(app, home, now=time.time):
     files = history_files(home)
     if not files or now() - files[0].stat().st_mtime > HISTORY_MAX_AGE:
         return dict(base, success=False, active=True, waiting_for_track=True,
-                    error='Play a song in VirtualDJ; AXIOM follows its history.')
+                    error='Play a song in VirtualDJ; PEAK HOUR follows its history.')
     entries = parse_history(files[0])
     if not entries:
         return dict(base, success=False, active=True, waiting_for_track=True, error='VirtualDJ has not played a song yet.')
@@ -96,7 +96,7 @@ def live_payload(app, home, now=time.time):
     history = [track(entry, False)[0] for entry in reversed(entries[:-1])][:HISTORY_LIMIT]
     return dict(base, success=True, active=True, track=current, history=history, history_count=len(entries) - 1,
                 path_exists=os.path.isfile(current['path']), match_key=key, observed_at=current['observed_at'],
-                warning='' if key in library else 'This VirtualDJ song is not in your AXIOM library yet.')
+                warning='' if key in library else 'This VirtualDJ song is not in your PEAK HOUR library yet.')
 
 
 def install(app, home_finder=None):
