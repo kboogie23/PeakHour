@@ -291,11 +291,16 @@ def finish_recording(axiom, instance=None, wav_seconds=60, mp3_seconds=1900):
             'The files in the recordings folder were left as they are and can be recovered.')
 
 
+# A minimised or covered window must keep polling the DJ software (Live Assist follows it all night).
+KEEP_AWAKE = ['--disable-background-timer-throttling', '--disable-renderer-backgrounding',
+              '--disable-backgrounding-occluded-windows']
+
+
 def edge_command(edge, url, profile):
     """App window for the cockpit (Edge or Chrome take the same switches): its own profile, opened
     maximized like the full-size macOS window (Edge's default placement could sit off to the right)."""
     return [str(edge), f'--app={url}', f'--user-data-dir={profile}', '--start-maximized', '--no-first-run',
-            '--no-default-browser-check', '--disable-features=msEdgeStartupBoost']
+            '--no-default-browser-check', '--disable-features=msEdgeStartupBoost', *KEEP_AWAKE]
 
 
 # The browser the open window uses: (name, program, profile), or None for the default browser.
@@ -318,7 +323,8 @@ def open_live_assist(url):
         os.startfile(target)
         return
     subprocess.Popen([str(browser[1]), f'--app={target}', f'--user-data-dir={browser[2]}', '--window-size=438,690',
-                      '--no-first-run', '--no-default-browser-check', '--disable-features=msEdgeStartupBoost'], close_fds=True)
+                      '--no-first-run', '--no-default-browser-check', '--disable-features=msEdgeStartupBoost', *KEEP_AWAKE],
+                     close_fds=True)
 
 
 def open_window(url):

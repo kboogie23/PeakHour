@@ -76,6 +76,9 @@ with tempfile.TemporaryDirectory(dir=root) as d:
    for f in logs.iterdir():f.unlink()
   command=L.edge_command('msedge.exe','http://127.0.0.1:8080/',local/'AXIOM DJ'/'Window')
   assert '--app=http://127.0.0.1:8080/' in command and '--start-maximized' in command and f'--user-data-dir={local/"AXIOM DJ"/"Window"}' in command
+  keep=('--disable-background-timer-throttling','--disable-renderer-backgrounding','--disable-backgrounding-occluded-windows')
+  assert all(s in command for s in keep) and '--disable-features=msEdgeStartupBoost' in command  # a minimised window keeps following the DJ software
+  import inspect;assert 'KEEP_AWAKE' in inspect.getsource(L.open_live_assist) and set(keep)==set(L.KEEP_AWAKE)  # the Live Assist pop-up too
  finally:
   if old is None:os.environ.pop('LOCALAPPDATA',None)
   else:os.environ['LOCALAPPDATA']=old
