@@ -29,6 +29,9 @@ def build_backend(*, recording_settings, recording_directory, capture_factory=No
     from windows_scan_speed import install as install_scan_speed
     install_scan_speed()
     app = importlib.import_module('app')
+    # The update feed in axiom_build.json lists the Mac releases. Windows has no feed yet, so the update check
+    # answers "not configured" and the startup check stays silent. PEAK_HOUR_UPDATE_MANIFEST_URL sets a feed.
+    app.AXIOM_UPDATE_MANIFEST_URL = os.environ.get('PEAK_HOUR_UPDATE_MANIFEST_URL', '').strip()
     from windows_djay import install as install_windows_djay
     install_windows_djay(app)
     from windows_serato_paths import make_relpath_resolver, make_database_candidates
