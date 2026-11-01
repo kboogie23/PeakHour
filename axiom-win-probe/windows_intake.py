@@ -12,6 +12,7 @@ which AXIOM's own window already turns into a percentage. /api/windows/import-pr
 latest job for the Windows window and top meter (static/js/shared/windows-intake.js): which step,
 files found, percentage, files per second and time left.
 """
+import collections
 import contextlib
 import ntpath
 import os
@@ -90,14 +91,28 @@ class FastRealpath:
     times come from the listing. The listing has no file ID (st_ino, st_dev and st_nlink are 0), so it is
     used only where nothing reads those: the Health count (windows_performance), never the import, whose
     track identities are built from them.
+
+    Outside an import (any thread) realpath is answered from a shared cache: AXIOM's library routes (opening
+    Track Information resolves all 50,000 tracks) call it for every track, 31 ms each on an exFAT drive, which
+    took 15 minutes. A folder asked about repeatedly (SHARED_AFTER calls) is resolved and listed once, kept for
+    SHARED_TTL seconds, and its files are answered from that listing as above. A name missing from a listed
+    folder is the folder's real path plus the name as given, which is what Windows' realpath returns. A folder
+    that cannot be listed (missing drive), links, odd names and `..` get Windows' realpath. Never stat.
+    os.path.realpath is patched for every caller (pathlib.resolve(strict=...) passes extra arguments and falls
+    back); windows_paths' protected-path check may see answers up to SHARED_TTL old.
     """
     REPARSE_POINT = 0x400
+    SHARED_TTL = 5.0  # seconds a folder's listing and real path are trusted
+    SHARED_AFTER = 3  # calls for one folder before it is listed (a lone call keeps Windows' realpath)
+    SHARED_FOLDERS = 4096  # folders kept
+    SHARED_ENTRIES = 150000  # listed names kept
 
     def __init__(self, realpath=None, stat=None):
         self.original = realpath or ntpath.realpath
         self.original_stat = stat or os.stat
         self.original_islink = ntpath.islink
         self.local = threading.local()
+        self.shared, self.shared_entries, self.shared_lock = collections.OrderedDict(), 0, threading.Lock()
 
     @contextlib.contextmanager
     def active(self, stat=False):
@@ -120,7 +135,7 @@ class FastRealpath:
                             plain = not entry.is_symlink() and not entry.stat(follow_symlinks=False).st_file_attributes & self.REPARSE_POINT
                         except OSError:
                             plain = False
-                        listing[entry.name.lower()] = (entry.name, plain, entry)
+                        listing[ntpath.normcase(entry.name)] = (entry.name, plain, entry)
             except OSError:
                 pass
             self.local.listings[key] = listing
@@ -132,15 +147,83 @@ class FastRealpath:
             self.local.folders[key] = self.original(folder)
         return self.local.folders[key]
 
+    def _shared_drop(self, key):
+        entry = self.shared.pop(key, None)
+        if entry:
+            self.shared_entries -= entry['count']
+
+    def _shared_entry(self, folder, now):
+        key = ntpath.normcase(folder)
+        with self.shared_lock:
+            entry = self.shared.get(key)
+            if entry is None or now - entry['at'] > self.SHARED_TTL:
+                self._shared_drop(key)
+                while self.shared:  # oldest first: expired entries go, then the oldest live ones if still full
+                    oldest = next(iter(self.shared))
+                    if now - self.shared[oldest]['at'] <= self.SHARED_TTL and len(self.shared) < self.SHARED_FOLDERS                             and self.shared_entries < self.SHARED_ENTRIES:
+                        break
+                    self._shared_drop(oldest)
+                entry = self.shared[key] = {'at': now, 'hits': 0, 'listing': None, 'real': None, 'count': 0,
+                                            'lock': threading.Lock()}
+            entry['hits'] += 1
+            return entry
+
+    def _shared_realpath(self, path, args, kwargs):
+        """realpath for a thread outside an import, or None to use Windows' realpath."""
+        if args or kwargs or not isinstance(path, (str, os.PathLike)):
+            return None
+        text = os.fspath(path)
+        if not isinstance(text, str) or '..' in text:
+            return None
+        folder, name = ntpath.split(ntpath.abspath(text))
+        if not name or name.endswith(('.', ' ')) or any(c in name for c in ':*?<>"|~'):
+            return None
+        entry = self._shared_entry(folder, time.monotonic())
+        if entry['hits'] < self.SHARED_AFTER:
+            return None
+        with entry['lock']:
+            if entry['listing'] is None:
+                listing = {}
+                try:
+                    with os.scandir(folder) as entries:
+                        for item in entries:
+                            try:
+                                plain = not item.is_symlink() and not item.stat(follow_symlinks=False).st_file_attributes & self.REPARSE_POINT
+                            except OSError:
+                                plain = False
+                            listing[ntpath.normcase(item.name)] = (item.name, plain)
+                    entry['real'] = self.original(folder)
+                except OSError:
+                    entry['real'], listing = None, {}
+                entry['listing'] = listing
+                with self.shared_lock:
+                    if self.shared.get(ntpath.normcase(folder)) is entry:  # not evicted or replaced meanwhile
+                        entry['count'] = len(listing)
+                        self.shared_entries += entry['count']
+        if entry['real'] is None:
+            return None  # missing or unreadable folder: Windows' realpath (instant for a missing drive)
+        found = entry['listing'].get(ntpath.normcase(name))
+        if not found:
+            if not name.isascii():
+                return None  # Windows' case rules for other letters are its own
+            return ntpath.join(entry['real'], name)  # a missing file: the folder's real path plus the name as given
+        return ntpath.join(entry['real'], found[0]) if found[1] else None
+
     def __call__(self, path, *args, **kwargs):
-        if getattr(self.local, 'folders', None) is None or not isinstance(path, (str, os.PathLike)):
+        if getattr(self.local, 'folders', None) is None:
+            try:
+                shared = self._shared_realpath(path, args, kwargs)
+            except (OSError, ValueError, TypeError):
+                shared = None
+            return self.original(path, *args, **kwargs) if shared is None else shared
+        if not isinstance(path, (str, os.PathLike)):
             return self.original(path, *args, **kwargs)
         try:
             full = ntpath.abspath(os.fspath(path))
             folder, name = ntpath.split(full)
             if not name or not isinstance(full, str):
                 return self.original(path, *args, **kwargs)
-            found = self._listing(folder).get(name.lower())
+            found = self._listing(folder).get(ntpath.normcase(name))
             if not found or not found[1]:
                 return self.original(path, *args, **kwargs)
             return ntpath.join(self._folder(folder), found[0])
@@ -154,7 +237,7 @@ class FastRealpath:
             return self.original_islink(path)
         try:
             folder, name = ntpath.split(ntpath.abspath(path))
-            found = self._listing(folder).get(name.lower()) if name else None
+            found = self._listing(folder).get(ntpath.normcase(name)) if name else None
             if found:
                 return found[2].is_symlink()
         except (OSError, ValueError, TypeError):
@@ -166,7 +249,7 @@ class FastRealpath:
             return self.original_stat(path, *args, **kwargs)  # dir_fd / follow_symlinks / bytes / fd: as asked
         try:
             folder, name = ntpath.split(ntpath.abspath(path))
-            found = self._listing(folder).get(name.lower()) if name else None
+            found = self._listing(folder).get(ntpath.normcase(name)) if name else None
             if found and found[1] and not found[2].is_dir(follow_symlinks=False):
                 return found[2].stat(follow_symlinks=False)
         except (OSError, ValueError, TypeError):
