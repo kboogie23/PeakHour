@@ -55,12 +55,26 @@ def parse_history(path):
     return entries
 
 
+_LIBRARY = {'key': None, 'tracks': {}}
+
+
 def _library(app):
+    """Library songs by path, re-read only when the library file changes. Live Assist polls every few seconds and
+    reading a 50,000-song library holds Python's lock for ~0.4 s, which made the preview player stutter."""
+    try:
+        stat = os.stat(app.CACHE_PATH)
+        key = (str(app.CACHE_PATH), stat.st_mtime_ns, stat.st_size)
+    except OSError:
+        key = None
+    if key is not None and key == _LIBRARY['key']:
+        return _LIBRARY['tracks']
     try:
         tracks = app.load_cache(app.CACHE_PATH).get('tracks', [])
     except Exception:
         return {}
-    return {ntpath.normcase(ntpath.normpath(str(t['path']))): t for t in tracks if isinstance(t, dict) and t.get('path')}
+    library = {ntpath.normcase(ntpath.normpath(str(t['path']))): t for t in tracks if isinstance(t, dict) and t.get('path')}
+    _LIBRARY.update(key=key, tracks=library)
+    return library
 
 
 def live_payload(app, home, now=time.time):
