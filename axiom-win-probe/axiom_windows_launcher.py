@@ -11,7 +11,10 @@ Differences from macOS, by design:
   Google Chrome when chosen in Settings (windows_browser.py), and AXIOM stops when
   that window closes. With neither, the default browser opens and a "Quit AXIOM"
   dialog stops it.
-- Requests are accepted only from this computer with the expected Host header.
+- Requests are accepted only from this computer with the expected Host header, and a
+  request that changes something must come from AXIOM's own page (Origin check).
+- The home-network hub for other laptops (windows_remote_hub.py) starts only when
+  AXIOM_HUB=1.
 - Activation is off by default for now, at the owner's request (2026-10-30), using
   AXIOM's own AXIOM_LICENSE_REQUIRED setting, which reports "dev_unlocked".
   Start with AXIOM_LICENSE_REQUIRED=1 to require activation again; AXIOM's licence
@@ -134,7 +137,8 @@ def virtualdj_policy(is_safe_location):
     return allowed
 
 
-def build_app(port):
+def build_app(port, device=False):
+    """The backend for this PC; device=True is a laptop's engine: no file of this PC is permitted."""
     os.environ.setdefault('AXIOM_RUNTIME_DIR', str(data_root()))
     os.environ.setdefault('AXIOM_LICENSE_REQUIRED', '0')  # activation off for now; see module notes
     log('Activation ' + ('required' if os.environ['AXIOM_LICENSE_REQUIRED'].strip().lower() in ('1', 'true', 'yes', 'on') else 'not required (AXIOM_LICENSE_REQUIRED=0)'))
@@ -144,14 +148,19 @@ def build_app(port):
     import imageio_ffmpeg
     from windows_bootstrap import build_backend
     from windows_paths import is_safe_location
+    deny_all = lambda path: False
+    video_policy, vdj_policy = (deny_all, deny_all) if device else (is_safe_location, virtualdj_policy(is_safe_location))
     root = data_root()
     recordings = Path(os.environ.get('USERPROFILE') or Path.home(), 'Music', APP_NAME, 'Recordings')
     recordings.mkdir(parents=True, exist_ok=True)
     (root / 'Video Cache').mkdir(parents=True, exist_ok=True)
     axiom = build_backend(recording_settings=root / 'recording-settings.json', recording_directory=recordings,
-                          video_cache_root=root / 'Video Cache', video_allowed_path=is_safe_location,
+                          video_cache_root=root / 'Video Cache', video_allowed_path=video_policy,
                           video_ffmpeg=imageio_ffmpeg.get_ffmpeg_exe(),
-                          virtualdj_allowed_path=virtualdj_policy(is_safe_location))
+                          virtualdj_allowed_path=vdj_policy, safe_location=deny_all if device else None)
+    if device:
+        from windows_audio import NoAudioDeck
+        axiom.NATIVE_AUDIO_DECK = NoAudioDeck()
     from windows_hotkey import LiveAssistHotkey, create_hotkey_blueprint
     axiom.LIVE_ASSIST_HOTKEY = LiveAssistHotkey(root / 'live-assist-hotkey.json')  # started by main() once the window URL is known
     axiom.app.register_blueprint(create_hotkey_blueprint(axiom.LIVE_ASSIST_HOTKEY))
@@ -169,12 +178,20 @@ def build_app(port):
     from windows_browser import WindowBrowser, create_browser_blueprint
     axiom.app.register_blueprint(create_browser_blueprint(WindowBrowser(root), lambda: (window_browser() or [None])[0]))
     allowed_hosts = {f'{HOST}:{port}', f'localhost:{port}'}
+    allowed_origins = {f'http://{host}' for host in allowed_hosts}
     from flask import request, abort
 
     @axiom.app.before_request
     def local_only():
         if request.remote_addr not in ('127.0.0.1', '::1') or request.host not in allowed_hosts:
             abort(403)
+        if request.method not in ('GET', 'HEAD', 'OPTIONS'):  # cross-site pages may not change anything
+            origin = request.headers.get('Origin')
+            if origin is not None:  # includes the opaque "null" origin, which is never accepted
+                if origin.rstrip('/') not in allowed_origins:
+                    abort(403)
+            elif request.headers.get('Sec-Fetch-Site') not in ('same-origin', 'none'):
+                abort(403)
     return axiom
 
 
@@ -285,10 +302,10 @@ def main():
             raise RuntimeError(f'AXIOM did not start listening at {url}')
         instance.publish(port)
         log(f'AXIOM server running at {url}')
-        if os.environ.get('AXIOM_HUB', '1') != '0':
+        if os.environ.get('AXIOM_HUB') == '1':  # opt-in: other laptops on the home network
             try:
                 from windows_remote_hub import start_hub
-                hub = start_hub(data_root(), port)
+                hub = start_hub(data_root(), port, log=log)
                 log(f'Other laptops on the home network: {hub[2]}' if hub else 'No home network found; laptops cannot connect.')
             except OSError as exc:
                 log(f'Home-network access unavailable: {exc}')

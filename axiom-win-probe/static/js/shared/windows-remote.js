@@ -39,9 +39,12 @@
    card(grid,'remote-upload-virtualdj','VirtualDJ on this laptop','Upload database.xml from your VirtualDJ folder (Documents or AppData\\Local\\VirtualDJ). BPM, key, year, genre and cues come with it.','Upload VirtualDJ Database',()=>upload('virtualdj','.xml,text/xml'));
    card(grid,'remote-upload-serato','Serato on this laptop','Upload the file named "database V2" from your _Serato_ folder (in your Music folder).','Upload Serato Database',()=>upload('serato',''));
   }else if(info.hub_url){
-   if(grid.querySelector('#remote-hub-info'))return;
+   const shown=grid.querySelector('#remote-hub-info');if(shown){shown._refresh?.();return;}
    const section=el('section',undefined,'library-source-choice');section.id='remote-hub-info';
-   section.append(el('h4','Other laptops'),el('p',`On your home Wi-Fi, open ${info.hub_url} on another laptop. Each laptop keeps its own separate library here.`,'library-source-choice-copy'));
+   section.append(el('h4','Other laptops'),el('p',`On your home Wi-Fi, open ${info.hub_url} on another laptop and enter the pairing code below. Each laptop keeps its own separate library here.`,'library-source-choice-copy'));
+   const code=el('p','Pairing code: …','library-source-choice-copy');section.append(code);
+   section._refresh=()=>fetch('/api/windows/remote/pairing').then(r=>r.ok?r.json():null).then(d=>{code.textContent=d?.code?`Pairing code: ${d.code} (works once, for ${Math.max(1,Math.round(d.expires_in/60))} more minutes)`:'Pairing code not available.';}).catch(()=>{code.textContent='Pairing code not available.';});
+   section._refresh();const timer=setInterval(()=>{if(section.isConnected)section._refresh();else clearInterval(timer);},15000);  // codes change after use and every 10 minutes
    if(info.libraries?.length)section.append(el('p','Laptop libraries: '+info.libraries.join(', '),'library-source-choice-readonly'));
    grid.append(section);
   }

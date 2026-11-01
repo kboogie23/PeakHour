@@ -10,8 +10,10 @@ from pathlib import Path
 def build_backend(*, recording_settings, recording_directory, capture_factory=None,
                   device_query=None, host_query=None, video_cache_root=None,
                   video_allowed_path=None, video_ffmpeg=None,
-                  virtualdj_allowed_path=None, virtualdj_chooser=None, mix_export_chooser=None):
-    from windows_paths import is_safe_location
+                  virtualdj_allowed_path=None, virtualdj_chooser=None, mix_export_chooser=None,
+                  safe_location=None):
+    from windows_paths import is_safe_location as windows_safe_location
+    is_safe_location = safe_location or windows_safe_location  # a laptop's engine passes deny-all
     import utils.path_ops
     utils.path_ops.is_safe_location = is_safe_location
     if video_cache_root is not None:

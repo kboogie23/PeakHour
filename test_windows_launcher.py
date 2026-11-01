@@ -8,6 +8,12 @@ def get(port,host=None):
  try:
   with urllib.request.urlopen(request,timeout=10) as r:return r.status,r.read()
  except urllib.error.HTTPError as e:return e.code,b''
+def post(port,**headers):
+ # POST to a route that does not exist: 403 means the launcher refused it, 404 means it let it through
+ request=urllib.request.Request(f'http://127.0.0.1:{port}/api/no-such-route',data=b'{}',method='POST',headers=headers)
+ try:
+  with urllib.request.urlopen(request,timeout=10) as r:return r.status
+ except urllib.error.HTTPError as e:return e.code
 with tempfile.TemporaryDirectory(dir=root) as d:
  local=pathlib.Path(d)/'AppData'/'Local';local.mkdir(parents=True)
  old=os.environ.get('LOCALAPPDATA');os.environ['LOCALAPPDATA']=str(local)
@@ -32,7 +38,7 @@ with tempfile.TemporaryDirectory(dir=root) as d:
   if old is None:os.environ.pop('LOCALAPPDATA',None)
   else:os.environ['LOCALAPPDATA']=old
  # The launcher itself, headless, with isolated app data
- port=free();env=dict(os.environ,LOCALAPPDATA=str(local),USERPROFILE=d,AXIOM_PORT=str(port),AXIOM_NO_OPEN='1',AXIOM_HUB='0')
+ port=free();env=dict(os.environ,LOCALAPPDATA=str(local),USERPROFILE=d,AXIOM_PORT=str(port),AXIOM_NO_OPEN='1');env.pop('AXIOM_HUB',None)  # the home-network hub is off unless AXIOM_HUB=1
  python=root/'axiom-win-env'/'Scripts'/'python.exe';script=root/'axiom-win-probe'/'axiom_windows_launcher.py'
  server=subprocess.Popen([str(python),str(script)],env=env,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
  try:
@@ -49,11 +55,21 @@ with tempfile.TemporaryDirectory(dir=root) as d:
   assert licence['status']=='dev_unlocked' and licence['usable'] and not licence['required']  # activation off for now
   assert get(port,f'localhost:{port}')[0]==200 and get(port,f'evil.example:{port}')[0]==403
   assert (local/'AXIOM DJ'/'launcher.port').read_text()==str(port)
+  # A page of another origin cannot change anything; AXIOM's own pages can
+  for headers in ({'Origin':'http://evil.example'},{'Origin':'null'},{'Origin':f'http://127.0.0.1:{port+1}'},{'Origin':f'https://127.0.0.1:{port}'},
+                  {},{'Sec-Fetch-Site':'cross-site'},{'Sec-Fetch-Site':'same-site'},{'Origin':'http://evil.example','Sec-Fetch-Site':'same-origin'},
+                  {'Origin':'null','Sec-Fetch-Site':'same-origin'}):
+   assert post(port,**headers)==403,headers
+  for headers in ({'Origin':f'http://127.0.0.1:{port}'},{'Origin':f'http://localhost:{port}','Host':f'localhost:{port}'},{'Origin':f'http://127.0.0.1:{port}/'},
+                  {'Sec-Fetch-Site':'same-origin'},{'Sec-Fetch-Site':'none'}):
+   assert post(port,**headers)==404,headers
+  assert get(port)[0]==200  # reading needs no Origin
   # A second launch reuses the running AXIOM and exits
   again=subprocess.run([str(python),str(script)],env=env,timeout=60)
   assert again.returncode==0 and server.poll() is None
   log=(local/'AXIOM DJ'/'Logs'/'launch.log').read_text(encoding='utf-8')
   assert f'AXIOM server running at http://127.0.0.1:{port}/' in log and 'Another AXIOM launcher is running' in log
+  assert 'Other laptops' not in log and 'No home network' not in log and 'Pairing code' not in log and not (local/'AXIOM DJ'/'hub.json').exists()  # hub off by default
   assert (local/'AXIOM DJ'/'Video Cache').is_dir() and (pathlib.Path(d)/'Music'/'AXIOM DJ'/'Recordings').is_dir()
  finally:
   # The venv python.exe is a redirector that runs the real interpreter as a child: end the tree
@@ -66,4 +82,4 @@ with tempfile.TemporaryDirectory(dir=root) as d:
   finally:
    if old is None:os.environ.pop('LOCALAPPDATA',None)
    else:os.environ['LOCALAPPDATA']=old
-print('PASS: Windows launcher starts AXIOM on loopback, rejects foreign hosts, keeps one instance, never takes a busy port')
+print('PASS: Windows launcher starts AXIOM on loopback, rejects foreign hosts and cross-origin changes, keeps the hub off by default, keeps one instance, never takes a busy port')

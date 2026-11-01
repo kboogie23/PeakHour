@@ -603,7 +603,7 @@ class AIAssist:
     def _post(self, route, body):
         host = self.app.app.config.get('PEAK_HOUR_HOST') or '127.0.0.1:%s' % os.environ.get('AXIOM_PORT', '8080')
         client = self.app.app.test_client()
-        response = client.post(route, json=body, base_url=f'http://{host}', environ_base={'REMOTE_ADDR': '127.0.0.1'})
+        response = client.post(route, json=body, base_url=f'http://{host}', headers={'Origin': f'http://{host}'}, environ_base={'REMOTE_ADDR': '127.0.0.1'})
         data = response.get_json(silent=True) or {}
         if response.status_code >= 400 or data.get('success') is False:
             raise AIError(data.get('error') or f'PEAK HOUR could not save this ({response.status_code}).')

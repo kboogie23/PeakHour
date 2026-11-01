@@ -42,7 +42,7 @@ def _attributes(track, section):
     return entries[0].get('attributes', {}) if len(entries) == 1 else {}
 
 
-def axiom_track(track, app):
+def axiom_track(track, app, check_file=True):
     """AXIOM library record for one VirtualDJ database song (rekordbox-shaped)."""
     path = track['path']
     tags = _attributes(track, 'Tags')
@@ -61,7 +61,7 @@ def axiom_track(track, app):
         'playlist_names': [], 'cue_count': sum(1 for p in track.get('source_sections', {}).get('Poi', [])
                                                if p.get('attributes', {}).get('Type') == 'cue'),
         'beatgrid_locked': False, 'source': 'virtualdj_database', 'connected_from': 'virtualdj',
-        'needs_relink': not os.path.isfile(path),
+        'needs_relink': not os.path.isfile(path) if check_file else True,
     }
 
 

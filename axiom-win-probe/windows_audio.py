@@ -8,6 +8,18 @@ import numpy as np
 import soundfile as sf
 import sounddevice as sd
 
+class NoAudioDeck:
+    """Stands in for the deck in a laptop's engine: nothing plays on this PC's speakers."""
+
+    def _refuse(self, *args, **kwargs):
+        raise PermissionError('Audio playback on the AXIOM PC is not available from another laptop.')
+
+    play = pause = resume = stop = seek = seek_relative = set_volume = _refuse
+
+    def status(self):
+        return dict(success=False, available=False, playing=False, has_track=False, error='Not available on this library.')
+
+
 class WindowsAudioDeck:
     def __init__(self, ffmpeg=None, cache_root=None):
         self._lock = threading.RLock()
