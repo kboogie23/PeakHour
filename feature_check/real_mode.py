@@ -72,11 +72,15 @@ def running_blockers():
     """Names of things that must not be running (empty = fine)."""
     problems = []
     try:
-        tasks = subprocess.run(['tasklist', '/FO', 'CSV', '/NH'], capture_output=True, text=True, timeout=30).stdout.lower()
+        # Live processes only: tasklist also lists processes that have exited but whose handle another program
+        # still holds (seen with a hung VirtualDJ "recover" helper), and those cannot touch any file.
+        tasks = subprocess.run(['powershell', '-NoProfile', '-Command',
+                                'Get-Process | Where-Object { -not $_.HasExited } | ForEach-Object { $_.ProcessName }'],
+                               capture_output=True, text=True, timeout=60).stdout.lower().splitlines()
     except (OSError, subprocess.SubprocessError):
-        return ['cannot list processes (tasklist failed)']
+        return ['cannot list processes (powershell failed)']
     for needle, name in DJ_PROGRAMS.items():
-        if '"' + needle in tasks or needle.replace(' ', '') + '.exe' in tasks:
+        if any(task.strip().startswith(needle) or task.strip().startswith(needle.replace(' ', '')) for task in tasks):
             problems.append('%s is running' % name)
     try:
         ps = subprocess.run(['powershell', '-NoProfile', '-Command',
