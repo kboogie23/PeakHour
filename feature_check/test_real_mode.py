@@ -127,6 +127,10 @@ def main():
         late.write_bytes(b'x')
         record(bs.guard_log, 'created', late)
         os.utime(late, (time.time() + 300, time.time() + 300))
+        hist = pathlib.Path(env['LOCALAPPDATA']) / 'VirtualDJ' / 'History' / '2026-11-02.m3u'   # a check creating today's History file
+        check(real_mode.record_created(bs.guard_log, hist) is True, 'record_created records a new file')
+        hist.write_bytes(b'#EXTVDJ:<artist>Feature Check</artist>' + bytes([10]) + b'x.mp3' + bytes([10]))
+        check(real_mode.record_created(bs.guard_log, hist) is False, 'record_created refuses a file that already exists')
         changes = {(c['kind'], pathlib.Path(c['path']).name) for c in bs.changes()}
         for want in (('modified', 'library_cache.json'), ('deleted', 'database.xml'), ('modified', 'MediaLibrary.db-wal'), ('created', 'new.lock'),
                      ('created', 'report.txt'), ('created', 'created.vdjfolder')):
@@ -144,6 +148,7 @@ def main():
         index = json.loads((bs.quarantine_dir / 'index.json').read_text(encoding='utf-8'))
         moved = {pathlib.Path(i['from']).name for i in index}
         check({'new.lock', 'x.json', 'new.crate', 'report.txt', 'new.wav', 'e.m3u', 'created.vdjfolder'} <= moved, 'removed files are in quarantine, not deleted: %s' % sorted(moved))
+        check('2026-11-02.m3u' in moved and not hist.exists(), 'a History file the check created and recorded itself is quarantined by the restore')
         check({'location.sqlite-wal', 'MediaLibrary.db-journal'} <= moved, 'stray -wal and -journal were quarantined')
         check(all((bs.quarantine_dir / i['name']).is_file() for i in index), 'every quarantine entry exists on disk')
         check(all(after[k][1] == before[k][1] for k in before), 'modification times restored')

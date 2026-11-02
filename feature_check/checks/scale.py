@@ -17,7 +17,7 @@ from pathlib import Path
 from feature_check import synthetic_library, media
 from feature_check.api import Result
 from feature_check.checks import (ok, fail, warn, open_app, need_browser, run_ok, shot, ensure_library, library_info,
-                                  set_dialog_answers, set_processes)
+                                  set_dialog_answers, set_processes, library_tracks, is_real)
 from feature_check.checks import health as health_checks
 from feature_check.checks import library as library_checks
 from feature_check.checks import live as live_checks
@@ -53,6 +53,8 @@ def _install_real_copy(ctx, source):
 def _big(ctx):
     """The big library: a real copy (--scale PATH points at a library_cache.json or a folder holding one), else a synthetic one
     of --synthetic N songs (default 49,000)."""
+    if is_real(ctx):
+        return ensure_library(ctx)          # the owner's own library: never replaced
     current = library_info(ctx)
     path = getattr(ctx, 'scale_path', None)
     wanted = getattr(ctx, 'synthetic', None)
@@ -135,8 +137,7 @@ def search_keystroke(ctx):
 
 
 def _library_tracks(ctx):
-    cache = Path(ctx.sandbox) / 'AppData' / 'Local' / 'AXIOM DJ' / 'data' / 'library_cache.json'
-    return json.loads(cache.read_text(encoding='utf-8')).get('tracks', [])
+    return library_tracks(ctx)
 
 
 def _real_virtualdj_databases():
@@ -148,6 +149,8 @@ def _real_virtualdj_databases():
 
 def vdj_connect(ctx):
     import os
+    if is_real(ctx):
+        ctx.skip('not run on the real library: it would write a made-up VirtualDJ database')
     info = _big(ctx)
     real = _real_virtualdj_databases()
     if real and os.environ.get('FEATURE_CHECK_VDJ_ROOTS_FAKED') != '1':
@@ -177,6 +180,8 @@ def vdj_connect(ctx):
 
 
 def reconnect(ctx):
+    if is_real(ctx):
+        ctx.skip('not run on the real library: it would make up files and a 1,000-song folder (health.reconnect_music covers real mode)')
     info = _big(ctx)
     tracks = _library_tracks(ctx)
     counts = {}

@@ -6,13 +6,14 @@
                     It failed when the page only polled while the Performance tab was open.
   poll_cost         the live routes the page polls every few seconds must not re-read the whole library (46 MB on the
                     owner's PC): load_cache calls stay at 0 and the 95th percentile answer time stays under 100 ms."""
+import json
 import shutil
 import time
 from pathlib import Path
 
 from feature_check import media
 from feature_check.checks import (ok, fail, warn, open_app, need_browser, ensure_library, shot, set_processes, p95,
-                                  metrics_reset, is_quick)
+                                  metrics_reset, is_quick, is_real, real_local)
 
 FOLLOW_BUDGET = 10.0
 POLL_P95_BUDGET = 0.100
@@ -28,8 +29,15 @@ def _local(ctx):
 
 
 def _start_virtualdj(ctx, first=('Bananarama', 'Cruel Summer')):
-    """A fake VirtualDJ home with one song already playing, and VirtualDJ in the fake process list."""
+    """VirtualDJ in the fake process list, with a home folder. Sandbox: a fake home with one song already playing.
+    --real: the owner's own VirtualDJ home (the VirtualDJ folder in LOCALAPPDATA); only the process list is faked."""
     ensure_library(ctx)
+    if is_real(ctx):
+        home = real_local() / 'VirtualDJ'
+        if not (home / 'settings.xml').is_file():
+            ctx.skip('no VirtualDJ home folder with settings.xml at %s, so there is no History to follow' % home)
+        set_processes(ctx, ['VirtualDJ'])
+        return home, home / 'History' / (time.strftime('%Y-%m-%d') + '.m3u')
     home, history = media.make_vdj_home(_local(ctx), [(first[0], first[1], r'C:\Music\%s - %s.mp3' % first)], running_seconds_ago=30)
     set_processes(ctx, ['VirtualDJ'])
     return home, history
@@ -37,12 +45,62 @@ def _start_virtualdj(ctx, first=('Bananarama', 'Cruel Summer')):
 
 def _stop_virtualdj(ctx):
     set_processes(ctx, [])
-    shutil.rmtree(_local(ctx) / 'VirtualDJ', ignore_errors=True)
+    if not is_real(ctx):
+        shutil.rmtree(_local(ctx) / 'VirtualDJ', ignore_errors=True)
+
+
+def _follow_real(ctx, browser, home, history):
+    """--real: the owner's VirtualDJ History (backed up and restored by the runner). Append one test row to today's file and
+    require the page, sitting on the Library tab, to pick that song up within 10 s."""
+    folder = home / 'History'
+    title = 'Feature Check Song %s' % time.strftime('%H%M%S')
+    try:
+        if not folder.is_dir():
+            ctx.skip('VirtualDJ has no History folder at %s (it is not in the backup, so nothing is written there)' % folder)
+        browser.run([{'op': 'navigate', 'url': '/', 'settle': 500},
+                     {'op': 'eval', 'expr': "localStorage.removeItem('peakHourDjAutoUser')"}])
+        run = open_app(ctx, 'library', settle=3000, tab_wait=0.5)
+        first = browser.run([{'op': 'until', 'expr': "typeof performanceSeratoEnabled!=='undefined'&&performanceSeratoEnabled===true", 'timeout': 20},
+                             {'op': 'eval', 'expr': STATE_JS, 'as': 'state'}])
+        before = first.vars.get('state') or {}
+        evidence = {'history_file': str(history), 'before': before, 'appended_title': title}
+        if not first.steps[0].get('ok'):
+            return fail('DJ Auto did not switch itself on while the page sits on the Library tab', 0.0, FOLLOW_BUDGET,
+                        browser.run([shot(ctx, 'live-no-auto')]).shots, **evidence)
+        if not before.get('perfHidden'):
+            return warn('the Performance tab is showing, so this did not test the page on another tab', **evidence)
+        if not history.exists():
+            # this process is not watched by the guard: record the new file ourselves so the restore quarantines it
+            from feature_check import real_mode
+            guard_log = getattr(getattr(ctx, 'box', None), 'guard_log', None)
+            if guard_log is None:
+                ctx.skip("today's VirtualDJ History file does not exist and there is no guard log to record creating it in")
+            real_mode.record_created(guard_log, history)
+        media.append_vdj_history(history, 'Feature Check', title, r'C:\Feature Check\%s.mp3' % title)
+        if getattr(ctx, 'progress', None):
+            ctx.progress()                       # last_activity moves past the write: the restore may quarantine it
+        t1 = time.perf_counter()
+        follow = browser.run([
+            {'op': 'until', 'expr': f"performanceSeratoLastTrack?.title==={json.dumps(title)}", 'timeout': FOLLOW_BUDGET + 10},
+            {'op': 'eval', 'expr': STATE_JS, 'as': 'state'},
+            shot(ctx, 'live-follow-real')])
+        seconds = time.perf_counter() - t1
+        evidence.update(after=follow.vars.get('state'), errors=[e['text'] for e in run.errors if e['kind'] == 'exception'])
+        if not follow.steps[0].get('ok'):
+            return fail('a new song in VirtualDJ never reached the page while it showed the Library tab', seconds, FOLLOW_BUDGET, follow.shots, **evidence)
+        if seconds > FOLLOW_BUDGET:
+            return fail(f'the page needed {seconds:.1f} s to follow VirtualDJ', seconds, FOLLOW_BUDGET, follow.shots, **evidence)
+        return ok(seconds, FOLLOW_BUDGET, 'real VirtualDJ History: the page followed the appended song with the Performance tab hidden',
+                  follow.shots, **evidence)
+    finally:
+        _stop_virtualdj(ctx)
 
 
 def follow_virtualdj(ctx):
     browser = need_browser(ctx)
     home, history = _start_virtualdj(ctx)
+    if is_real(ctx):
+        return _follow_real(ctx, browser, home, history)
     try:
         browser.run([{'op': 'navigate', 'url': '/', 'settle': 500},
                      {'op': 'eval', 'expr': "localStorage.removeItem('peakHourDjAutoUser')"}])   # no earlier "DJ Auto off" choice

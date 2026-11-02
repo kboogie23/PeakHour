@@ -1,12 +1,14 @@
 """Health checks: the Health page opens with its counts, and "Reconnect Music" opens the Windows reconnect window
 (it used to re-run Health, or open Mac prompt() boxes asking for a /Volumes path), takes a folder and reconnects songs."""
 import json
+import os
 import re
 import time
 from pathlib import Path
 
 from feature_check import synthetic_library
-from feature_check.checks import (ok, fail, warn, open_app, need_browser, ensure_library, run_ok, shot, set_dialog_answers)
+from feature_check.checks import (ok, fail, warn, open_app, need_browser, ensure_library, run_ok, shot, set_dialog_answers,
+                                  library_tracks, is_real)
 
 OPEN_BUDGET = 10.0
 TRACKS_JS = "(document.getElementById('health-cockpit-metric-tracks')?.textContent||'').trim()"
@@ -54,8 +56,7 @@ def health_open(ctx):
 
 def _missing_names(ctx, limit):
     """File names of the first `limit` library songs whose files are missing (short, unique names)."""
-    cache = Path(ctx.sandbox) / 'AppData' / 'Local' / 'AXIOM DJ' / 'data' / 'library_cache.json'
-    tracks = json.loads(cache.read_text(encoding='utf-8')).get('tracks', [])
+    tracks = library_tracks(ctx)
     counts = {}
     for t in tracks:
         counts[(t.get('filename') or '').lower()] = counts.get((t.get('filename') or '').lower(), 0) + 1
@@ -69,20 +70,44 @@ def _missing_names(ctx, limit):
     return names
 
 
+def _busiest_drive(ctx):
+    """The drive root holding most of the library's songs that really exist (a sample of them), e.g. D: and a backslash."""
+    counts = {}
+    for t in library_tracks(ctx)[:6000]:
+        path = t.get('path') or ''
+        if len(path) > 2 and path[1] == ':' and not t.get('needs_relink') and os.path.isfile(path):
+            counts[path[:2].upper()] = counts.get(path[:2].upper(), 0) + 1
+    if not counts:
+        return None
+    drive = max(counts, key=counts.get)
+    return drive + os.sep, counts[drive]
+
+
 def reconnect_music(ctx):
     info = ensure_library(ctx)
     browser = need_browser(ctx)
-    names = _missing_names(ctx, RECONNECT_FILES)
-    if len(names) < 5:
-        ctx.skip('the library has too few missing songs to try Reconnect Music')
-    folder = Path(ctx.sandbox) / 'Music Now'
-    synthetic_library.make_named_files(ctx.sandbox, folder, names)
+    real = is_real(ctx)
+    if real:
+        # the owner's library: choose the drive that holds most of the songs that exist; nothing is made up
+        found = _busiest_drive(ctx)
+        if not found:
+            ctx.skip('no song in the real library has its file on a drive of this PC, so there is no folder to choose')
+        folder, existing = Path(found[0]), found[1]
+        names = []
+        if not any(t.get('needs_relink') for t in library_tracks(ctx)):
+            ctx.skip('the real library has no missing songs, so Health offers no Reconnect Music button')
+    else:
+        names = _missing_names(ctx, RECONNECT_FILES)
+        if len(names) < 5:
+            ctx.skip('the library has too few missing songs to try Reconnect Music')
+        folder = Path(ctx.sandbox) / 'Music Now'
+        synthetic_library.make_named_files(ctx.sandbox, folder, names)
     set_dialog_answers(ctx, folder=str(folder))
     try:
         open_app(ctx, tab=None)
         run = browser.run([
             {'op': 'click', 'selector': '#tab-btn-health', 'required': True},
-            {'op': 'until', 'expr': COUNT_READY, 'timeout': 60, 'required': True},
+            {'op': 'until', 'expr': COUNT_READY, 'timeout': 180 if real else 60, 'required': True},
             {'op': 'until', 'expr': "[...document.querySelectorAll('button')].some(b=>__fc.visible(b)&&__fc.label(b)==='Reconnect Music')", 'timeout': 20},
             {'op': 'eval', 'expr': SHOWN_JS, 'as': 'ui'}])
         if not run.steps[0].get('ok') or not run.steps[1].get('ok'):
@@ -114,7 +139,7 @@ def reconnect_music(ctx):
             {'op': 'until', 'expr': "(document.querySelector('.axiom-reconnect-chosen strong')?.textContent||'').length>0", 'timeout': 10},
             {'op': 'eval', 'expr': "document.querySelector('.axiom-reconnect-chosen strong')?.textContent||''", 'as': 'chosen'},
             {'op': 'click_text', 'text': 'Start', 'within': RECONNECT_DIALOG, 'required': True},
-            {'op': 'until', 'timeout': 90, 'expr': "(()=>{const r=document.querySelector('.axiom-reconnect-result');return !!r&&!r.hidden&&r.textContent.length>0})()"},
+            {'op': 'until', 'timeout': 1200 if real else 90, 'expr': "(()=>{const r=document.querySelector('.axiom-reconnect-result');return !!r&&!r.hidden&&r.textContent.length>0})()"},
             {'op': 'eval', 'expr': "document.querySelector('.axiom-reconnect-result')?.textContent||''", 'as': 'summary'},
             shot(ctx, 'reconnect-done')])
         seconds = time.perf_counter() - t0
@@ -126,7 +151,7 @@ def reconnect_music(ctx):
         bad = [s for s in done.steps[:6] if not s.get('ok')]
         if bad:
             return fail('Reconnect Music stopped at "%s": %s' % (bad[0]['op'], bad[0].get('error')), seconds, shots=shots, **evidence)
-        if str(folder).lower() != str(done.vars.get('chosen', '')).lower():
+        if str(folder).lower().rstrip(os.sep) != str(done.vars.get('chosen', '')).lower().rstrip(os.sep):
             return fail('the window shows %r after choosing, expected %r' % (done.vars.get('chosen'), str(folder)), seconds, shots=shots, **evidence)
         summary = done.vars.get('summary', '')
         match = re.match(r'Reconnected ([0-9,]+) song', summary)
@@ -138,6 +163,10 @@ def reconnect_music(ctx):
         if isinstance(status, dict):
             evidence['status'] = {k: status.get(k) for k in ('state', 'missing', 'relinked', 'ambiguous', 'not_found')}
         browser.run([{'op': 'click_text', 'text': 'Close', 'within': RECONNECT_DIALOG}])
+        if real:
+            evidence['folder_chosen'] = str(folder)
+            browser.run([{'op': 'sleep', 'seconds': 0.2}])
+            return ok(seconds, None, f'Reconnect Music chose {folder} and finished: "{summary[:90]}" (real library, no prompt() box)', shots, **evidence)
         if reconnected < len(names):
             return fail(f'only {reconnected} of {len(names)} songs found in the chosen folder were reconnected', seconds, shots=shots, **evidence)
         return ok(seconds, None, f'Reconnect Music chose the folder and reconnected {reconnected} songs, no prompt() box', shots, **evidence)

@@ -240,6 +240,19 @@ def walk(root, excluded=(), depth=None):
     return files, dirs
 
 
+def record_created(guard_log, path):
+    """For a file a check creates itself, from the (unguarded) runner process: write the same 'created' record the guard writes
+    for the run's own processes, so the restore moves the file to quarantine. Call it only when the file does not exist yet.
+    Returns True when recorded."""
+    full = os.path.abspath(str(path))
+    if os.path.exists(full):
+        return False
+    with open(str(guard_log), 'a', encoding='utf-8') as handle:
+        handle.write(json.dumps({'t': round(time.time(), 3), 'pid': os.getpid(), 'argv': 'feature-check runner', 'mode': 'enforce',
+                                 'kind': 'created', 'detail': full, 'blocked': False}) + chr(10))
+    return True
+
+
 def _key(path):
     return os.path.normcase(os.path.abspath(str(path)))
 

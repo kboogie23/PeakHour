@@ -5,10 +5,13 @@ What they watch is what the owner sees:
                  route the page polls) whether that file is now playing;
   Track Information   click a song, wait until the window stops saying "Checking Source File..." (on a 50,000-song
                  external-drive library it used to hang there for minutes)."""
+import json
+import os
+import re
 import time
 
 from feature_check.checks import (ok, fail, warn, open_app, need_browser, ensure_library, run_ok, shot, route_seconds,
-                                  metrics_reset, library_info)
+                                  metrics_reset, library_info, library_tracks, is_real)
 
 PLAY_BUDGET = 3.0        # seconds from the click to "playing"
 INFO_BUDGET = 5.0        # seconds from the click to the end of "Checking Source File..."
@@ -22,13 +25,60 @@ def _has_real_songs(ctx):
     return bool(info and info.get('library') == 'synthetic')
 
 
+AUDIO_EXTENSIONS = ('.mp3', '.wav', '.flac', '.m4a', '.aac', '.ogg', '.aif', '.aiff')
+
+
+def _real_candidates(ctx, count=4):
+    """Real library songs whose file exists on this PC (checked here, read only), with an audio extension and a title that is
+    unique in the library - so searching for the title finds exactly that song."""
+    tracks = library_tracks(ctx)
+    titles = {}
+    for t in tracks:
+        key = (t.get('title') or '').strip().lower()
+        titles[key] = titles.get(key, 0) + 1
+    found = []
+    for t in tracks:
+        path = t.get('path') or ''
+        title = (t.get('title') or '').strip()
+        if (path.lower().endswith(AUDIO_EXTENSIONS) and not t.get('needs_relink') and 4 <= len(title) <= 40 and re.fullmatch(r'[A-Za-z0-9 ]+', title) and titles.get(title.lower()) == 1
+                and os.path.isfile(path)):
+            found.append((path, title))
+            if len(found) >= count:
+                break
+    return found
+
+
 def play_preview(ctx):
     ensure_library(ctx)
     browser = need_browser(ctx)
-    run = open_app(ctx, 'library', extra_steps=[SEARCH_REAL] if _has_real_songs(ctx) else [])
+    real = is_real(ctx)
+    budget = 8.0 if real else PLAY_BUDGET      # a real file on an external drive may wake the disk first
+    candidates = _real_candidates(ctx) if real else []
+    if real and not candidates:
+        ctx.skip('no song in the real library has an audio file that exists on this PC')
+    wanted, shown = None, None
+    for path, title in (candidates or [(None, None)]):
+        steps = [SEARCH_REAL] if _has_real_songs(ctx) else []
+        if real:
+            steps = [{'op': 'type', 'selector': '#main-search', 'text': title, 'clear': True, 'mutation_selector': '#search-results'}]
+        run = open_app(ctx, 'library', extra_steps=steps)
+        if not real:
+            break
+        row = ("[...document.querySelectorAll('#search-results .library-track-card')].find(r=>(r.dataset.path||'').toLowerCase()==="
+               + json.dumps(path.lower()) + ")")
+        got = browser.run([{'op': 'until', 'expr': f"!!({row})", 'timeout': 20},
+                           {'op': 'eval', 'expr': f"(()=>{{const r={row};if(r)r.setAttribute('data-fc-pick','1');return !!r}})()", 'as': 'tagged'}])
+        if got.vars.get('tagged'):
+            wanted, shown = path, title
+            break
+    if real and not wanted:
+        shots = browser.run([shot(ctx, 'play-real-not-found')]).shots
+        return fail('searched for the titles of %d real songs that exist on this PC, and none showed in the Library list' % len(candidates),
+                    shots=shots, tried=[t for _, t in candidates])
+    pick = '#search-results .library-track-card[data-fc-pick="1"]' if real else CONNECTED_ROW
     # a song whose file is on this PC (the rest of the library lives on an unplugged drive)
-    found = browser.run([{'op': 'until', 'expr': f"!!document.querySelector('{CONNECTED_ROW} .library-artwork')", 'timeout': 10},
-                         {'op': 'eval', 'expr': f"document.querySelector('{CONNECTED_ROW}')?.dataset.path || ''", 'as': 'path'}])
+    found = browser.run([{'op': 'until', 'expr': f"!!document.querySelector('{pick} .library-artwork')", 'timeout': 10},
+                         {'op': 'eval', 'expr': f"document.querySelector('{pick}')?.dataset.path || ''", 'as': 'path'}])
     path = found.vars.get('path')
     if not found.steps[0].get('ok') or not path:
         shots = browser.run([shot(ctx, 'play-no-song')]).shots
@@ -36,7 +86,7 @@ def play_preview(ctx):
     metrics_reset(ctx)
     ctx.post('/api/audio/stop', json={'reason': 'feature_check'})
     start = time.perf_counter()
-    click = browser.run([{'op': 'click', 'selector': f'{CONNECTED_ROW} .library-artwork', 'required': True}])
+    click = browser.run([{'op': 'click', 'selector': f'{pick} .library-artwork', 'required': True}])
     run_ok(click, 'pressing play on a song')
     status, deadline = {}, start + 10
     while time.perf_counter() < deadline:
@@ -54,10 +104,10 @@ def play_preview(ctx):
     if not playing:
         reason = (status.get('error') if isinstance(status, dict) and status.get('error') else
                   'the song did not start playing after pressing its play button')
-        return fail(reason, seconds, PLAY_BUDGET, shots, **evidence)
-    if seconds > PLAY_BUDGET:
-        return fail(f'play took {seconds:.1f} s to start', seconds, PLAY_BUDGET, shots, **evidence)
-    return ok(seconds, PLAY_BUDGET, 'the song is playing', shots, **evidence)
+        return fail(reason, seconds, budget, shots, **evidence)
+    if seconds > budget:
+        return fail(f'play took {seconds:.1f} s to start', seconds, budget, shots, **evidence)
+    return ok(seconds, budget, 'the song is playing', shots, **evidence)
 
 
 def _wait_for_source_check(browser, click_steps, ctx, name):

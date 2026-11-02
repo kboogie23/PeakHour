@@ -5,6 +5,7 @@ This module holds what they share: the app is opened the way a user opens it, a 
 sandbox, and results are built the same way everywhere.
 """
 import json
+import os
 import time
 from pathlib import Path
 
@@ -75,9 +76,42 @@ def library_info(ctx):
     return synthetic_library.current(ctx.sandbox)
 
 
+def is_real(ctx):
+    """True under check_features.py --real: the app runs on the owner's actual data (the runner backs it up and restores it)."""
+    return bool(getattr(ctx, 'real', False))
+
+
+def real_local():
+    return Path(os.environ.get('LOCALAPPDATA') or Path.home() / 'AppData' / 'Local')
+
+
+def cache_path(ctx):
+    """The library cache the server reads: the owner's own file under --real, the sandbox's otherwise."""
+    if is_real(ctx):
+        return real_local() / 'AXIOM DJ' / 'data' / 'library_cache.json'
+    return Path(ctx.sandbox) / 'AppData' / 'Local' / 'AXIOM DJ' / 'data' / 'library_cache.json'
+
+
+_TRACKS = {}
+
+
+def library_tracks(ctx):
+    """The library's songs, read (never written) from the cache file; kept until the file changes."""
+    path = cache_path(ctx)
+    stat = path.stat()
+    key = (str(path), stat.st_mtime_ns, stat.st_size)
+    if _TRACKS.get('key') != key:
+        _TRACKS['key'] = key
+        _TRACKS['tracks'] = json.loads(path.read_text(encoding='utf-8')).get('tracks', [])
+    return _TRACKS['tracks']
+
+
 def ensure_library(ctx, tracks=QUICK_TRACKS, real=QUICK_REAL):
     """A library of at least `tracks` songs in the sandbox (the one the scale run installed, a real copy, or a new
-    synthetic one). Returns {'library': 'synthetic'|'real copy', 'tracks': n, ...}."""
+    synthetic one). Returns {'library': 'synthetic'|'real copy'|'real', 'tracks': n, ...}.
+    Under --real nothing is ever written: the owner's library is what it is."""
+    if is_real(ctx):
+        return {'library': 'real', 'tracks': len(library_tracks(ctx))}
     info = library_info(ctx)
     if info and info.get('tracks', 0) >= tracks:
         return info
