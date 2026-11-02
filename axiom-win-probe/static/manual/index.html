@@ -369,6 +369,13 @@
   <tr><td><b>Sync to DJ</b></td><td><b>Send to VirtualDJ</b>, <b>Serato + djay Refresh</b>, <b>DJ Transfer</b> (playlists, play counts, beat grids).</td></tr>
   <tr><td><b>Ready to play</b></td><td><b>Audio Readiness</b> → <span class="ui">Check Audio</span> (Windows audio and your output device), <b>New Music Inbox</b> (review and prepare newly added songs).</td></tr>
 </table>
+<h3>Reconnect Music (songs whose files moved)</h3>
+<ol class="steps">
+  <li>If songs show as <b>Missing Files</b> because you moved them to another folder or drive, click <span class="ui">Reconnect Music</span> in Health.</li>
+  <li>Click <span class="ui">Choose folder or drive</span> and pick where your music is now (a whole drive such as <code>D:\</code> is fine), then <span class="ui">Start</span>.</li>
+  <li>PEAK HOUR looks through that folder and reconnects each missing song to the file with the same name. Songs keep their BPM, key, cues and playlists. Your music files are not changed, and a copy of your library is kept first (<code>library_cache.reconnect_backup</code> in the PEAK HOUR data folder; the newest 3 are kept).</li>
+  <li>When it finishes you see how many songs were reconnected, how many could not be matched because the same file name exists in several places (these stay missing so nothing is linked wrongly), and how many are not in that folder. Run it again with another folder or drive for the rest.</li>
+</ol>
 <h3>Send fixes to VirtualDJ</h3>
 <ol class="steps">
   <li>Close VirtualDJ.</li>
@@ -490,6 +497,7 @@
 <p>Newest first. This list grows with every update.</p>
 <h3>1.0.5 · 1 November 2026</h3>
 <ul>
+  <li><b>Reconnect Music</b> now works on Windows: choose the folder or drive where your music is now and PEAK HOUR reconnects your missing songs by file name, even when they moved into different folders. It shows how many were reconnected and keeps a backup copy of your library first.</li>
   <li><b>Recording</b>: a short audio glitch no longer fails a whole set; it is counted as a dropout and the recording is saved. Closing the PEAK HOUR window while recording now stops and saves the recording.</li>
   <li><b>Other laptops</b> is now off unless started with <code>AXIOM_HUB=1</code>, and each laptop pairs with a one-time 6-digit code shown on the main PC.</li>
   <li><b>Safer duplicate clean-up</b>: files on a USB stick, SD card or network drive (no Recycle Bin) are no longer deleted; PEAK HOUR says so and leaves them alone.</li>
