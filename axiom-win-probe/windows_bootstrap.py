@@ -57,6 +57,8 @@ def build_backend(*, recording_settings, recording_directory, capture_factory=No
     install_intake(app)  # total, percentage and time left for "Adding your music"
     from windows_performance import install as install_performance
     install_performance(app)  # same answers, faster, for big libraries
+    from windows_track_info import install as install_track_info
+    install_track_info(app)  # Track Information: the library is read and resolved once, not on every open
     from windows_filetypes import install as install_filetypes
     install_filetypes(app)  # Library > Type: audio, video or one file type
     from windows_remote_library import install as install_remote_library

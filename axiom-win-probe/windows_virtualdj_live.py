@@ -13,14 +13,17 @@ Serato reports VirtualDJ's processes, the Serato loader returns the VirtualDJ
 payload, and the result is labelled provider "virtualdj" / "VirtualDJ". When
 Serato is running, everything behaves exactly as before.
 """
+import inspect
 import ntpath
 import os
 import re
+import threading
 import time
 from pathlib import Path
 
 HISTORY_MAX_AGE = 12 * 3600
 HISTORY_LIMIT = 50
+SNAPSHOT_TTL = 1.5  # seconds a process check is reused by the Performance / Live Assist poll
 SERATO_NAMES = ('Serato DJ Pro', 'Serato DJ')
 _FIELD = re.compile(r'<(\w+)>(.*?)</\1>')
 
@@ -55,6 +58,92 @@ def parse_history(path):
     return entries
 
 
+_HISTORY = {'key': None, 'entries': []}
+
+
+def parse_history_cached(path):
+    """parse_history, re-read only when the history file changes (size, mtime). Read-only: callers must not edit
+    the returned list. The poll runs every second or two and the file only grows when a song is played."""
+    try:
+        stat = os.stat(path)
+        key = (str(path), stat.st_mtime_ns, stat.st_size)
+    except OSError:
+        return parse_history(path)
+    if key == _HISTORY['key']:
+        return _HISTORY['entries']
+    entries = parse_history(path)
+    _HISTORY.update(key=key, entries=entries)
+    return entries
+
+
+class PollSnapshots:
+    """Process checks for the live poll. One poll asks four times (Serato, VirtualDJ, djay ...) and each ask
+    lists every process on the PC (about 6 ms, far more when the PC is busy). Inside a poll the answers are kept
+    for SNAPSHOT_TTL seconds; outside a poll (library writes check that Serato is closed) every ask is fresh."""
+
+    def __init__(self, ttl=SNAPSHOT_TTL, clock=time.monotonic):
+        self.ttl, self.clock, self.local, self.lock, self.kept = ttl, clock, threading.local(), threading.Lock(), {}
+
+    def scope(self, function):
+        def polled(*args, **kwargs):
+            from windows_intake import FAST_REALPATH
+            self.local.depth = getattr(self.local, 'depth', 0) + 1
+            try:
+                with FAST_REALPATH.direct():  # AXIOM resolves the playing file's real path: one plain realpath
+                    return function(*args, **kwargs)
+            finally:
+                self.local.depth -= 1
+        return polled
+
+    def wrap(self, snapshot):
+        """snapshot(*names) for the poll. AXIOM's Windows snapshot takes the process lister as `snapshot=`: inside
+        a poll that is one process list shared for SNAPSHOT_TTL seconds, so every name asked costs nothing more
+        (and a poll every second or two lists the processes about once per ttl). Any other snapshot function is
+        kept per name for the same time."""
+        try:
+            shares_list = 'snapshot' in inspect.signature(snapshot).parameters
+        except (TypeError, ValueError):
+            shares_list = False
+
+        def process_list():
+            now = self.clock()
+            with self.lock:
+                found = self.kept.get('processes')
+            if found is None or now - found[0] > self.ttl:
+                from windows_serato_processes import snapshot_processes
+                found = (now, snapshot_processes())  # raises ProcessInspectionError as before: nothing is kept
+                with self.lock:
+                    self.kept['processes'] = found
+            return list(found[1])
+
+        def process_snapshot(*names):
+            if not getattr(self.local, 'depth', 0):
+                return snapshot(*names)
+            if shares_list:
+                from windows_serato_processes import ProcessInspectionError
+                try:
+                    process_list()  # refreshes the shared list when it is older than ttl
+                except ProcessInspectionError:
+                    return snapshot(*names, snapshot=process_list)  # fails closed inside AXIOM's own handler
+                with self.lock:
+                    stamp = self.kept['processes'][0]
+                    found = self.kept.get(('answer',) + tuple(str(n).casefold() for n in names))
+                if found is None or found[0] != stamp:  # each name is looked up in the list once per list
+                    found = (stamp, snapshot(*names, snapshot=process_list))
+                    with self.lock:
+                        self.kept[('answer',) + tuple(str(n).casefold() for n in names)] = found
+                return dict(found[1], pids=list(found[1].get('pids') or []))
+            key, now = tuple(str(n).casefold() for n in names), self.clock()
+            with self.lock:
+                found = self.kept.get(key)
+            if found is None or now - found[0] > self.ttl:
+                found = (now, snapshot(*names))
+                with self.lock:
+                    self.kept[key] = found
+            return dict(found[1], pids=list(found[1].get('pids') or []))
+        return process_snapshot
+
+
 _LIBRARY = {'key': None, 'tracks': {}}
 
 
@@ -84,7 +173,7 @@ def live_payload(app, home, now=time.time):
     if not files or now() - files[0].stat().st_mtime > HISTORY_MAX_AGE:
         return dict(base, success=False, active=True, waiting_for_track=True,
                     error='Play a song in VirtualDJ; PEAK HOUR follows its history.')
-    entries = parse_history(files[0])
+    entries = parse_history_cached(files[0])
     if not entries:
         return dict(base, success=False, active=True, waiting_for_track=True, error='VirtualDJ has not played a song yet.')
     library = _library(app)
@@ -118,7 +207,9 @@ def install(app, home_finder=None):
         return
     from windows_virtualdj_lists import virtualdj_home, VirtualDJListError
     home_finder = home_finder or virtualdj_home
-    snapshot, serato_payload, dj_payload = app._mac_process_snapshot, app._serato_live_history_payload, app._performance_dj_live_payload
+    polls = PollSnapshots()
+    snapshot = polls.wrap(app._mac_process_snapshot)
+    serato_payload, dj_payload = app._serato_live_history_payload, app._performance_dj_live_payload
 
     def serato_running():
         return bool(snapshot(*SERATO_NAMES).get('running'))
@@ -131,6 +222,7 @@ def install(app, home_finder=None):
                 return dict(vdj, token='virtualdj:' + vdj['token'])
         return result
 
+    @polls.scope
     def serato_history_payload():
         if serato_running():
             return serato_payload()
@@ -140,6 +232,7 @@ def install(app, home_finder=None):
             return {'success': False, 'active': True, 'waiting_for_track': True, 'error': str(exc),
                     'provider': 'virtualdj', 'source_label': 'VirtualDJ', 'source_audio_untouched': True}
 
+    @polls.scope
     def performance_dj_live_payload(*args, **kwargs):
         result = dj_payload(*args, **kwargs)
         track = result.get('track') if isinstance(result, dict) else None
@@ -150,6 +243,16 @@ def install(app, home_finder=None):
             result['source_label'] = 'VirtualDJ'
         return result
 
+    if hasattr(app, '_performance_saved_timeline'):  # the poll route resolves the playing file here, outside the payload
+        app._performance_saved_timeline = polls.scope(app._performance_saved_timeline)
+    if hasattr(app, '_djay_axiom_cache_indexes'):  # resolves every library track, once per library change: bulk
+        indexes = app._djay_axiom_cache_indexes
+
+        def bulk_indexes(*args, **kwargs):
+            from windows_intake import FAST_REALPATH
+            with FAST_REALPATH.direct(False):
+                return indexes(*args, **kwargs)
+        app._djay_axiom_cache_indexes = bulk_indexes
     app._mac_process_snapshot = process_snapshot
     app._serato_live_history_payload = serato_history_payload
     app._performance_dj_live_payload = performance_dj_live_payload

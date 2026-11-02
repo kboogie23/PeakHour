@@ -115,6 +115,17 @@ class FastRealpath:
         self.shared, self.shared_entries, self.shared_lock = collections.OrderedDict(), 0, threading.Lock()
 
     @contextlib.contextmanager
+    def direct(self, on=True):
+        """Windows' own realpath for every call in this thread. For a poll that resolves one file every second
+        or two (direct(False) turns the shared listing back on for bulk work inside): the shared folder listing costs ~85 ms for a 20,000-file folder, paid again each time it expires."""
+        before = getattr(self.local, 'direct', False)
+        self.local.direct = on
+        try:
+            yield
+        finally:
+            self.local.direct = before
+
+    @contextlib.contextmanager
     def active(self, stat=False):
         self.local.folders, self.local.listings, self.local.stat = {}, {}, stat
         try:
@@ -210,6 +221,8 @@ class FastRealpath:
         return ntpath.join(entry['real'], found[0]) if found[1] else None
 
     def __call__(self, path, *args, **kwargs):
+        if getattr(self.local, 'direct', False):
+            return self.original(path, *args, **kwargs)
         if getattr(self.local, 'folders', None) is None:
             try:
                 shared = self._shared_realpath(path, args, kwargs)
