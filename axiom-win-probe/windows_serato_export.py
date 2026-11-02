@@ -26,7 +26,7 @@ def make_playlist_exporter(app):
         tracks = [track for track in playlist if isinstance(track, dict)]
         result = app._write_serato_modern_visible_crate(tracks, name)
         if not result.get('delivery_verified'):
-            raise IOError('AXIOM could not verify the Serato crate.')
+            raise IOError('PEAK HOUR could not verify the Serato crate.')
         crate = result.get('crate_name') or name
         return {
             'success': True,

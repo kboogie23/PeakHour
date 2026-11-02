@@ -330,12 +330,20 @@ def catalogue_years(track):
 
 # ------------------------------------------------------------------ runs
 
+def _whole(value, default, what):
+    try:
+        return int(value or default)
+    except (TypeError, ValueError, OverflowError):
+        raise AIError(f'{what} must be a whole number.') from None
+
+
 class AIAssist:
     def __init__(self, app, folder, providers=None):
         self.app, self.folder = app, Path(folder)
         self.keys = KeyStore(self.folder)
         self.providers = providers or {'claude': ClaudeProvider, 'openai': OpenAIProvider}
         self.lock = threading.Lock()
+        self.save_lock = threading.Lock()  # the run thread and the apply thread both save the same job file
         self.job = None
         self.playlist = None
         self.stop_requested = False
@@ -387,7 +395,7 @@ class AIAssist:
     def status(self):
         settings = self.settings()
         with self.lock:
-            job = dict(self.job or {})
+            job = dict(self._load() or {})
         job.pop('items', None)
         return {'providers': {p: {'name': info['name'], 'key_set': self.keys.has(p), 'model': settings['models'][p],
                                   'models': [{'id': m, 'label': info['labels'][m]} for m in info['models']]}
@@ -396,6 +404,34 @@ class AIAssist:
                 'task_order': list(TASKS), 'job': job or None}  # JSON objects come back sorted
 
     # runs
+    def _load(self):
+        """The current job; with none in memory, the newest saved run. Call with self.lock held. A run saved as
+        running has no thread any more (PEAK HOUR closed mid-run), so it becomes 'interrupted' and stops blocking."""
+        if self.job:
+            return self.job
+        folder = self.folder / 'runs'
+        runs = sorted(folder.glob('*.json'), key=lambda p: p.stat().st_mtime) if folder.is_dir() else []
+        if not runs:
+            return None
+        try:
+            job = json.loads(runs[-1].read_text(encoding='utf-8'))
+        except (OSError, ValueError):
+            return None
+        if not isinstance(job, dict):
+            return None
+        changed = False
+        if job.get('state') == 'running':
+            job['state'], changed = 'interrupted', True
+        if isinstance(job.get('applying'), dict) and job['applying'].get('state') == 'running':
+            job['applying']['state'], changed = 'interrupted', True
+        if changed:
+            try:
+                self._save(job)
+            except OSError:
+                pass  # still shown as interrupted; saved again with the next change
+        self.job = job
+        return job
+
     def _tracks(self):
         cache = self.app.load_cache(self.app.CACHE_PATH)
         return [t for t in (self.app._all_library_cache_tracks(cache) if hasattr(self.app, '_all_library_cache_tracks')
@@ -410,7 +446,7 @@ class AIAssist:
     def start(self, task, scope, limit, provider=None):
         if task not in TASKS:
             raise AIError('Choose what AI Assist should check.')
-        limit = max(1, min(MAX_TRACKS, int(limit or 200)))
+        limit = max(1, min(MAX_TRACKS, _whole(limit, 200, 'How many tracks')))
         client = self.client(provider)  # fails early without a key
         settings = self.settings()
         provider = provider or settings['provider']
@@ -418,7 +454,8 @@ class AIAssist:
         if not chosen:
             raise AIError('No tracks need this right now.')
         with self.lock:
-            if self.job and self.job.get('state') == 'running':
+            current = self._load()
+            if current and current.get('state') == 'running':
                 raise AIError('AI Assist is already working. Wait for it or stop it first.')
             self.stop_requested = False
             self.job = {'id': uuid.uuid4().hex[:12], 'task': task, 'scope': scope, 'provider': provider,
@@ -504,8 +541,16 @@ class AIAssist:
         folder = self.folder / 'runs'
         folder.mkdir(parents=True, exist_ok=True)
         partial = folder / f"{job['id']}.part"
-        partial.write_text(json.dumps(job, ensure_ascii=False), encoding='utf-8')
-        os.replace(partial, folder / f"{job['id']}.json")
+        with self.save_lock:
+            for attempt in range(5):
+                try:
+                    text = json.dumps(job, ensure_ascii=False)
+                    break
+                except RuntimeError:  # the other thread added a key while this one was reading
+                    if attempt == 4:
+                        raise
+            partial.write_text(text, encoding='utf-8')
+            os.replace(partial, folder / f"{job['id']}.json")
 
     # playlists from the DJ's own library
     def _candidates(self, brief, bpm_min, bpm_max, year_from, year_to):
@@ -534,7 +579,7 @@ class AIAssist:
         brief = re.sub(r'\s+', ' ', str(brief or '')).strip()[:600]
         if len(brief) < 3:
             raise AIError('Describe the playlist first, for example "90s East Coast warm-up into a peak".')
-        count = max(5, min(100, int(count or 25)))
+        count = max(5, min(100, _whole(count, 25, 'How many tracks')))
         filters = [_number(v) for v in (bpm_min, bpm_max, year_from, year_to)]
         client = self.client(provider)
         settings = self.settings()
@@ -586,14 +631,7 @@ class AIAssist:
 
     def suggestions(self):
         with self.lock:
-            job = self.job
-        if not job:
-            runs = sorted((self.folder / 'runs').glob('*.json'), key=lambda p: p.stat().st_mtime) if (self.folder / 'runs').is_dir() else []
-            if runs:
-                try:
-                    job = self.job = json.loads(runs[-1].read_text(encoding='utf-8'))
-                except (OSError, ValueError):
-                    job = None
+            job = self._load()
         if not job:
             return {'job': None, 'items': []}
         info = {k: v for k, v in job.items() if k != 'items'}
@@ -603,7 +641,7 @@ class AIAssist:
     def _post(self, route, body):
         host = self.app.app.config.get('PEAK_HOUR_HOST') or '127.0.0.1:%s' % os.environ.get('AXIOM_PORT', '8080')
         client = self.app.app.test_client()
-        response = client.post(route, json=body, base_url=f'http://{host}', environ_base={'REMOTE_ADDR': '127.0.0.1'})
+        response = client.post(route, json=body, base_url=f'http://{host}', headers={'Origin': f'http://{host}'}, environ_base={'REMOTE_ADDR': '127.0.0.1'})
         data = response.get_json(silent=True) or {}
         if response.status_code >= 400 or data.get('success') is False:
             raise AIError(data.get('error') or f'PEAK HOUR could not save this ({response.status_code}).')
@@ -628,9 +666,11 @@ class AIAssist:
         """Skip at once; apply in the background (the page shows "Saving 12 of 144") so a long list never looks
         stuck, and only one apply runs at a time."""
         with self.lock:
-            job = self.job
+            job = self._load()
             if not job:
                 raise AIError('There are no AI suggestions to apply.')
+            if job.get('state') == 'running':
+                raise AIError('AI Assist is still checking tracks. Wait for it to finish or stop it, then apply.')
             if (job.get('applying') or {}).get('state') == 'running':
                 raise AIError('PEAK HOUR is still saving the last ones you ticked.')
             chosen = [item for item in job.get('items') or [] if item['id'] in set(ids or []) and item['status'] == 'pending']

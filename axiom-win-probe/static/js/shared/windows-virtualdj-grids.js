@@ -27,7 +27,7 @@
   select.append(new Option('VirtualDJ','virtualdj'));
   select.removeAttribute('onchange');select.addEventListener('change',()=>choose(select.value));
   panel=document.createElement('section');panel.id='health-doctor-vdj';panel.className='axiom-vdj-grids';panel.hidden=true;
-  panel.innerHTML=`<p>AXIOM checks the grids VirtualDJ has stored against the actual audio. Nothing in VirtualDJ is changed.</p>
+  panel.innerHTML=`<p>PEAK HOUR checks the grids VirtualDJ has stored against the actual audio. Nothing in VirtualDJ is changed.</p>
    <div class="health-doctor-fields"><label>Music<select id="health-doctor-vdj-scope"><option value="full">Entire VirtualDJ library</option><option value="test">Quick test: 10 songs</option><option value="folder">Music folder</option></select></label></div>
    <div class="axiom-vdj-grid-actions"><button id="health-doctor-vdj-check" class="health-transfer-primary" type="button">Check VirtualDJ Beatgrids</button>
    <button id="health-doctor-vdj-cancel" class="health-transfer-secondary" type="button" hidden>Stop</button></div>
@@ -70,12 +70,12 @@
   const attention=(data.results||[]).filter(r=>r.status==='repair'||r.status==='review');
   host.innerHTML=`${data.results?.length?`<div class="axiom-vdj-grid-tools"><label><input type="checkbox" id="health-doctor-vdj-clean" ${showClean?'checked':''}> Show clean songs</label>
    <button id="health-doctor-vdj-list" class="health-transfer-secondary" type="button" ${attention.length?'':'disabled'}>Add ${attention.length.toLocaleString()} song${attention.length===1?'':'s'} to a VirtualDJ list</button></div>`:''}
-   ${rows.length?`<table class="axiom-vdj-grid-table"><thead><tr><th>Result</th><th>Song</th><th>BPM</th><th>What AXIOM found</th></tr></thead><tbody>${rows.map(r=>`<tr data-status="${escape(r.status)}">
+   ${rows.length?`<table class="axiom-vdj-grid-table"><thead><tr><th>Result</th><th>Song</th><th>BPM</th><th>What PEAK HOUR found</th></tr></thead><tbody>${rows.map(r=>`<tr data-status="${escape(r.status)}">
     <td>${escape(labels[r.status]||r.status)}</td><td><strong>${escape(r.title)}</strong><small>${escape(r.artist)}</small></td><td>${r.bpm?escape(r.bpm):''}</td>
     <td>${escape([...(r.issue_text||[]),r.detail,r.suggestion].filter(Boolean).join(' '))||'Grid matches the audio.'}</td></tr>`).join('')}</tbody></table>`:
     data.results?.length?'<p>Every checked song has a clean grid.</p>':''}`;
   const toggle=byId('health-doctor-vdj-clean');if(toggle)toggle.onchange=()=>{showClean=toggle.checked;render(last);};
-  const list=byId('health-doctor-vdj-list');if(list)list.onclick=()=>window.AxiomWindowsVirtualDJ?.exportList?.({name:`AXIOM Grid Review ${new Date().toISOString().slice(0,10)}`,tracks:attention.map(r=>({path:r.path}))});
+  const list=byId('health-doctor-vdj-list');if(list)list.onclick=()=>window.AxiomWindowsVirtualDJ?.exportList?.({name:`PEAK HOUR Grid Review ${new Date().toISOString().slice(0,10)}`,tracks:attention.map(r=>({path:r.path}))});
  }
  new MutationObserver(attach).observe(document.documentElement,{childList:true,subtree:true});
  attach();

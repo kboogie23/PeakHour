@@ -36,6 +36,7 @@ import sqlite3
 import threading
 import time
 import uuid
+from collections import OrderedDict
 from pathlib import Path
 
 from defusedxml import ElementTree as SafeET
@@ -49,6 +50,8 @@ KINDS = ('cues', 'grids', 'play_counts')
 CUE_SLOTS = 8
 CUE_TOLERANCE_SECONDS = 0.03
 ROW_LIMIT = 300
+PREVIEWS_KEPT = 1  # the latest preview's plans are kept so that writing does not plan everything again
+PREVIEW_SECONDS = 900  # ... and for how long
 _SONG = re.compile(r'<Song\b(?:[^>"]|"[^"]*")*?(?:/>|>.*?</Song>)', re.S)
 _TAG = r'<{name}\b(?:[^>"]|"[^"]*")*?/>'
 
@@ -127,6 +130,29 @@ def _append_lines(fragment, lines, newline, song_indent):
 
 def _poi(element, kind):
     return [p.attrib for p in element.findall('Poi') if p.get('Type') == kind]
+
+
+def _signature(path):
+    """(modified, size) of a file, or None when it is not there: what a plan was made from."""
+    try:
+        stat = os.stat(path)
+    except OSError:
+        return None
+    return stat.st_mtime_ns, stat.st_size
+
+
+def _cue_stores(path):
+    """Signatures of AXIOM's own saved-cue files for a song (what read_cues reads)."""
+    try:
+        from utils.cues import sidecar_path_for, legacy_sidecar_path_for
+        return tuple(_signature(find(path)) for find in (sidecar_path_for, legacy_sidecar_path_for))
+    except Exception:
+        return ('unreadable', time.monotonic_ns())  # never equal to a later check: the plan is not reused
+
+
+def _audio_signature(path):
+    """What a song's cues came from: the audio file and AXIOM's saved-cue files."""
+    return _signature(path), _cue_stores(path)
 
 
 def _float(value):
@@ -256,7 +282,7 @@ def _plan_song(element, kinds, sources, app):
                 current = int(infos.get('PlayCount'))
             except ValueError:
                 current = None
-                skipped.append('Play count: VirtualDJ has a count AXIOM cannot read')
+                skipped.append('Play count: VirtualDJ has a count PEAK HOUR cannot read')
         if current is not None and best > current:
             changes.append({'kind': 'play_counts', 'before': current, 'after': best,
                             'source': 'Serato' if serato >= djay else 'djay'})
@@ -324,10 +350,12 @@ def plan_database(database, kinds, sources, app):
     data = Path(database).read_bytes()
     text = data.decode('utf-8')
     newline = '\r\n' if '\r\n' in text else '\n'
-    pieces, cursor, rows, skipped = [], 0, [], []
+    pieces, cursor, rows, skipped, audio = [], 0, [], [], {}
     for start, end, element in songs(text):
-        changes, skips = _plan_song(element, kinds, sources, app)
         path = element.get('FilePath', '')
+        if 'cues' in kinds:  # cues are read from the audio file and AXIOM's cue files: remember which versions
+            audio[path] = _audio_signature(path)
+        changes, skips = _plan_song(element, kinds, sources, app)
         if skips:
             skipped.append({'path': path, 'reasons': skips})
         if not changes:
@@ -342,7 +370,7 @@ def plan_database(database, kinds, sources, app):
                      'artist': (tags.get('Author') if tags is not None else '') or '', 'changes': changes})
     pieces.append(text[cursor:])
     return {'database': str(database), 'before': data, 'after': ''.join(pieces).encode('utf-8'),
-            'rows': rows, 'skipped': skipped}
+            'rows': rows, 'skipped': skipped, 'audio': audio}
 
 
 def verify(plan, scratch):
@@ -369,7 +397,7 @@ def verify(plan, scratch):
         changes = planned.get(_key(old['path']))
         if not changes:
             if old != new:
-                raise VirtualDJWriteError('A song AXIOM did not plan to change would change')
+                raise VirtualDJWriteError('A song PEAK HOUR did not plan to change would change')
             continue
         kinds = {c['kind'] for c in changes}
         sections_old, sections_new = old['source_sections'], new['source_sections']
@@ -431,6 +459,8 @@ class VirtualDJWriter:
         self.databases = databases
         self.ensure_closed = ensure_closed
         self._lock = threading.Lock()
+        self._previews = OrderedDict()  # preview token -> the plans it showed, newest last
+        self._previews_lock = threading.Lock()
 
     def _sources(self, kinds):
         return {'serato': serato_play_counts() if 'play_counts' in kinds else {},
@@ -444,7 +474,9 @@ class VirtualDJWriter:
         databases = list(self.databases())
         if not databases:
             raise ValueError('No VirtualDJ database was found on this PC.')
-        sources = self._sources(kinds)
+        return self._plan_all(kinds, databases, self._sources(kinds))
+
+    def _plan_all(self, kinds, databases, sources):
         plans = []
         for database in databases:
             try:
@@ -452,7 +484,7 @@ class VirtualDJWriter:
             except (OSError, UnicodeDecodeError, VirtualDJWriteError) as exc:
                 raise VirtualDJWriteError(f'{database}: {exc}') from exc
         token = _sha(json.dumps([kinds] + [[p['database'], _sha(p['before']), _sha(p['after'])] for p in plans]).encode())
-        return kinds, plans, token
+        return kinds, plans, token, sources
 
     @staticmethod
     def _summary(kinds, plans):
@@ -470,19 +502,65 @@ class VirtualDJWriter:
                 'databases': [{'path': p['database'], 'songs': len(p['rows'])} for p in plans]}
 
     def preview(self, kinds):
-        kinds, plans, token = self._plans(kinds)
+        djay = _signature(getattr(self.app, 'DJAY_MEDIA_LIBRARY_DB', '') or '')  # taken before planning reads it
+        kinds, plans, token, sources = self._plans(kinds)
         for plan in plans:
             if plan['rows']:
                 verify(plan, self.root / 'scratch')
+        # Kept small: the database as a hash only (apply reads the file again and backs up what it finds),
+        # the new text only for databases that change.
+        kept = [dict(plan, before=None, before_sha=_sha(plan['before']), after=plan['after'] if plan['rows'] else None)
+                for plan in plans]
+        now = time.monotonic()
+        with self._previews_lock:
+            for old in [t for t, e in self._previews.items() if now - e['at'] > PREVIEW_SECONDS]:
+                del self._previews[old]
+            self._previews[token] = {'kinds': kinds, 'plans': kept, 'sources': sources, 'djay': djay, 'at': now}
+            self._previews.move_to_end(token)
+            while len(self._previews) > PREVIEWS_KEPT:
+                self._previews.popitem(last=False)
         return dict(self._summary(kinds, plans), success=True, kinds=list(kinds), preview_token=token,
                     writes_to='nothing (preview)', undo=self.undo_status())
+
+    def _previewed(self, kinds, token):
+        """The plans of this preview (with the databases' current bytes as 'before') when nothing they were made
+        from has changed since: each database file byte for byte (sha256), each audio file and AXIOM's saved-cue
+        files of that song (modified time and size), djay's media library file (modified time and size), and the
+        Serato/djay play counts and grid repairs (compared as read). Else None."""
+        kinds = tuple(k for k in KINDS if k in set(kinds or ()))
+        with self._previews_lock:
+            entry = self._previews.get(token)
+        if not entry or entry['kinds'] != kinds or time.monotonic() - entry['at'] > PREVIEW_SECONDS:
+            return None
+        try:
+            if [str(d) for d in self.databases()] != [p['database'] for p in entry['plans']]:
+                return None
+            if 'cues' in kinds and _signature(getattr(self.app, 'DJAY_MEDIA_LIBRARY_DB', '') or '') != entry['djay']:
+                return None
+            plans = []
+            for plan in entry['plans']:
+                data = Path(plan['database']).read_bytes()
+                if _sha(data) != plan['before_sha']:
+                    return None
+                if any(_audio_signature(path) != signature for path, signature in plan['audio'].items()):
+                    return None
+                plans.append(dict(plan, before=data))
+            if self._sources(kinds) != entry['sources']:
+                return None
+        except OSError:
+            return None
+        return kinds, plans
 
     def apply(self, kinds, token):
         with self._lock:
             self.ensure_closed()
-            kinds, plans, current = self._plans(kinds)
-            if token != current:
-                raise VirtualDJWriteError('The VirtualDJ library or the sources changed. Preview again before writing.')
+            previewed = self._previewed(kinds, token)
+            if previewed:
+                kinds, plans = previewed
+            else:  # nothing kept, expired or something changed since: plan again, as a preview would
+                kinds, plans, current, _sources = self._plans(kinds)
+                if token != current:
+                    raise VirtualDJWriteError('The VirtualDJ library or the sources changed. Preview again before writing.')
             changed = [p for p in plans if p['rows']]
             if not changed:
                 return dict(self._summary(kinds, plans), success=True, written=0, message='Nothing to write.')
@@ -507,15 +585,29 @@ class VirtualDJWriter:
                 for plan, entry in zip(changed, receipt['databases']):
                     target = Path(plan['database'])
                     if _sha(target.read_bytes()) != entry['before_sha256']:
-                        raise VirtualDJWriteError('VirtualDJ changed its database while AXIOM was writing')
+                        raise VirtualDJWriteError('VirtualDJ changed its database while PEAK HOUR was writing')
                     _replace(target, plan['after'])
                     written.append(entry)
-            except Exception:
-                for entry in written:  # put back what this write already changed
-                    _replace(Path(entry['path']), Path(entry['backup']).read_bytes())
-                receipt['status'] = 'rolled_back'
-                self._save(folder, receipt)
+                    if _sha(target.read_bytes()) != entry['after_sha256']:
+                        raise VirtualDJWriteError('The VirtualDJ database did not read back as written')
+            except Exception as error:
+                failed = []
+                for entry in written:  # put back what this write already changed; one failing must not stop the rest
+                    try:
+                        _replace(Path(entry['path']), Path(entry['backup']).read_bytes())
+                    except Exception:
+                        failed.append(entry['path'])
+                receipt['status'] = 'rolled_back' if not failed else 'rollback_failed'
+                try:
+                    self._save(folder, receipt)
+                except OSError:
+                    pass
+                if failed:
+                    raise VirtualDJWriteError(f'{error} PEAK HOUR could not put back {", ".join(failed)}; '
+                                              f'the backup is in {folder}.') from error
                 raise
+            with self._previews_lock:
+                self._previews.clear()  # the databases are different now
             receipt['status'] = 'written'
             self._save(folder, receipt)
             return dict(receipt['summary'], success=True, written=sum(e['songs'] for e in written), receipt=identifier,
@@ -561,6 +653,8 @@ class VirtualDJWriter:
                     raise VirtualDJWriteError('The backup for this write is damaged. Nothing was changed.')
             for entry in receipt['databases']:
                 _replace(Path(entry['path']), Path(entry['backup']).read_bytes())
+            with self._previews_lock:
+                self._previews.clear()
             receipt.update(status='undone', undone_at=time.time())
             self._save(folder, receipt)
             return {'success': True, 'restored': [e['path'] for e in receipt['databases']], 'undo': self.undo_status()}
@@ -569,11 +663,17 @@ class VirtualDJWriter:
 def _replace(target, data):
     """Write data next to target, flush it to disk, then swap it in (keeps the file whole on a crash)."""
     stage = target.with_name(f'.{target.name}.axiom-{uuid.uuid4().hex[:8]}.tmp')
-    with open(stage, 'wb') as handle:
-        handle.write(data)
-        handle.flush()
-        os.fsync(handle.fileno())
-    os.replace(stage, target)
+    try:
+        with open(stage, 'wb') as handle:
+            handle.write(data)
+            handle.flush()
+            os.fsync(handle.fileno())
+        os.replace(stage, target)
+    finally:  # a failed write or swap must not leave the stage file in VirtualDJ's folder
+        try:
+            stage.unlink()
+        except OSError:
+            pass
 
 
 def create_write_blueprint(writer, license_guard):

@@ -27,10 +27,10 @@
    const parts=data.kinds.map(kind=>`<b>${(data.counts[kind]||0).toLocaleString()}</b> ${names[kind]}`).join(', ');
    const rows=data.rows.slice(0,40).map(row=>`<li><strong>${escape(row.artist)} – ${escape(row.title)}</strong><small>${row.changes.map(describe).join(' · ')}</small></li>`).join('');
    box.innerHTML=`<h2>Send to VirtualDJ</h2>
-    <p>${data.songs?`AXIOM will write ${parts} to ${plural(data.songs,'song')} in VirtualDJ.`:'Nothing to write: VirtualDJ already has everything AXIOM would send.'}</p>
+    <p>${data.songs?`PEAK HOUR will write ${parts} to ${plural(data.songs,'song')} in VirtualDJ.`:'Nothing to write: VirtualDJ already has everything PEAK HOUR would send.'}</p>
     ${data.skipped_count?`<p>${plural(data.skipped_count,'song')} left alone (VirtualDJ's own cue in that slot, or a grid changed since the check).</p>`:''}
     ${rows?`<ul class="axiom-vdj-write-rows">${rows}</ul>${data.songs>40?`<p>…and ${(data.songs-40).toLocaleString()} more.</p>`:''}`:''}
-    <p>Quit VirtualDJ first. Existing VirtualDJ cues are never replaced and play counts only go up. AXIOM keeps a backup, and you can undo this write. Your music files are not changed.</p>
+    <p>Quit VirtualDJ first. Existing VirtualDJ cues are never replaced and play counts only go up. PEAK HOUR keeps a backup, and you can undo this write. Your music files are not changed.</p>
     <div class="axiom-vdj-actions"><button type="button" data-no>Cancel</button>${data.songs?'<button type="button" data-yes>Write to VirtualDJ</button>':''}</div>`;
    let done=false;const finish=v=>{if(done)return;done=true;if(box.open)box.close();box.remove();resolve(v)};
    box.querySelector('[data-no]').onclick=()=>finish(false);const yes=box.querySelector('[data-yes]');if(yes)yes.onclick=()=>finish(true);
@@ -59,7 +59,7 @@
   if(state)apply(state);else call('status').then(d=>apply(d.undo)).catch(()=>{});
  }
  async function undo(button){
-  if(!confirm('Put VirtualDJ\'s database back the way it was before the last AXIOM write? Quit VirtualDJ first.'))return;
+  if(!confirm('Put VirtualDJ\'s database back the way it was before the last PEAK HOUR write? Quit VirtualDJ first.'))return;
   button.disabled=true;
   try{const r=await call('undo',{});window.showToast?.('VirtualDJ restored from the backup.');refreshUndo(r.undo);}
   catch(error){window.showToast?.(error.message,true);}
@@ -70,7 +70,7 @@
   if(!detail||byId('health-vdj-write'))return;
   const card=document.createElement('section');card.id='health-vdj-write';card.className='axiom-vdj-write-card';
   card.innerHTML=`<div class="axiom-vdj-write-copy"><strong>Send to VirtualDJ</strong>
-    <small>Copy cue points from Serato, djay or AXIOM, beat grid repairs from the VirtualDJ grid check, and play counts from Serato or djay into VirtualDJ.</small></div>
+    <small>Copy cue points from Serato, djay or PEAK HOUR, beat grid repairs from the VirtualDJ grid check, and play counts from Serato or djay into VirtualDJ.</small></div>
    <div class="axiom-vdj-write-options">
     <label><input type="checkbox" value="cues" checked> Cue points</label>
     <label><input type="checkbox" value="grids" checked> Beat grid repairs</label>
@@ -87,7 +87,7 @@
   const actions=document.querySelector('#health-doctor-vdj .axiom-vdj-grid-actions');
   if(!actions||byId('health-doctor-vdj-write'))return;
   const button=document.createElement('button');button.type='button';button.id='health-doctor-vdj-write';button.className='health-transfer-secondary';
-  button.textContent='Write Repairs to VirtualDJ';button.title='Preview first. Only straight grids AXIOM marked "Needs repair" are written.';
+  button.textContent='Write Repairs to VirtualDJ';button.title='Preview first. Only straight grids PEAK HOUR marked "Needs repair" are written.';
   button.onclick=()=>open(['grids'],button);
   actions.append(button);
  }
