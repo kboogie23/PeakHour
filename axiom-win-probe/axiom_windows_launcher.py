@@ -237,6 +237,9 @@ def build_app(port, device=False):
     axiom.app.register_blueprint(create_ai_blueprint(axiom.AI_ASSIST))
     from windows_browser import WindowBrowser, create_browser_blueprint
     axiom.app.register_blueprint(create_browser_blueprint(WindowBrowser(root), lambda: (window_browser() or [None])[0]))
+    if not device:
+        from windows_live_assist_mini import create_blueprint as create_mini_blueprint
+        axiom.app.register_blueprint(create_mini_blueprint(lambda: open_live_assist_mini(f'http://{HOST}:{port}/')))
     allowed_hosts = {f'{HOST}:{port}', f'localhost:{port}'}
     allowed_origins = {f'http://{host}' for host in allowed_hosts}
     from flask import request, abort
@@ -351,6 +354,18 @@ def open_live_assist(url):
         os.startfile(target)
         return
     subprocess.Popen([str(browser[1]), f'--app={target}', f'--user-data-dir={browser[2]}', '--window-size=438,690',
+                      '--no-first-run', '--no-default-browser-check', '--disable-features=msEdgeStartupBoost', *KEEP_AWAKE],
+                     close_fds=True)
+
+
+def open_live_assist_mini(url):
+    """PEAK HOUR Mini in its own small app window; the page pins itself on top (windows_live_assist_mini.py)."""
+    browser = window_browser()
+    target = f'{url}static/windows-live-assist-mini.html'
+    if not browser:
+        os.startfile(target)
+        return
+    subprocess.Popen([str(browser[1]), f'--app={target}', f'--user-data-dir={browser[2]}', '--window-size=380,560',
                       '--no-first-run', '--no-default-browser-check', '--disable-features=msEdgeStartupBoost', *KEEP_AWAKE],
                      close_fds=True)
 

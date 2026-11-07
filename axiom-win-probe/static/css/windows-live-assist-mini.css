@@ -1,0 +1,27 @@
+/* PEAK HOUR Mini: the Live Assist look (dark panels, red accent, Barlow) at a small window size. */
+:root { --mini-red: #e23744; --mini-line: #34353a; --mini-dim: #a7a9ae; color-scheme: dark; }
+* { box-sizing: border-box; }
+html, body { height: 100%; margin: 0; }
+body { display: flex; flex-direction: column; background: #131316; color: #f1f2f3; font: 500 13px 'Barlow', 'Segoe UI', sans-serif; overflow: hidden; }
+.mini-bar { display: flex; align-items: center; gap: 7px; padding: 7px 8px 7px 10px; background: #1c1c20; border-bottom: 1px solid var(--mini-line); font-size: 12px; letter-spacing: .4px; }
+.mini-bar strong { font-weight: 800; }
+.mini-divider { width: 1px; height: 12px; background: #55565b; }
+.mini-source { margin-left: auto; color: var(--mini-red); font-weight: 700; }
+#mini-pin { padding: 3px 8px; border: 1px solid #55565b; border-radius: 4px; background: transparent; color: var(--mini-dim); font: 700 11px 'Barlow', 'Segoe UI', sans-serif; cursor: pointer; }
+#mini-pin[aria-pressed="true"] { border-color: var(--mini-red); background: var(--mini-red); color: #fff; }
+#mini-pin:focus-visible { outline: 2px solid #fff; outline-offset: 1px; }
+.mini-label { color: var(--mini-dim); font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
+.mini-now { display: flex; align-items: center; gap: 10px; margin: 8px 8px 0; padding: 8px 11px 9px; border: 1px solid #d9dbde; border-radius: 8px; background: #1a1a1e; }
+.mini-now .mini-label { color: var(--mini-red); }
+.mini-now-copy { flex: 1; min-width: 0; }
+.mini-now-title { margin-top: 2px; font: 400 26px/1.08 'Bebas Neue', Impact, sans-serif; letter-spacing: .015em; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+.mini-now-artist { margin-top: 2px; color: #c7cfc2; font: 200 12px/1.2 Arial, sans-serif; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.mini-now-bpm { font: 400 34px/1 'Bebas Neue', Impact, sans-serif; }
+.mini-next-label { padding: 9px 12px 5px; }
+.mini-list { flex: 1; min-height: 0; margin: 0; padding: 0 8px 8px; list-style: none; overflow-y: auto; }
+.mini-row { padding: 6px 9px 7px; margin-bottom: 4px; border: 1px solid #2d2e32; border-radius: 6px; background: #1a1a1e; }
+.mini-row-title { font: 400 21px/1.08 'Bebas Neue', Impact, sans-serif; letter-spacing: .015em; color: #f6f8f0; }
+.mini-row-artist { margin-top: 1px; color: #c7cfc2; font: 200 11px/1.2 Arial, sans-serif; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.mini-row-meta { display: flex; flex-wrap: wrap; gap: 3px 7px; margin-top: 3px; color: #d5ddce; font: 600 12px/1.2 'Barlow', sans-serif; }
+.mini-row-genre { padding: 0 5px; border: 1px solid #4a4b50; border-radius: 3px; font-weight: 500; font-size: 11px; line-height: 15px; }
+.mini-empty { padding: 14px 7px; color: var(--mini-dim); }
