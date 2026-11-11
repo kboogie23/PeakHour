@@ -82,10 +82,12 @@ else:
         page = base_url + '/static/windows-live-assist-mini.html'
         common = [EDGE, '--headless=new', '--disable-gpu', '--hide-scrollbars', f'--user-data-dir={base / "edge"}',
                   '--window-size=380,560', '--virtual-time-budget=5000']
-        for _ in range(4):  # the first headless Edge in a brand-new profile can print nothing
-            dom = subprocess.run([*common, '--dump-dom', page], capture_output=True, timeout=120, env=env,
+        # Edge runs with the normal environment and a throwaway profile: started with the sandbox's
+        # LOCALAPPDATA/USERPROFILE, a new headless Edge often never loads the page (it prints nothing).
+        for _ in range(4):
+            dom = subprocess.run([*common, '--dump-dom', page], capture_output=True, timeout=120,
                                  encoding='utf-8', errors='replace').stdout
-            if 'Freak Like Me' in dom:
+            if "Freak Like Me" in dom:
                 break
         assert 'Freak Like Me &lt;Pt. 2&gt;' in dom, dom[:2000]  # shown as text, never as markup
         assert 'Adina Howard · 92.0 BPM' in dom and 'VirtualDJ' in dom, dom[:2000]
@@ -96,7 +98,7 @@ else:
         assert not any('Dirty' in title for title in shown), shown
         assert 'Year unconfirmed' in dom and '92 BPM' in dom and '(7)' in dom, dom[:2000]
         shot = os.environ.get('PEAK_HOUR_MINI_SHOT') or str(base / 'mini.png')
-        subprocess.run([*common, f'--screenshot={shot}', page], capture_output=True, timeout=120, env=env)
+        subprocess.run([*common, f'--screenshot={shot}', page], capture_output=True, timeout=120)
         for _ in range(20):
             if os.path.exists(shot):
                 break
