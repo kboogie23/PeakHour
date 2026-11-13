@@ -292,7 +292,7 @@ def main():
             print('drive removal and return checked with', drive)
         else:
             print('SKIPPED drive removal: no free drive letter or subst failed')
-        print('windows_health_snapshot: all checks passed')
+        print('PASS: windows_health_snapshot: all checks passed')
     finally:
         if drive:
             subprocess.run(['subst', drive, '/d'], capture_output=True)

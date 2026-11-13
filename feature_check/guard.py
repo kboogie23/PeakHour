@@ -227,7 +227,13 @@ def install(mode=None):
                 db = str(args[0])
                 if db != ':memory:' and not db.startswith('file::memory') and 'mode=ro' not in db and 'immutable=1' not in db:
                     if db.startswith('file:'):
-                        db = db[5:].split('?')[0]
+                        from urllib.parse import unquote, urlsplit
+                        parts = urlsplit(db)          # file:///C:/x%20y.db -> C:/x y.db (as sqlite itself reads it)
+                        db = unquote(parts.path)
+                        if len(db) > 2 and db[0] == '/' and db[2] == ':':
+                            db = db[1:]
+                        if parts.netloc and parts.netloc != 'localhost':
+                            db = '//' + parts.netloc + db
                     if db and not allowed(db):
                         violate('sqlite', db)
             elif event == 'socket.connect':

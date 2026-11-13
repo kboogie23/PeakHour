@@ -17,9 +17,8 @@ try:
  (music/'Sub'/'Deeper'/'clip.mkv').write_bytes(b'\0'*10)
  (music/'cover.jpg').write_bytes(b'\0')
  (music/'$RECYCLE.BIN'/'deleted.mp3').write_bytes(b'\0')  # never counted
- long_dir=music/('L'*120)/('M'*120);long_dir.mkdir(parents=True)
- long_file=long_dir/'long name song.flac'
- try:long_file.write_bytes(b'\0')
+ long_dir=music/('L'*120)/('M'*120);long_file=long_dir/'long name song.flac'
+ try:long_dir.mkdir(parents=True);long_file.write_bytes(b'\0')
  except OSError:long_file=None  # long paths switched off in Windows: the test still counts the rest
  tracks=[{'path':str(music/'good.wav'),'filename':'good.wav','bpm':95,'camelot':'8A','artist':'A','duration_sec':120,'year':1994,
           'key_analysis_status':'fixed','key_analysis_attempted_at':'2026-10-31T00:00:00Z','root':str(music)},

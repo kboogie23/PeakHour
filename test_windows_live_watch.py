@@ -81,7 +81,7 @@ def main():
      if r.status==200:html=r.read().decode('utf-8','replace');break
    except OSError:time.sleep(0.4)
   else:raise AssertionError('server did not start')
-  assert 'windows-live-watch.js?v=1' in html
+  assert 'windows-live-watch.js?v=2' in html
   live=json.load(urllib.request.urlopen(f'http://127.0.0.1:{port}/api/performance/dj/live',timeout=10))
   assert live.get('provider')=='virtualdj' and live['track']['title']=='Cruel Summer',json.dumps(live)[:400]
   browser=subprocess.Popen([edge,'--headless=new',f'--remote-debugging-port={debug}',f'--user-data-dir={sandbox/"profile"}','--no-first-run','--no-default-browser-check','--window-size=1400,900','about:blank'],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL);procs.append(browser)

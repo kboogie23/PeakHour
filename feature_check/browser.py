@@ -147,10 +147,13 @@ class Browser:
         self.downloads = self.sandbox / 'downloads'
         self.downloads.mkdir(parents=True, exist_ok=True)
         child_env = self._child_env()                      # raises rather than starting Edge in the real environment
-        profile = self.sandbox / ('browser-profile-%d-%d' % (os.getpid(), int(time.time() * 1000) % 10**8))
-        profile.mkdir(parents=True, exist_ok=True)
-        self._write_preferences(profile)
-        for attempt in range(4):
+        # Attempt 0 is a throw-away "priming" launch: the first Edge in a brand-new sandbox environment (new LOCALAPPDATA) never
+        # opens its debugging port; after one killed start the environment is warm and the next Edge opens it in under a second.
+        # No Preferences file is pre-written into the profile: in a fresh environment it makes Edge crash (exit 0x80000003) a few
+        # seconds after it opens the port, which kills the driver. Downloads go to the sandbox through the driver's 'downloads' op.
+        for attempt in range(5):
+            profile = self.sandbox / ('browser-profile-%d-%d-%d' % (os.getpid(), int(time.time() * 1000) % 10**8, attempt))
+            profile.mkdir(parents=True, exist_ok=True)
             _kill_profile_users(profile)
             self.debug_port = _free_port()
             args = [self.edge_path or find_edge(), f'--remote-debugging-port={self.debug_port}', f'--user-data-dir={profile}',
@@ -162,18 +165,16 @@ class Browser:
                 args.insert(1, '--headless=new')
             args.append('about:blank')
             self.edge = subprocess.Popen(args, env=child_env, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-            deadline = time.monotonic() + 25
-            while time.monotonic() < deadline:
+            deadline = time.monotonic() + (15 if attempt == 0 else 25)
+            opened = False
+            while time.monotonic() < deadline and self.edge.poll() is None:
                 try:
                     with urllib.request.urlopen(f'http://127.0.0.1:{self.debug_port}/json/version', timeout=2):
+                        opened = True
                         break
                 except OSError:
                     time.sleep(0.2)
-            else:
-                _kill_tree(self.edge)
-                self.edge = None
-                continue
-            if self._wait_for_page():
+            if attempt and opened and self._wait_for_page():
                 break
             _kill_tree(self.edge)
             self.edge = None
@@ -191,7 +192,10 @@ class Browser:
         """Edge runs in the sandbox's environment (home, AppData, Temp inside the sandbox), like the app and the legacy tests.
         Raises when that cannot be built: Edge must never fall back to the real environment."""
         from feature_check import sandbox as sb
-        return sb.Sandbox(self.sandbox).env(guard='off')
+        box = sb.Sandbox(self.sandbox)
+        for folder in (box.local, box.roaming, box.home, box.temp, box.runtime):  # Edge cannot start with a TEMP that does not exist
+            folder.mkdir(parents=True, exist_ok=True)
+        return box.env(guard='off')
 
     def _write_preferences(self, profile):
         """Every tab (popups and new tabs too) downloads into the sandbox downloads folder without asking."""
