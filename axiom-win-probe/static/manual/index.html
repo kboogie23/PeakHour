@@ -106,7 +106,7 @@
 <header class="hero" id="top">
   <h1>Peak Hour User Manual</h1>
   <p>PEAK HOUR turns your music folders and DJ libraries into ready-to-play sets, and works alongside Serato DJ Pro, VirtualDJ and djay Pro on Windows. This manual walks through every part of it, step by step.</p>
-  <span class="stamp">For PEAK HOUR 1.0.5 for Windows · Last updated 31 October 2026</span>
+  <span class="stamp">For PEAK HOUR 1.0.5 for Windows · Last updated 6 November 2026</span>
 </header>
 
 <div class="note"><b>Your music is safe.</b> PEAK HOUR reads your music files but never edits, moves or deletes them on its own. Fixes (years, BPM, titles and so on) are kept inside PEAK HOUR until you choose to send them to your DJ software, and every send shows you a preview first.</div>
@@ -319,6 +319,7 @@
 <p><span class="ui">Open Live Assist</span> opens a small window of suggestions you can keep beside your DJ software.</p>
 <ul>
   <li><b>Ctrl+F shortcut:</b> with <b>Settings → Workflow → Ctrl+F Shows Live Assist</b> on, pressing <kbd>Ctrl</kbd>+<kbd>F</kbd> to search in Serato, VirtualDJ or djay brings Live Assist up beside it. Your typing still goes to the DJ software.</li>
+  <li><b>PEAK HOUR Mini:</b> click <b>Mini</b> beside Open Live Assist, or the small window icon in Live Assist's top bar, for a small window that stays on top of your DJ software. It shows the song playing and the songs to play next. While Live Assist is open, Mini shows exactly its list, including any songs you rejected or refined; with Live Assist closed, it uses Live Assist's normal list (within 5 BPM, closest tempo first). <b>Pin</b> turns staying on top off and on. Mini only shows information; pick and load songs in Live Assist or your DJ software.</li>
   <li><b>Automatic Live Assist:</b> when a new song starts playing, PEAK HOUR can open Live Assist and minimise itself.</li>
 </ul>
 <h3>Record your set</h3>
@@ -361,6 +362,7 @@
   <li>Click <span class="ui">Fix Health</span> to make the ready repairs, and <span class="ui">Review N Tracks</span> to decide on the rest.</li>
   <li>Repairs are saved in PEAK HOUR. To send them to your DJ software, use <b>Sync to DJ</b> (below) or the <span class="ui">Publish</span> tab.</li>
 </ol>
+<p>Health opens with your last results at once, with <b>Last checked</b> and <span class="ui">Refresh</span> under the title. It counts your library again only when something changed (songs added, repairs made, a drive connected or removed), after a day, or when you click <span class="ui">Refresh</span> or <span class="ui">Scan Health</span>. Changes made to your files by other programs show up at the next Refresh.</p>
 <h3>The tools</h3>
 <table>
   <tr><th>Group</th><th>Tools</th></tr>
@@ -369,6 +371,13 @@
   <tr><td><b>Sync to DJ</b></td><td><b>Send to VirtualDJ</b>, <b>Serato + djay Refresh</b>, <b>DJ Transfer</b> (playlists, play counts, beat grids).</td></tr>
   <tr><td><b>Ready to play</b></td><td><b>Audio Readiness</b> → <span class="ui">Check Audio</span> (Windows audio and your output device), <b>New Music Inbox</b> (review and prepare newly added songs).</td></tr>
 </table>
+<h3>Reconnect Music (songs whose files moved)</h3>
+<ol class="steps">
+  <li>If songs show as <b>Missing Files</b> because you moved them to another folder or drive, click <span class="ui">Reconnect Music</span> in Health.</li>
+  <li>Click <span class="ui">Choose folder or drive</span> and pick where your music is now (a whole drive such as <code>D:\</code> is fine), then <span class="ui">Start</span>.</li>
+  <li>PEAK HOUR looks through that folder and reconnects each missing song to the file with the same name. Songs keep their BPM, key, cues and playlists. Your music files are not changed, and a copy of your library is kept first (<code>library_cache.reconnect_backup</code> in the PEAK HOUR data folder; the newest 3 are kept).</li>
+  <li>When it finishes you see how many songs were reconnected, how many could not be matched because the same file name exists in several places (these stay missing so nothing is linked wrongly), and how many are not in that folder. Run it again with another folder or drive for the rest.</li>
+</ol>
 <h3>Send fixes to VirtualDJ</h3>
 <ol class="steps">
   <li>Close VirtualDJ.</li>
@@ -426,13 +435,14 @@
 <!-- 12 -->
 <section id="laptops">
 <h2>Other laptops</h2>
-<p>Other laptops on your home Wi-Fi can use PEAK HOUR running on your main PC, each with its own separate library.</p>
+<p>Other laptops on your home Wi-Fi can use PEAK HOUR running on your main PC, each with its own separate library. This is off unless you turn it on: start PEAK HOUR with the setting <code>AXIOM_HUB=1</code> (set the environment variable <code>AXIOM_HUB</code> to <code>1</code> before you start PEAK HOUR).</p>
 <ol class="steps">
-  <li>On the main PC, open <b>Choose Music Source</b>. The <b>Other laptops</b> card shows the address to use, such as <code>http://192.168.0.128:8080/</code>.</li>
-  <li>On the laptop, open that address in Edge or Chrome.</li>
+  <li>On the main PC, open <b>Choose Music Source</b>. The <b>Other laptops</b> card shows the address to use, such as <code>http://192.168.0.128:8080/</code>, and a 6-digit <b>pairing code</b>.</li>
+  <li>On the laptop, open that address in Edge or Chrome, type the pairing code, and give the laptop's library a name.</li>
   <li>On the laptop, go to <b>Library → Choose Music Source</b> and upload that laptop's <b>VirtualDJ</b> or <b>Serato</b> database. The music files themselves stay on the laptop.</li>
 </ol>
-<p>Only devices on your home network can connect, and they can't change anything on the main PC.</p>
+<p>A pairing code works once and stops working after 10 minutes; the card then shows a new one. To use a library again after clearing the browser or on a new browser, pair again with a fresh code and type the same library name.</p>
+<p>Only devices on your home network that have the pairing code can connect, and they can't change anything on the main PC. The connection is not encrypted, so use it only on a Wi-Fi network you trust.</p>
 <a class="top" href="#top">Back to top ↑</a>
 </section>
 
@@ -487,6 +497,19 @@
 <section id="whats-new" class="changes">
 <h2>What's new</h2>
 <p>Newest first. This list grows with every update.</p>
+<h3>1.0.5 · 6 November 2026</h3>
+<ul>
+  <li><b>PEAK HOUR Mini:</b> a small window that stays on top and shows what Live Assist shows: the song playing and what to play next.</li>
+</ul>
+<h3>1.0.5 · 1 November 2026</h3>
+<ul>
+  <li><b>Reconnect Music</b> now works on Windows: choose the folder or drive where your music is now and PEAK HOUR reconnects your missing songs by file name, even when they moved into different folders. It shows how many were reconnected and keeps a backup copy of your library first.</li>
+  <li><b>Recording</b>: a short audio glitch no longer fails a whole set; it is counted as a dropout and the recording is saved. Closing the PEAK HOUR window while recording now stops and saves the recording.</li>
+  <li><b>Other laptops</b> is now off unless started with <code>AXIOM_HUB=1</code>, and each laptop pairs with a one-time 6-digit code shown on the main PC.</li>
+  <li><b>Safer duplicate clean-up</b>: files on a USB stick, SD card or network drive (no Recycle Bin) are no longer deleted; PEAK HOUR says so and leaves them alone.</li>
+  <li><b>AI Assist</b> no longer says it is still working after PEAK HOUR was closed mid-check; it shows "Stopped when PEAK HOUR closed" and you can start again.</li>
+  <li><b>Previews</b>: M4A/MP4 audio starts playing at once instead of after a conversion, seeking and the progress bar no longer stall or crackle, and video previews no longer run out of slots ("Close an existing video preview first") after a few were opened.</li>
+</ul>
 <h3>1.0.5 · 31 October 2026</h3>
 <ul>
   <li><b>Open PEAK HOUR in Chrome</b>: Settings → System → Open PEAK HOUR In lets you use Google Chrome instead of Microsoft Edge.</li>

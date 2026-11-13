@@ -56,16 +56,16 @@ h1:not(:has(*)),
   transform: rotate(-2deg);
 }
 
-/* Sidebar on dark brick, with a red rail. */
-html body aside#axiom-sidebar.axiom-sidebar.axiom-sidebar {
+/* Sidebar on dark brick, with a red rail (night only: day mode keeps AXIOM's light sidebar and navy labels). */
+html body:not(.light-mode) aside#axiom-sidebar.axiom-sidebar.axiom-sidebar {
   background-color: #120f0e !important;
   background-image: linear-gradient(rgba(10, 8, 8, .25), rgba(10, 8, 8, .55)), url("/static/brand/90s/brick-tile.png") !important;
   background-size: auto, 240px 176px !important;
   border-right: 3px solid var(--ph-ink) !important;
   box-shadow: inset -3px 0 0 var(--ph-red-dark);
 }
-html body aside#axiom-sidebar .axiom-sidebar-brand-row.axiom-sidebar-brand-row,
-html body aside#axiom-sidebar .axiom-sidebar-engine.axiom-sidebar-engine { background: transparent !important; }
+html body:not(.light-mode) aside#axiom-sidebar .axiom-sidebar-brand-row.axiom-sidebar-brand-row,
+html body:not(.light-mode) aside#axiom-sidebar .axiom-sidebar-engine.axiom-sidebar-engine { background: transparent !important; }
 .axiom-sidebar-nav-item[data-nav-state="active"] {
   background: var(--ph-red) !important;
   color: #ffffff !important;
@@ -152,11 +152,11 @@ html body:not(.light-mode) #tab-content-performance#tab-content-performance#tab-
 html body:not(.light-mode) #tab-content-playlists#tab-content-playlists#tab-content-playlists    { background-image: linear-gradient(rgba(8,7,7,.66), rgba(8,7,7,.86)), url("/static/brand/regions/texas-bg.jpg") !important; }
 html body:not(.light-mode) #health-view#health-view#health-view              { background-image: linear-gradient(rgba(8,7,7,.66), rgba(8,7,7,.86)), url("/static/brand/regions/midwest-bg.jpg") !important; }
 
-/* The Studio's own wrapper is opaque; let the wall show through it. */
-html body #tab-content-studio #studio-active-view#studio-active-view { background-color: transparent !important; }
+/* The Studio's own wrapper is opaque; let the wall show through it (night only; day keeps its light pages). */
+html body:not(.light-mode) #tab-content-studio #studio-active-view#studio-active-view { background-color: transparent !important; }
 
-/* Library's track list is a solid panel; tint it instead so the East Coast cover shows behind the rows. */
-html body #tab-content-library#tab-content-library .library-results-column.library-results-column {
+/* Library's track list is a solid panel; tint it instead so the East Coast cover shows behind the rows (night only). */
+html body:not(.light-mode) #tab-content-library#tab-content-library .library-results-column.library-results-column {
   background-color: rgba(9, 8, 8, .66) !important;
   background-image: none !important;
 }
@@ -199,8 +199,8 @@ body[data-ph-region] .axiom-start-wordmark-main {
 
 /* ---------------------------------------------------------------------------------------------
    Sidebar menu on its own solid plate so the categories stand off the brick: full-white,
-   heavier lettering and brighter icons. */
-html body aside#axiom-sidebar .axiom-sidebar-nav.axiom-sidebar-nav {
+   heavier lettering and brighter icons (night only). */
+html body:not(.light-mode) aside#axiom-sidebar .axiom-sidebar-nav.axiom-sidebar-nav {
   background: rgba(12, 10, 10, .9) !important;
   border: 2px solid var(--ph-ink) !important;
   border-radius: 6px;
@@ -208,16 +208,16 @@ html body aside#axiom-sidebar .axiom-sidebar-nav.axiom-sidebar-nav {
   margin: 10px 14px !important;
   padding: 6px 0 !important;
 }
-html body aside#axiom-sidebar .axiom-sidebar-nav-item.axiom-sidebar-nav-item,
-html body aside#axiom-sidebar .axiom-sidebar-nav-item.axiom-sidebar-nav-item span {
+html body:not(.light-mode) aside#axiom-sidebar .axiom-sidebar-nav-item.axiom-sidebar-nav-item,
+html body:not(.light-mode) aside#axiom-sidebar .axiom-sidebar-nav-item.axiom-sidebar-nav-item span {
   color: #f4f4f4 !important;
   opacity: 1 !important;
   font-weight: 600 !important;
   letter-spacing: .06em !important;
 }
-html body aside#axiom-sidebar .axiom-sidebar-nav-item.axiom-sidebar-nav-item img,
-html body aside#axiom-sidebar .axiom-sidebar-nav-item.axiom-sidebar-nav-item svg { opacity: 1 !important; filter: brightness(1.6); }
-html body aside#axiom-sidebar .axiom-sidebar-nav-item.axiom-sidebar-nav-item:hover { background: rgba(255, 255, 255, .08) !important; }
+html body:not(.light-mode) aside#axiom-sidebar .axiom-sidebar-nav-item.axiom-sidebar-nav-item img,
+html body:not(.light-mode) aside#axiom-sidebar .axiom-sidebar-nav-item.axiom-sidebar-nav-item svg { opacity: 1 !important; filter: brightness(1.6); }
+html body:not(.light-mode) aside#axiom-sidebar .axiom-sidebar-nav-item.axiom-sidebar-nav-item:hover { background: rgba(255, 255, 255, .08) !important; }
 
 /* Set-start descriptions use AXIOM's own light Barlow face; Segoe UI reads more easily there too
    (declared here because this file loads after AXIOM's). */
@@ -240,3 +240,23 @@ html body #settings-content .settings-item.recording-settings-item.recording-set
   grid-template-columns: minmax(0, 1fr) !important;
   row-gap: 12px !important;
 }
+
+/* Day mode: the chrome fill is white-to-platinum, which vanishes on the light pages, so headings and the
+   sidebar wordmark go back to plain ink (the wordmark keeps a hard red shadow). Night keeps the chrome above. */
+html body.light-mode h1:not(:has(*)),
+html body.light-mode .axiom-start-wordmark-main {
+  background: none !important;
+  -webkit-text-fill-color: currentColor !important;
+  -webkit-text-stroke: 0 !important;
+  filter: none !important;
+}
+html body.light-mode .axiom-start-wordmark-main { color: #07111f !important; filter: drop-shadow(2px 2px 0 var(--ph-red)) !important; }
+
+/* Day mode, Performance: AXIOM sets the Currently Playing text light (for its dark panel in night mode). */
+html body.light-mode #tab-content-performance.performance-cockpit .performance-current-panel :is(.performance-track-title, .performance-current-heading, .performance-current-heading > span) {
+  color: #07111f !important;
+}
+html body.light-mode #tab-content-performance.performance-cockpit .performance-session-menu > summary { color: #07111f !important; }
+html body.light-mode #tab-content-performance.performance-cockpit .performance-coach-copy small { color: #4a5870 !important; }
+html body.light-mode #tab-content-performance.performance-cockpit .performance-coach-copy strong { color: #07111f !important; }
+html body.light-mode #tab-content-performance.performance-cockpit .performance-coach-copy p { color: #26364d !important; }

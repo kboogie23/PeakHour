@@ -11,15 +11,20 @@ Differences from macOS, by design:
   Google Chrome when chosen in Settings (windows_browser.py), and AXIOM stops when
   that window closes. With neither, the default browser opens and a "Quit AXIOM"
   dialog stops it.
-- Requests are accepted only from this computer with the expected Host header.
+- Requests are accepted only from this computer with the expected Host header, and a
+  request that changes something must come from AXIOM's own page (Origin check).
+- The home-network hub for other laptops (windows_remote_hub.py) starts only when
+  AXIOM_HUB=1.
 - Activation is off by default for now, at the owner's request (2026-10-30), using
   AXIOM's own AXIOM_LICENSE_REQUIRED setting, which reports "dev_unlocked".
   Start with AXIOM_LICENSE_REQUIRED=1 to require activation again; AXIOM's licence
   code itself is unchanged.
 """
 import ctypes
+import io
 import msvcrt
 import os
+import re
 import socket
 import subprocess
 import sys
@@ -42,6 +47,64 @@ def data_root():
 
 def log_file():
     return data_root() / 'Logs' / 'launch.log'
+
+
+LOG_LIMIT = 5 * 1024 * 1024  # a log file is rotated once it is over this size
+LOG_FILES = 3  # current file plus two older ones: launch.log, launch.1.log, launch.2.log
+
+
+def rotate_log(path, limit=LOG_LIMIT, files=LOG_FILES):
+    """Move a log over the limit to <name>.1<ext> (older ones shift up, the oldest goes). The live file is moved
+    aside first: if another program holds it nothing is shifted and no older log is lost."""
+    path = Path(path)
+    try:
+        if path.stat().st_size <= limit:
+            return
+        moving = path.with_name(f'{path.name}.{os.getpid()}.rotating')
+        os.replace(path, moving)
+    except OSError:
+        return
+    try:
+        older = [path.with_name(f'{path.stem}.{n}{path.suffix}') for n in range(1, files)]
+        for number in range(len(older) - 1, 0, -1):
+            if older[number - 1].exists():
+                os.replace(older[number - 1], older[number])
+        os.replace(moving, older[0])
+    except OSError:
+        if not path.exists():  # could not shift: put the log back
+            try:
+                os.replace(moving, path)
+            except OSError:
+                pass
+
+
+class LogStream:
+    """stderr under pythonw: every write is appended to the current launch.log (no file is held open,
+    so the log can be rotated). One write at a time, so tracebacks from several threads do not interleave."""
+    encoding = 'utf-8'
+    errors = 'replace'
+
+    def __init__(self):
+        self._lock = threading.Lock()
+
+    def write(self, text):
+        text = text if isinstance(text, str) else str(text)
+        with self._lock:
+            try:
+                with open(log_file(), 'a', encoding='utf-8', errors='replace') as handle:
+                    handle.write(text)
+            except OSError:
+                pass
+        return len(text)
+
+    def flush(self):
+        pass
+
+    def isatty(self):
+        return False
+
+    def fileno(self):
+        raise io.UnsupportedOperation('fileno')
 
 
 def log(message):
@@ -134,7 +197,8 @@ def virtualdj_policy(is_safe_location):
     return allowed
 
 
-def build_app(port):
+def build_app(port, device=False):
+    """The backend for this PC; device=True is a laptop's engine: no file of this PC is permitted."""
     os.environ.setdefault('AXIOM_RUNTIME_DIR', str(data_root()))
     os.environ.setdefault('AXIOM_LICENSE_REQUIRED', '0')  # activation off for now; see module notes
     log('Activation ' + ('required' if os.environ['AXIOM_LICENSE_REQUIRED'].strip().lower() in ('1', 'true', 'yes', 'on') else 'not required (AXIOM_LICENSE_REQUIRED=0)'))
@@ -144,14 +208,19 @@ def build_app(port):
     import imageio_ffmpeg
     from windows_bootstrap import build_backend
     from windows_paths import is_safe_location
+    deny_all = lambda path: False
+    video_policy, vdj_policy = (deny_all, deny_all) if device else (is_safe_location, virtualdj_policy(is_safe_location))
     root = data_root()
     recordings = Path(os.environ.get('USERPROFILE') or Path.home(), 'Music', APP_NAME, 'Recordings')
     recordings.mkdir(parents=True, exist_ok=True)
     (root / 'Video Cache').mkdir(parents=True, exist_ok=True)
     axiom = build_backend(recording_settings=root / 'recording-settings.json', recording_directory=recordings,
-                          video_cache_root=root / 'Video Cache', video_allowed_path=is_safe_location,
+                          video_cache_root=root / 'Video Cache', video_allowed_path=video_policy,
                           video_ffmpeg=imageio_ffmpeg.get_ffmpeg_exe(),
-                          virtualdj_allowed_path=virtualdj_policy(is_safe_location))
+                          virtualdj_allowed_path=vdj_policy, safe_location=deny_all if device else None)
+    if device:
+        from windows_audio import NoAudioDeck
+        axiom.NATIVE_AUDIO_DECK = NoAudioDeck()
     from windows_hotkey import LiveAssistHotkey, create_hotkey_blueprint
     axiom.LIVE_ASSIST_HOTKEY = LiveAssistHotkey(root / 'live-assist-hotkey.json')  # started by main() once the window URL is known
     axiom.app.register_blueprint(create_hotkey_blueprint(axiom.LIVE_ASSIST_HOTKEY))
@@ -168,21 +237,125 @@ def build_app(port):
     axiom.app.register_blueprint(create_ai_blueprint(axiom.AI_ASSIST))
     from windows_browser import WindowBrowser, create_browser_blueprint
     axiom.app.register_blueprint(create_browser_blueprint(WindowBrowser(root), lambda: (window_browser() or [None])[0]))
+    if not device:
+        from windows_browser_selftest import create_selftest_blueprint
+        axiom.app.register_blueprint(create_selftest_blueprint(axiom))
+        from windows_live_assist_mini import create_blueprint as create_mini_blueprint
+        axiom.app.register_blueprint(create_mini_blueprint(lambda: open_live_assist_mini(f'http://{HOST}:{port}/')))
+        from windows_djay_cues import create_blueprint as create_djay_cues_blueprint
+        axiom.app.register_blueprint(create_djay_cues_blueprint(axiom, root / 'djay-cue-writes', axiom._license_gate))
+        from windows_serato_cues import create_blueprint as create_serato_cues_blueprint
+        axiom.app.register_blueprint(create_serato_cues_blueprint(axiom, root / 'serato-cue-writes', axiom._license_gate))
+        from windows_dj_write_queue import create_blueprint as create_queue_blueprint, get_queue
+        axiom.DJ_WRITE_QUEUE = get_queue(root / 'dj-write-queue.json').start()  # writes to an open DJ program wait for it to close
+        axiom.app.register_blueprint(create_queue_blueprint(axiom.DJ_WRITE_QUEUE))
+        import windows_djay_folders as djay_folders
+        axiom.app.register_blueprint(djay_folders.create_blueprint(axiom, root / 'djay-folder-writes', axiom._license_gate))
+        djay_folders.register_with_queue(axiom.DJ_WRITE_QUEUE)
+        import windows_virtualdj_folders as vdj_folders
+        axiom.app.register_blueprint(vdj_folders.create_blueprint(vdj_policy, axiom._license_gate, root / 'virtualdj-list-writes'))
+        vdj_folders.register_with_queue(axiom.DJ_WRITE_QUEUE, root / 'virtualdj-list-writes')
+        import windows_virtualdj_filesize  # keeps VirtualDJ's file sizes right after a Serato cue write made a song bigger
+        windows_virtualdj_filesize.register_with_queue(axiom.DJ_WRITE_QUEUE, root / 'virtualdj-size-writes')
+        import windows_dj_writes  # "Recent writes" with Undo, read from the writers' receipt folders
+        axiom.app.register_blueprint(windows_dj_writes.create_blueprint(root, axiom._license_gate))
+        import windows_serato_cues
+        windows_serato_cues.register_with_queue(axiom.DJ_WRITE_QUEUE)
+        import windows_serato_export as serato_export
+        serato_export.register_with_queue(axiom.DJ_WRITE_QUEUE, axiom)
+        axiom.app.register_blueprint(serato_export.create_blueprint(axiom, axiom._license_gate))
     allowed_hosts = {f'{HOST}:{port}', f'localhost:{port}'}
+    allowed_origins = {f'http://{host}' for host in allowed_hosts}
     from flask import request, abort
 
     @axiom.app.before_request
     def local_only():
         if request.remote_addr not in ('127.0.0.1', '::1') or request.host not in allowed_hosts:
             abort(403)
+        if request.method not in ('GET', 'HEAD', 'OPTIONS'):  # cross-site pages may not change anything
+            origin = request.headers.get('Origin')
+            if origin is not None:  # includes the opaque "null" origin, which is never accepted
+                if origin.rstrip('/') not in allowed_origins:
+                    abort(403)
+            elif request.headers.get('Sec-Fetch-Site') not in ('same-origin', 'none'):
+                abort(403)
     return axiom
+
+
+def finish_recording(axiom, instance=None, wav_seconds=60, mp3_seconds=1900):
+    """Closing the window must not lose a set that is still being recorded: stop it cleanly so the
+    WAV is finalised and renamed. If that fails, the partial file is left where it is for recovery.
+    The stop runs in a thread with a time limit (a stuck driver must not keep PEAK HOUR open forever);
+    while it runs a second launch is told the recording is being saved instead of opening a window."""
+    manager = getattr(axiom, 'SET_RECORDING_MANAGER', None)
+    stop = getattr(manager, 'stop_if_recording', None)
+    if stop is None:
+        return
+
+    def work():
+        try:
+            result = stop()
+        except Exception:
+            log('A recording was in progress and could not be stopped cleanly; the partial file was left for recovery:\n' + traceback.format_exc())
+            return
+        if result:
+            log(f'A recording was in progress; stopped and saved it ({result.get("saved_path") or "path unknown"}, '
+                f'{result.get("dropouts", 0)} short dropouts)')
+    try:
+        mp3 = manager.status().get('format') == 'mp3'
+    except Exception:
+        mp3 = False
+    if instance is not None:
+        try:
+            instance.publish(0)  # port 0: "saving your recording" (see main)
+        except OSError:
+            pass
+    worker = threading.Thread(target=work, name='axiom-finish-recording', daemon=True)
+    worker.start()
+    worker.join(mp3_seconds if mp3 else wav_seconds)
+    if worker.is_alive():
+        log(f'Stopping the recording took longer than {mp3_seconds if mp3 else wav_seconds} s; closing anyway. '
+            'The files in the recordings folder were left as they are and can be recovered.')
+
+
+def stop_background_jobs(axiom, port):
+    """Closing the window stops AXIOM's background library work (Health scan, year research) the way their Stop
+    buttons do; completed work stays saved. Without this their worker threads kept PEAK HOUR running for hours
+    after the window closed, competing with the next PEAK HOUR for the CPU and blocking Setup."""
+    base = f'http://{HOST}:{port}'
+    client = axiom.app.test_client()
+    for route in ('/api/library/unified_health/stop', '/api/library/year_research/cancel'):
+        try:
+            client.post(route, base_url=base, headers={'Origin': base}, json={})
+        except Exception:
+            log(f'Could not stop {route} while closing:\n' + traceback.format_exc())
+
+
+def exit_when_done(code, seconds=15):
+    """Exit once the remaining worker threads finish, or after `seconds` anyway: AXIOM's workers are not daemon
+    threads, so Python would otherwise wait for a long analysis to end. The library is always written atomically."""
+    deadline = time.monotonic() + seconds
+    for thread in threading.enumerate():
+        if thread is not threading.main_thread() and not thread.daemon:
+            thread.join(max(0, deadline - time.monotonic()))
+    busy = [t.name for t in threading.enumerate() if t is not threading.main_thread() and not t.daemon and t.is_alive()]
+    if busy:
+        log(f'Background work still running {seconds} s after closing ({", ".join(busy)}); exiting anyway.')
+    sys.stdout and sys.stdout.flush()
+    sys.stderr and sys.stderr.flush()
+    os._exit(code)
+
+
+# A minimised or covered window must keep polling the DJ software (Live Assist follows it all night).
+KEEP_AWAKE = ['--disable-background-timer-throttling', '--disable-renderer-backgrounding',
+              '--disable-backgrounding-occluded-windows']
 
 
 def edge_command(edge, url, profile):
     """App window for the cockpit (Edge or Chrome take the same switches): its own profile, opened
     maximized like the full-size macOS window (Edge's default placement could sit off to the right)."""
     return [str(edge), f'--app={url}', f'--user-data-dir={profile}', '--start-maximized', '--no-first-run',
-            '--no-default-browser-check', '--disable-features=msEdgeStartupBoost']
+            '--no-default-browser-check', '--disable-features=msEdgeStartupBoost', *KEEP_AWAKE]
 
 
 # The browser the open window uses: (name, program, profile), or None for the default browser.
@@ -205,7 +378,20 @@ def open_live_assist(url):
         os.startfile(target)
         return
     subprocess.Popen([str(browser[1]), f'--app={target}', f'--user-data-dir={browser[2]}', '--window-size=438,690',
-                      '--no-first-run', '--no-default-browser-check', '--disable-features=msEdgeStartupBoost'], close_fds=True)
+                      '--no-first-run', '--no-default-browser-check', '--disable-features=msEdgeStartupBoost', *KEEP_AWAKE],
+                     close_fds=True)
+
+
+def open_live_assist_mini(url):
+    """PEAK HOUR Mini in its own small app window; the page pins itself on top (windows_live_assist_mini.py)."""
+    browser = window_browser()
+    target = f'{url}static/windows-live-assist-mini.html'
+    if not browser:
+        os.startfile(target)
+        return
+    subprocess.Popen([str(browser[1]), f'--app={target}', f'--user-data-dir={browser[2]}', '--window-size=380,560',
+                      '--no-first-run', '--no-default-browser-check', '--disable-features=msEdgeStartupBoost', *KEEP_AWAKE],
+                     close_fds=True)
 
 
 def open_window(url):
@@ -247,31 +433,38 @@ def log_server_errors():
     """pythonw has no console: send AXIOM's warnings and request errors to the log."""
     import logging
     log_file().parent.mkdir(parents=True, exist_ok=True)
-    handler = logging.FileHandler(log_file(), encoding='utf-8')
+    from logging.handlers import RotatingFileHandler
+    handler = RotatingFileHandler(log_file(), maxBytes=LOG_LIMIT, backupCount=LOG_FILES - 1, encoding='utf-8')
+    handler.namer = lambda name: re.sub(r'\.log\.(\d+)$', r'.\1.log', name)  # launch.log.1 -> launch.1.log
     handler.setLevel(logging.WARNING)
     handler.setFormatter(logging.Formatter('%(asctime)s %(name)s %(levelname)s %(message)s', '%Y-%m-%d %H:%M:%S'))
     logging.getLogger().addHandler(handler)
     logging.getLogger('werkzeug').setLevel(logging.WARNING)  # no per-request lines in the log
     if sys.stderr is None:  # pythonw
-        sys.stderr = open(log_file(), 'a', encoding='utf-8', buffering=1)
+        sys.stderr = LogStream()
 
 
 def main():
-    log_server_errors()
     log('=' * 72)
-    log(f'AXIOM launch requested executable={sys.executable}')
+    log(f'PEAK HOUR launch requested executable={sys.executable}')
     instance = SingleInstance()
-    if not instance.acquire():
+    if instance.acquire():  # only the running launcher rotates the log and holds it open
+        rotate_log(log_file())
+        log_server_errors()
+    else:
         port = instance.running_port()
+        if port == 0:  # the first PEAK HOUR is finishing a recording
+            show_dialog(DISPLAY_NAME, 'PEAK HOUR is saving your recording. Please wait a moment, then open it again.')
+            return 0
         url = f'http://{HOST}:{port}/' if port else None
-        log(f'Another AXIOM launcher is running (port {port})')
+        log(f'Another PEAK HOUR launcher is running (port {port})')
         if url and is_axiom(url):
             if os.environ.get('AXIOM_NO_OPEN') != '1':
                 open_window(url)
         else:
             show_dialog(DISPLAY_NAME, 'PEAK HOUR is already starting. Please wait a moment, then try again.')
         return 0
-    server = hub = None
+    server = hub = axiom = None
     try:
         port = PREFERRED_PORT if port_is_free(PREFERRED_PORT) else free_port()
         if port != PREFERRED_PORT:
@@ -282,13 +475,13 @@ def main():
         server = make_server(HOST, port, axiom.app, threaded=True)
         threading.Thread(target=server.serve_forever, name='axiom-server', daemon=True).start()
         if not wait_for_server(port):
-            raise RuntimeError(f'AXIOM did not start listening at {url}')
+            raise RuntimeError(f'PEAK HOUR did not start listening at {url}')
         instance.publish(port)
-        log(f'AXIOM server running at {url}')
-        if os.environ.get('AXIOM_HUB', '1') != '0':
+        log(f'PEAK HOUR server running at {url}')
+        if os.environ.get('AXIOM_HUB') == '1':  # opt-in: other laptops on the home network
             try:
                 from windows_remote_hub import start_hub
-                hub = start_hub(data_root(), port)
+                hub = start_hub(data_root(), port, log=log)
                 log(f'Other laptops on the home network: {hub[2]}' if hub else 'No home network found; laptops cannot connect.')
             except OSError as exc:
                 log(f'Home-network access unavailable: {exc}')
@@ -307,14 +500,18 @@ def main():
                 time.sleep(1)
         else:
             show_dialog(DISPLAY_NAME, f'PEAK HOUR is running at {url}\n\nKeep this message open while you use PEAK HOUR.\nClick OK to quit PEAK HOUR.')
-        log('AXIOM window closed; stopping')
+        log('PEAK HOUR window closed; stopping')
+        finish_recording(axiom, instance)
         return 0
     except Exception:
         detail = traceback.format_exc()
-        log('AXIOM failed to start:\n' + detail)
+        log('PEAK HOUR failed to start:\n' + detail)
         show_dialog(DISPLAY_NAME, f'PEAK HOUR could not start.\n\nDetails are in:\n{log_file()}')
         return 1
     finally:
+        if axiom is not None:
+            finish_recording(axiom, instance)  # also when startup failed or something else ended the launcher
+            stop_background_jobs(axiom, port)
         if hub:
             hub[0].shutdown()
             hub[1].stop_all()
@@ -324,4 +521,4 @@ def main():
 
 
 if __name__ == '__main__':
-    sys.exit(main())
+    exit_when_done(main())

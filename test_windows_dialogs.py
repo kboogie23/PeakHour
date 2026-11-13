@@ -16,4 +16,7 @@ class DialogTests(unittest.TestCase):
   with patch.object(wd.tk,'Tk',return_value=root),patch.object(wd.filedialog,'askdirectory',side_effect=RuntimeError('failure')):
    with self.assertRaises(RuntimeError):wd.choose_folder_dialog()
    root.destroy.assert_called_once()
-if __name__=='__main__':unittest.main()
+if __name__=='__main__':
+ result=unittest.main(exit=False).result
+ if not result.wasSuccessful():sys.exit(1)
+ print('PASS: folder and file dialogs return the choice, report cancel and always close the window')

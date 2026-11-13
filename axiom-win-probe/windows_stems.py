@@ -15,7 +15,10 @@ when the worker separates on the GPU.
 """
 import os
 import re
+import threading
 from pathlib import Path
+
+import windows_keep_awake as keep_awake
 
 DATA = Path(os.environ.get('LOCALAPPDATA', str(Path.home()))) / 'AXIOM'
 RUNTIME = DATA / 'stem-runtime'
@@ -68,11 +71,41 @@ def make_worker_status(original):
     return worker_status
 
 
+def make_awake_popen(base):
+    """base (studio_daw's own Popen, already Windows-ready) as a class that keeps the PC awake while the child lives."""
+    class AwakePopen(base):
+        def __init__(self, *args, **kwargs):
+            super().__init__(*args, **kwargs)
+            token = keep_awake.hold('Splitting stems')
+            threading.Thread(target=self._release_when_done, args=(token,), name='peak-hour-stems-awake', daemon=True).start()
+
+        def _release_when_done(self, token):
+            try:
+                self.wait()
+            except Exception:
+                pass
+            finally:
+                keep_awake.release(token)
+    return AwakePopen
+
+
+class AwakeSubprocess:
+    """What studio_daw.stems calls subprocess (its audio_process): the same module, with Popen keeping the PC awake."""
+
+    def __init__(self, original):
+        self._original = original
+        self.Popen = make_awake_popen(original.Popen)
+
+    def __getattr__(self, name):
+        return getattr(self._original, name)
+
+
 def install():
     import importlib
     stems = importlib.import_module('studio_daw.stems')
     if getattr(stems, '_windows_stems_installed', False):
         return
+    stems.subprocess = AwakeSubprocess(stems.subprocess)  # wraps audio_process, so windows_studio.install() must run first
     stems.PYTHON = stem_python()
     stems.WORKER = WORKER
     stems.resolve_stem_models = resolve_stem_models

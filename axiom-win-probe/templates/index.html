@@ -15,7 +15,7 @@
     }());
   </script>
   <title>PEAK HOUR</title>
-  <script src="/static/js/shared/windows-rename.js?v=7"></script>
+  <script src="/static/js/shared/windows-rename.js?v=9"></script>
   <script src="/static/js/shared/windows-hide-mac.js?v=3"></script>
   <meta name="axiom-launch" content="{{ axiom_launch_id }}">
 <link rel="stylesheet" href="/static/css/entrance.css?v=20260930-door-buttons-v1">
@@ -741,7 +741,7 @@
               <button type="button" class="settings-item-action" onclick="openBackupsModal()" id="tab-backups">Open Backups</button>
             </article>
             <article class="settings-item" data-settings-sections="library" data-settings-search="reset clear cache empty library first launch daily health stream start again">
-              <div><strong>Reset AXIOM Library</strong><span>Return AXIOM to an empty first-run Library before reconnecting your music and repairing Health again. Source audio and DJ libraries stay untouched.</span></div>
+              <div><strong>Reset PEAK HOUR Library</strong><span>Return AXIOM to an empty first-run Library before reconnecting your music and repairing Health again. Source audio and DJ libraries stay untouched.</span></div>
               <button type="button" id="btn-settings-library-reset" class="settings-item-action danger" onclick="resetAxiomLibraryIndex(this)">Reset Library</button>
               <div id="settings-library-reset-status" role="alert" hidden style="grid-column:1/-1;margin-top:10px;padding:12px;border:1px solid rgba(239,68,68,.58);background:rgba(127,29,29,.22);color:#fecaca;font-size:12px;line-height:1.45;">
                 <strong id="settings-library-reset-status-title" style="color:#fff;display:block;margin-bottom:4px;">Library reset needs attention</strong>
@@ -824,7 +824,7 @@
                   </select>
                   <select id="recording-broadcast-select" aria-label="Share clean recording feed with streaming apps" onchange="saveSetRecordingSettings()">
                     <option value="off">Streaming Feed Off</option>
-                    <option value="on">Share To AXIOM Broadcast</option>
+                    <option value="on">Streaming Feed On</option>
                   </select>
                   <button id="recording-test-button" type="button" class="settings-item-action" onclick="testSetRecordingInput()">Test Signal</button>
                   <button id="recording-confirm-pair-button" type="button" class="settings-item-action hidden" onclick="confirmSetRecordingPair()">Confirm Pair</button>
@@ -851,7 +851,7 @@
                 <div><strong>Now Playing Colour</strong><span>Match the active DJ software automatically, or keep one preferred AXIOM colour.</span></div>
                 <select id="performance-now-playing-colour-select" onchange="setPerformanceNowPlayingColour(this.value)">
                   <option value="auto">Match DJ Software</option>
-                  <option value="axiom">AXIOM Green</option>
+                  <option value="axiom">PEAK HOUR Green</option>
                   <option value="serato">Serato Blue</option>
                   <option value="djay">djay Pro Orange</option>
                 </select>
@@ -1242,7 +1242,7 @@
   <script src="/static/js/cockpit-core.js?v=20260904-core-state-v1"></script>
 <script src="/static/js/shared/ui-foundation.js?v=20260909-daw-edit-v2"></script>
 <script src="/static/js/surfaces/export-delivery.js?v=20261006-browser-proof-v1"></script>
-<script src="/static/js/shared/navigation.js?v=20260920-studio-start-review-tracks-v1"></script>
+<script src="/static/js/shared/navigation.js?v=20260920-studio-start-review-tracks-v2"></script>
 {% include 'partials/cockpit/dropbox-backup.html' %}
 <link rel="stylesheet" href="/static/css/dropbox-backup.css?v=20261016-backup-v2">
 <script src="/static/js/shared/dropbox-backup.js?v=20261016-backup-v2"></script>
@@ -1255,6 +1255,9 @@
 <script src="/static/js/shared/dj-track-colors.js?v=20260914"></script>
 {% if not axiom_lite %}<script src="/static/js/surfaces/performance-live.js?v=20261008-axiom-era-v1"></script>{% endif %}
 {% if not axiom_lite %}<script src="/static/js/surfaces/performance-session.js?v=20261008-axiom-era-v1-ph1"></script>{% endif %}
+{% if not axiom_lite %}<script src="/static/js/shared/windows-live-watch.js?v=2"></script>{% endif %}
+{% if not axiom_lite %}<script src="/static/js/shared/windows-live-assist-mini-button.js?v=2"></script>{% endif %}
+{% if not axiom_lite %}<script src="/static/js/shared/windows-dj-queue.js?v=5"></script>{% endif %}
 <script src="/static/js/surfaces/studio-brief.js?v=20260922-clear-set-prep-v1"></script>
 <script src="/static/js/surfaces/studio-workspace.js?v=20261006-browser-proof-v7"></script>
 <script src="/static/js/surfaces/studio-start-hero.js?v=20260921-feature-audit-v1"></script>
@@ -1325,7 +1328,7 @@
 <script src="/static/js/surfaces/health-library-care.js?v=20260904-segmentation-v1"></script>
 <script src="/static/js/surfaces/health-scans.js?v=20261015-shared-year-prep-v1"></script>
 <script src="/static/js/surfaces/health-year.js?v=20261008-years-fix-first-v2"></script>
-<script src="/static/js/surfaces/health-repairs.js?v=20260904-segmentation-v1"></script>
+<script src="/static/js/surfaces/health-repairs.js?v=20260904-segmentation-v2"></script>
 <script src="/static/js/surfaces/health-serato.js?v=20260928-beatgrid-doctor-v10-start-cue"></script>
 <script src="/static/js/surfaces/health-dj-transfer.js?v=20261015-direct-playlist-transfer"></script>
 <script src="/static/js/surfaces/health-beatgrid-workflow.js?v=20261009-doctor-health-batch"></script>
@@ -1409,14 +1412,16 @@
 <link rel="stylesheet" href="/static/css/windows-video-preview.css?v=2">
 <script src="/static/js/shared/windows-video-preview.js?v=2"></script>
 <link rel="stylesheet" href="/static/css/windows-virtualdj.css?v=3">
-<script src="/static/js/shared/windows-virtualdj.js"></script>
-<script src="/static/js/shared/windows-virtualdj-grids.js"></script>
-<script src="/static/js/shared/windows-virtualdj-health.js"></script>
-<script src="/static/js/shared/windows-virtualdj-exports.js"></script>
-<script src="/static/js/shared/windows-virtualdj-write.js?v=1"></script>
-<script src="/static/js/shared/windows-remote.js"></script>
-<link rel="stylesheet" href="/static/css/windows-theme-urban.css?v=13">
-<link rel="stylesheet" href="/static/css/windows-activity.css?v=4">
+<script src="/static/js/shared/windows-virtualdj.js?v=2"></script>
+<script src="/static/js/shared/windows-virtualdj-grids.js?v=2"></script>
+<script src="/static/js/shared/windows-virtualdj-health.js?v=2"></script>
+<script src="/static/js/shared/windows-virtualdj-exports.js?v=2"></script>
+<script src="/static/js/shared/windows-virtualdj-write.js?v=7"></script>
+{% if not axiom_lite %}<link rel="stylesheet" href="/static/css/windows-dj-send.css?v=2">{% endif %}
+{% if not axiom_lite %}<script src="/static/js/shared/windows-dj-send.js?v=5"></script>{% endif %}
+<script src="/static/js/shared/windows-remote.js?v=2"></script>
+<link rel="stylesheet" href="/static/css/windows-theme-urban.css?v=14">
+<link rel="stylesheet" href="/static/css/windows-activity.css?v=5">
 <script src="/static/js/shared/windows-font-scale.js?v=1"></script>
 <script src="/static/js/shared/windows-hotkey.js?v=1"></script>
 <script src="/static/js/shared/windows-stress-report.js?v=2"></script>
@@ -1427,7 +1432,10 @@
 <script src="/static/js/shared/windows-ai.js?v=5"></script>
 <script src="/static/js/shared/windows-filetypes.js?v=2"></script>
 <script src="/static/js/shared/windows-regions.js?v=4"></script>
-<script src="/static/js/shared/windows-mix-export.js"></script>
+<script src="/static/js/shared/windows-mix-export.js?v=3"></script>
 <script src="/static/js/shared/windows-browser.js?v=1"></script>
+<link rel="stylesheet" href="/static/css/windows-reconnect.css?v=1">
+<script src="/static/js/shared/windows-reconnect.js?v=1"></script>
+<script src="/static/js/shared/windows-health-snapshot.js?v=1"></script>
 </body>
 </html>

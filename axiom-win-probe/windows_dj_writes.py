@@ -1,0 +1,138 @@
+"""Recent PEAK HOUR writes into VirtualDJ, Serato and djay, so a write can be undone later (not only right after it).
+
+GET /api/windows/dj-writes/recent lists the newest receipts (default 20) found under PEAK HOUR's data folder, read only:
+  virtualdj-list-writes   VirtualDJ playlists / MyLists      undo: /api/windows/virtualdj/folders/undo
+  djay-folder-writes      djay playlists in folders           undo: /api/windows/djay/folders/undo
+  djay-cue-writes         djay cue points                     undo: /api/windows/djay/cues/undo
+  serato-crate-writes     Serato crates and crate folders     undo: /api/windows/serato/folders/undo
+  serato-cue-writes       Serato cue points                   undo: /api/windows/serato/cues/undo
+  virtualdj-size-writes   VirtualDJ file-size sync            undo: /api/windows/dj-writes/undo-size (below)
+  virtualdj-writes        VirtualDJ database (Sync to DJ)     undo: /api/windows/virtualdj/write/undo (newest write only)
+Each row: {program, label, what, id, created_at, undone, undo_url}. Writes that did not complete (rolled back, still
+writing) are not listed. The receipt formats belong to the writers; this module only reads them and never edits one.
+POST /api/windows/dj-writes/undo-size {backup_id} undoes a file-size sync (that writer has no route of its own).
+"""
+import json
+from pathlib import Path
+
+LIMIT = 20
+SOURCES = (  # folder under the data root, program, label, undo route
+    ('virtualdj-list-writes', 'virtualdj', 'VirtualDJ playlist', '/api/windows/virtualdj/folders/undo'),
+    ('djay-folder-writes', 'djay', 'djay playlist', '/api/windows/djay/folders/undo'),
+    ('djay-cue-writes', 'djay', 'djay cue points', '/api/windows/djay/cues/undo'),
+    ('serato-crate-writes', 'serato', 'Serato crate', '/api/windows/serato/folders/undo'),
+    ('serato-cue-writes', 'serato', 'Serato cue points', '/api/windows/serato/cues/undo'),
+    ('virtualdj-size-writes', 'virtualdj', 'VirtualDJ file sizes', '/api/windows/dj-writes/undo-size'),
+    ('virtualdj-writes', 'virtualdj', 'VirtualDJ database', '/api/windows/virtualdj/write/undo'),
+)
+DATABASE_FOLDER = 'virtualdj-writes'  # Health > Sync to DJ; its writer can only undo the newest written receipt
+KIND_NAMES = {'cues': 'cue points', 'grids': 'beat grids', 'play_counts': 'play counts'}
+LATER_WRITE = "can't be undone: a later VirtualDJ write exists"
+
+
+def _songs(count):
+    return f'{count:,} song{"" if count == 1 else "s"}'
+
+
+def _what(folder, receipt):
+    """A short description of what the write was, from whatever the writer put in its receipt."""
+    path = receipt.get('path')
+    if isinstance(path, list) and path:
+        text = ' / '.join(str(part) for part in path)
+        songs = receipt.get('songs')
+        return f'{text}, {_songs(songs)}' if isinstance(songs, int) else text
+    crate = receipt.get('crate')
+    if isinstance(crate, str) and crate:
+        return crate.replace('%%', ' / ')
+    if folder == 'virtualdj-list-writes':
+        return Path(str(receipt.get('list_path') or 'list')).stem
+    if folder == DATABASE_FOLDER:
+        kinds = [KIND_NAMES.get(str(kind), str(kind)) for kind in receipt.get('kinds') or []]
+        songs = sum(int(item.get('songs') or 0) for item in receipt.get('databases') or [] if isinstance(item, dict))
+        return ', '.join(kinds + [_songs(songs)])
+    if folder == 'virtualdj-size-writes':
+        return _songs(sum(int(item.get('songs') or 0) for item in receipt.get('databases') or []))
+    items = receipt.get('files') if isinstance(receipt.get('files'), list) else receipt.get('songs')
+    if isinstance(items, list):
+        return _songs(len(items))
+    return ''
+
+
+def _listed(folder, receipt):
+    """(show it?, undone?) for a receipt. Only completed writes are shown."""
+    status = receipt.get('status')
+    if status is None:  # VirtualDJ playlist receipts: no status, an 'undone' flag, and what they created or replaced
+        if not (receipt.get('created_files') or receipt.get('replaced')):
+            return False, False
+        return True, bool(receipt.get('undone'))
+    if status == 'partly_undone' and receipt.get('kind') == 'peakhour_serato_crates_multi' \
+            and not any(drive.get('undone') for drive in receipt.get('drives') or []):
+        return True, False  # an earlier build marked a refused undo this way: nothing was undone, it is just a written send
+    if status in ('written', 'partly_undone'):
+        return True, False
+    if status == 'undone':
+        return True, True
+    return False, False
+
+
+def recent(root, limit=LIMIT):
+    rows = []
+    for folder, program, label, undo_url in SOURCES:
+        try:
+            receipts = list((Path(root) / folder).glob('*/receipt.json'))
+        except OSError:
+            continue
+        for file in receipts:
+            try:
+                receipt = json.loads(file.read_text(encoding='utf-8'))
+            except (OSError, ValueError):
+                continue
+            if not isinstance(receipt, dict):
+                continue
+            if folder == DATABASE_FOLDER and receipt.get('kind') != 'axiom_virtualdj_write':
+                continue
+            show, undone = _listed(folder, receipt)
+            if not show:
+                continue
+            rows.append({'program': program, 'label': label, 'what': _what(folder, receipt), 'id': str(receipt.get('id') or file.parent.name),
+                         'created_at': float(receipt.get('created_at') or file.stat().st_mtime), 'undone': undone, 'undo_url': undo_url,
+                         'note': '' if undone else str(receipt.get('undo_refused') or ''),
+                         'undoable': not (receipt.get('undo_permanent') and not undone)})
+    rows.sort(key=lambda row: row['created_at'], reverse=True)
+    newest = True
+    for row in rows:  # the database writer undoes only the newest write that is still in place
+        if row['undo_url'] == '/api/windows/virtualdj/write/undo' and not row['undone']:
+            if not newest:
+                row['undoable'], row['note'] = False, LATER_WRITE
+            newest = False
+    return rows[:limit]
+
+
+def create_blueprint(root, license_guard=None):
+    from flask import Blueprint, jsonify, request
+    from windows_dj_write_queue import program_locked
+    bp = Blueprint('windows_dj_writes', __name__)
+
+    @bp.get('/api/windows/dj-writes/recent')
+    def recent_route():
+        return jsonify({'writes': recent(root)})
+
+    @bp.post('/api/windows/dj-writes/undo-size')
+    def undo_size_route():
+        import windows_virtualdj_filesize as sizes
+        origin = request.headers.get('Origin')
+        if request.remote_addr not in ('127.0.0.1', '::1') or not origin or origin.rstrip('/') != request.host_url.rstrip('/'):
+            return jsonify(success=False, error='Writing to VirtualDJ requires a same-origin request on this PC'), 403
+        gate = license_guard('Undo VirtualDJ file sizes') if license_guard else None
+        if gate:
+            return gate
+        data = request.get_json(silent=True) or {}
+        try:
+            with program_locked('virtualdj'):
+                return jsonify(sizes.undo(data.get('backup_id')))
+        except sizes.VirtualDJSizeError as exc:
+            code = getattr(exc, 'code', 'error')
+            return jsonify(success=False, error=str(exc), code=code), 409 if code in ('virtualdj_open', 'changed') else 400
+        except (OSError, ValueError) as exc:
+            return jsonify(success=False, error=str(exc), code='error'), 400
+    return bp

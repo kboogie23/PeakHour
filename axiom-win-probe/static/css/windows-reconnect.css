@@ -1,0 +1,13 @@
+/* Reconnect Music (windows-reconnect.js) */
+.axiom-reconnect{width:min(560px,92vw);border:1px solid #99db20;border-radius:12px;background:#101711;color:#f4f7ef;padding:20px}
+.axiom-reconnect::backdrop{background:rgba(0,0,0,.78)}
+.axiom-reconnect h2{font-size:1.15rem;margin:0 0 10px}
+.axiom-reconnect p{line-height:1.5;margin:8px 0}
+.axiom-reconnect-chosen strong{overflow-wrap:anywhere;color:#b7f34a}
+.axiom-reconnect-bar{width:100%;height:10px;accent-color:#b7f34a}
+.axiom-reconnect-result{font-weight:700}
+.axiom-reconnect-result[data-status="stopped"]{color:#ffd54f}
+.axiom-reconnect-actions{display:flex;flex-wrap:wrap;gap:10px;justify-content:flex-end;margin-top:16px}
+.axiom-reconnect-actions button{border:1px solid #a9da43;border-radius:8px;padding:9px 14px;background:#1d2c18;color:#eef5e9;font-weight:700;cursor:pointer}
+.axiom-reconnect-actions button.primary{background:#b7f34a;color:#0b0f0a;border-color:#b7f34a}
+.axiom-reconnect-actions button:disabled{opacity:.5;cursor:not-allowed}

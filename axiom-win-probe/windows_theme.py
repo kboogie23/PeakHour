@@ -16,10 +16,12 @@ status colours keep their meaning. windows-theme-urban.css adds the concrete
 grain, red glow and platinum details on top.
 """
 import colorsys
+import hashlib
 import io
 import math
 import re
 import threading
+from collections import OrderedDict
 from pathlib import Path
 
 THEME_VERSION = 'peak-hour-90s-3'
@@ -313,6 +315,21 @@ def warm(cache, static_root):
 
 def install(flask_app, cache_folder, static_root):
     cache = ThemeCache(cache_folder)
+    pages, pages_lock = OrderedDict(), threading.Lock()  # recoloured dynamic pages by content hash, newest last
+
+    def recolor_page(data):
+        key = (THEME_VERSION, hashlib.sha1(data).digest())
+        with pages_lock:
+            if key in pages:
+                pages.move_to_end(key)
+                return pages[key]
+        themed = recolor_text(data.decode('utf-8', 'replace')).encode('utf-8')
+        with pages_lock:
+            pages[key] = themed
+            while len(pages) > 24:
+                pages.popitem(last=False)
+        return themed
+
     static_root = Path(static_root).resolve()
     threading.Thread(target=warm, args=(cache, static_root), name='axiom-theme-warm', daemon=True).start()
 
@@ -337,7 +354,7 @@ def install(flask_app, cache_folder, static_root):
             response.mimetype = 'image/png' if replacement.suffix == '.png' else 'image/jpeg'
             response.headers['X-Axiom-Theme'] = THEME_VERSION
             response.set_etag(f'{THEME_VERSION}-{replacement.stat().st_mtime_ns}-{replacement.stat().st_size}')
-            return response
+            return response.make_conditional(request)
         mimetype = response.mimetype or ''
         is_static = path.startswith('/static/')
         art = is_static and mimetype.startswith('image/') and mimetype != 'image/svg+xml' and is_art(path[len('/static/'):])
@@ -353,10 +370,12 @@ def install(flask_app, cache_folder, static_root):
             else:
                 data = cache.get(key, lambda: recolor_text(data.decode('utf-8', 'replace'), css=mimetype == 'text/css', daw=path.startswith(DAW_PATHS)).encode('utf-8'))
         else:
-            data = recolor_text(data.decode('utf-8', 'replace')).encode('utf-8')
+            data = recolor_page(data)
         response.set_data(data)
         response.headers['X-Axiom-Theme'] = THEME_VERSION
         etag = response.get_etag()[0]
         if etag:
             response.set_etag(f'{THEME_VERSION}-{etag}')
+            # Flask compared If-None-Match with the original ETag; compare it with the one the client holds
+            response.make_conditional(request)
         return response

@@ -8,8 +8,9 @@ more upload kinds to that route, parsed with the readers AXIOM already uses on
 this PC:
 - source "virtualdj": VirtualDJ's database.xml (windows_virtualdj_database);
 - source "serato": Serato's "database V2" (AXIOM's _load_serato_library_tracks).
-The songs keep the laptop's own file paths (they are marked needs_relink here,
-since the files are on the laptop); BPM, key, year, genre and cue counts come
+The songs keep the laptop's own file paths, stored as "laptop:" + path so that no
+path can name a file on this PC (nothing here checks, opens or plays them), and are
+marked needs_relink without looking (the files are on the laptop); BPM, key, year, genre and cue counts come
 from the database. rekordbox and djay uploads go to AXIOM's own code unchanged.
 """
 import ntpath
@@ -20,25 +21,37 @@ from pathlib import Path
 from flask import jsonify, request
 
 from windows_virtualdj_database import read_database, VirtualDJDatabaseError
-from windows_virtualdj_library import axiom_track, MEDIA_EXTENSIONS
+from windows_virtualdj_library import axiom_track, file_checker, MEDIA_EXTENSIONS
 
 UPLOAD_LIMIT = 256 * 1024 * 1024
 SOURCES = {'virtualdj': 'VirtualDJ', 'serato': 'Serato'}
+PREFIX = 'laptop:'  # not a valid Windows path: os.path.exists / isfile / open all fail on it
+
+
+def on_laptop():
+    return bool(os.environ.get('AXIOM_DEVICE_ID'))
+
+
+def foreign(tracks):
+    """A laptop's songs: paths that cannot resolve on this PC, never checked here."""
+    return [dict(t, path=PREFIX + str(t.get('path') or ''), needs_relink=True) for t in tracks]
 
 
 def virtualdj_tracks(app, path):
-    tracks = []
+    tracks, isfile = [], file_checker()
     for track in read_database(path)['tracks']:
         name = track.get('path', '')
         extension = (ntpath.splitext(name)[1] or os.path.splitext(name)[1]).lower()
         if name and extension in MEDIA_EXTENSIONS:
-            tracks.append(axiom_track(track, app))
-    return tracks
+            tracks.append(axiom_track(track, app, check_file=not on_laptop(), isfile=isfile))
+    return foreign(tracks) if on_laptop() else tracks
 
 
 def serato_tracks(app, path):
     loaded = app._load_serato_library_tracks(database_paths=[str(path)])
     tracks = loaded[0] if isinstance(loaded, tuple) else loaded
+    if on_laptop():
+        return foreign(tracks or [])
     return [dict(t, needs_relink=not os.path.isfile(str(t.get('path') or ''))) for t in tracks or []]
 
 
@@ -64,7 +77,7 @@ def make_connect_view(app, original):
                         break
                     written += len(chunk)
                     if written > UPLOAD_LIMIT:
-                        raise ValueError('That database is larger than AXIOM accepts (256 MB).')
+                        raise ValueError('That database is larger than PEAK HOUR accepts (256 MB).')
                     handle.write(chunk)
             tracks = virtualdj_tracks(app, target) if source == 'virtualdj' else serato_tracks(app, target)
             if not tracks:

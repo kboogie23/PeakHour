@@ -7,6 +7,7 @@
 //  - song titles and artists (rows with data-path, track title/artist text),
 //  - the licence window and the AXIOM Lite import (they name AXIOM's products),
 //  - anything inside inputs, code and editable text.
+// Download file names also change (AXIOM_ -> PEAK_HOUR_, .axiom.zip -> .peakhour.zip): see filename().
 (function(){
  'use strict';
  const NAME='PEAK HOUR';
@@ -82,5 +83,23 @@
  }
  if(document.body)sweep(document.body);
  document.addEventListener('DOMContentLoaded',()=>sweep(document.body));
+ // Download names: AXIOM's own front end names its files AXIOM_*, axiom-* and *.axiom.zip/json.
+ // Only the start of the name (and those two endings) change, so a song title in the middle stays.
+ // Installed on the anchor's download property and setAttribute('download'), which also covers
+ // anchors that are clicked without ever being added to the page.
+ const filename=name=>typeof name!=='string'?name:name
+  .replace(/^AXIOM_/,'PEAK_HOUR_').replace(/^AXIOM-/,'PEAK-HOUR-').replace(/^axiom-/,'peak-hour-').replace(/^AXIOM Project(?=[ .])/,'PEAK HOUR Project')
+  .replace(/\.axiom\.(zip|json)$/i,'.peakhour.$1');
+ const downloadProperty=Object.getOwnPropertyDescriptor(HTMLAnchorElement.prototype,'download');
+ if(downloadProperty&&downloadProperty.set){
+  Object.defineProperty(HTMLAnchorElement.prototype,'download',{configurable:true,enumerable:downloadProperty.enumerable,
+   get(){return downloadProperty.get.call(this);},
+   set(value){downloadProperty.set.call(this,filename(String(value)));}});
+ }
+ const setAttributeOriginal=Element.prototype.setAttribute;
+ Element.prototype.setAttribute=function(name,value){
+  return setAttributeOriginal.call(this,name,String(name).toLowerCase()==='download'?filename(String(value)):value);
+ };
  window.PeakHourRename=rename;
+ window.PeakHourFilename=filename;
 })();

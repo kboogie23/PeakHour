@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <link rel="icon" href="/favicon.ico">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PEAK HOUR Mini</title>
+  <link href="/static/windows-fonts.css?v=1" rel="stylesheet">
+  <link rel="stylesheet" href="/static/css/windows-live-assist-mini.css?v=2">
+</head>
+<body>
+  <header class="mini-bar">
+    <strong>PEAK HOUR</strong><span class="mini-divider" aria-hidden="true"></span><span>Live Assist</span>
+    <span id="mini-source" class="mini-source"></span>
+    <button id="mini-pin" type="button" aria-pressed="true" title="Keep this window on top">Pin</button>
+  </header>
+  <section class="mini-now" aria-label="Playing now">
+    <div class="mini-now-copy">
+      <div class="mini-label">Playing now</div>
+      <div id="mini-now-title" class="mini-now-title">Waiting for a song</div>
+      <div id="mini-now-artist" class="mini-now-artist">Play a song in your DJ software.</div>
+    </div>
+    <div id="mini-now-bpm" class="mini-now-bpm"></div>
+  </section>
+  <div class="mini-label mini-next-label">Play next <span id="mini-count"></span></div>
+  <ol id="mini-list" class="mini-list" aria-label="Suggested next songs"></ol>
+  <script src="/static/js/shared/live-assist-similarity.js?v=20261008-axiom-era-v1"></script>
+  <script src="/static/js/shared/windows-live-assist-mini.js?v=2"></script>
+</body>
+</html>
