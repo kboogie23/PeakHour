@@ -27,6 +27,7 @@ Serato must be closed; if it is open apply/undo raise SeratoCueError with code '
 import base64
 import hashlib
 import json
+import logging
 import math
 import ntpath
 import os
@@ -64,10 +65,13 @@ class SeratoCueError(RuntimeError):
 
 # ------------------------------------------------------------------ configuration
 
-_state = {'app': None, 'root': None, 'running': None, 'readers': {}, 'virtualdj_databases': None, 'libraries': None}
+_state = {'app': None, 'root': None, 'running': None, 'readers': {}, 'virtualdj_databases': None, 'libraries': None,
+          'programs': None, 'recovered': 0, 'recovery': None}
+_ACTIVE = set()  # receipts of writes running right now in this process
+log = logging.getLogger('peakhour.serato_cues')
 
 
-def configure(app=None, root=None, running=None, readers=None, virtualdj_databases=None, libraries=None):
+def configure(app=None, root=None, running=None, readers=None, virtualdj_databases=None, libraries=None, programs=None):
     """Set what the module works on. Unset values fall back to the app / the real locations.
 
     root                where backups and receipts go
@@ -75,13 +79,15 @@ def configure(app=None, root=None, running=None, readers=None, virtualdj_databas
     readers             {'peakhour'|'virtualdj'|'djay': callable(path) -> [cue dicts]}
     virtualdj_databases callable -> VirtualDJ database.xml paths
     libraries           callable -> [(drive like 'D:', path of that drive's location.sqlite)] for "all"
+    programs            callable -> set of DJ programs that are open ('virtualdj', 'serato', 'djay'); default: the process list
     """
     for name, value in (('app', app), ('root', root), ('running', running),
-                        ('virtualdj_databases', virtualdj_databases), ('libraries', libraries)):
+                        ('virtualdj_databases', virtualdj_databases), ('libraries', libraries), ('programs', programs)):
         if value is not None:
             _state[name] = value
     if root is not None:
         cleanup_leftovers(root)
+        start_recovery(root)
     if readers is not None:
         _state['readers'] = dict(readers)
 
@@ -374,7 +380,15 @@ def _keep_padding(info):
     return max(info.padding, 0)
 
 
-def _write_tags(target, cues, info, kind, color, v1_from=None):
+GROW_PADDING = 2048  # room left in a tag that had to grow, so the next edit fits without growing again
+MAX_GROW = 16384  # a cue write never makes a song more than this much bigger
+
+
+def _grow_padding(info):
+    return GROW_PADDING
+
+
+def _write_tags(target, cues, info, kind, color, padding=None):
     """Write the cues into the Serato tags of `target` (a path or a file object). Other tags are not changed.
 
     The tag keeps its old total size when the new data fits in its padding; if it does not fit the result is
@@ -402,7 +416,7 @@ def _write_tags(target, cues, info, kind, color, v1_from=None):
         tags.add(GEOB(encoding=0, mime='application/octet-stream', desc='Serato Markers2', data=encode_markers2(cues, kept, color)))
         if hasattr(target, 'seek'):
             target.seek(0)  # mutagen reads the old tag size from the current position
-        tags.save(target, v2_version=version, v1=1, padding=_keep_padding)
+        tags.save(target, v2_version=version, v1=1, padding=padding or _keep_padding)
         if original_v1 is not None:  # mutagen refreshes an ID3v1 tag it finds; keep the song's own bytes
             with open(target, 'rb+') as handle:
                 handle.seek(-128, 2)
@@ -421,7 +435,7 @@ def _write_tags(target, cues, info, kind, color, v1_from=None):
         file.tags[ATOM_V1] = [MP4FreeForm(_atom_value(HEAD_V1, encode_markers_v1(cues, tail)), dataformat=1)]
     if hasattr(target, 'seek'):
         target.seek(0)
-    file.save(target, padding=_keep_padding)
+    file.save(target, padding=padding or _keep_padding)
 
 
 def _mp4_atoms(handle, size):
@@ -460,18 +474,21 @@ def _audio_ranges(path, kind):
         return [(offset + body, offset + length) for offset, length, name, body in _mp4_atoms(handle, size) if name == b'mdat']
 
 
-def _tag_fits(path, cues, info, kind, color):
-    """True if the cues fit in the tag's existing room, tried on an in-memory copy of just the tag part (no audio)."""
+def _tag_delta(path, cues, info, kind, color, allow_grow=True):
+    """How the cues go into this song, tried on an in-memory copy of just the tag part (no audio): 0 = they fit in the
+    tag's existing room (written in place, size unchanged); N > 0 = the file grows by N bytes; None = no room and growing
+    is off (or the tag cannot be built)."""
     import io
     size = os.path.getsize(path)
     with open(path, 'rb') as handle:
         if kind == 'mp3':
             head = handle.read(10)
             if head[:3] != b'ID3':
-                return False
-            end = 10 + (((head[6] & 0x7F) << 21) | ((head[7] & 0x7F) << 14) | ((head[8] & 0x7F) << 7) | (head[9] & 0x7F))
-            handle.seek(0)
-            region = handle.read(end)
+                region = b''
+            else:
+                end = 10 + (((head[6] & 0x7F) << 21) | ((head[7] & 0x7F) << 14) | ((head[8] & 0x7F) << 7) | (head[9] & 0x7F))
+                handle.seek(0)
+                region = handle.read(end)
         else:
             pieces = []
             for offset, length, name, body in _mp4_atoms(handle, size):
@@ -479,12 +496,20 @@ def _tag_fits(path, cues, info, kind, color):
                     handle.seek(offset)
                     pieces.append(handle.read(length))
             region = b''.join(pieces)
-    memory = io.BytesIO(region)
-    try:
-        _write_tags(memory, cues, info, kind, color)
-    except Exception:
-        return False
-    return len(memory.getvalue()) == len(region)
+    for padding, grows in ((_keep_padding, False), (_grow_padding, True)):
+        if grows and not allow_grow:
+            break
+        memory = io.BytesIO(region)
+        try:
+            _write_tags(memory, cues, info, kind, color, padding)
+        except Exception:
+            continue
+        delta = len(memory.getvalue()) - len(region)
+        if not grows and delta == 0:
+            return 0
+        if grows and 0 < delta <= MAX_GROW:
+            return delta
+    return None
 
 
 def _tag_regions(path, kind):
@@ -523,20 +548,44 @@ def _diff_ranges(first, second, regions, block=64 * 1024):
     return [tuple(r) for r in ranges]
 
 
-def _patch_in_place(path, source, ranges):
-    """Copy just these byte ranges from source into the real file, which keeps its file identity."""
-    with open(source, 'rb') as new, open(path, 'rb+') as handle:
+def _open_exclusive(path):
+    """The song opened for reading and writing with sharing switched off, so no other program has it open while it is
+    changed. Raises code 'in_use' if another program has it open."""
+    if os.name != 'nt':
+        return open(path, 'rb+')
+    import ctypes
+    import msvcrt
+    from ctypes import wintypes
+    kernel = ctypes.WinDLL('kernel32', use_last_error=True)
+    kernel.CreateFileW.argtypes = [wintypes.LPCWSTR, wintypes.DWORD, wintypes.DWORD, ctypes.c_void_p, wintypes.DWORD,
+                                   wintypes.DWORD, wintypes.HANDLE]
+    kernel.CreateFileW.restype = wintypes.HANDLE
+    handle = kernel.CreateFileW(str(path), 0xC0000000, 0, None, 3, 0x80, None)  # GENERIC_READ|WRITE, no sharing, OPEN_EXISTING
+    if handle in (None, ctypes.c_void_p(-1).value):
+        raise SeratoCueError('The song is open in another program. Left alone.', 'in_use')
+    try:
+        fd = msvcrt.open_osfhandle(handle, os.O_RDWR | os.O_BINARY)
+    except OSError:
+        kernel.CloseHandle(handle)
+        raise
+    return os.fdopen(fd, 'rb+')
+
+
+def _patch_in_place(handle, source, ranges):
+    """Copy just these byte ranges from source into the (already open) real file, which keeps its file identity."""
+    with open(source, 'rb') as new:
         for start, end in ranges:
             new.seek(start)
             handle.seek(start)
             handle.write(new.read(end - start))
-        handle.flush()
-        os.fsync(handle.fileno())
+    handle.flush()
+    os.fsync(handle.fileno())
 
 
-def _restore_in_place(path, backup, stat):
-    """Write the backup's bytes back over the real file (same file, not a new one) and its original dates."""
-    with open(backup, 'rb') as old, open(path, 'rb+') as handle:
+def _restore_in_place(path, backup, stat, exclusive=False):
+    """Write the backup's bytes back over the real file (same file, not a new one) and its original dates. exclusive: nobody else
+    may have the song open (raises code 'in_use' otherwise)."""
+    with open(backup, 'rb') as old, (_open_exclusive(path) if exclusive else open(path, 'rb+')) as handle:
         while True:
             chunk = old.read(1 << 20)
             if not chunk:
@@ -546,6 +595,57 @@ def _restore_in_place(path, backup, stat):
         handle.flush()
         os.fsync(handle.fileno())
     os.utime(path, ns=(stat['atime_ns'], stat['mtime_ns']))
+
+
+def _rewrite_in_place(handle, source):
+    """Write the whole new file over the (already open) original, same file so its identity and creation time stay, then cut
+    it to length."""
+    handle.seek(0)
+    with open(source, 'rb') as new:
+        while True:
+            chunk = new.read(1 << 20)
+            if not chunk:
+                break
+            handle.write(chunk)
+    handle.truncate()
+    handle.flush()
+    os.fsync(handle.fileno())
+
+
+def _ffmpeg():
+    try:
+        import imageio_ffmpeg
+        return imageio_ffmpeg.get_ffmpeg_exe()
+    except Exception as exc:
+        raise SeratoCueError(f'Could not check the sound of the changed song ({exc}). Left alone.', 'no_space') from exc
+
+
+def _run_ffmpeg(*args):
+    import subprocess
+    return subprocess.run([_ffmpeg(), *args], capture_output=True, timeout=300, creationflags=0x08000000 if os.name == 'nt' else 0)
+
+
+def _decode_md5(path, *window, video=False):
+    mapping = ('-map', '0:v:0', '-an') if video else ('-map', '0:a:0', '-vn')
+    done = _run_ffmpeg('-v', 'error', *window, '-i', str(path), *mapping, '-f', 'md5', '-')
+    if done.returncode != 0 or b'MD5=' not in done.stdout:
+        raise SeratoCueError('Could not decode the changed song. Left alone.', 'no_space')
+    return done.stdout.strip()
+
+
+def _has_video(path):
+    return b'Video:' in _run_ffmpeg('-hide_banner', '-i', str(path)).stderr
+
+
+def _check_decode(original, changed):
+    """An MP4's tag sits before the media data, so growing it moves every sample offset: decode the first and the last seconds
+    of the sound (and of the picture, if there is one) of both files and require identical results."""
+    video = _has_video(original)
+    for window in (('-t', '2'), ('-sseof', '-2')):
+        if _decode_md5(original, *window) != _decode_md5(changed, *window):
+            raise SeratoCueError('The sound of the changed song does not match the original. Left alone.', 'no_space')
+        if video and _decode_md5(original, *window, video=True) != _decode_md5(changed, *window, video=True):
+            raise SeratoCueError('The picture of the changed song does not match the original. Left alone.', 'no_space')
 
 
 def _stat(path):
@@ -716,6 +816,7 @@ def _plan(payload):
     requested = _requested(payload)
     if requested is None:
         requested = _all_songs()
+    allow_grow = _allow_grow(payload)
     sources, rows, seen = _Sources(), [], set()
     for path in requested:
         key = _key(path)
@@ -723,7 +824,8 @@ def _plan(payload):
             continue
         seen.add(key)
         row = {'path': path, 'title': os.path.splitext(ntpath.basename(path))[0], 'format': file_format(path) or '',
-               'existing_cues': 0, 'source': '', 'cues': [], 'skip_reason': '', 'signature': [], 'will_write': False}
+               'existing_cues': 0, 'source': '', 'cues': [], 'skip_reason': '', 'signature': [], 'will_write': False,
+               'grows_by': 0, 'mode': ''}
         rows.append(row)
         if not row['format']:
             row['skip_reason'] = 'Only MP3, MP4 and M4A files can carry Serato cues'
@@ -746,19 +848,24 @@ def _plan(payload):
         if not row['cues']:
             row['skip_reason'] = 'No cues found in PEAK HOUR, VirtualDJ or djay'
             continue
-        if not _tag_fits(path, row['cues'], info, row['format'], _default_color(path)):
+        delta = _tag_delta(path, row['cues'], info, row['format'], _default_color(path), allow_grow)
+        if delta is None:
             row['skip_reason'] = NO_ROOM
             continue
+        row['grows_by'] = delta
+        row['mode'] = f'file grows by {delta:,} bytes' if delta else 'in place'
         row['will_write'] = True
     return {'songs': rows, 'digest': digest(payload)}
 
 
 def _public(plan):
     rows = [dict(row) for row in plan['songs']]
-    return {'success': True, 'songs': rows, 'digest': plan['digest'],
+    return {'success': True, 'songs': rows, 'digest': plan['digest'], 'recovered_after_interrupt': _state['recovered'],
             'counts': {'songs_to_write': sum(r['will_write'] for r in rows),
                        'cues_to_write': sum(len(r['cues']) for r in rows if r['will_write']),
-                       'skipped': sum(not r['will_write'] for r in rows)},
+                       'skipped': sum(not r['will_write'] for r in rows),
+                       'songs_growing': sum(1 for r in rows if r['will_write'] and r['grows_by']),
+                       'bytes_added': sum(r['grows_by'] for r in rows if r['will_write'])},
             'sources_order': [LABELS[s] for s in SOURCES], 'writes_to': 'nothing (preview)'}
 
 
@@ -767,7 +874,12 @@ def preview(payload=None):
     return _public(_plan(payload))
 
 
-RULE_VERSION = 2  # bump when the rules for what gets written change
+RULE_VERSION = 3  # bump when the rules for what gets written change
+
+
+def _allow_grow(payload):
+    """Songs with no room in their tag get a bigger file unless the request says allow_grow: false."""
+    return not (isinstance(payload, dict) and payload.get('allow_grow') is False)
 
 
 def digest(payload=None):
@@ -775,7 +887,8 @@ def digest(payload=None):
     does not change when unrelated songs change; each song is re-checked on its own when it is written."""
     requested = _requested(payload)
     listing = 'all' if requested is None else sorted({_key(p) for p in requested})
-    return hashlib.sha256(json.dumps({'rules': RULE_VERSION, 'tracks': listing}, sort_keys=True).encode()).hexdigest()
+    return hashlib.sha256(json.dumps({'rules': RULE_VERSION, 'tracks': listing, 'grow': _allow_grow(payload)},
+                                     sort_keys=True).encode()).hexdigest()
 
 
 # ------------------------------------------------------------------ apply / undo
@@ -809,8 +922,8 @@ def _save(folder, receipt):
     _fsync_dir(folder)
 
 
-SKIP_CODES = ('changed', 'no_space')
-NO_ROOM = 'Not enough space in the tag; would change the file size. Left alone.'
+SKIP_CODES = ('changed', 'no_space', 'in_use')
+NO_ROOM = 'Not enough space in the tag, and growing the file is switched off. Left alone.'
 PAUSE_SECONDS = 0.05  # between songs, so a live set is never starved of disk time
 RESERVE_BYTES = 200 * 1024 * 1024
 
@@ -853,15 +966,24 @@ def _write_one(row, folder, number, receipt):
     receipt['pending_temp'] = str(stage)
     _save(folder, receipt)
     try:
+        grow = bool(row.get('grows_by'))
         shutil.copyfile(path, stage)
-        _write_tags(str(stage), row['cues'], info, kind, _default_color(path))
-        if os.path.getsize(stage) != before['size']:
-            raise SeratoCueError(NO_ROOM, 'no_space')
-        ranges = _diff_ranges(path, stage, _tag_regions(path, kind))
-        protected = _audio_ranges(path, kind)
-        if not ranges or any(s < pe and e > ps for s, e in ranges for ps, pe in protected):
-            raise SeratoCueError('The new tag would touch the audio. Left alone.', 'no_space')
+        _write_tags(str(stage), row['cues'], info, kind, _default_color(path), _grow_padding if grow else _keep_padding)
+        new_size = os.path.getsize(stage)
+        ranges = None
+        if grow:
+            if not before['size'] < new_size <= before['size'] + MAX_GROW:
+                raise SeratoCueError('The song would change size in an unexpected way. Left alone.', 'no_space')
+        else:
+            if new_size != before['size']:
+                raise SeratoCueError(NO_ROOM, 'no_space')
+            ranges = _diff_ranges(path, stage, _tag_regions(path, kind))
+            protected = _audio_ranges(path, kind)
+            if not ranges or any(s < pe and e > ps for s, e in ranges for ps, pe in protected):
+                raise SeratoCueError('The new tag would touch the audio. Left alone.', 'no_space')
         _check_written(str(stage), row['cues'], info, audio, kind)
+        if grow and kind == 'mp4':  # the sample offsets moved with the tag: the sound must still decode the same
+            _check_decode(path, str(stage))
         backup = folder / 'files' / f'{number:04d}-{ntpath.basename(path)}'
         backup.parent.mkdir(exist_ok=True)
         shutil.copy2(path, backup)
@@ -872,17 +994,31 @@ def _write_one(row, folder, number, receipt):
             raise SeratoCueError('The backup copy did not match the song. Nothing was changed.', 'write_failed')
         entry = {'path': path, 'backup': str(backup), 'before_sha256': before_sha, 'status': 'patching', 'cues': len(row['cues']),
                  'mtime_ns': before['mtime_ns'], 'atime_ns': before['atime_ns'], 'size': before['size'],
-                 'after_sha256': _file_sha(stage)}  # the song will be exactly the temp copy once patched
+                 'after_sha256': _file_sha(stage), 'new_size': new_size, 'grew': grow,
+                 'started_ns': time.time_ns()}  # the song will be exactly the temp copy; started_ns tells a torn write from a later edit
         _ensure_closed()  # last look, right before the song is touched
+        try:
+            handle = _open_exclusive(path)  # nobody else has the song open while it is changed
+        except SeratoCueError:
+            backup.unlink(missing_ok=True)
+            raise
         receipt['files'].append(entry)
         _save(folder, receipt)
         try:
-            _patch_in_place(path, str(stage), ranges)
+            try:
+                if grow:
+                    _rewrite_in_place(handle, str(stage))
+                else:
+                    _patch_in_place(handle, str(stage), ranges)
+            finally:
+                handle.close()
             os.utime(path, ns=(before['atime_ns'], before['mtime_ns']))
             after = _stat(path)
-            if after['size'] != before['size'] or after['mtime_ns'] != before['mtime_ns'] or after['ino'] != before['ino'] \
+            if after['size'] != new_size or after['mtime_ns'] != before['mtime_ns'] or after['ino'] != before['ino'] \
                     or after['created'] != before['created']:
                 raise SeratoCueError('The song changed size, identity or date; it was put back.', 'verify_failed')
+            if _file_sha(path) != entry['after_sha256']:
+                raise SeratoCueError('The song did not read back as written; it was put back.', 'verify_failed')
             _check_written(path, row['cues'], info, audio, kind)
         except BaseException:
             _restore_in_place(path, backup, before)
@@ -897,6 +1033,113 @@ def _write_one(row, folder, number, receipt):
             stage.unlink()
         except OSError:
             pass
+
+
+SYNC_KEYS = ('virtualdj_sync', 'virtualdj_sync_undo')
+
+
+def _plan_sync(receipt, key, songs):
+    """Record in the receipt that VirtualDJ's file sizes still have to follow (state 'pending'); the caller saves the receipt and
+    then calls _launch_sync. songs = [{'path', 'old_size', 'new_size'}]."""
+    if not songs:
+        return None
+    receipt[key] = {'state': 'pending', 'songs': len(songs), 'payload': {'songs': songs}}
+    return {'state': 'pending', 'songs': len(songs)}
+
+
+def _launch_sync(folder, key):
+    """Hand the sync to the write queue from a background thread: the queue applies it at once if VirtualDJ is closed, otherwise
+    when it closes. A request thread never edits VirtualDJ's database."""
+    threading.Thread(target=_run_sync, args=(Path(folder), key), daemon=True, name='serato-vdj-size-sync').start()
+
+
+def _run_sync(folder, key):
+    state = {'state': 'pending', 'message': 'The write queue is not running yet.'}
+    try:
+        receipt = json.loads((folder / 'receipt.json').read_text(encoding='utf-8'))
+        payload = receipt[key]['payload']
+        import windows_dj_write_queue as queue_module
+        queue = queue_module.QUEUE
+        if queue is not None and ('virtualdj', 'filesize_sync') in queue.appliers:
+            lock = queue.program_lock('virtualdj') if hasattr(queue, 'program_lock') else threading.RLock()
+            with lock:
+                outcome = queue.submit('virtualdj', 'filesize_sync', payload)
+            state = {'state': 'submitted' if outcome.get('queued') else 'done', 'id': outcome.get('id'),
+                     'result': outcome.get('result')}
+    except Exception as exc:
+        log.warning('VirtualDJ file-size sync for %s failed: %s', folder.name, exc)
+        state = {'state': 'failed', 'error': str(exc)}
+    try:
+        with _LOCK:  # after the write that started this has finished with the receipt
+            receipt = json.loads((folder / 'receipt.json').read_text(encoding='utf-8'))
+            receipt[key].update(state)
+            _save(folder, receipt)
+    except Exception as exc:
+        log.warning('could not record the VirtualDJ file-size sync in %s: %s', folder, exc)
+
+
+def resubmit_pending_syncs(root=None):
+    """At start-up: size syncs that were recorded but never handed to the queue (PEAK HOUR closed first) go again."""
+    try:
+        base = Path(root) if root is not None else _root()
+        receipts = list(base.glob('*/receipt.json'))
+    except Exception:
+        return 0
+    count = 0
+    for file in receipts:
+        try:
+            receipt = json.loads(file.read_text(encoding='utf-8'))
+        except (OSError, ValueError):
+            continue
+        for key in SYNC_KEYS:
+            if isinstance(receipt.get(key), dict) and receipt[key].get('state') == 'pending':
+                _launch_sync(file.parent, key)
+                count += 1
+    return count
+
+
+def _programs_running():
+    """The DJ programs that are open right now (fails closed: if the process list cannot be read, all of them)."""
+    import windows_dj_write_queue as queue_module
+    hook = _state['programs']
+    try:
+        if hook is not None:
+            found = set(hook())
+        elif queue_module.QUEUE is not None and hasattr(queue_module.QUEUE, 'running_programs'):
+            found = set(queue_module.QUEUE.running_programs())
+        else:
+            from windows_serato_processes import snapshot_processes
+            names = {ntpath.basename(exe).casefold() for _, exe in snapshot_processes()}
+            found = {program for program, exes in queue_module.EXECUTABLES.items() if names & set(exes)}
+    except Exception:
+        found = set(queue_module.PROGRAMS)
+    if _running():
+        found.add('serato')
+    return found
+
+
+class SeratoNeedsQueue(SeratoCueError):
+    """Raised (before anything is written, and so before any queue is touched) when songs have to grow while a DJ program is
+    open. The caller lets go of every lock and then calls queue_for_later(); the queue watcher also treats the '_open' code as
+    "wait until the program is closed" if it ever sees this."""
+
+    def __init__(self, payload, running):
+        super().__init__('Some songs need to get a little bigger, which is only done while no DJ program is open (' +
+                         ', '.join(sorted(running)) + ' is open). PEAK HOUR will write them after it closes.', 'dj_open')
+        self.payload = {key: value for key, value in (payload if isinstance(payload, dict) else {}).items() if key != 'confirm'}
+
+
+def queue_for_later(payload):
+    """Hand a job that cannot run now to the write queue as the fixed ('serato', 'cues') job. It is only appended (no apply-now
+    path, no lock), and the watcher runs it once NO DJ program is open."""
+    import windows_dj_write_queue as queue_module
+    queue = queue_module.QUEUE
+    if queue is None or ('serato', 'cues') not in queue.appliers or not hasattr(queue, 'enqueue'):
+        raise SeratoCueError('Some songs need to get a little bigger, which is only done while no DJ program is open. '
+                             'Close your DJ programs and try again. Nothing was written.', 'dj_open')
+    outcome = queue.enqueue('serato', 'cues', payload)
+    return {'success': True, 'queued': True, 'id': outcome['id'],
+            'message': 'A DJ program is open \u2014 PEAK HOUR will write these cue points after you close it.'}
 
 
 def _nearest_existing(path):
@@ -925,6 +1168,10 @@ def apply(payload=None):
         summary = _public(plan)
         if not rows:
             return dict(summary, written=0, failed=[], skipped_now=skipped, backup_id='', message='Nothing to write.')
+        if any(row.get('grows_by') for row in rows):
+            running = _programs_running()
+            if running:  # songs that get bigger are written only while no DJ program is open
+                raise SeratoNeedsQueue(payload, running)
         _ensure_closed()
         total = sum(row['signature'][0] for row in rows)
         free = shutil.disk_usage(_nearest_existing(_root())).free
@@ -937,34 +1184,44 @@ def apply(payload=None):
         (folder / 'files').mkdir(parents=True)
         receipt = {'kind': 'peakhour_serato_cues', 'id': identifier, 'created_at': time.time(), 'status': 'writing', 'files': []}
         _save(folder, receipt)
-        failed = []
-        with _Background():
-            for number, row in enumerate(rows):
-                try:
-                    _write_one(row, folder, number, receipt)
-                except SeratoCueError as error:
-                    if error.code == 'serato_open':
-                        receipt['status'] = 'written' if any(e['status'] == 'written' for e in receipt['files']) else 'failed'
-                        _save(folder, receipt)
-                        raise
-                    if error.code in SKIP_CODES:
-                        skipped.append({'path': row['path'], 'reason': str(error)})
-                    else:
-                        failed.append({'path': row['path'], 'error': str(error), 'code': error.code})
-                except Exception as error:
-                    failed.append({'path': row['path'], 'error': f'Could not write the cues ({error}). The song was left as it was.',
-                                   'code': 'write_failed'})
-                _save(folder, receipt)
-                time.sleep(PAUSE_SECONDS)
-        written = sum(1 for e in receipt['files'] if e['status'] == 'written')
-        receipt['status'] = 'written' if written else 'failed'
-        _save(folder, receipt)
-        message = (f'Cues written to {written} song(s).' if written else 'No cues were written.') \
-            + (f' {len(skipped)} left alone.' if skipped else '') + (f' {len(failed)} could not be written.' if failed else '')
-        if written:
-            message += ' The songs keep their size and date; a backup of each was kept and this can be undone.'
-        return dict(summary, written=written, failed=failed, skipped_now=skipped, backup_id=identifier if written else '',
-                    message=message)
+        _ACTIVE.add(identifier)
+        try:
+            failed = []
+            with _Background():
+                for number, row in enumerate(rows):
+                    try:
+                        _write_one(row, folder, number, receipt)
+                    except SeratoCueError as error:
+                        if error.code == 'serato_open':
+                            receipt['status'] = 'written' if any(e['status'] == 'written' for e in receipt['files']) else 'failed'
+                            _save(folder, receipt)
+                            raise
+                        if error.code in SKIP_CODES:
+                            skipped.append({'path': row['path'], 'reason': str(error)})
+                        else:
+                            failed.append({'path': row['path'], 'error': str(error), 'code': error.code})
+                    except Exception as error:
+                        failed.append({'path': row['path'], 'error': f'Could not write the cues ({error}). The song was left as it was.',
+                                       'code': 'write_failed'})
+                    _save(folder, receipt)
+                    time.sleep(PAUSE_SECONDS)
+            written = sum(1 for e in receipt['files'] if e['status'] == 'written')
+            receipt['status'] = 'written' if written else 'failed'
+            grown = [{'path': e['path'], 'old_size': e['size'], 'new_size': e['new_size']}
+                     for e in receipt['files'] if e['status'] == 'written' and e.get('grew')]
+            sync = _plan_sync(receipt, 'virtualdj_sync', grown)
+            _save(folder, receipt)
+            if sync is not None:
+                _launch_sync(folder, 'virtualdj_sync')
+            message = (f'Cues written to {written} song(s).' if written else 'No cues were written.') \
+                + (f' {len(skipped)} left alone.' if skipped else '') + (f' {len(failed)} could not be written.' if failed else '')
+            if written:
+                message += (f' {len(grown)} got a little bigger (the sound is unchanged)' if grown else '') \
+                    + '. Files keep their identity and date; a backup of each was kept and this can be undone.'
+            return dict(summary, written=written, failed=failed, skipped_now=skipped, backup_id=identifier if written else '',
+                        grown=len(grown), virtualdj_sync=sync, message=message)
+        finally:
+            _ACTIVE.discard(identifier)
 
 
 def cleanup_leftovers(root=None):
@@ -984,9 +1241,123 @@ def cleanup_leftovers(root=None):
             continue
 
 
-def undo(backup_id):
-    """Put each song back as it was before that write, byte for byte, same file, original dates (Serato closed,
-    song not changed since). Works on a write that was interrupted too: songs marked written or mid-patch."""
+TORN_SLACK_NS = 120 * 10 ** 9  # a torn write's mtime is within this of when the write began; a later edit is not
+
+
+def _looks_torn(path, entry):
+    """True if the song is plausibly what an interrupted write left: its size is between the old and the planned new size and
+    nobody has touched it since the write began (its mtime is not later than that, give or take the write itself)."""
+    try:
+        info = os.stat(path)
+    except OSError:
+        return False
+    low, high = sorted((entry.get('size', -1), entry.get('new_size', entry.get('size', -1))))
+    started = entry.get('started_ns')
+    return low <= info.st_size <= high and started is not None and info.st_mtime_ns <= started + TORN_SLACK_NS
+
+
+def _save_current_copy(folder, entry, number):
+    """Keep the song exactly as it is now, in the receipt folder, before anything is written over it."""
+    copy = Path(folder) / 'files' / f"pre-restore-{number:04d}-{ntpath.basename(entry['path'])}"
+    copy.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copy2(entry['path'], copy)
+    _fsync_file(copy)
+    entry['pre_restore_copy'] = str(copy)
+    return copy
+
+
+def attention_list(root=None):
+    """Songs an interrupted write left in a state PEAK HOUR will not repair by itself: [{'song', 'receipt', 'reason', 'copy'}]."""
+    found = []
+    try:
+        base = Path(root) if root is not None else _root()
+        files = list(base.glob('*/receipt.json'))
+    except Exception:
+        return found
+    for file in files:
+        try:
+            receipt = json.loads(file.read_text(encoding='utf-8'))
+        except (OSError, ValueError):
+            continue
+        for entry in receipt.get('files', []):
+            if entry.get('status') == 'needs_attention':
+                found.append({'song': entry['path'], 'receipt': receipt.get('id'), 'reason': entry.get('reason', ''),
+                              'copy': entry.get('pre_restore_copy', '')})
+    return found
+
+
+def start_recovery(root=None):
+    """Run recover_interrupted on a background thread (start-up never waits for it)."""
+    thread = threading.Thread(target=recover_interrupted, args=(root,), daemon=True, name='serato-cues-recovery')
+    _state['recovery'] = thread
+    thread.start()
+    return thread
+
+
+def recover_interrupted(root=None):
+    """A write that PEAK HOUR never finished (closed, crashed or power loss) may have left a song half written. Songs still
+    marked 'patching' are put back from their verified backup ONLY if they look exactly like an interrupted write (size between
+    the old and the planned size, not modified since the write began), no DJ program is open, and the song can be opened
+    exclusively; a copy of the song as it is now is kept first. Anything else becomes 'needs_attention' and is never
+    overwritten automatically. Returns how many songs were restored."""
+    try:
+        base = Path(root) if root is not None else _root()
+        receipts = list(base.glob('*/receipt.json'))
+    except Exception:
+        return 0
+    if not receipts:
+        return 0
+    if _programs_running():  # a DJ program may have the song open: try again at the next start
+        return 0
+    count = 0
+    for file in receipts:
+        try:
+            receipt = json.loads(file.read_text(encoding='utf-8'))
+        except (OSError, ValueError):
+            continue
+        if receipt.get('kind') != 'peakhour_serato_cues' or receipt.get('status') != 'writing' or receipt.get('id') in _ACTIVE:
+            continue
+        for number, entry in enumerate(receipt.get('files', [])):
+            if entry.get('status') != 'patching':
+                continue
+            path, backup = entry['path'], entry['backup']
+            try:
+                if not (os.path.isfile(backup) and _file_sha(backup) == entry['before_sha256'] and os.path.isfile(path)):
+                    raise OSError('the backup or the song is missing, or the backup is damaged')
+                if _file_sha(path) == entry['before_sha256']:  # the write never reached the song
+                    entry['status'] = 'recovered'
+                    continue
+                if not _looks_torn(path, entry):
+                    raise OSError('the song was changed after the interrupted write, so it is not overwritten')
+                _save_current_copy(file.parent, entry, number)
+                _restore_in_place(path, backup, entry, exclusive=True)
+                if _file_sha(path) != entry['before_sha256']:
+                    raise OSError('the song did not restore exactly')
+                entry['status'] = 'recovered'
+                count += 1
+                log.warning('Restored %s from its backup after an interrupted write (%s)', path, receipt.get('id'))
+            except Exception as exc:
+                entry['status'] = 'needs_attention'
+                entry['reason'] = str(exc)
+                if 'pre_restore_copy' not in entry and os.path.isfile(path):
+                    try:
+                        _save_current_copy(file.parent, entry, number)
+                    except OSError:
+                        pass
+                log.error('%s needs attention after an interrupted write: %s (backup %s)', path, exc, backup)
+        receipt['status'] = 'interrupted'
+        try:
+            _save(file.parent, receipt)
+        except OSError:
+            pass
+    _state['recovered'] += count
+    return count
+
+
+def undo(backup_id, confirm=False):
+    """Put each song back as it was before that write, byte for byte, same file, original dates (Serato closed). A song
+    changed since the write is left alone. A song an interrupted write may have left half done is restored from its verified
+    backup; if it also looks edited after the interruption, this asks for confirm=True first (a copy of it is kept)."""
     if not isinstance(backup_id, str) or not re.fullmatch(r'[0-9A-Za-z_-]{1,64}', backup_id):
         raise SeratoCueError('Unknown backup.', 'bad_request')
     with _LOCK:
@@ -995,40 +1366,60 @@ def undo(backup_id):
             receipt = json.loads((folder / 'receipt.json').read_text(encoding='utf-8'))
         except (OSError, ValueError):
             raise SeratoCueError('There is no such Serato cue backup.', 'bad_request') from None
-        if receipt.get('kind') != 'peakhour_serato_cues' or receipt.get('status') not in ('written', 'partly_undone', 'writing'):
+        if receipt.get('kind') != 'peakhour_serato_cues' or receipt.get('status') not in ('written', 'partly_undone', 'writing', 'interrupted'):
             raise SeratoCueError('That write cannot be undone (it did not complete, or was undone already).', 'bad_request')
         _ensure_closed()
+        doubtful = [e['path'] for e in receipt['files']
+                    if e.get('status') == 'needs_attention' or (e.get('status') == 'patching' and not _looks_torn(e['path'], e))]
+        if doubtful and not confirm:
+            raise SeratoCueError('An interrupted write left ' + ', '.join(ntpath.basename(p) for p in doubtful) + ' in a state PEAK HOUR '
+                                 'cannot be sure about: the song may have been changed since. Restoring it puts the original back '
+                                 'and overwrites those changes (a copy of the song as it is now is kept). Confirm to restore it.',
+                                 'confirm_needed')
         restored, skipped = [], []
-        for entry in receipt['files']:
-            if entry.get('status') not in ('written', 'patching'):
+        for number, entry in enumerate(receipt['files']):
+            if entry.get('status') not in ('written', 'patching', 'needs_attention'):
                 continue
             path, backup = entry['path'], entry['backup']
+            backup_ok = os.path.isfile(backup) and _file_sha(backup) == entry['before_sha256']
             current = _file_sha(path) if os.path.isfile(path) else None
-            if current not in (entry['before_sha256'], entry.get('after_sha256')):  # neither as it was, nor as PEAK HOUR wrote it
+            interrupted = entry['status'] in ('patching', 'needs_attention')
+            if interrupted and backup_ok:
+                pass  # interrupted in the middle of the write: whatever the song holds now, the verified backup puts it right
+            elif current not in (entry['before_sha256'], entry.get('after_sha256')):  # neither as it was, nor as PEAK HOUR wrote it
                 skipped.append({'path': path, 'error': 'The song has changed since this write, so it was not restored.'})
                 continue
-            if current == entry['before_sha256']:  # an interrupted write that never reached the song
+            elif current == entry['before_sha256']:  # an interrupted write that never reached the song
                 entry['status'] = 'undone'
                 restored.append(path)
                 continue
-            if not os.path.isfile(backup) or _file_sha(backup) != entry['before_sha256']:
+            if not backup_ok:
                 skipped.append({'path': path, 'error': 'The backup copy is damaged. The song was not changed.'})
                 continue
             _ensure_closed()
+            if interrupted and current != entry['before_sha256'] and 'pre_restore_copy' not in entry:
+                _save_current_copy(folder, entry, number)
             _restore_in_place(path, backup, entry)
             if _file_sha(path) != entry['before_sha256']:
                 raise SeratoCueError('A song did not restore exactly; its backup is ' + backup, 'verify_failed')
             entry['status'] = 'undone'
             restored.append(path)
         cleanup_leftovers(_root())
+        back = [{'path': e['path'], 'old_size': e['new_size'], 'new_size': e['size']} for e in receipt['files']
+                if e.get('status') == 'undone' and e.get('grew') and e['path'] in restored]
+        sync = _plan_sync(receipt, 'virtualdj_sync_undo', back)  # VirtualDJ's records follow the files back to their old size
         receipt.update(status='undone' if not skipped else 'partly_undone', undone_at=time.time())
         _save(folder, receipt)
-        return {'success': not skipped, 'restored': restored, 'skipped': skipped, 'backup_id': backup_id}
+        if sync is not None:
+            _launch_sync(folder, 'virtualdj_sync_undo')
+        return {'success': not skipped, 'restored': restored, 'skipped': skipped, 'backup_id': backup_id,
+                'virtualdj_sync': sync}
 
 
 # ------------------------------------------------------------------ queue and routes
 
 def register_with_queue(queue):
+    resubmit_pending_syncs()
     """Register Serato's 'cues' writer with the DJ write queue (windows_dj_write_queue)."""
     queue.register('serato', 'cues', apply, digest)
 
@@ -1053,7 +1444,7 @@ def create_blueprint(app, root=None, license_guard=None):
                 return jsonify(result[0]), result[1]
             return jsonify(result)
         except SeratoCueError as exc:
-            return jsonify(success=False, error=str(exc), code=exc.code), 409 if exc.code in ('serato_open', 'changed') else 400
+            return jsonify(success=False, error=str(exc), code=exc.code), 409 if exc.code in ('serato_open', 'changed', 'confirm_needed', 'dj_open') else 400
         except (ValueError, OSError) as exc:
             return jsonify(success=False, error=str(exc), code='error'), 400
 
@@ -1074,7 +1465,18 @@ def create_blueprint(app, root=None, license_guard=None):
     def queued_or_apply(data):
         from windows_dj_write_queue import queue_if_open
         payload = {key: value for key, value in data.items() if key != 'confirm'}
-        return queue_if_open('serato', 'cues', payload, 'Serato', lambda: apply(payload)) or apply(payload)
+        try:
+            result = queue_if_open('serato', 'cues', payload, 'Serato', lambda: apply(payload)) or apply(payload)
+        except SeratoNeedsQueue as need:  # every lock is released by now; the job is only appended to the queue
+            return queue_for_later(need.payload), 202
+        body = result[0] if isinstance(result, tuple) else result
+        if isinstance(body, dict) and body.get('queued'):  # waiting for a DJ program to close
+            return body, 202
+        return result
+
+    @bp.get('/api/windows/serato/cues/status')
+    def status_route():
+        return jsonify(success=True, recovered_after_interrupt=_state['recovered'], needs_attention=attention_list())
 
     @bp.post('/api/windows/serato/cues/apply')
     def apply_route():
@@ -1086,7 +1488,7 @@ def create_blueprint(app, root=None, license_guard=None):
     @bp.post('/api/windows/serato/cues/undo')
     def undo_route():
         data = request.get_json(silent=True) or {}
-        return gated(lambda: _locked(lambda: undo(data.get('backup_id'))))
+        return gated(lambda: _locked(lambda: undo(data.get('backup_id'), data.get('confirm') is True)))
 
     @bp.post('/api/windows/serato/folders/undo')
     def folders_undo_route():

@@ -54,7 +54,7 @@ try:
         print('note: the encoder reproduces the real MP4 atoms byte for byte')
 
     # ---------------------------------------------------------------- generated songs
-    def make(name, kind, pad=True):
+    def make(name, kind, pad=True, extra=()):
         path = work / name
         if kind == 'mp3':
             ffmpeg('-f', 'lavfi', '-i', 'sine=frequency=440:duration=2', '-c:a', 'libmp3lame', '-id3v2_version', '3', '-write_id3v1', '1',
@@ -63,7 +63,7 @@ try:
             ffmpeg('-f', 'lavfi', '-i', 'sine=frequency=440:duration=2', '-c:a', 'aac', '-metadata', 'title=Test Song', str(path))
         else:
             ffmpeg('-f', 'lavfi', '-i', 'testsrc=duration=2:size=64x64:rate=10', '-f', 'lavfi', '-i', 'sine=frequency=440:duration=2',
-                   '-c:v', 'mpeg4', '-c:a', 'aac', '-shortest', '-metadata', 'title=Test Video', str(path))
+                   '-c:v', 'mpeg4', '-c:a', 'aac', '-shortest', '-metadata', 'title=Test Video', *extra, str(path))
         assert path.is_file() and path.stat().st_size > 1000
         if pad:
             if kind == 'mp3':
@@ -82,7 +82,7 @@ try:
     root = work / 'backups'
     state = {'open': False}
     seen_paths = []
-    C.configure(root=root, running=lambda: state['open'], libraries=lambda: [],
+    C.configure(root=root, running=lambda: state['open'], libraries=lambda: [], programs=lambda: set(),
                 readers={'peakhour': lambda p: CUES if os.path.basename(p) in ('one.mp3', 'two.mp3', 'four.m4a', 'five.mp4', 'six.mp4') else [],
                          'virtualdj': lambda p: [{'index': 2, 'time_ms': 2000, 'label': 'VDJ', 'color': '#0000CC'}] if os.path.basename(p) == 'three.mp3' else [],
                          'djay': lambda p: seen_paths.append(p) or []})
@@ -100,7 +100,7 @@ try:
     listing = everything()
     plan = C.preview({'tracks': [mp3, mp3c, m4a, mp4, str(work / 'missing.mp3'), str(work / 'notes.txt')]})
     rows = {os.path.basename(r['path']): r for r in plan['songs']}
-    assert plan['counts'] == {'songs_to_write': 4, 'cues_to_write': 3 * 3 + 1, 'skipped': 2}, plan['counts']
+    assert plan['counts'] == {'songs_to_write': 4, 'cues_to_write': 3 * 3 + 1, 'skipped': 2, 'songs_growing': 0, 'bytes_added': 0}, plan['counts']
     assert rows['one.mp3']['source'] == 'peakhour' and rows['three.mp3']['source'] == 'virtualdj'
     assert [(c['index'], c['ms'], c['color'], c['name']) for c in rows['one.mp3']['cues']] == WANT, rows['one.mp3']['cues']
     assert rows['missing.mp3']['skip_reason'] == 'The file is not there' and 'Only MP3' in rows['notes.txt']['skip_reason']
@@ -201,21 +201,86 @@ try:
     assert not partial['success'] and len(partial['skipped']) == 1 and partial['restored'] == []
 
 
-    # ---------------------------------------------------------------- no room in the tag: the song is skipped, never grown
+    # ---------------------------------------------------------------- no room in the tag
     tight3, tight4 = make('tight.mp3', 'mp3', pad=False), make('tight.mp4', 'mp4', pad=False)
+    fast4 = make('fast.mp4', 'mp4', pad=False, extra=('-movflags', '+faststart'))  # moov before mdat: every sample offset moves
     same = lambda p: (sha(p), {k: v for k, v in C._stat(p).items() if k != 'atime_ns'})  # reading may touch the access time
-    tight_before = {p: same(p) for p in (tight3, tight4)}
+    tight_before = {p: same(p) for p in (tight3, tight4, fast4)}
     C.configure(readers={**C._state['readers'], 'peakhour': lambda p: CUES})
-    plan = C.preview({'tracks': [tight3, tight4]})
-    assert plan['counts']['songs_to_write'] == 0 and all('Not enough space in the tag' in r['skip_reason'] for r in plan['songs']), plan['songs']
-    forced = C.apply({'tracks': [tight3, tight4]})
-    assert forced['written'] == 0 and forced['backup_id'] == '', forced
-    # even if the preview were skipped, the writer itself refuses to grow a song
+    # growing switched off: the song is skipped and not touched
+    plan = C.preview({'tracks': [tight3, tight4, fast4], 'allow_grow': False})
+    assert plan['counts']['songs_to_write'] == 0 and all('growing the file is switched off' in r['skip_reason'] for r in plan['songs']), plan['songs']
+    off = C.apply({'tracks': [tight3, tight4, fast4], 'allow_grow': False})
+    assert off['written'] == 0 and off['backup_id'] == '' and {p: same(p) for p in tight_before} == tight_before
+    assert C.digest({'tracks': [tight3]}) != C.digest({'tracks': [tight3], 'allow_grow': False})
+    # even if the preview were skipped, the writer itself does not grow a song it was not told to grow
     row = {'path': tight3, 'signature': [C._stat(tight3)['size'], C._stat(tight3)['mtime_ns']], 'cues': C._clean(CUES)}
     scratch = root / 'direct'
     (scratch / 'files').mkdir(parents=True)
     check_raises(C.SeratoCueError, lambda: C._write_one(row, scratch, 0, {'files': []}), 'no_space')
-    assert {p: same(p) for p in (tight3, tight4)} == tight_before, 'a tight song was changed'
+    assert {p: same(p) for p in tight_before} == tight_before, 'a tight song was changed'
+
+    # ---------------------------------------------------------------- ...and by default it grows, keeping its identity, date and sound
+    def pcm(path):  # an md5 of the whole decoded sound
+        done = subprocess.run([FFMPEG, '-v', 'error', '-i', path, '-map', '0:a:0', '-vn', '-f', 'md5', '-'], capture_output=True)
+        assert done.returncode == 0 and b'MD5=' in done.stdout, done.stderr
+        return done.stdout
+    import windows_dj_write_queue as Q
+    import json
+    import time as _time
+    def wait_for(condition, seconds=10):
+        end = _time.time() + seconds
+        while _time.time() < end:
+            if condition():
+                return
+            _time.sleep(0.05)
+        raise AssertionError('timed out waiting')
+    class FakeVdj:
+        appliers = {('virtualdj', 'filesize_sync'): None}
+        def __init__(self):
+            self.jobs = []
+        def submit(self, program, kind, payload):
+            self.jobs.append((program, kind, payload))
+            return {'queued': False, 'applied': True, 'result': {'written': len(payload['songs'])}}
+    fake_vdj = FakeVdj()
+    Q.QUEUE = fake_vdj
+    songs3 = [tight3, tight4, fast4]
+    sound = {p: pcm(p) for p in songs3}
+    stat0 = {p: C._stat(p) for p in songs3}
+    plan = C.preview({'tracks': songs3})
+    assert plan['counts']['songs_to_write'] == 3 and plan['counts']['songs_growing'] == 3, plan['counts']
+    grows = {r['path']: r['grows_by'] for r in plan['songs']}
+    assert all(0 < n <= C.MAX_GROW for n in grows.values()) and all('file grows by' in r['mode'] for r in plan['songs']), plan['songs']
+    grown = C.apply({'tracks': songs3})
+    assert grown['written'] == 3 and grown['grown'] == 3 and not grown['failed'] and not grown['skipped_now'], grown
+    for p in songs3:
+        now = C._stat(p)
+        assert now['size'] == stat0[p]['size'] + grows[p], (p, now['size'], stat0[p]['size'], grows[p])
+        assert now['ino'] == stat0[p]['ino'] and now['created'] == stat0[p]['created'] and now['mtime_ns'] == stat0[p]['mtime_ns'], p
+        assert pcm(p) == sound[p], 'the sound changed: ' + p
+        assert C.inspect(p)['cues'] and C.audio_fingerprint(p)[0] == C.audio_fingerprint(p)[0]
+    assert sorted(C.inspect(tight3)['cues']) == sorted(WANT)
+    # the next edit finds room: a second song written later fits in place (the tag was grown with spare padding)
+    assert C._tag_delta(tight3, C._clean(CUES), {**C.inspect(tight3), 'cues': [], 'entries': []}, 'mp3', b'\xff\xff\xff', False) == 0
+    # VirtualDJ's file sizes follow: recorded as pending in the receipt, then handed to the queue by a background thread
+    assert grown['virtualdj_sync']['state'] == 'pending'
+    wait_for(lambda: fake_vdj.jobs)
+    program, kind, payload = fake_vdj.jobs[-1]
+    assert (program, kind) == ('virtualdj', 'filesize_sync')
+    wait_for(lambda: json.loads((root / grown['backup_id'] / 'receipt.json').read_text(encoding='utf-8'))['virtualdj_sync']['state'] == 'done')
+    assert sorted((s['path'], s['old_size'], s['new_size']) for s in payload['songs']) == \
+        sorted((p, stat0[p]['size'], stat0[p]['size'] + grows[p]) for p in songs3), payload
+    # undo is byte identical (size, identity, dates) and sends the reverse sizes
+    fake_vdj.jobs.clear()
+    back = C.undo(grown['backup_id'])
+    assert back['success'] and len(back['restored']) == 3, back
+    wait_for(lambda: fake_vdj.jobs)
+    for p in songs3:
+        assert same(p) == tight_before[p] and C._stat(p)['ino'] == stat0[p]['ino'] and C._stat(p)['created'] == stat0[p]['created'], p
+        assert pcm(p) == sound[p]
+    assert sorted((s['path'], s['old_size'], s['new_size']) for s in fake_vdj.jobs[-1][2]['songs']) == \
+        sorted((p, stat0[p]['size'] + grows[p], stat0[p]['size']) for p in songs3)
+    Q.QUEUE = None
 
     n1, n2 = make('n1.mp3', 'mp3'), make('n2.m4a', 'm4a')
     before.update({n1: sha(n1), n2: sha(n2)})
@@ -260,6 +325,177 @@ try:
     assert redo['success'] and len(redo['restored']) == 1 and sha(n1) == before[n1], redo
     assert C._stat(n1)['mtime_ns'] == ident[n1]['mtime_ns'] and C._stat(n1)['ino'] == ident[n1]['ino']
     assert not list(work.rglob('*.peakhour-*.tmp')), 'a temp file was left'
+
+
+    # ---------------------------------------------------------------- a crash in the middle of the rewrite is put right (never guessed at)
+    def settle():  # recovery runs on its own thread
+        thread = C._state.get('recovery')
+        if thread is not None:
+            thread.join(20)
+            assert not thread.is_alive(), 'recovery did not finish'
+
+    def torn_write(name):
+        """A song whose in-place rewrite was cut short (power loss): half the new bytes, no restore, receipt still 'writing'."""
+        song = make(name, 'mp3', pad=False)
+        original = (sha(song), C._stat(song))
+        real_rewrite, real_restore = C._rewrite_in_place, C._restore_in_place
+        def half(handle, source):
+            data = open(source, 'rb').read()
+            handle.seek(0)
+            handle.write(data[:len(data) // 2])
+            handle.flush()
+            raise RuntimeError('power loss (test)')
+        C._rewrite_in_place = half
+        C._restore_in_place = lambda *a, **k: (_ for _ in ()).throw(RuntimeError('power loss (test)'))
+        try:
+            result = C.apply({'tracks': [song]})
+        finally:
+            C._rewrite_in_place, C._restore_in_place = real_rewrite, real_restore
+        assert result['written'] == 0 and sha(song) != original[0], 'the song should be torn'
+        receipt_file = max((p for p in root.glob('*/receipt.json')), key=lambda p: p.stat().st_mtime)
+        receipt = json.loads(receipt_file.read_text(encoding='utf-8'))
+        assert [e['status'] for e in receipt['files']] == ['patching'], receipt['files']
+        receipt['status'] = 'writing'
+        receipt_file.write_text(json.dumps(receipt), encoding='utf-8')
+        return song, original, receipt['id']
+    crash_a, original_a, id_a = torn_write('crash-a.mp3')
+    before_count = C._state['recovered']
+    state['open'] = True
+    C.configure(root=root)  # Serato open: nothing is touched
+    settle()
+    assert sha(crash_a) != original_a[0] and C._state['recovered'] == before_count
+    state['open'] = False
+    C.configure(programs=lambda: {'virtualdj'})
+    C.configure(root=root)  # another DJ program open: nothing is touched either
+    settle()
+    assert sha(crash_a) != original_a[0] and C._state['recovered'] == before_count
+    C.configure(programs=lambda: set())
+    C.configure(root=root)  # "module start": the interrupted write is restored from its verified backup, on its own thread
+    settle()
+    assert sha(crash_a) == original_a[0] and C._state['recovered'] == before_count + 1, 'not recovered'
+    assert C._stat(crash_a)['ino'] == original_a[1]['ino'] and C._stat(crash_a)['mtime_ns'] == original_a[1]['mtime_ns']
+    assert list(root.glob(f'{id_a}/files/pre-restore-*')), 'the song as it was found was not kept'
+    assert C.preview({'tracks': [crash_a]})['recovered_after_interrupt'] == before_count + 1
+
+    # a song edited after the crash (later modified time) is NOT overwritten: it needs attention, a copy is kept
+    crash_c, original_c, id_c = torn_write('crash-c.mp3')
+    later = C._stat(crash_c)['mtime_ns'] + 3600 * 10 ** 9
+    os.utime(crash_c, ns=(later, later))
+    edited = sha(crash_c)
+    C.configure(root=root)
+    settle()
+    assert sha(crash_c) == edited and C._state['recovered'] == before_count + 1, 'a later edit was overwritten'
+    attention = C.attention_list(root)
+    assert [a['song'] for a in attention] == [crash_c] and pathlib.Path(attention[0]['copy']).is_file(), attention
+    assert sha(attention[0]['copy']) == edited and 'changed after' in attention[0]['reason']
+    probe = __import__('flask').Flask(__name__)
+    probe.register_blueprint(C.create_blueprint(None, root))
+    status = probe.test_client().get('/api/windows/serato/cues/status').get_json()
+    assert [a['song'] for a in status['needs_attention']] == [crash_c], status
+    err = check_raises(C.SeratoCueError, lambda: C.undo(id_c), 'confirm_needed')  # undo asks first
+    assert 'overwrites those changes' in str(err) and sha(crash_c) == edited
+    assert C.undo(id_c, True)['success'] and sha(crash_c) == original_c[0]
+    assert not C.attention_list(root)
+
+    crash_b, original_b, id_b = torn_write('crash-b.mp3')
+    undone = C.undo(id_b)  # a plain torn write is restored from the verified backup by undo as well
+    assert undone['success'] and sha(crash_b) == original_b[0], undone
+
+    # ---------------------------------------------------------------- the song is open in another program: skipped, not touched
+    busy = make('busy.mp3', 'mp3', pad=False)
+    busy_before = same(busy)
+    holder = open(busy, 'rb')
+    try:
+        result = C.apply({'tracks': [busy]})
+    finally:
+        holder.close()
+    assert result['written'] == 0 and any('open in another program' in s['reason'] for s in result['skipped_now']), result
+    assert same(busy) == busy_before and not list(root.glob('*/files/*busy*')), 'a skipped song left a backup or changed'
+    assert C.apply({'tracks': [busy]})['written'] == 1  # once it is closed it is written
+
+    # ---------------------------------------------------------------- growing while a DJ program is open: nothing is written, the job is only appended
+    import threading
+    class QueueStub:
+        def __init__(self):
+            self.jobs, self.appliers = [], {('serato', 'cues'): (C.apply, C.digest)}
+        def enqueue(self, program, kind, payload):
+            self.jobs.append((program, kind, payload))
+            return {'queued': True, 'id': 'job1'}
+        def submit(self, *args):
+            raise AssertionError('apply must never submit to the queue itself')
+        def program_lock(self, program):
+            return threading.RLock()
+        def is_running(self, program):
+            return False
+    stub = QueueStub()
+    Q.QUEUE = stub
+    C.configure(programs=lambda: {'virtualdj'})
+    waiting = make('waiting.mp3', 'mp3', pad=False)
+    padded = make('padded.mp3', 'mp3')
+    waiting_before = same(waiting)
+    err = check_raises(C.SeratoNeedsQueue, lambda: C.apply({'tracks': [waiting], 'confirm': True}))
+    assert err.code == 'dj_open' and 'confirm' not in err.payload and same(waiting) == waiting_before and not stub.jobs
+    assert C.apply({'tracks': [padded]})['written'] == 1  # a song that fits is written in place, DJ program or not
+    probe = __import__('flask').Flask(__name__)
+    probe.register_blueprint(C.create_blueprint(None, root))
+    reply = probe.test_client().post('/api/windows/serato/cues/apply', json={'tracks': [waiting], 'confirm': True}, headers={'Origin': 'http://localhost'})
+    assert reply.status_code == 202 and reply.get_json()['queued'] and stub.jobs[-1][:2] == ('serato', 'cues'), (reply.status_code, reply.get_json())
+    assert 'confirm' not in stub.jobs[-1][2] and same(waiting) == waiting_before
+    assert ('virtualdj', 'serato_cues') not in stub.appliers and list(stub.appliers) == [('serato', 'cues')]
+    C.configure(programs=lambda: set())
+    Q.QUEUE = None
+
+    # a queued job survives a restart (new queue object on the same file), and runs once no DJ program is open
+    open_programs = {'virtualdj'}
+    C.configure(programs=lambda: set(open_programs))
+    queue_file = work / 'restart-queue.json'
+    first = Q.DJWriteQueue(queue_file, snapshot=lambda: [(1, 'VirtualDJ.exe')], settles={}, closed_seconds=0)
+    C.register_with_queue(first)
+    assert sorted(first.appliers) == [('serato', 'cues')], sorted(first.appliers)
+    Q.QUEUE = first
+    survivor = make('survivor.mp3', 'mp3', pad=False)
+    surv_before = C._stat(survivor)
+    outcome = first.enqueue('serato', 'cues', {'tracks': [survivor]})
+    assert outcome['queued']
+    second = Q.DJWriteQueue(queue_file, snapshot=lambda: [(1, 'explorer.exe')], settles={}, closed_seconds=0)  # "restart"
+    C.register_with_queue(second)
+    Q.QUEUE = second
+    assert [j['status'] for j in second.list()][:1] == ['queued']
+    open_programs.clear()
+    second.tick()
+    second.tick()
+    job = second.list()[0]
+    assert job['status'] == 'done', job
+    now = C._stat(survivor)
+    assert now['size'] > surv_before['size'] and now['ino'] == surv_before['ino'] and C.inspect(survivor)['cues']
+    Q.QUEUE = None
+
+    # no deadlock when the program closes between the running check and the enqueue (the route holds no lock while enqueueing)
+    calls = []
+    def closes_in_between():
+        calls.append(1)
+        return {'virtualdj'} if len(calls) == 1 else set()
+    C.configure(programs=closes_in_between)
+    racer = make('racer.mp3', 'mp3', pad=False)
+    live = Q.DJWriteQueue(work / 'race-queue.json', snapshot=lambda: [(1, 'explorer.exe')], settles={}, closed_seconds=0)
+    C.register_with_queue(live)
+    Q.QUEUE = live
+    app_probe = __import__('flask').Flask(__name__)
+    app_probe.register_blueprint(C.create_blueprint(None, root))
+    answer = {}
+    def post():
+        answer['reply'] = app_probe.test_client().post('/api/windows/serato/cues/apply', json={'tracks': [racer], 'confirm': True},
+                                                      headers={'Origin': 'http://localhost'})
+    worker = threading.Thread(target=post, daemon=True)
+    worker.start()
+    worker.join(30)
+    assert not worker.is_alive(), 'the apply route hung'
+    assert answer['reply'].status_code == 202 and answer['reply'].get_json()['queued'], answer['reply'].get_json()
+    live.tick()
+    live.tick()
+    assert live.list()[0]['status'] == 'done' and C.inspect(racer)['cues']
+    C.configure(programs=lambda: set())
+    Q.QUEUE = None
 
     # ---------------------------------------------------------------- the DJ write queue and the routes
     class FakeQueue:

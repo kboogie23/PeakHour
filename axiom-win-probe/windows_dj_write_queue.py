@@ -232,6 +232,20 @@ class DJWriteQueue:
             self._save()
         return {'queued': True, 'id': job['id']}
 
+    def enqueue(self, program, kind, payload):
+        """Add a job WITHOUT applying it now: the watcher runs it once no DJ program is open. Takes no program lock, so a caller
+        that could not write right now can hand its job over without any risk of waiting on a lock it already holds."""
+        if (program, kind) not in self.appliers:
+            raise QueueError(f'No writer is registered for {program} {kind}.')
+        preview_fn = self.appliers[(program, kind)][1]
+        job = {'id': uuid.uuid4().hex[:12], 'program': program, 'kind': kind, 'payload': payload,
+               'preview_digest': preview_fn(payload) if preview_fn else None, 'created_at': self.wall(), 'status': 'queued',
+               'message': 'Waiting for the program to close.'}
+        with self.lock:
+            self.jobs.append(job)
+            self._save()
+        return {'queued': True, 'id': job['id']}
+
     def list(self, limit=LIST_LIMIT):
         with self.lock:
             return [dict(j) for j in reversed(self.jobs)][:limit]

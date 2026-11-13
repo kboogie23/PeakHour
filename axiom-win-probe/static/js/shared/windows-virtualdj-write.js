@@ -65,7 +65,7 @@
    box.innerHTML=`<h2>Send cue points to ${label}</h2>
     <p>${songs?`PEAK HOUR will write <b>${(counts.cues_to_write||0).toLocaleString()}</b> cue points to ${plural(songs,'song')} in ${label}.`:`Nothing to write: every song PEAK HOUR could fill already has cue points in ${label}.`}</p>
     ${counts.skipped?`<p>${plural(counts.skipped,'song')} left alone (already has cue points in ${label}, or no cue points to copy).</p>`:''}
-    <p>Only songs with no cue points in ${label} are filled; cue points already there are never replaced. If ${label} is open, PEAK HOUR writes this after you close it. PEAK HOUR keeps a backup. ${label==='Serato'?"Serato keeps cues inside the song file, so PEAK HOUR edits the song's tag (the audio, size and date stay the same; a backup is kept). A song whose tag has no spare room is left alone.":'Your music files are not changed.'}</p>
+    <p>Only songs with no cue points in ${label} are filled; cue points already there are never replaced. If ${label} is open, PEAK HOUR writes this after you close it. PEAK HOUR keeps a backup. ${label==='Serato'?"Serato keeps cues inside the song file, so PEAK HOUR edits the song's tag (the audio and the date stay the same; a backup is kept). A song with no spare room in its tag gets about 1-4 KB bigger, and VirtualDJ's record of its file size is updated (after VirtualDJ closes, if it is open).":'Your music files are not changed.'}</p>
     <div class="axiom-vdj-actions"><button type="button" data-no>Cancel</button>${songs?`<button type="button" data-yes>Send to ${label}</button>`:''}</div>`;
    let done=false;const finish=v=>{if(done)return;done=true;if(box.open)box.close();box.remove();resolve(v)};
    box.querySelector('[data-no]').onclick=()=>finish(false);const yes=box.querySelector('[data-yes]');if(yes)yes.onclick=()=>finish(true);
@@ -78,7 +78,7 @@
    const box=document.createElement('dialog');box.className='axiom-vdj-inspect axiom-vdj-write';
    const left=(data.skipped_now||[]).length;
    box.innerHTML=`<h2>Cue points sent to ${label}</h2>
-    <p>Written to <b>${plural(data.written,'song')}</b>.${left?` ${plural(left,'song')} left alone (changed, or no room in the tag).`:''} PEAK HOUR keeps a backup.</p>
+    <p>Written to <b>${plural(data.written,'song')}</b>.${left?` ${plural(left,'song')} left alone (they changed since the preview).`:''} ${data.grown?` ${plural(data.grown,'song')} got a little bigger; the audio is unchanged${data.virtualdj_sync?(data.virtualdj_sync.applied?" and VirtualDJ's file sizes were updated":" and VirtualDJ's file sizes will be updated when VirtualDJ is closed"):''}.`:''} PEAK HOUR keeps a backup.</p>
     <p>Backup id: <code>${String(data.backup_id).replace(/[^0-9A-Za-z_-]/g,'')}</code></p>
     <div class="axiom-vdj-actions"><button type="button" data-undo>Undo</button><button type="button" data-ok>Done</button></div>`;
    let done=false;const finish=()=>{if(done)return;done=true;if(box.open)box.close();box.remove();resolve()};

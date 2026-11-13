@@ -211,12 +211,13 @@ const text=()=>[...document.querySelectorAll('#axiom-dj-send-results .axiom-dj-s
 
     # 5. each program/kind is registered exactly once
     assert sorted(queue.appliers) == sorted([('virtualdj', 'list_folder'), ('djay', 'playlist_folder'), ('djay', 'cues'),
-                                             ('serato', 'cues'), ('serato', 'crate_folder')]), sorted(queue.appliers)
+                                             ('serato', 'cues'), ('serato', 'crate_folder'),
+                                             ('virtualdj', 'filesize_sync')]), sorted(queue.appliers)
 
     # 6. the real page loads the script, and the dialog works in headless Edge
     index = urllib.request.urlopen(url + '/', timeout=60).read().decode('utf-8')
     assert '/static/js/shared/windows-dj-send.js?v=2' in index and '/static/css/windows-dj-send.css?v=1' in index
-    assert '/static/js/shared/windows-virtualdj-write.js?v=4' in index
+    assert '/static/js/shared/windows-virtualdj-write.js?v=5' in index
     for asset in ('/static/js/shared/windows-dj-send.js', '/static/css/windows-dj-send.css'):
         assert urllib.request.urlopen(url + asset, timeout=30).status == 200
     if not os.path.exists(EDGE):
@@ -248,8 +249,11 @@ const text=()=>[...document.querySelectorAll('#axiom-dj-send-results .axiom-dj-s
         assert 'Written' in sent or 'written' in sent, out['sent']
         # the real page: the Export menu gets its "Send to DJ software" entry
         page = ''
-        for _ in range(3):
-            page = subprocess.run([*common, '--dump-dom', url + '/'], capture_output=True, timeout=180,
+        # a fresh Edge profile per try: re-using the harness run's profile makes headless Edge crash (exit 0x80000003, empty output)
+        # on the big real page
+        for attempt in range(3):
+            fresh = [f'--user-data-dir={base / f"edge-page{attempt}"}' if a.startswith('--user-data-dir=') else a for a in common]
+            page = subprocess.run([*fresh, '--dump-dom', url + '/'], capture_output=True, timeout=180,
                                   encoding='utf-8', errors='replace').stdout
             if 'sidebar-export-dj-send' in page:
                 break
