@@ -14,6 +14,16 @@
    return `${out}${out.includes('?')?'&':'?'}filetype=${encodeURIComponent(current)}`;
   };
  }
+ // A filtered list answers with the filtered count (windows_filetypes.py sets total_tracks to it), so "All audio" on an
+ // all-video library says 0. AXIOM reads that as "no music is connected" and shows "Connect your music" instead of the
+ // Library, and the choice is kept across restarts. Only /api/library/stats (never filtered) may decide that.
+ const readiness=window.handleLibraryBpmReadiness;
+ if(typeof readiness==='function'){
+  window.handleLibraryBpmReadiness=function(data,navigate){
+   if(current&&data&&Array.isArray(data.tracks))return true;
+   return readiness.apply(this,arguments);
+  };
+ }
  async function fill(select,tries=6){
   try{
    const r=await fetch('/api/windows/library/types',{cache:'no-store'});const d=await r.json();
