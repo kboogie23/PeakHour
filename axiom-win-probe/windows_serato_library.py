@@ -604,21 +604,42 @@ def undo_crate_write(backup_id, backup_dir=None, snapshot=None):
     if receipt.get('kind') == 'peakhour_serato_crates_multi':  # a send that spanned drives: every drive goes back
         if receipt.get('status') not in ('written', 'partly_undone'):
             raise SeratoLibraryError('That write cannot be undone (it did not complete, or was undone already).')
+        if receipt.get('status') == 'partly_undone' and not any(e.get('undone') for e in receipt['drives']):
+            receipt['status'] = 'written'  # an earlier build marked a refused undo as "partly undone": nothing was undone
         _ensure_serato_closed(snapshot)
-        problems = []
+        problems, undone_drives, permanent = [], [], True
         for entry in reversed(receipt['drives']):
             if not entry.get('backup_id') or entry.get('undone'):
                 continue
             try:
                 undo_crate_write(entry['backup_id'], backup_dir=entry['backup_dir'], snapshot=snapshot)
                 entry['undone'] = True
+                undone_drives.append(entry['drive'])
             except SeratoLibraryError as exc:
-                problems.append(f"{entry['drive']}: {exc}")
-        receipt.update(status='partly_undone' if problems else 'undone', undone_at=time.time())
+                problems.append((entry['drive'], str(exc)))
+                permanent = permanent and bool(getattr(exc, 'permanent', False))
+        pending = [e for e in receipt['drives'] if e.get('backup_id') and not e.get('undone')]
+        if not pending:
+            receipt['status'] = 'undone'
+        elif any(e.get('undone') for e in receipt['drives']):
+            receipt['status'] = 'partly_undone'
+        else:
+            receipt['status'] = 'written'  # nothing was undone, so it is still a completed write
+        if problems:
+            if undone_drives or len(problems) > 1 or len(receipt['drives']) > 1:
+                message = ((f"Undone on {', '.join(undone_drives)}. " if undone_drives else '') +
+                           ' '.join(f'Not undone on {drive}: {why}' for drive, why in problems))
+            else:
+                message = problems[0][1]
+            receipt.update(undo_refused=message, undo_permanent=bool(permanent and not undone_drives))
+        else:
+            receipt.update(undone_at=time.time())
+            receipt.pop('undo_refused', None)
         _save_receipt(folder, receipt)
         if problems:
-            exc = SeratoLibraryError('Not every drive could be put back. ' + ' '.join(problems))
+            exc = SeratoLibraryError(message)
             exc.code = 'changed'
+            exc.permanent = permanent
             raise exc
         return {'success': True, 'backup_id': backup_id, 'drives': [e['drive'] for e in receipt['drives'] if e.get('backup_id')]}
     if receipt.get('kind') != 'peakhour_serato_crates' or receipt.get('status') != 'written':
@@ -629,9 +650,14 @@ def undo_crate_write(backup_id, backup_dir=None, snapshot=None):
     if database.is_file() and receipt.get('targeted') and _state_sha(database) != receipt['after_sha256']:
         return _undo_targeted(receipt, folder, backup_id, snapshot)  # Serato has added its own rows since: leave them alone
     if not database.is_file() or _state_sha(database) != receipt['after_sha256']:
-        exc = SeratoLibraryError('Serato has changed its library since PEAK HOUR added this crate, so PEAK HOUR will not '
-                                 'put the old copy back: that would undo your later changes in Serato. Nothing was changed. '
-                                 'Remove the crate in Serato instead.')
+        if receipt.get('targeted'):
+            exc = SeratoLibraryError('Serato has changed its library since PEAK HOUR added this crate, so PEAK HOUR will not '
+                                     'put the old copy back: that would undo your later changes in Serato. Nothing was changed. '
+                                     'Remove the crate in Serato instead.')
+        else:
+            exc = SeratoLibraryError("This send was made by an older PEAK HOUR and Serato has changed its library since, so PEAK HOUR "
+                                     "can't undo it safely. Delete the crate in Serato instead.")
+            exc.permanent = True
         exc.code = 'changed'
         raise exc
     if not backup.is_file():

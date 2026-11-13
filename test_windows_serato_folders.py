@@ -456,6 +456,68 @@ try:
     S._is_file = os.path.isfile
     S.system_drive = lambda: 'Z:'
 
+    # ---------------------------------------------------------------- undo of a send made by an older build: refused clearly, status stays honest
+    import json as _json2
+    import shutil
+    import windows_dj_writes as DW
+    root_o1, db_o1, songs_o1 = make_library('old-d')
+    root_o2, db_o2, songs_o2 = make_library('old-e')
+    libraries.update({'D:': db_o1, 'E:': db_o2})
+    S.system_drive = lambda: 'C:'
+    S._is_file = lambda p: real_is_file(fakes.get(str(p).casefold(), str(p)))
+    set_tracks = [{'path': fake(songs_o1[0], 'D:')}, {'path': fake(songs_o2[0], 'E:')}]
+    def old_build(sent, letters):
+        """Make the receipt of this send look like an older build's: no record of what it created."""
+        for letter in letters:
+            sub = S._FOLDER_STATE['backups'] / sent['backup_id'] / f'drive-{letter}'
+            file = next(sub.glob('*/receipt.json'))
+            receipt = _json2.loads(file.read_text(encoding='utf-8'))
+            receipt.pop('targeted')
+            file.write_text(_json2.dumps(receipt), encoding='utf-8')
+    def multi_receipt(sent):
+        return _json2.loads((S._FOLDER_STATE['backups'] / sent['backup_id'] / 'receipt.json').read_text(encoding='utf-8'))
+    # every drive refused: the message says why, nothing is undone, and the send is still a completed ("written") one
+    sent = S.write_crate_folders(app, set_tracks, ['Old Set'])
+    old_build(sent, 'DE')
+    serato_touches(db_o1, root_o1, 'od')
+    serato_touches(db_o2, root_o2, 'oe')
+    err = check_raises(S.SeratoLibraryError, lambda: S.undo_crate_write(sent['backup_id']), 'changed')
+    assert 'older PEAK HOUR' in str(err) and "Delete the crate in Serato instead" in str(err) and str(err).count('Not undone on') == 2, str(err)
+    receipt = multi_receipt(sent)
+    assert receipt['status'] == 'written' and receipt['undo_refused'] == str(err) and receipt['undo_permanent'] and not any(d.get('undone') for d in receipt['drives'])
+    assert rows(db_o1, "SELECT COUNT(*) FROM container WHERE name = 'Old Set'") == [(1,)], 'a refused undo changed the library'
+    # the Recent writes list: not undone, with the reason, and marked as not undoable
+    dj_root = folder / 'dj-root'
+    (dj_root / 'serato-crate-writes' / sent['backup_id']).mkdir(parents=True)
+    def listing():
+        shutil.copy2(S._FOLDER_STATE['backups'] / sent['backup_id'] / 'receipt.json', dj_root / 'serato-crate-writes' / sent['backup_id'] / 'receipt.json')
+        return [r for r in DW.recent(dj_root) if r['id'] == sent['backup_id']][0]
+    row = listing()
+    assert not row['undone'] and not row['undoable'] and 'older PEAK HOUR' in row['note'], row
+    # what the buggy build left behind: "partly undone" with nothing undone is shown (and treated) as a plain written send
+    receipt['status'] = 'partly_undone'
+    receipt.pop('undo_refused'), receipt.pop('undo_permanent')
+    (S._FOLDER_STATE['backups'] / sent['backup_id'] / 'receipt.json').write_text(_json2.dumps(receipt), encoding='utf-8')
+    row = listing()
+    assert not row['undone'] and row['undoable'] and row['note'] == '', row
+    check_raises(S.SeratoLibraryError, lambda: S.undo_crate_write(sent['backup_id']), 'changed')
+    assert multi_receipt(sent)['status'] == 'written'
+    # one drive can be undone and the other not: "partly undone", saying which and why
+    root_o3, db_o3, songs_o3 = make_library('old-f')
+    root_o4, db_o4, songs_o4 = make_library('old-g')
+    libraries.update({'D:': db_o3, 'E:': db_o4})
+    sent = S.write_crate_folders(app, [{'path': fake(songs_o3[0], 'D:')}, {'path': fake(songs_o4[0], 'E:')}], ['Mixed Build'])
+    old_build(sent, 'E')
+    serato_touches(db_o3, root_o3, 'og')
+    serato_touches(db_o4, root_o4, 'oh')
+    err = check_raises(S.SeratoLibraryError, lambda: S.undo_crate_write(sent['backup_id']), 'changed')
+    receipt = multi_receipt(sent)
+    assert str(err).startswith('Undone on D:.') and 'Not undone on E:' in str(err) and 'older PEAK HOUR' in str(err), str(err)
+    assert receipt['status'] == 'partly_undone' and [d.get('undone', False) for d in receipt['drives']] == [True, False]
+    assert rows(db_o3, "SELECT COUNT(*) FROM container WHERE name = 'Mixed Build'") == [(0,)] and rows(db_o4, "SELECT COUNT(*) FROM container WHERE name = 'Mixed Build'") == [(1,)]
+    S._is_file = os.path.isfile
+    S.system_drive = lambda: 'Z:'
+
     print('PASS: Serato crate folders (2 and 3 levels, parent reuse, idempotent, replace rules, Serato open, restore on failure, '
           'legacy .crate bytes = real Serato layout, neworder.pref UTF-16BE) on sandbox databases')
 except BaseException:

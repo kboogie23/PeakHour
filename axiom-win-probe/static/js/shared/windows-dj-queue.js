@@ -48,6 +48,8 @@
   refusal.className='windows-dj-recent-refusal';refusal.style.cssText='color:#ff9d8a;margin-top:2px';refusal.hidden=true;
   if(write.undone){
    const done=document.createElement('small');done.textContent='undone';line.appendChild(done);
+  }else if(write.undoable===false){  // e.g. an older send Serato has changed since: say why, offer no button
+   refusal.textContent=write.note||'PEAK HOUR can\'t undo this one safely.';refusal.hidden=false;
   }else{
    const undo=document.createElement('button');
    undo.type='button';undo.textContent='Undo';undo.className='windows-dj-recent-undo';

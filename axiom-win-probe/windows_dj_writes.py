@@ -56,6 +56,9 @@ def _listed(folder, receipt):
         if not (receipt.get('created_files') or receipt.get('replaced')):
             return False, False
         return True, bool(receipt.get('undone'))
+    if status == 'partly_undone' and receipt.get('kind') == 'peakhour_serato_crates_multi' \
+            and not any(drive.get('undone') for drive in receipt.get('drives') or []):
+        return True, False  # an earlier build marked a refused undo this way: nothing was undone, it is just a written send
     if status in ('written', 'partly_undone'):
         return True, False
     if status == 'undone':
@@ -81,7 +84,9 @@ def recent(root, limit=LIMIT):
             if not show:
                 continue
             rows.append({'program': program, 'label': label, 'what': _what(folder, receipt), 'id': str(receipt.get('id') or file.parent.name),
-                         'created_at': float(receipt.get('created_at') or file.stat().st_mtime), 'undone': undone, 'undo_url': undo_url})
+                         'created_at': float(receipt.get('created_at') or file.stat().st_mtime), 'undone': undone, 'undo_url': undo_url,
+                         'note': '' if undone else str(receipt.get('undo_refused') or ''),
+                         'undoable': not (receipt.get('undo_permanent') and not undone)})
     rows.sort(key=lambda row: row['created_at'], reverse=True)
     return rows[:limit]
 
