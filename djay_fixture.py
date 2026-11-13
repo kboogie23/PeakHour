@@ -40,3 +40,39 @@ def windows_library(folder,name,play_count,quote,key='w1'):
     c.execute('create table database2(rowid integer primary key,collection text,key text,data blob,metadata blob)')
     c.executemany('insert into database2(collection,key,data) values(?,?,?)',rows);c.commit();c.close()
     return t,d
+
+PLAYLIST_TABLES=['CREATE UNIQUE INDEX "true_primary_key" ON "database2" ( "collection", "key" )',
+ 'CREATE TABLE "yap2" ("extension" CHAR NOT NULL,   "key" CHAR NOT NULL,   "data" BLOB,   PRIMARY KEY ("extension", "key") )',
+ 'CREATE TABLE "relationship_relationship" ("rowid" INTEGER PRIMARY KEY,  "name" CHAR NOT NULL,  "src" INTEGER NOT NULL,  "dst" BLOB NOT NULL,  "rules" INTEGER,  "manual" INTEGER )',
+ 'CREATE INDEX "src_name" ON "relationship_relationship" ("src", "name")',
+ 'CREATE INDEX "dst_name" ON "relationship_relationship" ("dst", "name")',
+ 'CREATE TABLE "secondaryIndex_mediaItemPlaylistIndex" ("rowid" INTEGER PRIMARY KEY, "name" TEXT)',
+ 'CREATE VIRTUAL TABLE "fts_searchIndex" USING fts4("title", "artist", "genre", "album", "grouping", "comments", "composer", "playlist", tokenize=unicode61 "tokenchars=-_@.#")']
+for _view in ('mediaView','mediaItemPlaylistsView','mediaItemPlaylistView'):
+    PLAYLIST_TABLES+=[f'CREATE TABLE "view_{_view}_map" ("rowid" INTEGER PRIMARY KEY,  "pageKey" CHAR NOT NULL )',
+     f'CREATE TABLE "view_{_view}_page" ("pageKey" CHAR NOT NULL PRIMARY KEY,  "group" CHAR NOT NULL,  "prevPageKey" CHAR,  "count" INTEGER,  "data" BLOB )']
+
+def djay_library(folder,names,quote,name='library',keys=None):
+    """One synthetic djay for Windows library in folder: a real file, location, mediaItems, user data and title record per
+    name (key 'k1', 'k2', ... unless keys are given), the tables and views djay keeps playlists in, and djay's empty playlist root.
+    Returns ({name: path}, database path)."""
+    paths,rows={},[]
+    for number,song in enumerate(names,1):
+        key=keys[number-1] if keys else f'k{number}';t=folder/(song+'.mp3');t.write_bytes(b'fixture');paths[song]=str(t)
+        url=b'file://'+quote(str(t),safe='/&():').encode()
+        rows+=[('localMediaItemLocations',key,b'\x2b\x08ADCMediaItemLocation\x00\x21\x08'+url+b'\x00\x00\x08sourceURIs\x00\x00'),
+               ('mediaItems',key,blob(('ADCMediaItem',{'uuid':key,'titleIDs':[title_id(key,song)]}))),
+               ('mediaItemUserData',key,user_data(key,song,1.0)),
+               ('mediaItemTitleIDs',key,blob(title_id(key,song)))]
+    rows.append(('mediaItemPlaylists','mediaItemPlaylist-root',blob(('ADCMediaItemPlaylist',{'uuid':'mediaItemPlaylist-root','name':'Playlists','type':1.0}))))
+    d=folder/(name+'.db');c=sqlite3.connect(d)
+    c.execute('create table database2(rowid integer primary key,collection text,key text,data blob,metadata blob)')
+    for ddl in PLAYLIST_TABLES: c.execute(ddl)
+    c.executemany('insert into database2(collection,key,data) values(?,?,?)',rows)
+    root=c.execute("select rowid from database2 where key='mediaItemPlaylist-root'").fetchone()[0]
+    c.execute('insert into secondaryIndex_mediaItemPlaylistIndex(rowid,name) values(?,?)',(root,'Playlists'))
+    c.execute('insert into fts_searchIndex(rowid,playlist) values(?,?)',(root,'Playlists'))
+    c.execute('insert into view_mediaItemPlaylistsView_page values(?,?,?,?,?)',('A6705E9A-FD57-BC0C-5E76-C8F7E276354D','root',None,1,struct.pack('<Q',root)))
+    c.execute('insert into view_mediaItemPlaylistsView_map values(?,?)',(root,'A6705E9A-FD57-BC0C-5E76-C8F7E276354D'))
+    c.commit();c.close()
+    return paths,d

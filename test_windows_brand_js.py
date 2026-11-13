@@ -91,6 +91,7 @@ try:
         'windows-virtualdj-write.js': ['PEAK HOUR will write', 'PEAK HOUR would send', 'PEAK HOUR keeps a backup',
                                        'last PEAK HOUR write', 'or PEAK HOUR,', 'PEAK HOUR marked'],
         'windows-mix-export.js': ['The local PEAK HOUR engine'],
+        'windows-dj-send.js': ['PEAK HOUR will put', 'PEAK HOUR will create', 'PEAK HOUR keeps a backup'],
     }
     for name, needles in visible.items():
         text = (SHARED / name).read_text(encoding='utf-8')
@@ -100,7 +101,7 @@ try:
     # Every script that changed has a newer cache-busting number in each page that loads it.
     for template, scripts in {
         'index.html': {'windows-rename.js': 9, 'windows-virtualdj.js': 2, 'windows-virtualdj-grids.js': 2, 'windows-virtualdj-health.js': 2,
-                       'windows-virtualdj-exports.js': 2, 'windows-virtualdj-write.js': 2, 'windows-mix-export.js': 3},
+                       'windows-virtualdj-exports.js': 2, 'windows-virtualdj-write.js': 4,'windows-mix-export.js': 3},
         'live_assist_window.html': {'windows-rename.js': 9},
         'live_assist_coach_prompt.html': {'windows-rename.js': 9},
     }.items():

@@ -58,6 +58,18 @@ FEATURES = [
     feature('export.formats', 'Export', 'Export to CSV, rekordbox, M3U, Serato, djay, VirtualDJ and a mix file',
             'Each export writes a file the DJ software opens, and never overwrites the DJ software\'s own library.',
             covered=('exports', 'serato_export', 'djay_playlist', 'virtualdj_exports', 'virtualdj_lists', 'mix_export', 'crate_publish')),
+    feature('export.send_to_dj_software', 'Export', 'Send to DJ software: playlists in folders for VirtualDJ, Serato and djay',
+            'The Send dialog previews, then writes a playlist inside folders into each ticked program; an existing list is only '
+            'replaced when Replace is ticked, and a program that is open gets the write after it closes.',
+            covered=('dj_send_ui', 'virtualdj_folders', 'djay_folders', 'serato_folders')),
+    feature('export.cues_to_dj_software', 'Export', 'Send cue points to VirtualDJ, Serato and djay',
+            'Health > Sync to DJ copies cue points into songs that have none in the chosen program, never replaces a cue that is '
+            'there, keeps a backup, and waits for an open program to close.',
+            covered=('djay_cues_publish', 'djay_cue_default', 'serato_cues')),
+    feature('export.dj_write_queue', 'Export', 'Writes wait for an open DJ program',
+            'A write aimed at VirtualDJ, Serato or djay while it is open is queued, shown as "DJ writes waiting", and applied '
+            'only after the program has closed and its files have settled; it can be cancelled.',
+            covered=('dj_write_queue',)),
 
     # ------------------------------------------------------------------ Performance
     feature('performance.dj_auto_follow', 'Performance', 'DJ Auto follows VirtualDJ, even on another tab',

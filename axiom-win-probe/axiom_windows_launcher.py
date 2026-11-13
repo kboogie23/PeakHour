@@ -242,6 +242,24 @@ def build_app(port, device=False):
         axiom.app.register_blueprint(create_selftest_blueprint(axiom))
         from windows_live_assist_mini import create_blueprint as create_mini_blueprint
         axiom.app.register_blueprint(create_mini_blueprint(lambda: open_live_assist_mini(f'http://{HOST}:{port}/')))
+        from windows_djay_cues import create_blueprint as create_djay_cues_blueprint
+        axiom.app.register_blueprint(create_djay_cues_blueprint(axiom, root / 'djay-cue-writes', axiom._license_gate))
+        from windows_serato_cues import create_blueprint as create_serato_cues_blueprint
+        axiom.app.register_blueprint(create_serato_cues_blueprint(axiom, root / 'serato-cue-writes', axiom._license_gate))
+        from windows_dj_write_queue import create_blueprint as create_queue_blueprint, get_queue
+        axiom.DJ_WRITE_QUEUE = get_queue(root / 'dj-write-queue.json').start()  # writes to an open DJ program wait for it to close
+        axiom.app.register_blueprint(create_queue_blueprint(axiom.DJ_WRITE_QUEUE))
+        import windows_djay_folders as djay_folders
+        axiom.app.register_blueprint(djay_folders.create_blueprint(axiom, root / 'djay-folder-writes', axiom._license_gate))
+        djay_folders.register_with_queue(axiom.DJ_WRITE_QUEUE)
+        import windows_virtualdj_folders as vdj_folders
+        axiom.app.register_blueprint(vdj_folders.create_blueprint(vdj_policy, axiom._license_gate, root / 'virtualdj-list-writes'))
+        vdj_folders.register_with_queue(axiom.DJ_WRITE_QUEUE, root / 'virtualdj-list-writes')
+        import windows_serato_cues
+        windows_serato_cues.register_with_queue(axiom.DJ_WRITE_QUEUE)
+        import windows_serato_export as serato_export
+        serato_export.register_with_queue(axiom.DJ_WRITE_QUEUE, axiom)
+        axiom.app.register_blueprint(serato_export.create_blueprint(axiom, axiom._license_gate))
     allowed_hosts = {f'{HOST}:{port}', f'localhost:{port}'}
     allowed_origins = {f'http://{host}' for host in allowed_hosts}
     from flask import request, abort

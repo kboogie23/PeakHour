@@ -21,7 +21,7 @@ import os
 from pathlib import Path
 
 class SeratoLibraryError(RuntimeError):
-    pass
+    code = 'error'
 
 def library_folder():
     return Path(os.environ.get('LOCALAPPDATA') or Path.home() / 'AppData' / 'Local') / 'Serato' / 'Library'
@@ -126,3 +126,549 @@ def install(app):
     app._write_serato_modern_visible_crate = make_visible_crate_writer(app._write_serato_modern_visible_crate)
     app._write_serato_modern_crate_to_database = make_crate_database_writer(app._write_serato_modern_crate_to_database)
     app._windows_serato_library_installed = True
+
+
+
+# ---------------------------------------------------------------- crate folders (subcrates)
+# Serato DJ Pro 5 (observed 2026-11-13, see investigation.md): a subcrate is a container row whose parent_id is the
+# parent crate's id; list_order is the 1-based position among its siblings; every crate has a dj_container_metadata
+# row naming its legacy file ("Parent%%Child.crate"). Serato also mirrors each crate into <drive>\_Serato_\Subcrates
+# and neworder.pref, so both are written here (windows_crate_publish) after the database write is verified.
+
+class SeratoOpenError(SeratoLibraryError):
+    code = 'serato_open'
+
+
+class CrateExistsError(SeratoLibraryError):
+    code = 'crate_exists'
+
+
+_FOLDER_STATE = {'snapshot': None, 'ledger': None, 'backups': None}
+
+
+def configure_folders(snapshot=None, ledger=None, backups=None):
+    """Tests and the launcher may replace the process list, the ledger file and the backup folder."""
+    for key, value in (('snapshot', snapshot), ('ledger', ledger), ('backups', backups)):
+        if value is not None:
+            _FOLDER_STATE[key] = value
+
+
+def _data_folder():
+    return Path(os.environ.get('LOCALAPPDATA') or Path.home() / 'AppData' / 'Local') / 'AXIOM DJ'
+
+
+def _ledger_file():
+    return Path(_FOLDER_STATE['ledger'] or _data_folder() / 'serato-crates.json')
+
+
+def _ledger_key(database, crate):
+    return ntpath.normcase(str(Path(database))) + '|' + crate.casefold()
+
+
+def _ledger_read():
+    try:
+        import json
+        data = json.loads(_ledger_file().read_text(encoding='utf-8'))
+        return set(data['crates']) if isinstance(data, dict) else set()
+    except (OSError, ValueError, KeyError, TypeError):
+        return set()
+
+
+def _ledger_forget(key):
+    import json
+    keys = _ledger_read()
+    keys.discard(key)
+    path = _ledger_file()
+    path.parent.mkdir(parents=True, exist_ok=True)
+    temp = path.with_name(path.name + '.tmp')
+    temp.write_text(json.dumps({'version': 1, 'crates': sorted(keys)}, indent=1), encoding='utf-8')
+    os.replace(temp, path)
+
+
+def _ledger_add(database, crate):
+    """Remember that PEAK HOUR created this crate, so a later export may replace its tracks without asking."""
+    import json
+    keys = _ledger_read()
+    keys.add(_ledger_key(database, crate))
+    path = _ledger_file()
+    path.parent.mkdir(parents=True, exist_ok=True)
+    temp = path.with_name(path.name + '.tmp')
+    with open(temp, 'w', encoding='utf-8') as handle:
+        json.dump({'version': 1, 'crates': sorted(keys)}, handle, indent=1)
+        handle.flush()
+        os.fsync(handle.fileno())
+    os.replace(temp, path)
+
+
+def clean_crate_part(name):
+    """One crate name as Serato accepts it in a path: no separators, control or reserved characters."""
+    import re
+    cleaned = re.sub(r'\.crate$', '', str(name if name is not None else '').strip(), flags=re.IGNORECASE)
+    cleaned = re.sub(r'(%%|[/\\])', ' - ', cleaned)
+    cleaned = re.sub(r'[\x00-\x1f:<>"|?*]', '', cleaned)
+    cleaned = re.sub(r'\s+', ' ', cleaned).strip(' .')
+    if not cleaned:
+        raise SeratoLibraryError('A Serato crate needs a name.')
+    return cleaned[:140]
+
+
+def _ensure_serato_closed(snapshot=None):
+    from windows_serato_processes import ProcessInspectionError, require_serato_closed, snapshot_processes
+    try:
+        require_serato_closed(snapshot or _FOLDER_STATE['snapshot'] or snapshot_processes)
+    except ProcessInspectionError as exc:
+        text = str(exc)
+        if text.startswith('Close '):
+            raise SeratoOpenError(text + ' Nothing was written.') from None
+        raise SeratoLibraryError(text + ' Nothing was written.') from None
+
+
+_ASSET_INSERT = """
+    INSERT INTO asset(revision, portable_id, file_name, file_size, file_bit_rate, file_sample_rate,
+        type, format, artist, color, comments, comment_language, comment_descriptor, grouping, remixer,
+        name, album, composer, year, genre, key, label, bpm, length_sec, length_ms, time_added,
+        time_modified, part_of_set, track_number, video_portable_id, is_corrupt, corrupt_description,
+        is_missing, is_readonly, is_beatgrid_locked, third_party_type, is_stale, is_whitelabel,
+        is_karaoke, dj_play_count, dj_recently_played, analysis_flags, architectures, stems_analyze_state,
+        type_specific_data, rating, emoji, import_id, explicit, pending_tempo_map_analysis)
+    VALUES (?, ?, ?, ?, 0, 0, 'audio', ?, ?, NULL, '', '', '', '', '', ?, '', '', ?, '', ?, '', ?,
+        0, 0, ?, ?, '', '', NULL, 0, NULL, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, NULL, NULL, '', NULL, 0, NULL)
+"""
+
+
+def _container_snapshot(connection):
+    return [tuple(row) for row in connection.execute(
+        'SELECT id, revision, parent_id, name, type, list_order, space_id, time_added, expanded, portable_id, color '
+        'FROM container ORDER BY id')]
+
+
+def _members(connection, container_id):
+    return [row[0] for row in connection.execute(
+        'SELECT a.portable_id FROM container_asset ca JOIN space_asset sa ON sa.id = ca.space_asset_id '
+        'JOIN asset a ON a.id = sa.asset_id WHERE ca.container_id = ? ORDER BY ca.list_order, ca.id', (container_id,))]
+
+
+def _write_folder_rows(app, connection, tracks, parts, overwrite, owned, snapshot):
+    """Everything in one open transaction; returns (result, container ids touched)."""
+    import sqlite3
+    import time
+    from utils.serato_review_collection import _insert_space_asset, _space_asset_has_revision
+    if app._serato_modern_schema_kind(connection) != 'root':
+        raise SeratoLibraryError('Unsupported Serato library schema for crate writing.')
+    root_id, space_id = app._serato_modern_root_container(connection)
+    has_revision = _space_asset_has_revision(connection)
+    now = int(time.time())
+    connection.execute('BEGIN IMMEDIATE')
+    revision = app._serato_modern_revision(connection)
+    created, parent_id, container_id, existing_leaf, canonical = [], root_id, None, False, []
+    for depth, name in enumerate(parts):
+        leaf = depth == len(parts) - 1
+        row = connection.execute('SELECT id, name FROM container WHERE parent_id = ? AND name = ? COLLATE NOCASE AND type = 1',
+                                 (parent_id, name)).fetchone()
+        if row:
+            container_id = int(row[0])
+            existing_leaf = leaf
+            name = row[1]  # Serato's own spelling of an existing crate (names match without regard to case)
+        else:
+            order = connection.execute('SELECT COALESCE(MAX(list_order), 0) + 1 FROM container WHERE parent_id = ?',
+                                       (parent_id,)).fetchone()[0]
+            connection.execute("INSERT INTO container(revision, parent_id, name, type, list_order, space_id, time_added, "
+                               "expanded, portable_id, color) VALUES (?, ?, ?, 1, ?, ?, ?, ?, '', NULL)",
+                               (revision, parent_id, name, int(order or 1), space_id, now, 0 if leaf else 1))
+            container_id = int(connection.execute('SELECT last_insert_rowid()').fetchone()[0])
+            created.append((container_id, '%%'.join(canonical + [name])))
+            existing_leaf = False
+        canonical.append(name)
+        parent_id = container_id
+    seen, wanted, missing, duplicate, new_assets = set(), [], 0, 0, 0
+    for track in tracks:
+        fields = app._serato_modern_track_fields(track)
+        if not fields.get('path') or not os.path.isfile(fields['path']):
+            missing += 1
+        key = fields['portable_id'].casefold()
+        if key in seen:
+            duplicate += 1
+            continue
+        seen.add(key)
+        wanted.append(fields)
+    desired = [f['portable_id'] for f in wanted]
+    unchanged = False
+    if existing_leaf:
+        current = _members(connection, container_id)
+        unchanged = [p.casefold() for p in current] == [p.casefold() for p in desired]
+        if not unchanged and not overwrite and not owned:
+            raise CrateExistsError('The Serato crate "' + '%%'.join(parts).replace('%%', ' > ') +
+                                   '" already exists and PEAK HOUR did not create it. Confirm to replace its tracks.')
+    if not unchanged:
+        if existing_leaf:
+            connection.execute('UPDATE container SET revision = ?, space_id = ?, time_added = COALESCE(time_added, ?) '
+                               'WHERE id = ?', (revision, space_id, now, container_id))
+            connection.execute('DELETE FROM container_asset WHERE container_id = ?', (container_id,))
+        for position, fields in enumerate(wanted, 1):
+            asset = connection.execute('SELECT id FROM asset WHERE portable_id = ? COLLATE NOCASE',
+                                       (fields['portable_id'],)).fetchone()
+            if asset:
+                asset_id = int(asset[0])  # Serato's own row is kept as it is: a crate export only adds membership
+            else:
+                connection.execute(_ASSET_INSERT, (revision, fields['portable_id'], fields['file_name'], fields['file_size'],
+                                                   fields['format'], fields['artist'], fields['title'], fields['year'],
+                                                   fields['key'], fields['bpm'], now, now))
+                asset_id = int(connection.execute('SELECT last_insert_rowid()').fetchone()[0])
+                new_assets += 1
+                try:
+                    connection.execute('INSERT OR IGNORE INTO dj_asset_metadata(asset_id, revision, has_read_tags) VALUES (?, ?, 0)',
+                                       (asset_id, revision))
+                except sqlite3.Error:
+                    pass
+            space_asset = connection.execute('SELECT id FROM space_asset WHERE asset_id = ? AND space_id = ?',
+                                             (asset_id, space_id)).fetchone()
+            if space_asset:
+                space_asset_id = int(space_asset[0])
+                if has_revision:
+                    connection.execute('UPDATE space_asset SET revision = ? WHERE id = ?', (revision, space_asset_id))
+            else:
+                space_asset_id = _insert_space_asset(connection, asset_id, space_id, revision)
+            connection.execute('INSERT INTO container_asset(revision, container_id, space_asset_id, list_order, time_added) '
+                               'VALUES (?, ?, ?, ?, ?)', (revision, container_id, space_asset_id, position, now))
+    names = dict(created)
+    if not unchanged:
+        names[container_id] = '%%'.join(canonical)
+    new_ids = {cid for cid, _ in created}
+    for cid, crate in names.items():
+        try:
+            # a crate Serato already knows keeps its export_state; only crates made now get a fresh row
+            verb = 'INSERT OR REPLACE' if cid in new_ids else 'INSERT OR IGNORE'
+            connection.execute(verb + ' INTO dj_container_metadata(container_id, revision, export_state, filename) '
+                               'VALUES (?, ?, 0, ?)', (cid, revision, crate + '.crate'))
+        except sqlite3.Error:
+            pass
+    if _members(connection, container_id) != desired and not unchanged:
+        raise SeratoLibraryError('The crate did not read back as written; nothing was kept.')
+    return {'container_id': container_id, 'created': [name for _, name in created], 'desired': desired,
+            'unchanged': unchanged, 'new_assets': new_assets, 'missing': missing, 'duplicate': duplicate,
+            'revision': revision, 'created_ids': [cid for cid, _ in created], 'noop': bool(unchanged and not created),
+            'replaced': bool(existing_leaf and not unchanged), 'parts': canonical}
+
+
+def _verify_folder(database, before_containers, before_assets, outcome, parts):
+    import sqlite3
+    connection = sqlite3.connect(Path(database).resolve().as_uri() + '?mode=ro', uri=True)
+    try:
+        if connection.execute('PRAGMA integrity_check').fetchone()[0] != 'ok' or connection.execute('PRAGMA foreign_key_check').fetchall():
+            raise SeratoLibraryError('The Serato library failed its integrity check after the write.')
+        if connection.execute('SELECT COUNT(*) FROM asset').fetchone()[0] != before_assets + outcome['new_assets']:
+            raise SeratoLibraryError('The Serato asset count changed unexpectedly.')
+        touched = set(outcome['created_ids'])
+        if outcome['replaced'] or outcome['container_id'] in touched:
+            touched.add(outcome['container_id'])
+        after = {row[0]: row for row in _container_snapshot(connection)}
+        for row in before_containers:
+            if row[0] not in touched and after.get(row[0]) != row:
+                raise SeratoLibraryError('An existing Serato crate changed unexpectedly.')
+        if _members(connection, outcome['container_id']) != outcome['desired']:
+            raise SeratoLibraryError('The crate did not read back as written.')
+        parent_id = None
+        for depth, name in enumerate(parts):  # the whole path resolves, parent to child
+            if depth == 0:
+                row = connection.execute("SELECT c.id FROM container c JOIN container r ON r.id = c.parent_id "
+                                         "WHERE r.name = 'Serato Library root' AND c.name = ? COLLATE NOCASE AND c.type = 1",
+                                         (name,)).fetchone()
+            else:
+                row = connection.execute('SELECT id FROM container WHERE parent_id = ? AND name = ? COLLATE NOCASE AND type = 1',
+                                         (parent_id, name)).fetchone()
+            if not row:
+                raise SeratoLibraryError('The crate path did not read back as written.')
+            parent_id = row[0]
+        if parent_id != outcome['container_id']:
+            raise SeratoLibraryError('The crate path did not read back as written.')
+    finally:
+        connection.close()
+
+
+def write_crate_folder(app, tracks, path_parts, *, overwrite=False, database_path=None, backup_dir=None, snapshot=None):
+    """Write a crate at path_parts (any depth >= 1, last item = the crate holding the tracks) into the location
+    database of the tracks' drive, plus Serato's legacy Subcrates file and neworder.pref lines.
+
+    Parents are found by name (case-insensitive) or created; existing crates are never renamed or removed. The leaf's
+    tracks are replaced only if PEAK HOUR created that crate before or overwrite is True. The database is backed up
+    first and put back, with the legacy files, if any later step fails."""
+    import shutil
+    import sqlite3
+    import time
+    import uuid
+    from windows_crate_publish import legacy_crate_name, restore_file, update_neworder, write_legacy_crate
+    parts = [clean_crate_part(p) for p in (path_parts if isinstance(path_parts, (list, tuple)) else [path_parts])]
+    if not parts or len(parts) > 12:
+        raise SeratoLibraryError('Choose a crate name, or a folder path of up to 12 levels.')
+    tracks = [t if isinstance(t, dict) else {'path': str(t)} for t in tracks or []]
+    if not tracks:
+        raise SeratoLibraryError('No tracks were supplied for the Serato crate.')
+    database = Path(database_path) if database_path else database_for_tracks(tracks)
+    if not database.is_file() or database.parent.name.casefold() != 'library':
+        raise SeratoLibraryError('Serato has not set up a library here yet: ' + str(database))
+    serato_root = database.parent.parent
+    _refuse_wal(database)
+    known = existing_assets(database)
+    prepared = []
+    for track in tracks:
+        row = known.get(portable_id(track.get('path', '')).casefold())
+        prepared.append(dict(track, **{field: row[column] for field, column in PRESERVED_FIELDS}) if row else track)
+    leaf = '%%'.join(parts)
+    owned = _ledger_key(database, leaf) in _ledger_read()
+    _ensure_serato_closed(snapshot)
+    backups = Path(backup_dir or _FOLDER_STATE['backups'] or _data_folder() / 'serato-crate-writes')
+    identifier = time.strftime('%Y%m%d-%H%M%S') + '-' + uuid.uuid4().hex[:8]
+    receipt_folder = backups / identifier
+    receipt_folder.mkdir(parents=True, exist_ok=True)
+    backup = receipt_folder / 'location.sqlite.bak'
+    receipt = {'kind': 'peakhour_serato_crates', 'id': identifier, 'created_at': time.time(), 'status': 'writing',
+               'database': str(database), 'backup': str(backup), 'legacy': [], 'crate': '%%'.join(parts)}
+    _save_receipt(receipt_folder, receipt)
+    source = sqlite3.connect(database, timeout=5.0)
+    try:
+        target = sqlite3.connect(backup)
+        try:
+            source.backup(target)
+        finally:
+            target.close()
+        _fsync_path(backup)  # the backup is on disk before the library is changed
+        before_assets = source.execute('SELECT COUNT(*) FROM asset').fetchone()[0]
+        before_containers = _container_snapshot(source)
+    finally:
+        source.close()
+    legacy_before, warnings = {}, []
+    connection = sqlite3.connect(database, timeout=5.0, isolation_level=None)
+    connection.row_factory = sqlite3.Row
+    committed = False
+    token = _KNOWN_ASSETS.set(known)
+    try:
+        connection.execute('PRAGMA foreign_keys=ON')
+        outcome = _write_folder_rows(app, connection, prepared, parts, overwrite, owned, snapshot)
+        parts = outcome['parts']  # existing crates keep Serato's own spelling
+        leaf = '%%'.join(parts)
+        _ensure_serato_closed(snapshot)  # last look before the commit
+        if outcome['noop']:  # already exactly as wanted: keep Serato's revision counters as they are
+            connection.execute('ROLLBACK')
+        else:
+            connection.execute('COMMIT')
+            committed = True
+        connection.close()
+        _verify_folder(database, before_containers, before_assets, outcome, parts)
+        names = ['%%'.join(parts[:i + 1]) for i in range(len(parts))]
+        crate_file = legacy_crate_name(parts)
+        try:
+            write_legacy_crate(serato_root, parts, outcome['desired'], legacy_before)
+            update_neworder(serato_root, names, legacy_before)
+        except Exception as legacy_error:
+            if len(parts) != 1:
+                raise
+            # a plain crate already works from the database rows alone (the old behaviour): keep them, report the files
+            for path, old in list(legacy_before.items()):
+                try:
+                    restore_file(path, old)
+                except Exception:
+                    pass
+            legacy_before.clear()
+            warnings.append("The crate is in Serato's library, but PEAK HOUR could not write Serato's legacy crate file "
+                            f'or crate order ({legacy_error}).')
+        if leaf in outcome['created']:
+            _ledger_add(database, leaf)
+            receipt['ledger_key'] = _ledger_key(database, leaf)
+        if outcome['noop'] and not legacy_before:  # nothing changed anywhere: no backup is needed
+            shutil.rmtree(receipt_folder, ignore_errors=True)
+            identifier = ''
+        else:
+            for number, (path, old) in enumerate(legacy_before.items()):  # previous bytes of every file touched
+                kept = None
+                if old is not None:
+                    kept = f'legacy-{number}.bin'
+                    (receipt_folder / kept).write_bytes(old)
+                receipt['legacy'].append({'path': str(path), 'before': kept})
+            receipt.update(status='written', after_sha256=_state_sha(database))
+            _save_receipt(receipt_folder, receipt)
+    except BaseException as error:
+        try:
+            connection.close()
+        except Exception:
+            pass
+        problem = None
+        try:
+            if committed:
+                _restore_database(backup, database)
+            else:
+                pass  # the transaction was never committed; closing the connection rolled it back
+            for path, old in legacy_before.items():
+                restore_file(path, old)
+        except Exception as failure:
+            problem = failure
+        if problem is not None:
+            raise SeratoLibraryError(f'{error} PEAK HOUR could not put the Serato library back ({problem}); '
+                                     f'the backup is {backup}.') from error
+        raise
+    finally:
+        _KNOWN_ASSETS.reset(token)
+    return {'success': True, 'database_path': str(database), 'backup_path': str(backup), 'container_id': outcome['container_id'],
+            'backup_id': identifier, 'crate_name': leaf, 'path_parts': parts, 'created_crates': outcome['created'], 'unchanged': outcome['unchanged'],
+            'replaced_existing': outcome['replaced'], 'exported_tracks': len(outcome['desired']),
+            'verified_tracks': len(outcome['desired']), 'missing_tracks': outcome['missing'],
+            'duplicate_tracks': outcome['duplicate'], 'new_assets': outcome['new_assets'],
+            'legacy_crate': str(serato_root / 'Subcrates' / crate_file), 'neworder': str(serato_root / 'neworder.pref'),
+            'warnings': warnings, 'delivery_verified': True}
+
+
+
+def _file_sha(path):
+    import hashlib
+    digest = hashlib.sha256()
+    with open(path, 'rb') as handle:
+        for chunk in iter(lambda: handle.read(1 << 20), b''):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def _state_sha(database):
+    """Hash of the database as Serato would see it: the file and its write-ahead log (if there is one)."""
+    import hashlib
+    digest = hashlib.sha256(_file_sha(database).encode())
+    wal = Path(str(database) + '-wal')
+    if wal.is_file() and wal.stat().st_size:
+        digest.update(b'-wal' + _file_sha(wal).encode())
+    return digest.hexdigest()
+
+
+def _refuse_wal(database):
+    """A non-empty -wal holds changes that are not in location.sqlite yet; replacing the file would lose or corrupt them."""
+    wal = Path(str(database) + '-wal')
+    if wal.is_file() and wal.stat().st_size:
+        raise SeratoLibraryError('Serato left unsaved changes next to its library (' + wal.name + '). Open Serato once and '
+                                 'close it normally so it saves them, then try again. Nothing was written.')
+
+
+def _restore_database(backup, database):
+    """Put the backed-up library back; its -wal/-shm files belong to the file being replaced, so they go too
+    (they were absent or empty when the write began)."""
+    import shutil
+    database = Path(database)
+    stage = database.with_name(database.name + '.restoring')
+    shutil.copyfile(backup, stage)
+    _fsync_path(stage)
+    os.replace(stage, database)
+    for suffix in ('-wal', '-shm'):
+        try:
+            os.unlink(str(database) + suffix)
+        except FileNotFoundError:
+            pass
+
+
+def _fsync_path(path):
+    with open(path, 'rb+') as handle:
+        os.fsync(handle.fileno())
+
+
+def _save_receipt(folder, receipt):
+    import json
+    stage = Path(folder) / 'receipt.json.tmp'
+    with open(stage, 'w', encoding='utf-8') as handle:
+        handle.write(json.dumps(receipt, indent=1))
+        handle.flush()
+        os.fsync(handle.fileno())
+    os.replace(stage, Path(folder) / 'receipt.json')
+
+
+def undo_crate_write(backup_id, backup_dir=None, snapshot=None):
+    """Put Serato's library, the legacy crate files and neworder.pref back as they were before that write.
+
+    Refused while Serato is open, and when location.sqlite is no longer the file PEAK HOUR wrote (Serato or the owner
+    changed it since): restoring would throw those changes away."""
+    import json
+    import re
+    import shutil
+    import time
+    from windows_crate_publish import restore_file
+    if not isinstance(backup_id, str) or not re.fullmatch(r'[0-9A-Za-z_-]{1,64}', backup_id):
+        raise SeratoLibraryError('Unknown backup.')
+    folder = Path(backup_dir or _FOLDER_STATE['backups'] or _data_folder() / 'serato-crate-writes') / backup_id
+    try:
+        receipt = json.loads((folder / 'receipt.json').read_text(encoding='utf-8'))
+    except (OSError, ValueError):
+        raise SeratoLibraryError('There is no such Serato crate backup.') from None
+    if receipt.get('kind') != 'peakhour_serato_crates' or receipt.get('status') != 'written':
+        raise SeratoLibraryError('That write cannot be undone (it did not complete, or was undone already).')
+    _ensure_serato_closed(snapshot)
+    database, backup = Path(receipt['database']), Path(receipt['backup'])
+    _refuse_wal(database)
+    if not database.is_file() or _state_sha(database) != receipt['after_sha256']:
+        exc = SeratoLibraryError('Serato has changed its library since PEAK HOUR added this crate, so PEAK HOUR will not '
+                                 'put the old copy back: that would undo your later changes in Serato. Nothing was changed. '
+                                 'Remove the crate in Serato instead.')
+        exc.code = 'changed'
+        raise exc
+    if not backup.is_file():
+        raise SeratoLibraryError('The backup of the library is missing. Nothing was changed.')
+    _restore_database(backup, database)
+    for item in receipt['legacy']:
+        old = (folder / item['before']).read_bytes() if item['before'] else None
+        restore_file(item['path'], old)
+    if receipt.get('ledger_key'):
+        _ledger_forget(receipt['ledger_key'])
+    receipt.update(status='undone', undone_at=time.time())
+    _save_receipt(folder, receipt)
+    return {'success': True, 'backup_id': backup_id, 'restored': str(database)}
+
+
+def _folder_request(tracks, path_parts):
+    parts = [clean_crate_part(p) for p in (path_parts if isinstance(path_parts, (list, tuple)) else [path_parts])]
+    if not parts or len(parts) > 12:
+        raise SeratoLibraryError('Choose a crate name, or a folder path of up to 12 levels.')
+    tracks = [t if isinstance(t, dict) else {'path': str(t)} for t in tracks or []]
+    if not tracks:
+        raise SeratoLibraryError('No tracks were supplied for the Serato crate.')
+    return tracks, parts
+
+
+def preview_crate_folder(app, tracks, path_parts, *, overwrite=False, database_path=None):
+    """What write_crate_folder would do, read-only: which crates are new, whether the last one exists and may be replaced."""
+    import sqlite3
+    tracks, parts = _folder_request(tracks, path_parts)
+    database = Path(database_path) if database_path else database_for_tracks(tracks)
+    if not database.is_file():
+        raise SeratoLibraryError('Serato has not set up a library here yet: ' + str(database))
+    wanted, seen = [], set()
+    for track in tracks:
+        pid = portable_id(track.get('path', ''))
+        if pid.casefold() not in seen:
+            seen.add(pid.casefold())
+            wanted.append(pid)
+    connection = sqlite3.connect(Path(database).resolve().as_uri() + '?mode=ro', uri=True)
+    try:
+        row = connection.execute("SELECT id FROM container WHERE name = 'Serato Library root' ORDER BY id LIMIT 1").fetchone()
+        parent_id, existing, create = (row[0] if row else None), [], []
+        for depth, name in enumerate(parts):
+            found = connection.execute('SELECT id FROM container WHERE parent_id = ? AND name = ? COLLATE NOCASE AND type = 1',
+                                       (parent_id, name)).fetchone() if parent_id is not None else None
+            if found:
+                existing.append('%%'.join(parts[:depth + 1]))
+                parent_id = found[0]
+            else:
+                create.append('%%'.join(parts[:depth + 1]))
+                parent_id = None
+        leaf_exists = len(existing) == len(parts)
+        current = _members(connection, parent_id) if leaf_exists else []
+        known = {r[0].casefold() for r in connection.execute('SELECT portable_id FROM asset')}
+    finally:
+        connection.close()
+    leaf = '%%'.join(parts)
+    owned = _ledger_key(database, leaf) in _ledger_read()
+    unchanged = leaf_exists and [p.casefold() for p in current] == [p.casefold() for p in wanted]
+    return {'database_path': str(database), 'crate_path': parts, 'crate_name': leaf, 'will_create': create,
+            'leaf_exists': leaf_exists, 'created_by_peak_hour': owned, 'unchanged': unchanged,
+            'will_replace': bool(leaf_exists and not unchanged),
+            'needs_confirm': bool(leaf_exists and not unchanged and not owned and not overwrite),
+            'tracks': len(wanted), 'new_assets': sum(1 for p in wanted if p.casefold() not in known), 'tracklist': wanted}
+
+
+def digest_crate_folder(app, tracks, path_parts, *, overwrite=False, database_path=None):
+    import hashlib
+    import json
+    plan = preview_crate_folder(app, tracks, path_parts, overwrite=overwrite, database_path=database_path)
+    return hashlib.sha256(json.dumps(plan, sort_keys=True).encode('utf-8')).hexdigest()
