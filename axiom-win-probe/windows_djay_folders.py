@@ -224,6 +224,14 @@ def _names(payload):
     return names
 
 
+NOT_IN_DJAY = 'not in djay yet — add it in djay first'
+
+
+def _title(row):
+    text = row.get('title') or os.path.splitext(os.path.basename(str(row.get('path', '')).replace('\\', '/')))[0]
+    return str(text)
+
+
 def _tracks(payload):
     tracks = payload.get('tracks') if isinstance(payload, dict) else None
     if not isinstance(tracks, list) or not tracks:
@@ -270,11 +278,13 @@ def _plan_on(connection, payload):
     if root is None or _prop(root['decoded'], 'type') != 1:
         raise DjayFolderError("djay has no playlist root in this library yet. Open djay once, then try again.", 'unsupported')
     matches, report, duplicates, missing, not_in_djay = _app()._djay_native_track_matches(connection, [{'path': p} for p in wanted])
+    skipped = [{'path': row['path'], 'title': _title(row), 'reason': {
+        'missing_skipped': 'file not found', 'duplicate_skipped': 'listed twice',
+        'not_in_djay_skipped': NOT_IN_DJAY}.get(row['status'], row['status'])} for row in report if row['status'] != 'exported']
     if not matches:
-        raise DjayFolderError('None of these songs are in djay Pro yet. Add them in djay first.', 'no_tracks')
-    skipped = [{'path': row['path'], 'reason': {'missing_skipped': 'The file is missing', 'duplicate_skipped': 'Listed twice',
-                                                'not_in_djay_skipped': 'Not in the djay library'}.get(row['status'], row['status'])}
-               for row in report if row['status'] != 'exported']
+        error = DjayFolderError(f'None of these {len(wanted)} songs are in djay yet — add them in djay first.', 'no_tracks')
+        error.skipped = skipped
+        raise error
     steps, parent, created = [], root, False
     touched = {}
     for name in names[:-1]:
@@ -347,14 +357,21 @@ def _public(plan):
     created = [s['name'] for s in plan['steps'] if s['action'] == 'create']
     return {'success': True, 'database': plan['database'], 'path': plan['path'], 'folders': plan['steps'],
             'playlist': plan['playlist'], 'songs': plan['tracks'], 'skipped': plan['skipped'], 'digest': plan['digest'],
-            'will_write': plan['will_write'], 'note': plan.get('note', ''),
+            'will_write': plan['will_write'], 'songs_to_write': len(plan['tracks']), 'note': plan.get('note', ''),
             'counts': {'folders_to_create': len(created), 'songs': len(plan['tracks']), 'skipped': len(plan['skipped'])},
             'writes_to': 'nothing (preview)'}
 
 
 def preview(payload=None):
     """What apply would do. Reads djay's library read-only and writes nothing."""
-    return _public(_plan(payload))
+    try:
+        return _public(_plan(payload))
+    except DjayFolderError as error:
+        if error.code != 'no_tracks' or not hasattr(error, 'skipped'):
+            raise
+        return {'success': True, 'nothing_to_send': True, 'will_write': False, 'songs_to_write': 0, 'skipped': error.skipped,
+                'message': str(error), 'note': '', 'playlist': {}, 'folders': [],
+                'counts': {'folders_to_create': 0, 'songs': 0, 'skipped': len(error.skipped)}, 'writes_to': 'nothing (preview)'}
 
 
 def digest(payload=None):

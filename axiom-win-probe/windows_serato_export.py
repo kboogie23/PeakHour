@@ -16,7 +16,7 @@ never renamed or removed. A crate folder's last crate only has its tracks replac
 PEAK HOUR made it or the caller confirms (overwrite=True); a plain crate name is
 replaced as it always was. Every write keeps a receipt that undo_crate_write can use.
 """
-from windows_serato_library import SeratoLibraryError, digest_crate_folder, write_crate_folder
+from windows_serato_library import SeratoLibraryError, digest_crate_folders, write_crate_folders
 
 _APP = None
 
@@ -28,7 +28,7 @@ def make_playlist_exporter(app):
         parts = list(path_parts) if path_parts else [name]
         # a flat crate and a crate folder are written the same way: database rows plus Serato's legacy files.
         # Exporting again to a plain crate name has always replaced that crate's tracks; folders ask first.
-        result = write_crate_folder(app, tracks, parts, overwrite=bool(overwrite) or len(parts) == 1)
+        result = write_crate_folders(app, tracks, parts, overwrite=bool(overwrite) or len(parts) == 1)
         crate = result['crate_name']
         return {
             'success': True,
@@ -49,6 +49,10 @@ def make_playlist_exporter(app):
             'legacy_crate_path': result['legacy_crate'],
             'backup_id': result['backup_id'],
             'created_crates': result['created_crates'],
+            'drives': result['drives'],
+            'skipped': result['skipped'],
+            'skipped_counts': result['skipped_counts'],
+            'summary': result['summary'],
             'warnings': result['warnings'],
             'total_tracks': len(playlist),
             'exported_tracks': result['exported_tracks'],
@@ -84,7 +88,7 @@ def apply_crate_folder(payload, app=None):
 def preview_crate_folder(payload, app=None):
     """Queue stale check: a hash that changes when the library, the crate or the tracks change. Writes nothing."""
     tracks, parts, overwrite = _request(payload)
-    return digest_crate_folder(app or _APP, tracks, parts, overwrite=overwrite)
+    return digest_crate_folders(app or _APP, tracks, parts, overwrite=overwrite)
 
 
 def register_with_queue(queue, app=None):
@@ -98,7 +102,7 @@ def create_blueprint(app, license_guard=None):
     paths], overwrite?}; apply also needs confirm:true. While Serato is open the write is queued (202)."""
     from flask import Blueprint, jsonify, request
     from windows_dj_write_queue import queue_if_open
-    from windows_serato_library import SeratoOpenError, _ensure_serato_closed, preview_crate_folder as library_preview
+    from windows_serato_library import SeratoOpenError, _ensure_serato_closed, preview_crate_folders as library_preview
     bp = Blueprint('windows_serato_folders', __name__)
 
     @bp.before_request

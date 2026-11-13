@@ -9,3 +9,6 @@
 .axiom-dj-send-queued span{color:#f2d56b}
 .axiom-dj-send-done span{color:#b6ef5a}
 .axiom-dj-send-replace{font-size:.9em;opacity:.95}
+.axiom-dj-send-detail{font-size:.9em;opacity:.9}
+.axiom-dj-send-skipped{margin:4px 0 0;padding-left:18px;max-height:140px;overflow:auto;font-size:.85em}
+.axiom-dj-send-toggle{padding:2px 8px!important;margin:0 0 0 4px!important;font-size:.8em}

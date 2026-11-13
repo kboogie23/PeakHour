@@ -592,6 +592,26 @@ def undo_crate_write(backup_id, backup_dir=None, snapshot=None):
         receipt = json.loads((folder / 'receipt.json').read_text(encoding='utf-8'))
     except (OSError, ValueError):
         raise SeratoLibraryError('There is no such Serato crate backup.') from None
+    if receipt.get('kind') == 'peakhour_serato_crates_multi':  # a send that spanned drives: every drive goes back
+        if receipt.get('status') not in ('written', 'partly_undone'):
+            raise SeratoLibraryError('That write cannot be undone (it did not complete, or was undone already).')
+        _ensure_serato_closed(snapshot)
+        problems = []
+        for entry in reversed(receipt['drives']):
+            if not entry.get('backup_id') or entry.get('undone'):
+                continue
+            try:
+                undo_crate_write(entry['backup_id'], backup_dir=entry['backup_dir'], snapshot=snapshot)
+                entry['undone'] = True
+            except SeratoLibraryError as exc:
+                problems.append(f"{entry['drive']}: {exc}")
+        receipt.update(status='partly_undone' if problems else 'undone', undone_at=time.time())
+        _save_receipt(folder, receipt)
+        if problems:
+            exc = SeratoLibraryError('Not every drive could be put back. ' + ' '.join(problems))
+            exc.code = 'changed'
+            raise exc
+        return {'success': True, 'backup_id': backup_id, 'drives': [e['drive'] for e in receipt['drives'] if e.get('backup_id')]}
     if receipt.get('kind') != 'peakhour_serato_crates' or receipt.get('status') != 'written':
         raise SeratoLibraryError('That write cannot be undone (it did not complete, or was undone already).')
     _ensure_serato_closed(snapshot)
@@ -672,3 +692,161 @@ def digest_crate_folder(app, tracks, path_parts, *, overwrite=False, database_pa
     import json
     plan = preview_crate_folder(app, tracks, path_parts, overwrite=overwrite, database_path=database_path)
     return hashlib.sha256(json.dumps(plan, sort_keys=True).encode('utf-8')).hexdigest()
+
+
+# ---------------------------------------------------------------- one send, several drives
+# Serato keeps one library per drive, so a set that spans drives is written as the same crate path on each drive that has a
+# Serato library, with that drive's songs in their order. Songs that cannot go anywhere are skipped one by one, with a reason.
+
+_is_file = os.path.isfile  # tests may replace this
+SKIP_LABELS = {'missing': 'file not found', 'system_drive': 'on {drive}', 'no_library': 'no Serato library', 'bad_path': 'not a local file'}
+
+
+def _title_of(track, path):
+    title = track.get('title') if isinstance(track, dict) else ''
+    return str(title or os.path.splitext(ntpath.basename(str(path)))[0])
+
+
+def split_tracks_by_drive(tracks):
+    """({drive: [track dicts, in order]}, [skipped {path, title, reason, code}]). A song is skipped (never the whole send) if its
+    file is missing, it is on the system drive (Serato's newer library there is not supported), its drive has no Serato
+    library, or it has no drive letter."""
+    groups, skipped = {}, []
+    for track in tracks or []:
+        track = track if isinstance(track, dict) else {'path': str(track)}
+        path = str(track.get('path') or '')
+        drive = ntpath.splitdrive(path)[0].upper()
+
+        def skip(code, reason):
+            skipped.append({'path': path, 'title': _title_of(track, path), 'reason': reason, 'code': code})
+        if len(drive) != 2 or drive[1] != ':' or not ntpath.isabs(path):
+            skip('bad_path', 'not a file on a local drive')
+        elif drive == system_drive():
+            skip('system_drive', f"on {drive} (Serato's library on the system drive is not supported yet)")
+        elif not _is_file(path):
+            skip('missing', 'file not found')
+        elif not location_database(drive).is_file():
+            skip('no_library', f'no Serato library on {drive} (open Serato once with that drive connected)')
+        else:
+            groups.setdefault(drive, []).append(track)
+    return groups, skipped
+
+
+def _skip_counts(skipped):
+    counts = {}
+    for item in skipped:
+        label = SKIP_LABELS[item['code']].format(drive=ntpath.splitdrive(item['path'])[0].upper())
+        counts[label] = counts.get(label, 0) + 1
+    return counts
+
+
+def _summary(drives, skipped, key='songs_to_write'):
+    text = ', '.join(f"{d[key]} song{'s' if d[key] != 1 else ''} on {d['drive']}" for d in drives) or 'no songs'
+    if skipped:
+        text += f"; {len(skipped)} skipped (" + ', '.join(f'{n} {label}' for label, n in _skip_counts(skipped).items()) + ')'
+    return 'Serato: ' + text
+
+
+def preview_crate_folders(app, tracks, path_parts, *, overwrite=False):
+    """What write_crate_folders would do, read only.
+
+    {'success', 'crate_path', 'crate_name',
+     'drives': [{'drive', 'database_path', 'crate_path', 'songs_to_write', 'new_assets', 'will_create', 'leaf_exists',
+                 'created_by_peak_hour', 'unchanged', 'will_replace', 'needs_confirm'}],
+     'skipped': [{'path', 'title', 'reason', 'code'}], 'skipped_counts': {label: n}, 'summary': 'Serato: 52 songs on D:, ...',
+     'songs_to_write', 'tracks', 'new_assets', 'will_create', 'leaf_exists', 'list_exists', 'unchanged', 'will_replace',
+     'needs_confirm'}   (the flat fields summarise all drives)"""
+    tracks, parts = _folder_request(tracks, path_parts)
+    groups, skipped = split_tracks_by_drive(tracks)
+    drives = []
+    for drive, drive_tracks in groups.items():
+        plan = preview_crate_folder(app, drive_tracks, parts, overwrite=overwrite, database_path=location_database(drive))
+        plan.pop('tracklist', None)
+        drives.append(dict(plan, drive=drive, songs_to_write=plan['tracks']))
+    leaf = '%%'.join(parts)
+    return {'success': True, 'crate_path': parts, 'crate_name': leaf, 'drives': drives, 'skipped': skipped,
+            'skipped_counts': _skip_counts(skipped), 'summary': _summary(drives, skipped),
+            'songs_to_write': sum(d['songs_to_write'] for d in drives), 'tracks': sum(d['songs_to_write'] for d in drives),
+            'new_assets': sum(d['new_assets'] for d in drives),
+            'will_create': sorted({name for d in drives for name in d['will_create']}),
+            'leaf_exists': any(d['leaf_exists'] for d in drives), 'list_exists': any(d['leaf_exists'] for d in drives),
+            'created_by_peak_hour': bool(drives) and all(d['created_by_peak_hour'] for d in drives if d['leaf_exists']),
+            'unchanged': bool(drives) and all(d['unchanged'] for d in drives),
+            'will_replace': any(d['will_replace'] for d in drives), 'needs_confirm': any(d['needs_confirm'] for d in drives)}
+
+
+def digest_crate_folders(app, tracks, path_parts, *, overwrite=False):
+    """Stable hash of what each target crate holds and would get. Songs skipped for missing files are left out, so only a change
+    to a target crate (or to which songs go where) makes a queued job stale."""
+    import hashlib
+    import json
+    plan = preview_crate_folders(app, tracks, path_parts, overwrite=overwrite)
+    core = [{k: d[k] for k in ('drive', 'database_path', 'crate_path', 'leaf_exists', 'unchanged', 'will_create', 'songs_to_write')}
+            for d in plan['drives']]
+    return hashlib.sha256(json.dumps({'crate': plan['crate_path'], 'drives': core, 'overwrite': bool(overwrite)}, sort_keys=True).encode()).hexdigest()
+
+
+def write_crate_folders(app, tracks, path_parts, *, overwrite=False, backup_dir=None, snapshot=None):
+    """Write the crate path on every drive that holds songs of the set (see write_crate_folder), one transaction and backup per
+    drive and ONE receipt for the whole send. If a later drive fails the earlier ones are rolled back. Raises only if no song
+    can be written at all. Result: preview_crate_folders' fields (drives, skipped, summary) with the written numbers, and
+    'backup_id' (undo with undo_crate_write)."""
+    import shutil
+    import time
+    import uuid
+    tracks, parts = _folder_request(tracks, path_parts)
+    groups, skipped = split_tracks_by_drive(tracks)
+    if not groups:
+        counts = ', '.join(f'{n} {label}' for label, n in _skip_counts(skipped).items())
+        raise SeratoLibraryError('None of these songs can be sent to Serato' + (f' ({counts}).' if counts else '.') + ' Nothing was written.')
+    _ensure_serato_closed(snapshot)
+    backups = Path(backup_dir or _FOLDER_STATE['backups'] or _data_folder() / 'serato-crate-writes')
+    identifier = time.strftime('%Y%m%d-%H%M%S') + '-' + uuid.uuid4().hex[:8]
+    folder = backups / identifier
+    folder.mkdir(parents=True, exist_ok=True)
+    receipt = {'kind': 'peakhour_serato_crates_multi', 'id': identifier, 'created_at': time.time(), 'status': 'writing', 'drives': [],
+               'crate': '%%'.join(parts)}
+    _save_receipt(folder, receipt)
+    written = []
+    try:
+        for drive, drive_tracks in groups.items():
+            sub = folder / ('drive-' + drive[0])
+            result = write_crate_folder(app, drive_tracks, parts, overwrite=overwrite, database_path=location_database(drive),
+                                        backup_dir=sub, snapshot=snapshot)
+            written.append((drive, result))
+            receipt['drives'].append({'drive': drive, 'backup_id': result['backup_id'], 'backup_dir': str(sub)})
+            _save_receipt(folder, receipt)
+    except BaseException as error:
+        problems = []
+        for drive, result in reversed(written):  # this send leaves nothing half done
+            if result['backup_id']:
+                try:
+                    undo_crate_write(result['backup_id'], backup_dir=folder / ('drive-' + drive[0]), snapshot=snapshot)
+                except Exception as exc:
+                    problems.append(f'{drive} {exc}')
+        receipt['status'] = 'rolled_back' if not problems else 'rollback_failed'
+        try:
+            _save_receipt(folder, receipt)
+        except OSError:
+            pass
+        if problems:
+            raise SeratoLibraryError(f'{error} PEAK HOUR could not put back what it had written on the other drives ({"; ".join(problems)}).') from error
+        raise
+    if not any(result['backup_id'] for _, result in written):  # everything was already as wanted
+        shutil.rmtree(folder, ignore_errors=True)
+        identifier = ''
+    else:
+        receipt['status'] = 'written'
+        _save_receipt(folder, receipt)
+    drives = [dict(result, drive=drive, songs_to_write=result['exported_tracks'], crate_path=result['path_parts'])
+              for drive, result in written]
+    first = written[0][1]
+    return {'success': True, 'delivery_verified': True, 'backup_id': identifier, 'crate_path': first['path_parts'], 'crate_name': first['crate_name'],
+            'path_parts': first['path_parts'], 'drives': drives, 'skipped': skipped, 'skipped_counts': _skip_counts(skipped),
+            'summary': _summary(drives, skipped), 'songs_to_write': sum(d['exported_tracks'] for d in drives),
+            'exported_tracks': sum(r['exported_tracks'] for _, r in written), 'verified_tracks': sum(r['verified_tracks'] for _, r in written),
+            'missing_tracks': sum(r['missing_tracks'] for _, r in written), 'duplicate_tracks': sum(r['duplicate_tracks'] for _, r in written),
+            'new_assets': sum(r['new_assets'] for _, r in written), 'created_crates': sorted({n for _, r in written for n in r['created_crates']}),
+            'unchanged': all(r['unchanged'] for _, r in written), 'replaced_existing': any(r['replaced_existing'] for _, r in written),
+            'database_path': first['database_path'], 'backup_path': first['backup_path'], 'legacy_crate': first['legacy_crate'],
+            'neworder': first['neworder'], 'warnings': [w for _, r in written for w in r['warnings']]}

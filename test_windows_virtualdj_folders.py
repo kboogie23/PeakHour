@@ -161,7 +161,7 @@ with tempfile.TemporaryDirectory() as d:
     miss = {'path': ['Missing'], 'tracks': [str(other), str(gone)]}
     gone.unlink()
     pm = F.preview(miss, **kw)
-    assert pm['tracks'] == 1 and [pathlib.Path(x['path']).name for x in pm['skipped']] == ['Moved.mp3'] and pm['skipped'][0]['reason'] == 'The file is missing'
+    assert pm['tracks'] == 1 and [pathlib.Path(x['path']).name for x in pm['skipped']] == ['Moved.mp3'] and pm['skipped'][0]['reason'] == 'file not found' and pm['skipped'][0]['title'] == 'Moved'
     expect(F.FolderError, 'no_tracks', lambda: F.preview({'path': ['Missing'], 'tracks': [str(gone)]}, **kw))
     try:
         F.preview({'path': ['Missing'], 'tracks': [str(gone)]}, **kw)
@@ -174,6 +174,23 @@ with tempfile.TemporaryDirectory() as d:
     assert F.digest({'path': ['Stable'], 'tracks': [str(other)]}, home=home, databases=db) == base_digest
     (home / 'MyLists' / 'order').write_bytes(ORDER)
     other.write_bytes(b'y' * 10)
+
+    # route: a missing file is skipped ("file not found"), the rest is previewed and written; nothing left -> nothing to send
+    from flask import Flask as _Flask
+    papp = _Flask(__name__)
+    papp.register_blueprint(F.create_blueprint(lambda p: True, None, backups, home, lambda: None))
+    pc = papp.test_client()
+    purl, porigin = '/api/windows/virtualdj/folders/', {'Origin': 'http://localhost'}
+    mixed = {'path': ['Partial'], 'tracks': [str(other), str(d / 'Nope - Dirty.mp4')]}
+    pv = pc.post(purl + 'preview', json=mixed, headers=porigin, base_url='http://localhost').get_json()
+    assert pv['songs_to_write'] == 1 and pv['skipped'] == [{'path': str(d / 'Nope - Dirty.mp4'), 'title': 'Nope - Dirty', 'reason': 'file not found'}], pv
+    ap = pc.post(purl + 'apply', json=dict(mixed, confirm=True), headers=porigin, base_url='http://localhost')
+    assert ap.status_code == 200 and ap.get_json()['songs_to_write'] == 1 and len(ap.get_json()['skipped']) == 1
+    F.undo(ap.get_json()['backup_id'], root=backups, ensure_closed=lambda: None)
+    none = pc.post(purl + 'preview', json={'path': ['None'], 'tracks': [str(d / 'x.mp4')]}, headers=porigin, base_url='http://localhost').get_json()
+    assert none['nothing_to_send'] is True and none['songs_to_write'] == 0 and none['skipped'][0]['reason'] == 'file not found'
+    assert pc.post(purl + 'apply', json={'path': ['None'], 'tracks': [str(d / 'x.mp4')], 'confirm': True}, headers=porigin,
+                   base_url='http://localhost').status_code == 400
 
     # queue registration
     class Queue:

@@ -56,8 +56,8 @@ try:
  assert c.execute('select count(*) from asset').fetchone()[0]==before and c.execute('PRAGMA integrity_check').fetchone()[0]=='ok'
  c.close()
  mixed=tracks[:1]+[dict(tracks[1],path='C:'+tracks[1]['path'][2:])]
- try: E.export_serato_playlist(str(marker),mixed,'Mixed',str(folder));raise AssertionError('mixed drives accepted')
- except S.SeratoLibraryError: pass
- print('PASS: Serato export on Windows writes an ordered, verified crate to the drive database (copy); crate folders write rows, legacy crate and neworder.pref; mixed drives refused')
+ out=E.export_serato_playlist(str(marker),mixed,'Mixed',str(folder))  # a song on the system drive is skipped, the rest is written
+ assert out['success'] and out['verified_crate_tracks']==1 and [s['code'] for s in out['skipped']]==['system_drive'],out
+ print('PASS: Serato export on Windows writes an ordered, verified crate to the drive database (copy); crate folders write rows, legacy crate and neworder.pref; songs on the system drive are skipped one by one')
 except BaseException:
  traceback.print_exc();sys.exit(1)

@@ -93,7 +93,7 @@ try:
 <script>window.showToast=(t,bad)=>{(window.toasts=window.toasts||[]).push([t,!!bad])};
 window.ensureAxiomLicenseUsable=async()=>true;</script>
 <link rel="stylesheet" href="/static/css/windows-virtualdj.css"><link rel="stylesheet" href="/static/css/windows-dj-send.css">
-<script src="/static/js/shared/windows-dj-send.js?v=2"></script>
+<script src="/static/js/shared/windows-dj-send.js?v=3"></script>
 <pre id="out">waiting</pre>
 <script>
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
@@ -101,7 +101,7 @@ const text=()=>[...document.querySelectorAll('#axiom-dj-send-results .axiom-dj-s
 (async()=>{
  const out={};
  try{
-  const tracks=%s;
+  const tracks=%s;const listName=%s;
   AxiomDJSend.open({name:'Harness Set',tracks});
   for(let i=0;i<50&&!document.querySelector('.axiom-dj-send-programs input');i++)await sleep(100);
   await sleep(300);
@@ -111,7 +111,7 @@ const text=()=>[...document.querySelectorAll('#axiom-dj-send-results .axiom-dj-s
   out.title=box.querySelector('h2').textContent;
   out.sendDisabledBeforePreview=document.getElementById('axiom-dj-send-go').disabled;
   document.getElementById('axiom-dj-send-folder').value='PH Page / Sub';
-  document.getElementById('axiom-dj-send-name').value='Page List';
+  document.getElementById('axiom-dj-send-name').value=listName;
   document.getElementById('axiom-dj-send-preview').click();
   for(let i=0;i<100&&text().length<3;i++)await sleep(100);
   out.preview=text();
@@ -120,9 +120,13 @@ const text=()=>[...document.querySelectorAll('#axiom-dj-send-results .axiom-dj-s
   document.getElementById('axiom-dj-send-preview').click();
   await sleep(500);
   out.badName=text();
-  document.getElementById('axiom-dj-send-name').value='Page List';
+  document.getElementById('axiom-dj-send-name').value=listName;
   document.getElementById('axiom-dj-send-preview').click();
   for(let i=0;i<100&&text().length<3;i++)await sleep(100);
+  out.toggles=[...document.querySelectorAll('.axiom-dj-send-toggle')].map(b=>b.textContent);
+  const firstToggle=document.querySelector('.axiom-dj-send-toggle');
+  if(firstToggle){firstToggle.click();out.skippedShown=[...document.querySelectorAll('.axiom-dj-send-skipped:not([hidden]) li')].map(l=>l.textContent)}
+  out.sendEnabledBeforeSend=!document.getElementById('axiom-dj-send-go').disabled;
   document.getElementById('axiom-dj-send-go').click();
   for(let i=0;i<100&&!text().some(t=>/Written|Queued|written/.test(t));i++)await sleep(100);
   await sleep(1500);
@@ -132,8 +136,17 @@ const text=()=>[...document.querySelectorAll('#axiom-dj-send-results .axiom-dj-s
  document.getElementById('out').textContent='RESULT'+JSON.stringify(out)+'ENDRESULT';
 })();
 </script>'''
-    backend.app.add_url_rule('/__dj_send_harness', 'dj_send_harness',
-                             lambda: (HARNESS % json.dumps([{'path': t} for t in tracks]), 200, {'Content-Type': 'text/html'}))
+    unknown = songs_dir / 'Unknown Song.mp3'  # on disk, in no DJ library
+    unknown.write_bytes(b'unknown')
+    gone = songs_dir / 'Gone Song - Dirty.mp4'  # not on disk at all
+    from flask import request as flask_request
+
+    def harness():
+        only = flask_request.args.get('only')
+        chosen = [str(unknown)] if only == 'unknown' else tracks + [str(unknown)]
+        name = 'Page List ' + (only or 'all')
+        return HARNESS % (json.dumps([{'path': t} for t in chosen]), json.dumps(name)), 200, {'Content-Type': 'text/html'}
+    backend.app.add_url_rule('/__dj_send_harness', 'dj_send_harness', harness)
     from werkzeug.serving import make_server
     http = make_server('127.0.0.1', port, backend.app, threaded=True)
     server = threading.Thread(target=http.serve_forever, daemon=True)
@@ -216,7 +229,7 @@ const text=()=>[...document.querySelectorAll('#axiom-dj-send-results .axiom-dj-s
 
     # 6. the real page loads the script, and the dialog works in headless Edge
     index = urllib.request.urlopen(url + '/', timeout=60).read().decode('utf-8')
-    assert '/static/js/shared/windows-dj-send.js?v=2' in index and '/static/css/windows-dj-send.css?v=1' in index
+    assert '/static/js/shared/windows-dj-send.js?v=3' in index and '/static/css/windows-dj-send.css?v=2' in index
     assert '/static/js/shared/windows-virtualdj-write.js?v=5' in index
     for asset in ('/static/js/shared/windows-dj-send.js', '/static/css/windows-dj-send.css'):
         assert urllib.request.urlopen(url + asset, timeout=30).status == 200
@@ -225,28 +238,44 @@ const text=()=>[...document.querySelectorAll('#axiom-dj-send-results .axiom-dj-s
     else:
         common = [EDGE, '--headless=new', '--disable-gpu', f'--user-data-dir={base / "edge"}', '--window-size=900,900',
                   '--virtual-time-budget=20000']
-        dom = ''
-        for _ in range(4):
-            dom = subprocess.run([*common, '--dump-dom', url + '/__dj_send_harness'], capture_output=True, timeout=180,
-                                 encoding='utf-8', errors='replace').stdout
-            if 'RESULT' in dom:
-                break
-            # a new headless Edge sometimes prints nothing: retry once its profile is warm
-        match = re.search(r'RESULT(.*?)ENDRESULT', dom, re.S)
-        assert match, dom[:1500]
         import html
-        out = json.loads(html.unescape(match.group(1)))
-        assert not out.get('error'), out
+
+        def run_harness(query, tag):
+            dom = ''
+            for attempt in range(4):
+                profile = [f'--user-data-dir={base / f"edge-{tag}{attempt}"}' if x.startswith('--user-data-dir=') else x for x in common]
+                dom = subprocess.run([*profile, '--dump-dom', url + '/__dj_send_harness' + query], capture_output=True, timeout=180,
+                                     encoding='utf-8', errors='replace').stdout
+                if 'RESULT' in dom:
+                    break
+            match = re.search(r'RESULT(.*?)ENDRESULT', dom, re.S)
+            assert match, dom[:1500]
+            result = json.loads(html.unescape(match.group(1)))
+            assert not result.get('error'), result
+            return result
+        out = run_harness('', 'a')
         assert out['dialog'] and out['title'] == 'Send to DJ software', out
         assert out['programs'] == ['VirtualDJ', 'Serato', 'djay'], out['programs']
         assert out['sendDisabledBeforePreview'] is True and out['sendEnabledAfterPreview'] is True, out
         previews = {line.split('=', 1)[0]: line for line in out['preview']}
         assert set(previews) == {'virtualdj', 'serato', 'djay'}, out['preview']
-        assert 'PEAK HOUR will create "Page List" inside PH Page / Sub' in previews['virtualdj'], previews
+        assert 'PEAK HOUR will create "Page List all" inside PH Page / Sub' in previews['virtualdj'], previews
+        # one summary line per program, with the songs left out counted and listed on request
+        assert 'VirtualDJ: 3 songs' in previews['virtualdj'] and 'Serato: 3 songs' in previews['serato'], previews
+        assert 'djay: 2 songs; 1 not in djay yet' in previews['djay'], previews['djay']
+        assert out['toggles'] == ['show skipped'] and len(out['skippedShown']) == 1 and 'Unknown Song' in out['skippedShown'][0]             and 'not in djay yet' in out['skippedShown'][0], out
         assert any('cannot contain' in line for line in out['badName']), out['badName']
+        assert not any('NEEDS YOUR ATTENTION' in t[0] for t in out['toasts'] if t[1]), out['toasts']
         sent = ' '.join(out['sent'])
-        assert (vdj / 'Playlists' / 'PH Page' / 'Sub' / 'Page List.m3u').is_file(), out['sent']
+        assert (vdj / 'Playlists' / 'PH Page' / 'Sub' / 'Page List all.m3u').is_file(), out['sent']
         assert 'Written' in sent or 'written' in sent, out['sent']
+        # a program with nothing to send (none of the songs are in djay) is left out; Send still works for the others
+        only = run_harness('?only=unknown', 'b')
+        rows = {line.split('=', 1)[0]: line for line in only['preview']}
+        assert 'nothing to send' in rows['djay'] and 'leaves it out' in rows['djay'] and 'VirtualDJ: 1 song' in rows['virtualdj'], rows
+        assert only['sendEnabledBeforeSend'] is True, only
+        assert {line.split('=', 1)[0] for line in only['sent']} == {'virtualdj', 'serato'}, only['sent']
+        assert (vdj / 'Playlists' / 'PH Page' / 'Sub' / 'Page List unknown.m3u').is_file()
         # the real page: the Export menu gets its "Send to DJ software" entry
         page = ''
         # a fresh Edge profile per try: re-using the harness run's profile makes headless Edge crash (exit 0x80000003, empty output)

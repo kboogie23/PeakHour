@@ -239,8 +239,19 @@ try:
   errors('name_conflict',go,['Flat','Under a playlist'])
   for bad in ([],'PH',['PH',''],['PH',5],[' '],['a\nb'],['x']*30,['x'*300]): errors('bad_request',F.preview,{'path':bad,'tracks':songs})
   errors('bad_request',F.preview,{'path':['PH'],'tracks':[]});errors('bad_request',F.preview,{'path':['PH']});errors('bad_request',F.preview,{'path':['PH'],'tracks':[5]})
-  errors('no_tracks',F.preview,{'path':['PH'],'tracks':[str(folder/'not-a-song.mp3')]})
+  (folder/'not-a-song.mp3').unlink(missing_ok=True)
+  assert F.preview({'path':['PH'],'tracks':[str(folder/'not-a-song.mp3')]})['skipped'][0]['reason']=='file not found'
+  (folder/'not-a-song.mp3').write_bytes(b'x')  # exists, but djay does not know it
+  nothing=F.preview({'path':['PH'],'tracks':[str(folder/'not-a-song.mp3')]})  # none in djay: a clear preview, not an error
+  assert nothing['nothing_to_send'] is True and nothing['songs_to_write']==0 and 'djay yet' in nothing['message'] and not nothing['will_write'],nothing
+  assert nothing['skipped'][0]['reason'].startswith('not in djay yet') and nothing['skipped'][0]['title']=='not-a-song',nothing['skipped']
+  errors('no_tracks',go,['PH'],[str(folder/'not-a-song.mp3')])
   assert sweep()==held
+  partial=F.preview({'path':['Partial'],'tracks':[songs[0],str(folder/'not-a-song.mp3')]})  # some in djay: write those, list the rest
+  assert partial['songs_to_write']==1 and [x['reason'][:12] for x in partial['skipped']]==['not in djay '] and partial['skipped'][0]['title']=='not-a-song',partial
+  part=go(['Partial'],[songs[0],str(folder/'not-a-song.mp3')]);put(expect,['Partial'],media[:1])
+  assert part['songs_to_write']==1 and len(part['skipped'])==1 and tree(db)==expect;audit(db)
+  held=sweep()
   if many:
    # the same name with other songs: kept apart as "Name (2)" like flat playlists, once
    rev_t,rev_m=songs[::-1],media[::-1]

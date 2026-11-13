@@ -44,6 +44,11 @@ class FolderError(VirtualDJListError):
 
 # ------------------------------------------------------------------ formats
 
+def skip_row(path, reason):
+    """{path, title, reason}: what the Send dialog lists for a song that was left out."""
+    return {'path': str(path), 'title': ntpath.splitext(ntpath.basename(str(path)))[0], 'reason': reason}
+
+
 def _text(value):
     return str(value).replace('\r', ' ').replace('\n', ' ')
 
@@ -172,7 +177,7 @@ def _plan(payload, home, databases=None):
         try:
             info = os.stat(path, follow_symlinks=False)
         except (FileNotFoundError, NotADirectoryError):  # moved or deleted while the write waited
-            skipped.append({'path': str(path), 'reason': 'The file is missing'})
+            skipped.append(skip_row(path, 'file not found'))
             continue
         if not stat.S_ISREG(info.st_mode) or getattr(info, 'st_file_attributes', 0) & 0x400:
             raise FolderError('Track must be a regular non-reparse file', 'bad_request')
@@ -478,13 +483,30 @@ def create_blueprint(allowed_path, license_guard=None, root=None, home=None, ens
         payload = {'path': data.get('path'), 'tracks': data.get('tracks'), 'style': data.get('style') or DEFAULT_STYLE}
         if not isinstance(payload['tracks'], list):
             raise FolderError('Provide the track paths', 'bad_request')
+        keep, skipped = [], []
         for value in payload['tracks']:
             if not isinstance(value, str) or not Path(value).is_absolute():
                 raise FolderError('Track paths must be absolute', 'bad_request')
             path = Path(value)
-            if path.is_symlink() or not path.is_file() or not allowed_path(path.resolve(strict=True)):
-                raise FolderError('A track is not permitted: ' + path.name, 'bad_request')
-        return payload
+            if path.is_symlink():
+                skipped.append(skip_row(value, 'not allowed'))
+            elif not path.is_file():
+                skipped.append(skip_row(value, 'file not found'))
+            elif not allowed_path(path.resolve(strict=True)):
+                skipped.append(skip_row(value, 'not allowed'))
+            else:
+                keep.append(value)
+        payload['tracks'] = keep
+        return payload, skipped
+
+    def nothing(skipped):
+        return {'success': True, 'songs_to_write': 0, 'tracks': 0, 'skipped': skipped, 'nothing_to_send': True, 'list_exists': False,
+                'message': 'None of these songs can be sent to VirtualDJ (%d skipped).' % len(skipped)}
+
+    def with_skipped(result, skipped):
+        result['skipped'] = skipped + [skip_row(s['path'], s['reason']) for s in result.get('skipped', [])]
+        result['songs_to_write'] = result.get('tracks', 0)
+        return result
 
     def respond(action):
         gate = license_guard('VirtualDJ list export') if license_guard else None
@@ -502,7 +524,12 @@ def create_blueprint(allowed_path, license_guard=None, root=None, home=None, ens
 
     @bp.post('/api/windows/virtualdj/folders/preview')
     def preview_route():
-        return respond(lambda: preview(checked(body()), home=home, root=root, ensure_closed=ensure_closed))
+        def action():
+            payload, skipped = checked(body())
+            if not payload['tracks']:
+                return nothing(skipped)
+            return with_skipped(preview(payload, home=home, root=root, ensure_closed=ensure_closed), skipped)
+        return respond(action)
 
     @bp.post('/api/windows/virtualdj/folders/apply')
     def apply_route():
@@ -510,13 +537,18 @@ def create_blueprint(allowed_path, license_guard=None, root=None, home=None, ens
             data = body()
             if data.get('confirm') is not True:
                 raise FolderError('Confirm before writing to VirtualDJ', 'bad_request')
-            payload = checked(data)
+            payload, skipped = checked(data)
+            if not payload['tracks']:
+                raise FolderError('None of these songs can be sent to VirtualDJ, so nothing was written.', 'no_tracks')
             payload['replace'] = data.get('replace') is True  # "send" never implies "replace an existing list"
             if not payload['replace'] and preview(payload, home=home, root=root, ensure_closed=ensure_closed)['list_exists']:
                 raise FolderError('A VirtualDJ list with this name already exists. Nothing was overwritten.', 'exists')
             from windows_dj_write_queue import queue_if_open
-            direct = lambda: apply(payload, home=home, root=root, ensure_closed=ensure_closed)
-            return queue_if_open('virtualdj', 'list_folder', payload, 'VirtualDJ', direct) or direct()
+            direct = lambda: with_skipped(apply(payload, home=home, root=root, ensure_closed=ensure_closed), skipped)
+            queued = queue_if_open('virtualdj', 'list_folder', payload, 'VirtualDJ', direct)
+            if queued and isinstance(queued[0], dict) and queued[0].get('queued'):
+                queued[0]['skipped'] = skipped
+            return queued or direct()
         return respond(action)
 
     @bp.post('/api/windows/virtualdj/folders/undo')

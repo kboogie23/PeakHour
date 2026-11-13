@@ -67,6 +67,32 @@
    text:renamed?`A djay playlist named "${name}" already exists${into}. Without Replace, PEAK HOUR adds "${plan.final_name}" instead.`
     :`PEAK HOUR will create "${name}"${into} with ${tail}.`};
  }
+// One line per program: how many songs go, how many are left out, and (to show on request) which and why.
+ function summarize(program,data,said){
+  const skipped=(Array.isArray(data.skipped)?data.skipped:[]).map(item=>({title:String(item.title||item.path||''),reason:String(item.reason||'')}));
+  const drives=Array.isArray(data.drives)?data.drives:null;
+  let count=drives?drives.reduce((total,item)=>total+Number(item.songs_to_write||0),0)
+   :Number(data.songs_to_write??(program.id==='serato'?data.tracks:data.counts&&data.counts.songs)??0);
+  if(data.nothing_to_send||data.unchanged)count=0;
+  const unit=(n)=>`${n.toLocaleString()} song${n===1?'':'s'}`;
+  let text=drives&&drives.length>1?drives.map(item=>`${Number(item.songs_to_write||0).toLocaleString()} on ${item.drive}`).join(', ')
+   :count?unit(count):data.unchanged?'already there':'nothing to send';
+  const notInDjay=skipped.filter(item=>/^not in djay/i.test(item.reason)).length;
+  if(program.id==='djay'&&notInDjay){
+   text+=`; ${notInDjay.toLocaleString()} not in djay yet`;
+   if(skipped.length>notInDjay)text+=`; ${(skipped.length-notInDjay).toLocaleString()} skipped`;
+  }else if(skipped.length)text+=`; ${skipped.length.toLocaleString()} skipped`;
+  return {count,text,skipped};
+ }
+ function skippedToggle(line,skipped){
+  if(!skipped.length)return;
+  const list=el('ul',undefined,{className:'axiom-dj-send-skipped'});list.hidden=true;
+  for(const item of skipped.slice(0,500))list.append(el('li',`${item.title} — ${item.reason}`));
+  if(skipped.length>500)list.append(el('li',`...and ${skipped.length-500} more`));
+  const toggle=el('button','show skipped',{type:'button',className:'axiom-dj-send-toggle'});
+  toggle.onclick=()=>{list.hidden=!list.hidden;toggle.textContent=list.hidden?'show skipped':'hide skipped';};
+  line.append(document.createTextNode(' '),toggle,list);
+ }
  async function open(source){
   if(typeof ensureAxiomLicenseUsable==='function'&&!(await ensureAxiomLicenseUsable('Send to DJ software')))return;
   const tracks=(source&&source.tracks)||(typeof getActiveStudioOutputTracks==='function'?getActiveStudioOutputTracks():[])||[];
@@ -121,14 +147,15 @@
   function chosen(){return PROGRAMS.filter(p=>checks[p.id].checked&&!checks[p.id].disabled);}
   function state(){
    const parsed=parsePath(folderInput.value,nameInput.value);
-   if(parsed.error){toast(parsed.error,true);return null;}
+   if(parsed.error){results.replaceChildren(row({id:'',label:'PEAK HOUR'},parsed.error,'axiom-dj-send-bad'));return null;}
    return {paths,parts:parsed.parts,style:styleSelect.value};
   }
   previewButton.onclick=async()=>{
    const picked=chosen(),current=state();
-   if(!picked.length){toast('Tick at least one program.',true);return;}
+   results.replaceChildren();invalidate();
+   if(!picked.length){results.append(row({id:'',label:'PEAK HOUR'},'Tick at least one program.','axiom-dj-send-bad'));return;}
    if(!current)return;
-   results.replaceChildren();invalidate();previewButton.disabled=true;
+   previewButton.disabled=true;
    const plans=[];
    for(const program of picked){
     const problem=checkName(program,current.parts);
@@ -137,7 +164,13 @@
      const reply=await post(program.api+'preview',body(program,current,false));
      if(!reply.ok){results.append(row(program,reply.data.error||'Preview failed.','axiom-dj-send-bad'));continue;}
      const said=describe(program,reply.data,current);
-     const line=row(program,said.text);
+     const sum=summarize(program,reply.data,said);
+     const line=row(program,sum.text);
+     if(sum.count<1){
+      line.append(el('small',` ${program.label} has nothing to send, so PEAK HOUR leaves it out.`));
+      skippedToggle(line,sum.skipped);results.append(line);continue;
+     }
+     line.append(el('div',said.text,{className:'axiom-dj-send-detail'}));
      let replace=null;
      if(said.exists){
       const label=el('label',undefined,{className:'axiom-dj-send-replace'});
@@ -145,6 +178,7 @@
       label.append(replace,document.createTextNode(` Replace the existing one in ${program.label} (PEAK HOUR keeps a backup)`));
       line.append(label);
      }
+     skippedToggle(line,sum.skipped);
      results.append(line);plans.push({program,replace});
     }catch(error){results.append(row(program,error.message,'axiom-dj-send-bad'));}
    }

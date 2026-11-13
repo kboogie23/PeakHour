@@ -338,6 +338,67 @@ try:
     wal.unlink()
     assert S.undo_crate_write(wrote_f['backup_id'])['success'] and dump(db_f) == f_dump
 
+    # ---------------------------------------------------------------- one send spanning two drives (D: and E:), with songs that cannot go
+    root_m1, db_m1, songs_m1 = make_library('multi-d')
+    root_m2, db_m2, songs_m2 = make_library('multi-e')
+    libraries = {'D:': db_m1, 'E:': db_m2}
+    S.system_drive = lambda: 'C:'
+    S.location_database = lambda drive: libraries.get(drive.upper(), pathlib.Path('Z:\\no-serato-here\\Library\\location.sqlite'))
+    real_is_file = os.path.isfile
+    fakes = {}  # fake drive letter path -> the real sandbox file behind it
+    def fake(real, drive):
+        path = drive + real[2:]
+        fakes[path.casefold()] = real
+        return path
+    S._is_file = lambda p: real_is_file(fakes.get(str(p).casefold(), str(p)))
+    d_songs = [fake(p, 'D:') for p in songs_m1[:3]]
+    e_songs = [fake(p, 'E:') for p in songs_m2[:2]]
+    ids_d, ids_e = [S.portable_id(p) for p in d_songs], [S.portable_id(p) for p in e_songs]
+    mixed_set = [{'path': d_songs[0], 'title': 'D one'}, {'path': e_songs[0], 'title': 'E one'}, {'path': d_songs[1]},
+                 {'path': 'D:\\gone\\missing.mp3', 'title': 'Missing'}, {'path': e_songs[1]}, {'path': 'C:\\Users\\x\\system.mp3'},
+                 {'path': d_songs[2]}, {'path': fake(songs_m1[3], 'F:'), 'title': 'No library'}]
+    m_dump = {k: dump(v) for k, v in libraries.items()}
+    m_tree = {'D:': tree(root_m1), 'E:': tree(root_m2)}
+    parts_m = ['Night Mix', 'Set One']
+
+    plan = S.preview_crate_folders(app, mixed_set, parts_m)
+    assert [(d['drive'], d['songs_to_write']) for d in plan['drives']] == [('D:', 3), ('E:', 2)], plan['drives']
+    assert plan['songs_to_write'] == 5 and plan['crate_path'] == parts_m and plan['will_create'] == ['Night Mix', 'Night Mix%%Set One']
+    assert {s['code']: s['reason'] for s in plan['skipped']}['missing'] == 'file not found'
+    assert sorted(s['code'] for s in plan['skipped']) == ['missing', 'no_library', 'system_drive'], plan['skipped']
+    assert plan['skipped_counts'] == {'file not found': 1, 'on C:': 1, 'no Serato library': 1}, plan['skipped_counts']
+    assert plan['summary'] == 'Serato: 3 songs on D:, 2 songs on E:; 3 skipped (1 file not found, 1 on C:, 1 no Serato library)', plan['summary']
+    assert {k: dump(v) for k, v in libraries.items()} == m_dump, 'a preview wrote something'
+    digest_one = S.digest_crate_folders(app, mixed_set, parts_m)
+    assert digest_one == S.digest_crate_folders(app, mixed_set + [{'path': 'D:\\other\\gone.mp3'}], parts_m), 'a skipped song changes the digest'
+
+    sent = S.write_crate_folders(app, mixed_set, parts_m)
+    assert sent['success'] and sent['backup_id'] and sent['exported_tracks'] == 5 and len(sent['skipped']) == 3, sent
+    assert [(d['drive'], d['songs_to_write']) for d in sent['drives']] == [('D:', 3), ('E:', 2)] and sent['summary'] == plan['summary']
+    for db_x, root_x, ids_x, drive in ((db_m1, root_m1, ids_d, 'D:'), (db_m2, root_m2, ids_e, 'E:')):
+        parent_x = crate(db_x, 1, 'Night Mix')
+        child_x = crate(db_x, parent_x[0], 'Set One')
+        assert members(db_x, child_x[0]) == ids_x, (drive, members(db_x, child_x[0]), ids_x)  # this drive's songs, in the set's order
+        assert (root_x / '_Serato_' / 'Subcrates' / 'Night Mix%%Set One.crate').read_bytes() == P.legacy_crate_bytes(ids_x)
+        assert '[crate]Night Mix%%Set One' in (root_x / '_Serato_' / 'neworder.pref').read_bytes().decode('utf-16-be')
+        assert rows(db_x, 'PRAGMA integrity_check') == [('ok',)]
+    again = S.write_crate_folders(app, mixed_set, parts_m)
+    assert again['unchanged'] and again['backup_id'] == '', 'a second identical send changed something'
+    # one undo reverts both drives
+    assert S.undo_crate_write(sent['backup_id'])['success']
+    assert {k: dump(v) for k, v in libraries.items()} == m_dump and {'D:': tree(root_m1), 'E:': tree(root_m2)} == m_tree, 'undo did not revert both drives'
+    check_raises(S.SeratoLibraryError, lambda: S.undo_crate_write(sent['backup_id']))
+    # nothing writable at all: refused, with the reasons
+    err = check_raises(S.SeratoLibraryError, lambda: S.write_crate_folders(app, [{'path': 'C:\\a.mp3'}, {'path': 'D:\\gone\\b.mp3'}], parts_m))
+    assert 'None of these songs' in str(err) and '1 file not found' in str(err) and {k: dump(v) for k, v in libraries.items()} == m_dump
+    # a failure on the second drive rolls the first one back
+    (root_m2 / '_Serato_' / 'neworder.pref').write_bytes('garbage'.encode('utf-16-be'))
+    m_tree = {'D:': tree(root_m1), 'E:': tree(root_m2)}
+    check_raises(S.SeratoLibraryError, lambda: S.write_crate_folders(app, mixed_set, parts_m))
+    assert {k: dump(v) for k, v in libraries.items()} == m_dump and {'D:': tree(root_m1), 'E:': tree(root_m2)} == m_tree, 'drive 1 was not rolled back'
+    S._is_file = os.path.isfile
+    S.system_drive = lambda: 'Z:'
+
     print('PASS: Serato crate folders (2 and 3 levels, parent reuse, idempotent, replace rules, Serato open, restore on failure, '
           'legacy .crate bytes = real Serato layout, neworder.pref UTF-16BE) on sandbox databases')
 except BaseException:
