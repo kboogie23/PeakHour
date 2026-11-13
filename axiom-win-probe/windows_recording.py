@@ -16,6 +16,7 @@ from windows_capture import WindowsInputCapture, CaptureError, sample_peak
 from windows_loopback import ProcessLoopbackStream, running_applications
 from windows_wav_recovery import recover_pcm16_partial
 from windows_feed import find_cable, StreamingFeed
+import windows_keep_awake
 
 class WindowsRecordingManager(SetRecordingManager):
     def __init__(self, settings_path, desktop_dir, *, capture_factory=WindowsInputCapture, device_query=sd.query_devices,
@@ -35,6 +36,7 @@ class WindowsRecordingManager(SetRecordingManager):
         self._feed_factory = feed_factory
         self._feed = None
         self._finalizing = False  # True while a stopped take is being encoded to MP3 (the lock is free meanwhile)
+        self._awake = None  # keeps Windows awake from the start of a take until it is saved (or fails)
 
     def _restore_state(self):
         # An interrupted WAV may have an unfinalized header. Keep its exact
@@ -230,6 +232,7 @@ class WindowsRecordingManager(SetRecordingManager):
                 self._persist_state()
                 raise RuntimeError('Could not start input recording: ' + str(exc)) from exc
             self._capture = capture
+            self._keep_awake()
             self._state = self._idle_state()
             self._state.update(status='recording', recording=True, started_at=datetime.datetime.now().astimezone().isoformat(),
                                started_monotonic=time.monotonic(), source_mode='device', source_id=source_id,
@@ -268,6 +271,7 @@ class WindowsRecordingManager(SetRecordingManager):
             self._persist_state()
             raise RuntimeError(f'Could not record {app["name"]}: {exc}') from exc
         self._capture = capture
+        self._keep_awake()
         self._state = self._idle_state()
         self._state.update(status='recording', recording=True, started_at=datetime.datetime.now().astimezone().isoformat(),
                            started_monotonic=time.monotonic(), source_mode='application', source_id=app['bundle_id'],
@@ -295,7 +299,24 @@ class WindowsRecordingManager(SetRecordingManager):
             state.update(ffmpeg_available=bool(self._ffmpeg), system_audio_available=True, save_directory=self.desktop_dir)
             return state
 
+    def _keep_awake(self):
+        if self._awake is None:
+            self._awake = windows_keep_awake.hold('Recording a set', max_age=24 * 3600)  # an all-night set
+
+    def _let_sleep(self):
+        awake, self._awake = self._awake, None
+        if awake is not None:
+            windows_keep_awake.release(awake)
+
     def stop(self):
+        try:
+            return self._stop()
+        finally:
+            with self._lock:  # a start() in between must keep its own hold
+                if self._capture is None:  # saved, failed, or the MP3 encode is done: Windows may sleep again
+                    self._let_sleep()
+
+    def _stop(self):
         with self._lock:
             if self._capture is None:
                 raise RuntimeError('No recording is active')

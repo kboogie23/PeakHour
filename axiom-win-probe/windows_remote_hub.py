@@ -13,8 +13,8 @@ Safety (opt-in: the launcher starts the hub only with AXIOM_HUB=1; this is acces
 control, not encryption: traffic is plain HTTP, so use it only on a Wi-Fi you trust):
 - only private home-network and loopback addresses are served, and only with the
   hub's own address as the Host header (a DNS-rebinding page cannot reach it);
-- a laptop must enter a short one-time pairing code, shown on this PC (Library >
-  Add music > Other laptops, and the launch log), before it gets a library; the code
+- a laptop must enter a short one-time pairing code, shown on this PC (Choose Music Source >
+  Other laptops card, and the launch log), before it gets a library; the code
   works once, expires after ten minutes, and wrong guesses are limited;
 - the laptop then holds a random session token in an HttpOnly, SameSite=Strict
   cookie; only its SHA-256 is stored, and no library ID or token is ever shown;
@@ -60,7 +60,7 @@ BLOCKED = re.compile(r'choose|serato|djay|virtualdj|/export|export_|publish|reco
                      r'^/api/library/scan|ban_folder|/api/windows/|/api/library/stream|/api/video|waveform|'
                      r'^/api/audio/|/api/library/artwork|^/api/studio-daw/|upload_csv_path|import_release_years_csv|'
                      r'lite_migration|^/api/intelligence/|dupes/trash|dupes/software|'
-                     r'fix_track|^/api/library/unified_health/|health/audio_sources', re.I)
+                     r'fix_track|^/api/library/unified_health/|health/audio_sources|^/api/browser/', re.I)
 
 
 def rotate_log(path, limit=LOG_LIMIT, files=LOG_FILES):
@@ -289,7 +289,7 @@ input{{width:100%;box-sizing:border-box;padding:12px;border-radius:8px;border:1p
 button{{margin-top:12px;width:100%;padding:12px;border:0;border-radius:8px;background:#b7f34a;color:#0b0f0a;font-weight:700;font-size:15px;cursor:pointer}}
 .error{{color:#ff9a7a}}
 </style></head><body><main><h1>PEAK HOUR</h1>
-<p>Each laptop keeps its own PEAK HOUR library on this PC. On the PEAK HOUR PC, open Library &gt; Add music to see a pairing code. Enter it here and name this laptop's library (use the same name to open an existing library again), then upload its VirtualDJ, Serato or rekordbox database.</p>
+<p>Each laptop keeps its own PEAK HOUR library on this PC. On the PEAK HOUR PC, open Choose Music Source (Library, or Settings &gt; Add Music Library) and look at the Other laptops card to see a pairing code. Enter it here and name this laptop's library (use the same name to open an existing library again), then upload its VirtualDJ, Serato or rekordbox database.</p>
 {f'<p class="error">{escape(message)}</p>' if message else ''}
 <form method="post" action="/__axiom/device"><input name="code" placeholder="Pairing code from the PEAK HOUR PC" inputmode="numeric" maxlength="6" autocomplete="off" required autofocus><br><br><input name="name" placeholder="Library name, e.g. Mike's laptop" maxlength="60" required><button>Pair this laptop</button></form>
 </main></body></html>'''.encode('utf-8')

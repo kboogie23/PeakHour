@@ -51,7 +51,7 @@
  }
  function banner(){
   if(!info?.remote||document.getElementById('axiom-remote-banner'))return;
-  const bar=el('div',`${info.name||'Laptop'} library · your music stays on your laptop; upload your DJ database from Library > Add music.`);
+  const bar=el('div',`${info.name||'Laptop'} library · your music stays on your laptop; upload your DJ database from Library > Choose Music Source.`);
   bar.id='axiom-remote-banner';
   bar.style.cssText='position:fixed;left:50%;bottom:8px;transform:translateX(-50%);z-index:9999;padding:6px 12px;border-radius:999px;background:#22301c;color:#eef5e9;font:12px system-ui;opacity:.92;pointer-events:none;max-width:calc(100% - 32px);text-align:center';
   document.body.append(bar);

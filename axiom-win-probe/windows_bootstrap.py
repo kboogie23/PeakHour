@@ -67,6 +67,8 @@ def build_backend(*, recording_settings, recording_directory, capture_factory=No
     install_reconnect(app)  # Health > Reconnect Music: relink moved songs by file name
     from windows_health_snapshot import install as install_health_snapshot
     install_health_snapshot(app)  # Health opens with its last results; counts again only when the library changed
+    from windows_keep_awake import install as install_keep_awake
+    install_keep_awake(app)  # after intake: the PC stays awake during Health jobs and imports
     from windows_remote_hub import create_info_blueprint
     app.app.register_blueprint(create_info_blueprint())
     if os.environ.get('AXIOM_THEME', 'red-platinum') != 'classic':  # AXIOM_THEME=classic keeps the original lime look

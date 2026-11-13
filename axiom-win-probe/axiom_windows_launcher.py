@@ -238,6 +238,8 @@ def build_app(port, device=False):
     from windows_browser import WindowBrowser, create_browser_blueprint
     axiom.app.register_blueprint(create_browser_blueprint(WindowBrowser(root), lambda: (window_browser() or [None])[0]))
     if not device:
+        from windows_browser_selftest import create_selftest_blueprint
+        axiom.app.register_blueprint(create_selftest_blueprint(axiom))
         from windows_live_assist_mini import create_blueprint as create_mini_blueprint
         axiom.app.register_blueprint(create_mini_blueprint(lambda: open_live_assist_mini(f'http://{HOST}:{port}/')))
     allowed_hosts = {f'{HOST}:{port}', f'localhost:{port}'}
