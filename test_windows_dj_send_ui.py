@@ -94,7 +94,7 @@ try:
 window.ensureAxiomLicenseUsable=async()=>true;</script>
 <link rel="stylesheet" href="/static/css/windows-virtualdj.css"><link rel="stylesheet" href="/static/css/windows-dj-send.css">
 <script src="/static/js/shared/windows-dj-send.js?v=5"></script>
-<script src="/static/js/shared/windows-dj-queue.js?v=4"></script>
+<script src="/static/js/shared/windows-dj-queue.js?v=5"></script>
 <pre id="out">waiting</pre>
 <script>
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));window.queuedMode=%s;
@@ -168,7 +168,7 @@ const text=()=>[...document.querySelectorAll('#axiom-dj-send-results .axiom-dj-s
 
     RECENT = '''<!doctype html><meta charset="utf-8"><title>recent</title>
 <script>window.showToast=(t,bad)=>{(window.toasts=window.toasts||[]).push([t,!!bad])};</script>
-<script src="/static/js/shared/windows-dj-queue.js?v=4"></script><pre id="out">waiting</pre>
+<script src="/static/js/shared/windows-dj-queue.js?v=5"></script><pre id="out">waiting</pre>
 <script>
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 (async()=>{
@@ -286,7 +286,7 @@ const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 
     # 6. the real page loads the script, and the dialog works in headless Edge
     index = urllib.request.urlopen(url + '/', timeout=60).read().decode('utf-8')
-    assert '/static/js/shared/windows-dj-send.js?v=5' in index and '/static/js/shared/windows-dj-queue.js?v=4' in index and '/static/css/windows-dj-send.css?v=2' in index
+    assert '/static/js/shared/windows-dj-send.js?v=5' in index and '/static/js/shared/windows-dj-queue.js?v=5' in index and '/static/css/windows-dj-send.css?v=2' in index
     assert '/static/js/shared/windows-virtualdj-write.js?v=7' in index
     for asset in ('/static/js/shared/windows-dj-send.js', '/static/css/windows-dj-send.css'):
         assert urllib.request.urlopen(url + asset, timeout=30).status == 200

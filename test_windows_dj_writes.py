@@ -58,6 +58,33 @@ with tempfile.TemporaryDirectory() as tmp:
         receipt(root, 'djay-folder-writes', f'20261113-2000{number:02d}-eeeeeeee', created_at=1000.0 + number, status='written', path=['N'], songs=1)
     check('at most 20', len(W.recent(root)) == 20 and W.recent(root)[0]['created_at'] == 1029.0)
 
+    # VirtualDJ database writes (Sync to DJ): only the newest written one can be undone
+    vroot = Path(tmp) / 'vdj'
+    for name, made, kinds, status in (('20261113-110000-fffffff1', 5000.0, ['cues'], 'written'),
+                                      ('20261113-110001-fffffff2', 5001.0, ['grids', 'play_counts'], 'written'),
+                                      ('20261113-110002-fffffff3', 5002.0, ['cues'], 'written'),
+                                      ('20261113-110003-fffffff4', 5003.0, ['cues'], 'undone'),
+                                      ('20261113-110004-fffffff5', 5004.0, ['cues'], 'rolled_back')):
+        receipt(vroot, 'virtualdj-writes', name, kind='axiom_virtualdj_write', created_at=made, kinds=kinds, status=status,
+                databases=[{'path': 'x', 'songs': 1 if name.endswith('2') or name.endswith('3') else 2}])
+    receipt(vroot, 'virtualdj-writes', 'other', kind='something_else', created_at=6000.0, status='written')
+    before = sorted((str(p), p.stat().st_mtime_ns, p.read_bytes()) for p in vroot.rglob('*') if p.is_file())
+    vrows = {r['id'][-1]: r for r in W.recent(vroot)}
+    check('database writes listed, unfinished and foreign receipts left out', sorted(vrows) == ['1', '2', '3', '4'])
+    check('database write label and what', (vrows['3']['program'], vrows['3']['label'], vrows['3']['what']) == ('virtualdj', 'VirtualDJ database', 'cue points, 1 song')
+          and vrows['2']['what'] == 'beat grids, play counts, 1 song' and vrows['1']['what'] == 'cue points, 2 songs')
+    check('database write undo route', vrows['3']['undo_url'] == '/api/windows/virtualdj/write/undo')
+    check('newest database write can be undone', vrows['3']['undoable'] is True and not vrows['3']['undone'] and vrows['3']['note'] == '')
+    check('older database writes say a later write exists', all(vrows[k]['undoable'] is False and vrows[k]['note'] == "can't be undone: a later VirtualDJ write exists"
+                                                              for k in '12'))
+    check('an undone database write is marked undone', vrows['4']['undone'] is True and vrows['4']['undoable'] is True)
+    check('listing leaves the receipts untouched', before == sorted((str(p), p.stat().st_mtime_ns, p.read_bytes()) for p in vroot.rglob('*') if p.is_file()))
+    vapp = Flask(__name__)
+    vapp.register_blueprint(W.create_blueprint(vroot))
+    before_route = sorted((str(p), p.stat().st_mtime_ns) for p in vroot.rglob('*'))
+    check('route lists database writes read only', len(vapp.test_client().get('/api/windows/dj-writes/recent').get_json()['writes']) == 4
+          and before_route == sorted((str(p), p.stat().st_mtime_ns) for p in vroot.rglob('*')))
+
     app = Flask(__name__)
     app.register_blueprint(W.create_blueprint(root))
     client = app.test_client()

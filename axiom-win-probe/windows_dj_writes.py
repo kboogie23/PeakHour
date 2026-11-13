@@ -7,6 +7,7 @@ GET /api/windows/dj-writes/recent lists the newest receipts (default 20) found u
   serato-crate-writes     Serato crates and crate folders     undo: /api/windows/serato/folders/undo
   serato-cue-writes       Serato cue points                   undo: /api/windows/serato/cues/undo
   virtualdj-size-writes   VirtualDJ file-size sync            undo: /api/windows/dj-writes/undo-size (below)
+  virtualdj-writes        VirtualDJ database (Sync to DJ)     undo: /api/windows/virtualdj/write/undo (newest write only)
 Each row: {program, label, what, id, created_at, undone, undo_url}. Writes that did not complete (rolled back, still
 writing) are not listed. The receipt formats belong to the writers; this module only reads them and never edits one.
 POST /api/windows/dj-writes/undo-size {backup_id} undoes a file-size sync (that writer has no route of its own).
@@ -22,7 +23,11 @@ SOURCES = (  # folder under the data root, program, label, undo route
     ('serato-crate-writes', 'serato', 'Serato crate', '/api/windows/serato/folders/undo'),
     ('serato-cue-writes', 'serato', 'Serato cue points', '/api/windows/serato/cues/undo'),
     ('virtualdj-size-writes', 'virtualdj', 'VirtualDJ file sizes', '/api/windows/dj-writes/undo-size'),
+    ('virtualdj-writes', 'virtualdj', 'VirtualDJ database', '/api/windows/virtualdj/write/undo'),
 )
+DATABASE_FOLDER = 'virtualdj-writes'  # Health > Sync to DJ; its writer can only undo the newest written receipt
+KIND_NAMES = {'cues': 'cue points', 'grids': 'beat grids', 'play_counts': 'play counts'}
+LATER_WRITE = "can't be undone: a later VirtualDJ write exists"
 
 
 def _songs(count):
@@ -41,6 +46,10 @@ def _what(folder, receipt):
         return crate.replace('%%', ' / ')
     if folder == 'virtualdj-list-writes':
         return Path(str(receipt.get('list_path') or 'list')).stem
+    if folder == DATABASE_FOLDER:
+        kinds = [KIND_NAMES.get(str(kind), str(kind)) for kind in receipt.get('kinds') or []]
+        songs = sum(int(item.get('songs') or 0) for item in receipt.get('databases') or [] if isinstance(item, dict))
+        return ', '.join(kinds + [_songs(songs)])
     if folder == 'virtualdj-size-writes':
         return _songs(sum(int(item.get('songs') or 0) for item in receipt.get('databases') or []))
     items = receipt.get('files') if isinstance(receipt.get('files'), list) else receipt.get('songs')
@@ -80,6 +89,8 @@ def recent(root, limit=LIMIT):
                 continue
             if not isinstance(receipt, dict):
                 continue
+            if folder == DATABASE_FOLDER and receipt.get('kind') != 'axiom_virtualdj_write':
+                continue
             show, undone = _listed(folder, receipt)
             if not show:
                 continue
@@ -88,6 +99,12 @@ def recent(root, limit=LIMIT):
                          'note': '' if undone else str(receipt.get('undo_refused') or ''),
                          'undoable': not (receipt.get('undo_permanent') and not undone)})
     rows.sort(key=lambda row: row['created_at'], reverse=True)
+    newest = True
+    for row in rows:  # the database writer undoes only the newest write that is still in place
+        if row['undo_url'] == '/api/windows/virtualdj/write/undo' and not row['undone']:
+            if not newest:
+                row['undoable'], row['note'] = False, LATER_WRITE
+            newest = False
     return rows[:limit]
 
 

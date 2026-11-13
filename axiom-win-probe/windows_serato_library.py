@@ -493,7 +493,7 @@ def write_crate_folder(app, tracks, path_parts, *, overwrite=False, database_pat
             receipt['targeted'] = {'created': outcome['created_rows'], 'crate': leaf,
                                    'replaced': {'container_id': outcome['container_id'], 'members': outcome['previous_members']}
                                    if outcome['replaced'] else None}
-            receipt.update(status='written', after_sha256=_state_sha(database))
+            receipt.update(status='written', after_sha256=_state_sha(database), backup_sha256=_file_sha(backup))
             _save_receipt(receipt_folder, receipt)
     except BaseException as error:
         try:
@@ -647,17 +647,23 @@ def undo_crate_write(backup_id, backup_dir=None, snapshot=None):
     _ensure_serato_closed(snapshot)
     database, backup = Path(receipt['database']), Path(receipt['backup'])
     _refuse_wal(database)
-    if database.is_file() and receipt.get('targeted') and _state_sha(database) != receipt['after_sha256']:
-        return _undo_targeted(receipt, folder, backup_id, snapshot)  # Serato has added its own rows since: leave them alone
-    if not database.is_file() or _state_sha(database) != receipt['after_sha256']:
-        if receipt.get('targeted'):
-            exc = SeratoLibraryError('Serato has changed its library since PEAK HOUR added this crate, so PEAK HOUR will not '
-                                     'put the old copy back: that would undo your later changes in Serato. Nothing was changed. '
-                                     'Remove the crate in Serato instead.')
-        else:
-            exc = SeratoLibraryError("This send was made by an older PEAK HOUR and Serato has changed its library since, so PEAK HOUR "
-                                     "can't undo it safely. Delete the crate in Serato instead.")
-            exc.permanent = True
+    if database.is_file() and _state_sha(database) != receipt['after_sha256']:
+        # Serato has added its own rows since: leave them alone. A receipt from an older build does not say what the send
+        # created, so that is worked out from the saved copy of the library from before the send (or refused).
+        if not (isinstance(receipt.get('targeted'), dict) and 'created' in receipt['targeted']):
+            receipt = dict(receipt, targeted=_reconstruct_targeted(receipt))
+            if not receipt['targeted']['created'] and not receipt['targeted']['replaced']:  # nothing to take out: change nothing
+                exc = SeratoLibraryError('PEAK HOUR could not take anything out of Serato, so nothing was changed. '
+                                         + ('Left in place: ' + '; '.join(receipt['targeted']['kept']) + '. ' if receipt['targeted']['kept'] else '')
+                                         + 'Delete the crate in Serato instead.')
+                exc.code = 'changed'
+                exc.permanent = False
+                raise exc
+        return _undo_targeted(receipt, folder, backup_id, snapshot)
+    if not database.is_file():
+        exc = SeratoLibraryError('Serato has changed its library since PEAK HOUR added this crate, so PEAK HOUR will not '
+                                 'put the old copy back: that would undo your later changes in Serato. Nothing was changed. '
+                                 'Remove the crate in Serato instead.')
         exc.code = 'changed'
         raise exc
     if not backup.is_file():
@@ -694,6 +700,147 @@ def _remove_neworder_lines(path, names):
     return True
 
 
+def _old_receipt_refusal(why):
+    exc = SeratoLibraryError(f"This send was made by an older PEAK HOUR and {why}, so PEAK HOUR can't tell which crates it added. "
+                             'Nothing was changed. Delete the crate in Serato instead.')
+    exc.code = 'changed'
+    exc.permanent = True
+    return exc
+
+
+def _written_crate_ids(receipt):
+    """The song ids (lower case, in order) of the legacy crate file this send created (receipt: no file before), read from
+    the file now on disk; None if there is none or it is not readable."""
+    from windows_crate_publish import _blocks, _track_path
+    for item in receipt.get('legacy', []):
+        path = Path(str(item.get('path', '')))
+        if item.get('before') is None and path.suffix.casefold() == '.crate':
+            try:
+                return [_track_path(payload) for name, payload in _blocks(path.read_bytes()) if name == 'otrk']
+            except (OSError, ValueError, UnicodeDecodeError):
+                return None
+    return None
+
+
+def _reconstruct_targeted(receipt):
+    """For a receipt that does not record what the send created: work it out by comparing the saved copy of the library from
+    just before the send with the library now. Returns the same record a newer build saves ('created', 'crate', 'replaced')
+    plus 'kept' (crates left alone, with the reason).
+
+    A crate is the send's only if it is on the receipt's crate path, is missing (same name under the same parent chain) from the
+    saved copy, and was made when the send ran (its time_added). The last crate must also hold nothing but what the send put in:
+    song ids / the count if the receipt recorded them, else only songs the saved copy knew or the send itself added, and no
+    song row added after the send. A crate that was already there has its old songs put back from the saved copy."""
+    import sqlite3
+    database, backup = Path(receipt['database']), Path(receipt['backup'])
+    crate = receipt.get('crate')
+    if not crate:  # the oldest receipts: the path is in the name of the legacy crate file
+        crate = next((Path(i['path']).stem for i in receipt.get('legacy', []) if str(i.get('path', '')).lower().endswith('.crate')), '')
+    parts = [p for p in str(crate).split('%%') if p]
+    if not parts:
+        raise _old_receipt_refusal("it did not record which crate it wrote")
+    if not backup.is_file():
+        raise _old_receipt_refusal('its saved copy of the library from before the send is missing')
+    if receipt.get('backup_sha256') and _file_sha(backup) != receipt['backup_sha256']:
+        raise _old_receipt_refusal('its saved copy of the library from before the send has changed')
+    created_at = float(receipt.get('created_at') or 0)
+    in_window = lambda value: isinstance(value, (int, float)) and created_at - 5 <= value <= created_at + 120
+
+    def chain(connection):
+        root = connection.execute("SELECT id FROM container WHERE name = 'Serato Library root' ORDER BY id LIMIT 1").fetchone()
+        found, parent = [], root[0] if root else None
+        for name in parts:
+            row = connection.execute('SELECT id, name, parent_id, time_added FROM container WHERE parent_id = ? AND name = ? '
+                                     'COLLATE NOCASE AND type = 1 ORDER BY id LIMIT 1', (parent, name)).fetchone() if parent is not None else None
+            found.append(row)
+            parent = row[0] if row else None
+        return found
+
+    member_sql = ('SELECT a.portable_id, ca.time_added, a.time_added, ca.revision, ca.list_order FROM container_asset ca '
+                  'JOIN space_asset sa ON sa.id = ca.space_asset_id JOIN asset a ON a.id = sa.asset_id '
+                  'WHERE ca.container_id = ? ORDER BY ca.list_order, ca.id')
+    try:
+        old = sqlite3.connect(backup.resolve().as_uri() + '?mode=ro&immutable=1', uri=True)  # never creates -shm/-wal next to it
+        try:
+            if old.execute('PRAGMA integrity_check').fetchone()[0] != 'ok':
+                raise _old_receipt_refusal('its saved copy of the library from before the send is damaged')
+            old_revision = old.execute('SELECT revision FROM serato LIMIT 1').fetchone()
+            old_chain = chain(old)
+            old_assets = {row[0].casefold() for row in old.execute('SELECT portable_id FROM asset') if row[0]}
+            old_members = [list(r) for r in old.execute(member_sql, (old_chain[-1][0],))] if old_chain[-1] else []
+        finally:
+            old.close()
+        now = sqlite3.connect(database.resolve().as_uri() + '?mode=ro', uri=True)
+        try:
+            now_revision = now.execute('SELECT revision FROM serato LIMIT 1').fetchone()
+            if not old_revision or not now_revision or int(old_revision[0] or 0) >= int(now_revision[0] or 0):
+                raise _old_receipt_refusal('its saved copy of the library is not from before the send')
+            now_chain = chain(now)
+            leaf_members = [list(r) for r in now.execute(member_sql, (now_chain[-1][0],))] if now_chain[-1] else []
+            # songs the send itself added to Serato (not in the saved copy) that some other crate also holds
+            shared = {pid.casefold() for pid, *_ in leaf_members if now.execute(
+                'SELECT 1 FROM container_asset ca JOIN space_asset sa ON sa.id = ca.space_asset_id JOIN asset a ON a.id = sa.asset_id '
+                'WHERE a.portable_id = ? COLLATE NOCASE AND ca.container_id != ? LIMIT 1', (pid, now_chain[-1][0])).fetchone()}
+            space_assets = {}
+            for pid, *_ in old_members:
+                found = now.execute('SELECT sa.id FROM space_asset sa JOIN asset a ON a.id = sa.asset_id '
+                                    'WHERE a.portable_id = ? COLLATE NOCASE ORDER BY sa.id LIMIT 1', (pid,)).fetchone()
+                space_assets[pid.casefold()] = found[0] if found else None
+        finally:
+            now.close()
+    except sqlite3.Error:
+        raise _old_receipt_refusal('its saved copy of the library from before the send cannot be read') from None
+
+    def leaf_problem():
+        """Why the last crate is not (only) what the send wrote, or None."""
+        ids = receipt.get('portable_ids')
+        if ids is not None:
+            allowed = {str(p).casefold() for p in ids}
+            if any((m[0] or '').casefold() not in allowed for m in leaf_members):
+                return 'it holds songs PEAK HOUR did not send'
+            return None
+        if receipt.get('exported_tracks') is not None and len(leaf_members) != int(receipt['exported_tracks']):
+            return 'it does not hold the number of songs PEAK HOUR sent'
+        if any(not in_window(m[1]) for m in leaf_members):
+            return 'songs were added to it after the send'
+        if receipt.get('exported_tracks') is not None:
+            return None
+        # Serato rewrites the asset rows the send added (revision, time_added, import_id) when it opens, so those are not
+        # compared. The songs must be ones PEAK HOUR's own crate file lists, or songs only this crate holds.
+        if _written_crate_ids(receipt) == [(m[0] or '').casefold() for m in leaf_members]:
+            return None
+        if any((m[0] or '').casefold() not in old_assets and (m[0] or '').casefold() in shared for m in leaf_members):
+            return 'it holds songs PEAK HOUR cannot show it sent'
+        return None
+
+    created, kept, names, replaced = [], [], [], None
+    for depth, row in enumerate(now_chain):
+        if row is None:
+            break
+        names.append(row[1])
+        crate_name = '%%'.join(names)
+        leaf = depth == len(parts) - 1
+        if old_chain[depth] is not None:  # it was there before the send
+            if leaf:
+                problem = leaf_problem()
+                if [m[0].casefold() for m in leaf_members] == [m[0].casefold() for m in old_members]:
+                    pass  # already as it was
+                elif problem:
+                    kept.append(f'{crate_name} ({problem})')
+                else:
+                    replaced = {'container_id': row[0], 'members': [
+                        [m[3], space_assets[m[0].casefold()], m[4], m[1]] for m in old_members if space_assets.get(m[0].casefold())]}
+            continue
+        if not in_window(row[3]):
+            kept.append(f'{crate_name} (it was not created by this send)')
+        elif leaf and leaf_problem():
+            kept.append(f'{crate_name} ({leaf_problem()})')
+        else:
+            created.append({'id': row[0], 'name': row[1], 'parent_id': row[2], 'crate': crate_name})
+    return {'created': created, 'crate': '%%'.join(names if len(names) == len(parts) else parts), 'replaced': replaced,
+            'kept': kept, 'reconstructed': True}
+
+
 def _undo_targeted(receipt, folder, backup_id, snapshot=None):
     """Undo one send when Serato has changed the library since (it adds the new songs as assets as soon as it is opened): in one
     transaction, with a backup of the library as it is now, delete only the crates this send created (if they are still what
@@ -716,8 +863,8 @@ def _undo_targeted(receipt, folder, backup_id, snapshot=None):
         source.close()
     _fsync_path(before_file)
     connection = sqlite3.connect(database, timeout=5.0, isolation_level=None)
-    removed, kept = [], []
-    committed = False
+    removed, kept = [], list(targeted.get('kept') or [])
+    committed = nothing_done = restored = False
     try:
         connection.execute('PRAGMA foreign_keys=ON')
         connection.execute('BEGIN IMMEDIATE')
@@ -756,8 +903,16 @@ def _undo_targeted(receipt, folder, backup_id, snapshot=None):
                         connection.execute('INSERT INTO container_asset(revision, container_id, space_asset_id, list_order, time_added) '
                                            'VALUES (?, ?, ?, ?, ?)', (revision, container_id, space_asset_id, list_order, time_added))
                 connection.execute('UPDATE container SET revision = ? WHERE id = ?', (revision, container_id))
-        if removed or replaced:
-            connection.execute('UPDATE serato SET revision = ?', (revision,))
+                restored = True
+        if not removed and not restored:  # everything stays: say so, change nothing, leave the receipt as it was
+            nothing_done = True
+            exc = SeratoLibraryError('PEAK HOUR could not take anything out of Serato, so nothing was changed. '
+                                     + ('Left in place: ' + '; '.join(kept) + '. ' if kept else '')
+                                     + 'Delete the crate in Serato instead.')
+            exc.code = 'changed'
+            exc.permanent = False
+            raise exc
+        connection.execute('UPDATE serato SET revision = ?', (revision,))
         if connection.execute('PRAGMA integrity_check').fetchone()[0] != 'ok' or connection.execute('PRAGMA foreign_key_check').fetchall():
             raise SeratoLibraryError('The library failed its integrity check; nothing was undone.')
         if connection.execute('SELECT COUNT(*) FROM asset').fetchone()[0] != assets_before:
@@ -779,6 +934,12 @@ def _undo_targeted(receipt, folder, backup_id, snapshot=None):
             try:
                 connection.execute('ROLLBACK')
             except sqlite3.Error:
+                pass
+        if nothing_done:
+            connection.close()
+            try:
+                before_file.unlink()  # nothing was changed, so there is nothing to go back to
+            except OSError:
                 pass
         raise
     finally:

@@ -59,7 +59,9 @@
   row.append(line,refusal);
   return row;
  }
+ const VDJ_DATABASE_UNDO='/api/windows/virtualdj/write/undo';  // undoes the newest Sync to DJ write; takes no id
  async function undoWrite(write,button,refusal){
+  if(write.undo_url===VDJ_DATABASE_UNDO&&!confirm('Put VirtualDJ\'s database back the way it was before this PEAK HOUR write? Quit VirtualDJ first.'))return;
   button.disabled=true;refusal.hidden=true;
   try{
    const response=await fetch(write.undo_url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({backup_id:write.id})});
