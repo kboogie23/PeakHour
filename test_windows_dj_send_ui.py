@@ -93,10 +93,11 @@ try:
 <script>window.showToast=(t,bad)=>{(window.toasts=window.toasts||[]).push([t,!!bad])};
 window.ensureAxiomLicenseUsable=async()=>true;</script>
 <link rel="stylesheet" href="/static/css/windows-virtualdj.css"><link rel="stylesheet" href="/static/css/windows-dj-send.css">
-<script src="/static/js/shared/windows-dj-send.js?v=3"></script>
+<script src="/static/js/shared/windows-dj-send.js?v=4"></script>
+<script src="/static/js/shared/windows-dj-queue.js?v=2"></script>
 <pre id="out">waiting</pre>
 <script>
-const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));window.queuedMode=%s;
 const text=()=>[...document.querySelectorAll('#axiom-dj-send-results .axiom-dj-send-row')].map(r=>r.dataset.program+'='+r.textContent);
 (async()=>{
  const out={};
@@ -131,6 +132,20 @@ const text=()=>[...document.querySelectorAll('#axiom-dj-send-results .axiom-dj-s
   for(let i=0;i<100&&!text().some(t=>/Written|Queued|written/.test(t));i++)await sleep(100);
   await sleep(1500);
   out.sent=text();
+  if(window.queuedMode){
+   const lineOf=()=>[...document.querySelectorAll('#axiom-dj-send-results .axiom-dj-send-row')].find(r=>r.dataset.program==='virtualdj');
+   out.queuedLine=lineOf().textContent;
+   out.buttonWhileQueued=document.getElementById('axiom-dj-send-go').textContent;
+   await fetch('/__dj_send_close');
+   for(let i=0;i<120&&!/Written/.test(lineOf().textContent);i++){await fetch('/__dj_send_sleep');await sleep(100);}
+   out.finalLine=lineOf().textContent;
+   out.finalClass=lineOf().className;
+   for(let i=0;i<150&&!(window.toasts||[]).some(t=>/^Written to VirtualDJ/.test(t[0]));i++){await fetch('/__dj_send_sleep');await sleep(100);}
+   out.buttonAfter=document.getElementById('axiom-dj-send-go').textContent;
+   out.buttonEnabled=!document.getElementById('axiom-dj-send-go').disabled;
+   document.getElementById('axiom-dj-send-go').click();
+   out.dialogGone=!document.getElementById('axiom-dj-send');
+  }
   out.toasts=window.toasts||[];
  }catch(e){out.error=String(e&&e.stack||e)}
  document.getElementById('out').textContent='RESULT'+JSON.stringify(out)+'ENDRESULT';
@@ -145,8 +160,22 @@ const text=()=>[...document.querySelectorAll('#axiom-dj-send-results .axiom-dj-s
         only = flask_request.args.get('only')
         chosen = [str(unknown)] if only == 'unknown' else tracks + [str(unknown)]
         name = 'Page List ' + (only or 'all')
-        return HARNESS % (json.dumps([{'path': t} for t in chosen]), json.dumps(name)), 200, {'Content-Type': 'text/html'}
+        if only == 'queued':
+            open_programs.add('virtualdj')  # VirtualDJ is open: the send is queued, then the test closes it from the page
+        return (HARNESS % ('true' if only == 'queued' else 'false', json.dumps([{'path': t} for t in chosen]), json.dumps(name)),
+                200, {'Content-Type': 'text/html'})
     backend.app.add_url_rule('/__dj_send_harness', 'dj_send_harness', harness)
+
+    def close_programs():
+        open_programs.clear()
+        queue.closed_seconds, queue.poll_seconds, queue.settles = 0, 0.2, {}
+        return 'ok'
+
+    def real_sleep():
+        time.sleep(0.2)
+        return 'ok'
+    backend.app.add_url_rule('/__dj_send_close', 'dj_send_close', close_programs)
+    backend.app.add_url_rule('/__dj_send_sleep', 'dj_send_sleep', real_sleep)
     from werkzeug.serving import make_server
     http = make_server('127.0.0.1', port, backend.app, threaded=True)
     server = threading.Thread(target=http.serve_forever, daemon=True)
@@ -229,8 +258,8 @@ const text=()=>[...document.querySelectorAll('#axiom-dj-send-results .axiom-dj-s
 
     # 6. the real page loads the script, and the dialog works in headless Edge
     index = urllib.request.urlopen(url + '/', timeout=60).read().decode('utf-8')
-    assert '/static/js/shared/windows-dj-send.js?v=3' in index and '/static/css/windows-dj-send.css?v=2' in index
-    assert '/static/js/shared/windows-virtualdj-write.js?v=5' in index
+    assert '/static/js/shared/windows-dj-send.js?v=4' in index and '/static/js/shared/windows-dj-queue.js?v=2' in index and '/static/css/windows-dj-send.css?v=2' in index
+    assert '/static/js/shared/windows-virtualdj-write.js?v=6' in index
     for asset in ('/static/js/shared/windows-dj-send.js', '/static/css/windows-dj-send.css'):
         assert urllib.request.urlopen(url + asset, timeout=30).status == 200
     if not os.path.exists(EDGE):
@@ -276,6 +305,13 @@ const text=()=>[...document.querySelectorAll('#axiom-dj-send-results .axiom-dj-s
         assert only['sendEnabledBeforeSend'] is True, only
         assert {line.split('=', 1)[0] for line in only['sent']} == {'virtualdj', 'serato'}, only['sent']
         assert (vdj / 'Playlists' / 'PH Page' / 'Sub' / 'Page List unknown.m3u').is_file()
+        # a queued send: the dialog follows the job and ends on Done, and the queue announces the finished write
+        queued = run_harness('?only=queued', 'c')
+        assert 'Queued until VirtualDJ closes' in queued['queuedLine'] and queued['buttonWhileQueued'] != 'Done', queued
+        assert queued['finalLine'].startswith('VirtualDJ: Written ✓ — ') and 'axiom-dj-send-done' in queued['finalClass'], queued
+        assert queued['buttonAfter'] == 'Done' and queued['buttonEnabled'] and queued['dialogGone'] is True, queued
+        assert any(t[0].startswith('Written to VirtualDJ') and not t[1] for t in queued['toasts']), queued['toasts']
+        assert (vdj / 'Playlists' / 'PH Page' / 'Sub' / 'Page List queued.m3u').is_file()
         # the real page: the Export menu gets its "Send to DJ software" entry
         page = ''
         # a fresh Edge profile per try: re-using the harness run's profile makes headless Edge crash (exit 0x80000003, empty output)

@@ -41,6 +41,8 @@ import time
 import uuid
 from pathlib import Path
 
+import windows_cue_jobs as _jobs
+
 CUE_SLOTS = 8
 SOURCES = ('peakhour', 'virtualdj', 'djay')
 LABELS = {'peakhour': 'PEAK HOUR', 'virtualdj': 'VirtualDJ', 'djay': 'djay'}
@@ -288,15 +290,33 @@ def _default_color(path):
     return b'\x00\xff\xff' if os.path.splitext(str(path))[1].lower() in VIDEO_EXTENSIONS else b'\xff\xff\xff'
 
 
-def inspect(path, kind=None):
-    """What Serato has stored in this file: {'format', 'cues': [(index, ms, color, name)], 'entries', 'has_v2',
-    'has_v1', 'v1_cues', 'v1_tail'}. ValueError if the tags cannot be read; kind overrides the extension."""
-    kind = kind or file_format(path)
+def _read_region(path, kind):
+    """The part of a song that holds its tags and nothing else: MP3 = the 10-byte ID3v2 header and exactly the tag; MP4/M4A = the
+    top-level atoms other than mdat (mdat, the media data, is seeked past). The sound is never read."""
+    with open(path, 'rb') as handle:
+        if kind == 'mp3':
+            head = handle.read(10)
+            if head[:3] != b'ID3':
+                return b''
+            size = ((head[6] & 0x7F) << 21) | ((head[7] & 0x7F) << 14) | ((head[8] & 0x7F) << 7) | (head[9] & 0x7F)
+            return head + handle.read(size + (10 if head[5] & 0x10 else 0))
+        size = os.fstat(handle.fileno()).st_size
+        pieces = []
+        for offset, length, name, body in _mp4_atoms(handle, size):
+            if name != b'mdat':
+                handle.seek(offset)
+                pieces.append(handle.read(length))
+        return b''.join(pieces)
+
+
+def _inspect_region(region, kind):
+    import io
     found = {'format': kind, 'cues': [], 'entries': [], 'has_v2': False, 'has_v1': False, 'v1_cues': 0, 'v1_tail': b''}
     if kind == 'mp3':
         from mutagen.id3 import ID3, ID3NoHeaderError
+        tags = ID3()
         try:
-            tags = ID3(path, translate=False)
+            tags.load(io.BytesIO(region), translate=False, load_v1=False)
         except ID3NoHeaderError:
             return found
         v2, v1 = tags.get(GEOB_V2), tags.get(GEOB_V1)
@@ -304,7 +324,7 @@ def inspect(path, kind=None):
         v1_data = bytes(v1.data) if v1 is not None else None
     elif kind == 'mp4':
         from mutagen.mp4 import MP4
-        tags = MP4(path).tags or {}
+        tags = MP4(io.BytesIO(region)).tags or {}
         v2_data = _atom_payload(tags[ATOM_V2][0], HEAD_V2) if ATOM_V2 in tags and tags[ATOM_V2] else None
         v1_data = _atom_payload(tags[ATOM_V1][0], HEAD_V1, HEAD_V2) if ATOM_V1 in tags and tags[ATOM_V1] else None
     else:
@@ -317,6 +337,101 @@ def inspect(path, kind=None):
         found['has_v1'] = True
         found['v1_cues'], found['v1_tail'] = parse_markers_v1(v1_data)  # unreadable legacy tag: the song is left alone
     return found
+
+
+def inspect(path, kind=None):
+    """What Serato has stored in this file: {'format', 'cues': [(index, ms, color, name)], 'entries', 'has_v2',
+    'has_v1', 'v1_cues', 'v1_tail'}. ValueError if the tags cannot be read; kind overrides the extension. Reads only the tag
+    region of the song."""
+    kind = kind or file_format(path)
+    if kind not in ('mp3', 'mp4'):
+        raise ValueError('Only MP3, MP4 and M4A files can carry Serato cues here.')
+    return _inspect_region(_read_region(path, kind), kind)
+
+
+# ------------------------------------------------------------------ what a preview learned about a song, kept between previews
+# Keyed by path; valid while the song's size and modified time are the same. A write that keeps the date (an in-place patch)
+# forgets the song's entry itself.
+_CACHE = {'songs': None, 'dirty': False, 'lock': threading.RLock(), 'path': None}
+CACHE_LIMIT = 400000
+
+
+def _cache_file():
+    return _root().parent / 'cue-preview-cache.json'
+
+
+def _cache_songs():
+    with _CACHE['lock']:
+        path = _cache_file()
+        if _CACHE['songs'] is None or _CACHE['path'] != str(path):
+            _CACHE['path'], _CACHE['dirty'] = str(path), False
+            try:
+                data = json.loads(path.read_text(encoding='utf-8'))
+                _CACHE['songs'] = data['songs'] if data.get('version') == 1 and isinstance(data.get('songs'), dict) else {}
+            except (OSError, ValueError, KeyError, AttributeError):
+                _CACHE['songs'] = {}
+        return _CACHE['songs']
+
+
+def save_cache():
+    """Write the preview cache to disk (atomic); a no-op if nothing changed."""
+    with _CACHE['lock']:
+        if not _CACHE['dirty'] or _CACHE['songs'] is None:
+            return
+        path = Path(_CACHE['path'])
+        try:
+            path.parent.mkdir(parents=True, exist_ok=True)
+            stage = path.with_name(path.name + '.tmp')
+            stage.write_text(json.dumps({'version': 1, 'songs': _CACHE['songs']}), encoding='utf-8')
+            os.replace(stage, path)
+            _CACHE['dirty'] = False
+        except OSError:
+            pass
+
+
+def _cache_forget(path):
+    with _CACHE['lock']:
+        if _cache_songs().pop(_key(path), None) is not None:
+            _CACHE['dirty'] = True
+
+
+def _facts_of(info):
+    return {'cues': [list(c) for c in info['cues']], 'v1_cues': info['v1_cues'], 'has_v1': info['has_v1'], 'has_v2': info['has_v2'],
+            'v1_tail': info['v1_tail'].hex(), 'entries': [[n, b.hex()] for n, b in info['entries'] if n != 'CUE'], 'delta': {}}
+
+
+def _info_of(facts, kind):
+    return {'format': kind, 'cues': [tuple(c) for c in facts['cues']], 'entries': [(n, bytes.fromhex(h)) for n, h in facts['entries']],
+            'has_v2': facts['has_v2'], 'has_v1': facts['has_v1'], 'v1_cues': facts['v1_cues'], 'v1_tail': bytes.fromhex(facts['v1_tail'])}
+
+
+def _facts_for(path, kind, signature):
+    """(facts, region): what the song's tags say, from the cache if its size and date match, else read from the tag region (which
+    is then returned too, so a trial write can use it without reading again)."""
+    key = _key(path)
+    with _CACHE['lock']:
+        entry = _cache_songs().get(key)
+        if entry and entry[0] == signature[0] and entry[1] == signature[1]:
+            return entry[2], None
+    region = _read_region(path, kind)
+    facts = _facts_of(_inspect_region(region, kind))
+    with _CACHE['lock']:
+        songs = _cache_songs()
+        if len(songs) >= CACHE_LIMIT:
+            songs.clear()
+        songs[key] = [signature[0], signature[1], facts]
+        _CACHE['dirty'] = True
+    return facts, region
+
+
+def serato_cues_for(path):
+    """Serato's hot cues in a song as [{'index', 'time_ms', 'label', 'color'}] (what the djay and VirtualDJ readers expect),
+    from the tag region only (and the preview cache)."""
+    kind = file_format(path)
+    if not kind:
+        return []
+    facts, _region = _facts_for(path, kind, _signature(path))
+    return [{'index': i, 'time_ms': ms, 'label': name, 'color': '#' + color} for i, ms, color, name in facts['cues']]
 
 
 def audio_fingerprint(path, kind=None):
@@ -474,28 +589,13 @@ def _audio_ranges(path, kind):
         return [(offset + body, offset + length) for offset, length, name, body in _mp4_atoms(handle, size) if name == b'mdat']
 
 
-def _tag_delta(path, cues, info, kind, color, allow_grow=True):
+def _tag_delta(path, cues, info, kind, color, allow_grow=True, region=None):
     """How the cues go into this song, tried on an in-memory copy of just the tag part (no audio): 0 = they fit in the
     tag's existing room (written in place, size unchanged); N > 0 = the file grows by N bytes; None = no room and growing
     is off (or the tag cannot be built)."""
     import io
-    size = os.path.getsize(path)
-    with open(path, 'rb') as handle:
-        if kind == 'mp3':
-            head = handle.read(10)
-            if head[:3] != b'ID3':
-                region = b''
-            else:
-                end = 10 + (((head[6] & 0x7F) << 21) | ((head[7] & 0x7F) << 14) | ((head[8] & 0x7F) << 7) | (head[9] & 0x7F))
-                handle.seek(0)
-                region = handle.read(end)
-        else:
-            pieces = []
-            for offset, length, name, body in _mp4_atoms(handle, size):
-                if name != b'mdat':
-                    handle.seek(offset)
-                    pieces.append(handle.read(length))
-            region = b''.join(pieces)
+    if region is None:
+        region = _read_region(path, kind)
     for padding, grows in ((_keep_padding, False), (_grow_padding, True)):
         if grows and not allow_grow:
             break
@@ -595,6 +695,7 @@ def _restore_in_place(path, backup, stat, exclusive=False):
         handle.flush()
         os.fsync(handle.fileno())
     os.utime(path, ns=(stat['atime_ns'], stat['mtime_ns']))
+    _cache_forget(path)  # the song went back to an older state that may carry the same size and date
 
 
 def _rewrite_in_place(handle, source):
@@ -812,18 +913,38 @@ def _all_songs():
     return paths
 
 
+def _delta_for(path, kind, facts, region, cues, info, allow_grow):
+    """tag_delta for these cues, from the song's cached facts if this exact payload size was worked out before."""
+    color = _default_color(path)
+    kept = [e for e in info['entries'] if e[0] != 'CUE']
+    key = f"{len(encode_markers2(cues, kept, color))}:{int(allow_grow)}"
+    if key in facts['delta']:
+        found = facts['delta'][key]
+        return None if found < 0 else found
+    delta = _tag_delta(path, cues, info, kind, color, allow_grow, region)
+    with _CACHE['lock']:
+        facts['delta'][key] = -1 if delta is None else delta
+        _CACHE['dirty'] = True
+    return delta
+
+
 def _plan(payload):
+    from windows_cue_jobs import progress
     requested = _requested(payload)
     if requested is None:
+        progress(0, 0, 'Listing the songs in Serato', 'checking')
         requested = _all_songs()
     allow_grow = _allow_grow(payload)
     sources, rows, seen = _Sources(), [], set()
-    for path in requested:
+    total = len(requested)
+    for number, path in enumerate(requested):
         key = _key(path)
         if key in seen:
             continue
         seen.add(key)
-        row = {'path': path, 'title': os.path.splitext(ntpath.basename(path))[0], 'format': file_format(path) or '',
+        title = os.path.splitext(ntpath.basename(path))[0]
+        progress(number, total, title, 'checking')
+        row = {'path': path, 'title': title, 'format': file_format(path) or '',
                'existing_cues': 0, 'source': '', 'cues': [], 'skip_reason': '', 'signature': [], 'will_write': False,
                'grows_by': 0, 'mode': ''}
         rows.append(row)
@@ -832,7 +953,8 @@ def _plan(payload):
             continue
         try:
             row['signature'] = _signature(path)
-            info = inspect(path)
+            facts, region = _facts_for(path, row['format'], row['signature'])
+            info = _info_of(facts, row['format'])
         except OSError:
             row['skip_reason'] = 'The file is not there'
             continue
@@ -848,13 +970,19 @@ def _plan(payload):
         if not row['cues']:
             row['skip_reason'] = 'No cues found in PEAK HOUR, VirtualDJ or djay'
             continue
-        delta = _tag_delta(path, row['cues'], info, row['format'], _default_color(path), allow_grow)
+        try:
+            delta = _delta_for(path, row['format'], facts, region, row['cues'], info, allow_grow)
+        except OSError:
+            row['skip_reason'] = 'The file is not there'
+            row['cues'] = []
+            continue
         if delta is None:
             row['skip_reason'] = NO_ROOM
             continue
         row['grows_by'] = delta
         row['mode'] = f'file grows by {delta:,} bytes' if delta else 'in place'
         row['will_write'] = True
+    save_cache()
     return {'songs': rows, 'digest': digest(payload)}
 
 
@@ -1187,10 +1315,16 @@ def apply(payload=None):
         _ACTIVE.add(identifier)
         try:
             failed = []
+            stopped = False
             with _Background():
                 for number, row in enumerate(rows):
+                    if _jobs.cancelled():  # the page asked to stop: songs already written stay written (and can be undone)
+                        stopped = True
+                        break
+                    _jobs.progress(number, len(rows), row['title'], 'writing', raise_on_cancel=False)
                     try:
                         _write_one(row, folder, number, receipt)
+                        _cache_forget(row['path'])
                     except SeratoCueError as error:
                         if error.code == 'serato_open':
                             receipt['status'] = 'written' if any(e['status'] == 'written' for e in receipt['files']) else 'failed'
@@ -1218,8 +1352,10 @@ def apply(payload=None):
             if written:
                 message += (f' {len(grown)} got a little bigger (the sound is unchanged)' if grown else '') \
                     + '. Files keep their identity and date; a backup of each was kept and this can be undone.'
+            if stopped:
+                message += ' Cancelled before the rest were written.'
             return dict(summary, written=written, failed=failed, skipped_now=skipped, backup_id=identifier if written else '',
-                        grown=len(grown), virtualdj_sync=sync, message=message)
+                        grown=len(grown), virtualdj_sync=sync, message=message, cancelled=stopped)
         finally:
             _ACTIVE.discard(identifier)
 
@@ -1457,10 +1593,19 @@ def create_blueprint(app, root=None, license_guard=None):
         gate = license_guard('Send cue points to Serato') if license_guard else None
         return gate if gate else respond(action)
 
+    def job_or(action_now, data, kind, work):
+        """Small requests answer at once; "all" or more than 50 songs start a background job and answer with its id."""
+        if not _jobs.is_big(data):
+            return gated(action_now)
+        gate = license_guard('Send cue points to Serato') if license_guard else None
+        if gate:
+            return gate
+        return jsonify(success=True, background=True, state='running', job_id=_jobs.start_job(kind, work))
+
     @bp.post('/api/windows/serato/cues/preview')
     def preview_route():
         data = request.get_json(silent=True) or {}
-        return gated(lambda: preview(data))
+        return job_or(lambda: preview(data), data, 'serato-preview', lambda: preview(data))
 
     def queued_or_apply(data):
         from windows_dj_write_queue import queue_if_open
@@ -1474,6 +1619,8 @@ def create_blueprint(app, root=None, license_guard=None):
             return body, 202
         return result
 
+    _jobs.add_routes(bp, '/api/windows/serato/cues', 'serato')
+
     @bp.get('/api/windows/serato/cues/status')
     def status_route():
         return jsonify(success=True, recovered_after_interrupt=_state['recovered'], needs_attention=attention_list())
@@ -1483,7 +1630,12 @@ def create_blueprint(app, root=None, license_guard=None):
         data = request.get_json(silent=True) or {}
         if data.get('confirm') is not True:
             return jsonify(success=False, error='Confirm before writing to Serato', code='bad_request'), 400
-        return gated(lambda: queued_or_apply(data))
+        def work():
+            result = queued_or_apply(data)
+            if isinstance(result, tuple):  # (body, status): the page reads the status from the job result
+                return dict(result[0], http_status=result[1])
+            return result
+        return job_or(lambda: queued_or_apply(data), data, 'serato-apply', work)
 
     @bp.post('/api/windows/serato/cues/undo')
     def undo_route():

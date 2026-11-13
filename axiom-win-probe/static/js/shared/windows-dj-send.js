@@ -121,8 +121,8 @@
   actions.append(closeButton,previewButton,sendButton);
   box.append(title,intro,programBox,el('label','Folder / Subfolder'),folderInput,el('label','Playlist name'),nameInput,styleSelect,results,actions);
   document.body.append(box);
-  closeButton.onclick=()=>{box.close();box.remove();};
-  box.addEventListener('cancel',()=>box.remove());
+  closeButton.onclick=()=>{stopWatching();box.close();box.remove();};
+  box.addEventListener('cancel',()=>{stopWatching();box.remove();});
   const checks={};
   const found=await fetch('/api/windows/dj-queue/programs').then(r=>r.ok?r.json():{programs:[]}).catch(()=>({programs:[]}));
   const info=Object.fromEntries((found.programs||[]).map(p=>[p.id,p]));
@@ -185,33 +185,75 @@
    previewButton.disabled=false;
    if(plans.length){previewed={plans,state:current};sendButton.disabled=false;}
   };
-  sendButton.onclick=async()=>{
+  // ---- after Send: each program's line ends as written / queued / failed; a queued line follows its job until it is final
+  let watching=[],watchTimer=null,sendRound=0;
+  function stopWatching(){if(watchTimer){clearInterval(watchTimer);watchTimer=null;}}
+  function addUndo(line,program,backupId){
+   line.append(el('small',` Undo id: ${backupId} `));
+   const undo=el('button','Undo',{type:'button',className:'axiom-dj-send-undo'});
+   undo.title=`Put ${program.label} back the way it was before this write (close ${program.label} first).`;
+   undo.onclick=async()=>{
+    undo.disabled=true;
+    try{
+     const back=await post(program.api+'undo',{backup_id:backupId});
+     if(!back.ok)throw new Error(back.data.error||'Could not undo.');
+     undo.remove();line.append(el('small',' Undone.'));toast(`${program.label} restored. PEAK HOUR undid this write.`);
+    }catch(error){undo.disabled=false;toast(error.message,true);}
+   };
+   line.append(undo);
+  }
+  function setLine(line,text,className){
+   line.className='axiom-dj-send-row '+className;
+   line.querySelector('span').textContent=text;
+  }
+  function allFinal(){
+   if(watching.length)return;
+   stopWatching();
+   sendButton.textContent='Done';sendButton.disabled=false;sendButton.onclick=()=>{stopWatching();box.close();box.remove();};
+  }
+  async function pollJobs(round){
+   try{
+    const response=await fetch('/api/windows/dj-queue/list',{cache:'no-store'});
+    if(!response.ok||round!==sendRound)return;
+    const jobs=Object.fromEntries(((await response.json()).jobs||[]).map(j=>[j.id,j]));
+    watching=watching.filter(item=>{
+     const job=jobs[item.id];
+     if(!job||job.status==='queued'||job.status==='applying'){
+      if(job&&job.message)item.line.querySelector('small.axiom-dj-send-wait')?.replaceChildren(document.createTextNode(` ${job.message}`));
+      return true;
+     }
+     if(job.status==='done'){
+      setLine(item.line,`Written ✓ — ${job.message||'PEAK HOUR wrote it.'}`,'axiom-dj-send-done');
+      if(job.backup_id)addUndo(item.line,item.program,job.backup_id);
+     }else if(job.status==='cancelled'){
+      setLine(item.line,'Cancelled.','axiom-dj-send-bad');
+     }else if(job.status==='needs_review'){
+      setLine(item.line,`${job.message||'It changed while waiting.'} Preview and send it again.`,'axiom-dj-send-bad');
+     }else{
+      setLine(item.line,`Could not write: ${job.message||'unknown problem'}`,'axiom-dj-send-bad');
+     }
+     item.line.querySelector('small.axiom-dj-send-wait')?.remove();
+     return false;
+    });
+    allFinal();
+   }catch(error){/* the next poll tries again */}
+  }
+  async function send(){
    if(!previewed)return;
    const {plans,state:current}=previewed;
+   const round=++sendRound;watching=[];stopWatching();
    sendButton.disabled=true;previewButton.disabled=true;results.replaceChildren();
    for(const {program,replace} of plans){
     try{
      const reply=await post(program.api+'apply',{...body(program,current,!!(replace&&replace.checked)),confirm:true});
      if(reply.status===202&&reply.data.queued){
-      results.append(row(program,`Queued until ${program.label} closes. ${reply.data.message||''}`,'axiom-dj-send-queued'));
+      const line=row(program,`Queued until ${program.label} closes.`,'axiom-dj-send-queued');
+      line.append(el('small',` ${reply.data.message||''}`,{className:'axiom-dj-send-wait'}));
+      results.append(line);watching.push({id:reply.data.id,program,line});
       toast(reply.data.message||`${program.label} is open — PEAK HOUR will write this after you close it.`);
      }else if(reply.ok){
       const done=row(program,reply.data.message||`Written to ${program.label}.`,'axiom-dj-send-done');
-      const backupId=reply.data.backup_id;
-      if(backupId){
-       done.append(el('small',` Undo id: ${backupId} `));
-       const undo=el('button','Undo',{type:'button',className:'axiom-dj-send-undo'});
-       undo.title=`Put ${program.label} back the way it was before this write (close ${program.label} first).`;
-       undo.onclick=async()=>{
-        undo.disabled=true;
-        try{
-         const back=await post(program.api+'undo',{backup_id:backupId});
-         if(!back.ok)throw new Error(back.data.error||'Could not undo.');
-         undo.remove();done.append(el('small',' Undone.'));toast(`${program.label} restored. PEAK HOUR undid this write.`);
-        }catch(error){undo.disabled=false;toast(error.message,true);}
-       };
-       done.append(undo);
-      }
+      if(reply.data.backup_id)addUndo(done,program,reply.data.backup_id);
       results.append(done);
       toast(`Written to ${program.label}. PEAK HOUR kept a backup.`);
      }else{
@@ -219,8 +261,13 @@
      }
     }catch(error){results.append(row(program,error.message,'axiom-dj-send-bad'));}
    }
-   previewButton.disabled=false;previewed=null;
-  };
+   previewed=null;
+   if(watching.length){watchTimer=setInterval(()=>pollJobs(round),3000);setTimeout(()=>pollJobs(round),300);}
+   allFinal();
+  }
+  sendButton.onclick=send;
+  const resetSend=()=>{stopWatching();watching=[];sendRound++;sendButton.textContent='Send';sendButton.onclick=send;};
+  previewButton.addEventListener('click',resetSend);
   box.showModal();
   nameInput.select();
  }

@@ -258,6 +258,7 @@ class DJWriteQueue:
             tracks = payload.get('tracks') if isinstance(payload, dict) else None
             rows.append({'id': job['id'], 'program': job['program'], 'kind': job['kind'], 'status': job['status'],
                          'message': job.get('message', ''), 'created_at': job.get('created_at'),
+                         'finished_at': job.get('finished_at'), 'backup_id': job.get('backup_id', ''),
                          'tracks': len(tracks) if isinstance(tracks, list) else tracks})
         return rows
 
@@ -347,6 +348,10 @@ class DJWriteQueue:
                 with self.lock:
                     job['status'] = status
                     job['message'] = message
+                    if status in ('done', 'failed', 'needs_review'):
+                        job['finished_at'] = self.wall()
+                    if status == 'done' and isinstance(result, dict) and result.get('backup_id'):
+                        job['backup_id'] = result['backup_id']  # the page offers Undo with it
                     self._save()
             if status == 'queued':
                 return  # stop this round; the next one waits out the closed period again

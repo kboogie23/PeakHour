@@ -183,6 +183,9 @@ def _swap_file(target, data):
 # ------------------------------------------------------------------ cue sources
 
 def _app_reader(name):
+    if name == 'serato':  # Serato's cues are read from the tag region of the song only (and cached), never the whole file
+        from windows_serato_cues import serato_cues_for
+        return serato_cues_for
     app = _state['app']
     attribute = {'serato': 'read_serato_cues', 'peakhour': 'read_cues'}.get(name)
     reader = getattr(app, attribute, None) if attribute else None
@@ -610,6 +613,8 @@ def _plan(payload):
     requested = _requested(payload)
     from utils.dj_transfer import read_djay_tracks
     import utils.dj_track_colors as colors
+    from windows_cue_jobs import progress
+    progress(0, 0, "Reading djay's library", 'checking')
     tracks, errors = read_djay_tracks([database])
     by_key = {_key(path): track for path, track in (tracks or {}).items()}
     if requested is None:
@@ -621,11 +626,13 @@ def _plan(payload):
     except sqlite3.Error as error:
         raise DjayCueError(f'{note or "djay library could not be opened."} ({error}) Try again in a moment.', 'busy') from error
     try:
-        for path in requested:
+        total = len(requested)
+        for number, path in enumerate(requested):
             key = _key(path)
             if key in seen:
                 continue
             seen.add(key)
+            progress(number, total, os.path.splitext(ntpath.basename(path))[0], 'checking')
             row = {'path': path, 'title': '', 'djay_found': False, 'djay_key': '', 'existing_cues': 0, 'source': '',
                    'cues': [], 'skip_reason': '', 'user_sha256': '', 'will_write': False}
             track = by_key.get(key)
@@ -659,6 +666,11 @@ def _plan(payload):
         raise DjayCueError(f'{note or "djay library could not be read."} ({error}) Try again in a moment.', 'busy') from error
     finally:
         connection.close()
+        try:
+            from windows_serato_cues import save_cache
+            save_cache()
+        except Exception:
+            pass
     # The job digest names only WHAT was asked (songs + rule version): djay and the cue sources change during a gig, so
     # each song is checked again when the write runs and is skipped (with a reason) if it changed or now has cues.
     token = _sha(json.dumps([_key(database), RULE_VERSION, sorted(_key(p) for p in requested)], sort_keys=True).encode())
@@ -911,10 +923,23 @@ def create_blueprint(app, root=None, license_guard=None):
         gate = license_guard('Send cue points to djay') if license_guard else None
         return gate if gate else respond(action)
 
+    import windows_cue_jobs as jobs
+
+    def job_or(action_now, data, kind, work):
+        """Small requests answer at once; "all" or more than 50 songs start a background job and answer with its id."""
+        if not jobs.is_big(data):
+            return gated(action_now)
+        gate = license_guard('Send cue points to djay') if license_guard else None
+        if gate:
+            return gate
+        return jsonify(success=True, background=True, state='running', job_id=jobs.start_job(kind, work))
+
+    jobs.add_routes(bp, '/api/windows/djay/cues', 'djay')
+
     @bp.post('/api/windows/djay/cues/preview')
     def preview_route():
         data = request.get_json(silent=True) or {}
-        return gated(lambda: preview(data))
+        return job_or(lambda: preview(data), data, 'djay-preview', lambda: preview(data))
 
     def queued_or_apply(data):
         from windows_dj_write_queue import queue_if_open
@@ -926,7 +951,12 @@ def create_blueprint(app, root=None, license_guard=None):
         data = request.get_json(silent=True) or {}
         if data.get('confirm') is not True:
             return jsonify(success=False, error='Confirm before writing to djay', code='bad_request'), 400
-        return gated(lambda: queued_or_apply(data))
+        def work():
+            result = queued_or_apply(data)
+            if isinstance(result, tuple):  # (body, status): the page reads the status from the job result
+                return dict(result[0], http_status=result[1])
+            return result
+        return job_or(lambda: queued_or_apply(data), data, 'djay-apply', work)
 
     @bp.post('/api/windows/djay/cues/undo')
     def undo_route():

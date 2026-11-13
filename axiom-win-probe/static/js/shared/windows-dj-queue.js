@@ -5,16 +5,29 @@
  const seen=new Map();   // job id -> last status seen
  let jobs=[],timer=null,pill=null,panel=null;
  function toast(text,bad){if(typeof window.showToast==='function')window.showToast(text,bad);}
- function label(job){return job.program+' '+job.kind;}
+ const NAMES={virtualdj:'VirtualDJ',serato:'Serato',djay:'djay'};
+ function label(job){return (NAMES[job.program]||job.program)+' '+(job.kind==='cues'?'cue points':'playlist');}
+ // A finished job is announced once, even if the page only learns of it later (hidden window, restart): the ids already
+ // announced are kept in localStorage, and only jobs that finished in the last 10 minutes are announced.
+ const KEY='ph-dj-queue-announced';
+ let announced=new Set();
+ try{announced=new Set(JSON.parse(localStorage.getItem(KEY)||'[]'));}catch(error){/* storage unavailable */}
+ function remember(id){
+  announced.add(id);
+  try{localStorage.setItem(KEY,JSON.stringify([...announced].slice(-200)));}catch(error){/* storage unavailable */}
+ }
  function notify(list){
+  const now=Date.now()/1000;
   for(const job of list){
    const before=seen.get(job.id);
-   if(before&&!FINAL[before]&&FINAL[job.status]){
-    if(job.status==='done')toast('Applied to '+label(job)+'. '+(job.message||''),false);
-    else if(job.status==='failed')toast('Could not write '+label(job)+': '+(job.message||''),true);
-    else toast(label(job)+' changed while waiting. Review it and send it again.',true);
-   }
    seen.set(job.id,job.status);
+   if(!FINAL[job.status]||announced.has(job.id))continue;
+   const recent=job.finished_at&&now-job.finished_at<600;
+   if(!(before&&!FINAL[before])&&!recent)continue;
+   remember(job.id);
+   if(job.status==='done')toast('Written to '+label(job)+'. '+(job.message||''),false);
+   else if(job.status==='failed')toast('Could not write '+label(job)+': '+(job.message||''),true);
+   else toast(label(job)+' changed while waiting. Review it and send it again.',true);
   }
  }
  function render(){
@@ -57,7 +70,7 @@
  }
  function schedule(){
   if(timer){clearInterval(timer);timer=null;}
-  if(document.visibilityState==='visible'){poll();timer=setInterval(poll,10000);}
+  poll();timer=setInterval(poll,document.visibilityState==='visible'?10000:30000);  // keeps polling when hidden: a minimized window must still learn of a finished write
  }
  function build(){
   pill=document.createElement('button');

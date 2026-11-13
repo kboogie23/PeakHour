@@ -285,7 +285,7 @@ with tempfile.TemporaryDirectory() as tmp:
     app.register_blueprint(Q.create_blueprint(q))
     row = app.test_client().get('/api/windows/dj-queue/list').get_json()['jobs'][0]
     check('m: list has no payload, only id/program/kind/status/message/created/track count',
-          'payload' not in row and row['tracks'] == 3 and set(row) == {'id', 'program', 'kind', 'status', 'message', 'created_at', 'tracks'})
+          'payload' not in row and row['tracks'] == 3 and set(row) == {'id', 'program', 'kind', 'status', 'message', 'created_at', 'finished_at', 'backup_id', 'tracks'})
     check('m: settle folders come from the libraries found', callable(Q.serato_folders) and callable(Q.djay_folders))
 
 print('FAILED: ' + ', '.join(failures) if failures else 'ALL PASS')

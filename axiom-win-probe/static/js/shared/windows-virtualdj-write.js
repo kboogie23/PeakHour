@@ -94,12 +94,91 @@
    box.addEventListener('cancel',finish);document.body.append(box);box.showModal();
   });
  }
- async function sendCues(target){
+ // ---- which songs, and a progress bar for the long jobs (a whole library takes minutes and must never look frozen)
+ const numberText=n=>Number(n||0).toLocaleString();
+ function progressText(job){
+  const verb=job.phase==='writing'?'Writing':'Checking';
+  if(!job.total)return job.current_title||'Starting…';
+  return `${verb} ${numberText(job.done)} of ${numberText(job.total)} songs${job.current_title?' — '+job.current_title:''}`;
+ }
+ function renderProgress(parts,job){
+  if(job.total){parts.bar.max=job.total;parts.bar.value=Math.min(job.done||0,job.total);}else parts.bar.removeAttribute('value');
+  parts.text.textContent=progressText(job);
+ }
+ const sleep=ms=>new Promise(resolve=>setTimeout(resolve,ms));
+ async function pollJob(base,jobId,onUpdate,wait=400){
+  for(;;){
+   const response=await fetch(`${base}job/${encodeURIComponent(jobId)}`,{cache:'no-store'});
+   const job=await response.json().catch(()=>({}));
+   if(!response.ok||job.success===false)throw new Error(job.error||'The job could not be followed.');
+   onUpdate(job);
+   if(job.state!=='running')return job;
+   await sleep(wait);
+  }
+ }
+ // The songs a cue send covers: a playlist or the Studio set (default), or the whole library.
+ function scopeSets(){
+  const sets=[];
+  const studio=typeof getActiveStudioOutputTracks==='function'?(getActiveStudioOutputTracks()||[]):[];
+  const paths=list=>(list||[]).map(t=>typeof t==='string'?t:t&&t.path).filter(Boolean);
+  if(paths(studio).length)sets.push({id:'studio',label:`Current Studio set (${plural(paths(studio).length,'song')})`,tracks:paths(studio)});
+  for(const item of (typeof savedPlaylists!=='undefined'?savedPlaylists:[])||[]){
+   const list=paths(item.tracks);
+   if(list.length)sets.push({id:'p:'+item.id,label:`${item.name||'Playlist'} (${plural(list.length,'song')})`,tracks:list});
+  }
+  return sets;
+ }
+ function scopeTracks(scope,setId,sets){
+  if(scope==='library')return 'all';
+  const chosen=(sets||[]).find(item=>item.id===setId)||(sets||[])[0];
+  if(!chosen||!chosen.tracks.length)throw new Error('Choose a playlist or set with songs, or pick "Whole library".');
+  return chosen.tracks;
+ }
+ function fillScope(){
+  const select=byId('health-dj-cue-set');if(!select)return;
+  const sets=scopeSets(),keep=select.value;
+  select.replaceChildren(...sets.map(item=>{const o=document.createElement('option');o.value=item.id;o.textContent=item.label;return o;}));
+  if(!sets.length){const o=document.createElement('option');o.value='';o.textContent='No saved playlists or set yet';select.append(o);}
+  else if(sets.some(item=>item.id===keep))select.value=keep;
+  const library=document.querySelector('input[name="health-dj-cue-scope"][value="library"]');
+  select.disabled=!!(library&&library.checked);
+ }
+ function runJob(label,base,jobId,title){
+  return new Promise((resolve,reject)=>{
+   const box=document.createElement('dialog');box.className='axiom-vdj-inspect axiom-vdj-write';box.setAttribute('aria-live','polite');
+   box.innerHTML=`<h2>${title} (${label})</h2><progress class="axiom-vdj-progress" aria-label="Progress"></progress>
+    <p class="axiom-vdj-progress-text" role="status">Starting…</p>
+    <div class="axiom-vdj-actions"><button type="button" data-cancel>Cancel</button></div>`;
+   const parts={bar:box.querySelector('progress'),text:box.querySelector('.axiom-vdj-progress-text')};
+   const cancel=box.querySelector('[data-cancel]');
+   cancel.onclick=async()=>{
+    cancel.disabled=true;parts.text.textContent='Stopping after the current song…';
+    try{await fetch(`${base}job/${encodeURIComponent(jobId)}/cancel`,{method:'POST',headers:{'Content-Type':'application/json'},body:'{}'});}catch(error){/* the poll shows what happened */}
+   };
+   box.addEventListener('cancel',event=>event.preventDefault());
+   document.body.append(box);box.showModal();
+   pollJob(base,jobId,job=>renderProgress(parts,job)).then(job=>{box.close();box.remove();resolve(job);})
+    .catch(error=>{box.close();box.remove();reject(error);});
+  });
+ }
+ async function sendCues(target,tracks='all'){
   const {label,api:base}=CUE_TARGETS[target];
   try{
-   const preview=(await postTarget(base+'preview',{tracks:'all'})).data;
+   const started=await postTarget(base+'preview',{tracks});
+   let preview=started.data;
+   if(preview.job_id){
+    const job=await runJob(label,base,preview.job_id,'Checking songs');
+    if(job.state==='cancelled'){window.showToast?.('Cancelled. Nothing was written.');return;}
+    if(job.state!=='done')throw new Error(job.error||'The check did not finish.');
+    preview=job.result||{};
+   }
    if(!(await confirmCues(label,preview.counts||{})))return;
-   const sent=await postTarget(base+'apply',{tracks:'all',digest:preview.digest,confirm:true});
+   let sent=await postTarget(base+'apply',{tracks,digest:preview.digest,confirm:true});
+   if(sent.data.job_id){
+    const job=await runJob(label,base,sent.data.job_id,'Sending cue points');
+    if(job.state==='failed'||!job.result)throw new Error(job.error||'The write did not finish.');
+    sent={status:job.result.http_status||200,data:job.result};
+   }
    if(sent.status===202&&sent.data.queued)window.showToast?.(sent.data.message||`${label} is open — PEAK HOUR will write this after you close it.`);
    else if(sent.data.written&&sent.data.backup_id)await showWritten(label,base,sent.data);
    else window.showToast?.(sent.data.written?`Cue points written to ${plural(sent.data.written,'song')} in ${label}. A backup was kept.`:'Nothing to write.');
@@ -108,12 +187,18 @@
  async function sendCuesTo(targets,button){
   if(typeof ensureAxiomLicenseUsable==='function'&&!(await ensureAxiomLicenseUsable('Send cue points')))return;
   if(!targets.length){window.showToast?.('Choose where to send cue points.',true);return;}
-  if(button)button.disabled=true;
+  let tracks;
+  try{
+   const scope=document.querySelector('input[name="health-dj-cue-scope"]:checked')?.value||'set';
+   tracks=scopeTracks(scope,byId('health-dj-cue-set')?.value,scopeSets());
+  }catch(error){window.showToast?.(error.message,true);return;}
+  const label=button?button.textContent:'';
+  if(button){button.disabled=true;button.textContent='Working…';}
   try{
    for(const target of targets){
-    if(target==='virtualdj')await open(['cues']);else await sendCues(target);
+    if(target==='virtualdj')await open(['cues']);else await sendCues(target,tracks);
    }
-  }finally{if(button)button.disabled=false;}
+  }finally{if(button){button.disabled=false;button.textContent=label;}}
  }
  function refreshUndo(state){
   const apply=info=>{
@@ -144,15 +229,23 @@
     <label><input type="checkbox" value="virtualdj" checked> VirtualDJ</label>
     <label><input type="checkbox" value="serato"> Serato</label>
     <label><input type="checkbox" value="djay"> djay</label></div>
+   <div class="axiom-vdj-write-options axiom-vdj-write-scope" id="health-dj-cue-scope"><strong>Songs:</strong>
+    <label><input type="radio" name="health-dj-cue-scope" value="set" checked> A playlist or set</label>
+    <select id="health-dj-cue-set" aria-label="Playlist or set"></select>
+    <label><input type="radio" name="health-dj-cue-scope" value="library"> Whole library (slow — reads every song's tags)</label></div>
    <p class="health-transfer-note">Cue points go only to songs that have none in that program; existing cues are never replaced. If a program is open, PEAK HOUR writes after you close it.</p>
    <div class="axiom-vdj-grid-actions"><button type="button" class="health-transfer-primary" id="health-dj-cues-send">Preview Cue Changes</button></div>
    <div class="axiom-vdj-grid-actions"><button type="button" class="health-transfer-primary" id="health-vdj-write-preview">Preview VirtualDJ Changes</button>
     <button type="button" class="health-transfer-secondary" id="health-vdj-write-undo" hidden>Undo Last VirtualDJ Write</button></div>
    <p class="health-transfer-note" id="health-vdj-write-undo-note" hidden></p>`;
   detail.after(card);
-  byId('health-vdj-write-preview').onclick=event=>open([...card.querySelectorAll('.axiom-vdj-write-options:not(#health-dj-cue-targets) input:checked')].map(x=>x.value),event.currentTarget);
+  byId('health-vdj-write-preview').onclick=event=>open([...card.querySelectorAll('.axiom-vdj-write-options:not(#health-dj-cue-targets):not(.axiom-vdj-write-scope) input:checked')].map(x=>x.value),event.currentTarget);
   byId('health-dj-cues-send').onclick=event=>sendCuesTo([...byId('health-dj-cue-targets').querySelectorAll('input:checked')].map(x=>x.value),event.currentTarget);
   byId('health-vdj-write-undo').onclick=event=>undo(event.currentTarget);
+  const refill=()=>fillScope();
+  card.querySelectorAll('input[name="health-dj-cue-scope"]').forEach(radio=>radio.addEventListener('change',refill));
+  byId('health-dj-cue-set').addEventListener('focus',refill);byId('health-dj-cue-set').addEventListener('mousedown',refill);
+  fillScope();
   refreshUndo();
  }
  function attachGridButton(){
@@ -166,5 +259,5 @@
  const attach=()=>{attachCard();attachGridButton();};
  new MutationObserver(attach).observe(document.documentElement,{childList:true,subtree:true});
  attach();
- window.AxiomVirtualDJWrite={open,refreshUndo};
+ window.AxiomVirtualDJWrite={open,refreshUndo,_test:{progressText,renderProgress,pollJob,scopeTracks}};
 })();

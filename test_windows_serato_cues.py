@@ -94,7 +94,7 @@ try:
     assert open(mp3, 'rb').read()[-128:-125] == b'TAG', 'the generated MP3 should carry an ID3v1 tag'
     v1_before = open(mp3, 'rb').read()[-128:]
     length_before = {p: MP4(p).info.length for p in (m4a, mp4)}
-    everything = lambda: sorted(str(p.relative_to(work)) for p in work.rglob('*'))
+    everything = lambda: sorted(str(p.relative_to(work)) for p in work.rglob('*') if not p.name.startswith('cue-preview-cache'))  # the preview cache is the one thing a preview keeps
 
     # ---------------------------------------------------------------- preview writes nothing; the first source with cues wins
     listing = everything()
@@ -475,13 +475,14 @@ try:
     def closes_in_between():
         calls.append(1)
         return {'virtualdj'} if len(calls) == 1 else set()
-    C.configure(programs=closes_in_between)
     racer = make('racer.mp3', 'mp3', pad=False)
     live = Q.DJWriteQueue(work / 'race-queue.json', snapshot=lambda: [(1, 'explorer.exe')], settles={}, closed_seconds=0)
     C.register_with_queue(live)
     Q.QUEUE = live
     app_probe = __import__('flask').Flask(__name__)
-    app_probe.register_blueprint(C.create_blueprint(None, root))
+    app_probe.register_blueprint(C.create_blueprint(None, root))  # (start-up recovery runs here, on its own thread)
+    settle()
+    C.configure(programs=closes_in_between)
     answer = {}
     def post():
         answer['reply'] = app_probe.test_client().post('/api/windows/serato/cues/apply', json={'tracks': [racer], 'confirm': True},
@@ -496,6 +497,129 @@ try:
     assert live.list()[0]['status'] == 'done' and C.inspect(racer)['cues']
     C.configure(programs=lambda: set())
     Q.QUEUE = None
+
+    # ---------------------------------------------------------------- a preview reads only the tags, and a repeat reads nothing at all
+    import builtins
+    def long_song(name, kind):  # about 1 MB of sound around a 4 KB tag
+        path = work / name
+        codec = ['-c:a', 'libmp3lame', '-id3v2_version', '3'] if kind == 'mp3' else ['-c:a', 'aac']
+        ffmpeg('-f', 'lavfi', '-i', 'sine=frequency=330:duration=60', *codec, str(path))
+        if kind == 'mp3':
+            ID3(str(path)).save(str(path), padding=lambda info: 4096)
+        else:
+            MP4(str(path)).save(padding=lambda info: 4096)
+        return str(path)
+    big_mp3, big_m4a = long_song('big-a.mp3', 'mp3'), long_song('big-b.m4a', 'm4a')
+    scan = []
+    for index in range(3):
+        scan += [shutil.copy2(big_mp3, work / f'scan-{index}.mp3'), shutil.copy2(big_m4a, work / f'scan-{index}.m4a')]
+    scan = [str(p) for p in scan]
+    def tag_bytes(path):
+        with open(path, 'rb') as handle:
+            if path.endswith('.mp3'):
+                head = handle.read(10)
+                return 10 + ((head[6] << 21) | (head[7] << 14) | (head[8] << 7) | head[9])
+            return sum(length for offset, length, name, body in C._mp4_atoms(handle, os.path.getsize(path)) if name != b'mdat')
+    tags_size = {p: tag_bytes(p) for p in scan}
+    assert all(os.path.getsize(p) > 20 * tags_size[p] for p in scan), 'the test songs should be much bigger than their tags'
+    bytes_read = {}
+    real_open = builtins.open
+    class Counting:
+        def __init__(self, handle, path):
+            self._h, self._p = handle, path
+        def read(self, *args):
+            data = self._h.read(*args)
+            bytes_read[self._p] = bytes_read.get(self._p, 0) + len(data)
+            return data
+        def readinto(self, buffer):
+            count = self._h.readinto(buffer)
+            bytes_read[self._p] = bytes_read.get(self._p, 0) + (count or 0)
+            return count
+        def __enter__(self):
+            self._h.__enter__()
+            return self
+        def __exit__(self, *exc):
+            return self._h.__exit__(*exc)
+        def __getattr__(self, name):
+            return getattr(self._h, name)
+    def counting_open(path, *args, **kwargs):
+        handle = real_open(path, *args, **kwargs)
+        return Counting(handle, str(path)) if str(path) in tags_size else handle
+    C.configure(readers={**C._state['readers'], 'peakhour': lambda p: CUES})
+    builtins.open = counting_open
+    try:
+        first_plan = C.preview({'tracks': scan})
+        first_read = dict(bytes_read)
+        bytes_read.clear()
+        second_plan = C.preview({'tracks': scan})
+        second_read = dict(bytes_read)
+        bytes_read.clear()
+        cues_read = C.serato_cues_for(scan[0])
+    finally:
+        builtins.open = real_open
+    assert first_plan['counts']['songs_to_write'] == 6 and second_plan['counts'] == first_plan['counts'], first_plan['counts']
+    for path in scan:
+        assert 0 < first_read[path] < tags_size[path] + 64 * 1024, (path, first_read[path], tags_size[path])
+        assert first_read[path] < os.path.getsize(path) / 10, 'the sound was read'
+    assert not second_read and not cues_read, ('a cached preview read files', second_read)
+    assert (work / 'cue-preview-cache.json').is_file()
+    # a song that changed (same name, new size) is looked at again; a written song is forgotten
+    with open(scan[0], 'ab') as handle:
+        handle.write(b'\x00' * 16)
+    builtins.open = counting_open
+    try:
+        C.preview({'tracks': scan})
+    finally:
+        builtins.open = real_open
+    assert list(bytes_read) == [scan[0]], list(bytes_read)
+    bytes_read.clear()
+    # Serato's cues for djay are read from the tag only too
+    assert C.serato_cues_for(mp3b)[0]['label'] == 'Mine' and C.serato_cues_for(mp3b)[0]['color'] == '#CC0000'
+
+    # ---------------------------------------------------------------- big requests run as background jobs: progress and cancel
+    job_base = make('job-base.mp3', 'mp3')
+    jobs_songs = [[str(shutil.copy2(job_base, work / f'{prefix}-{i:02d}.mp3')) for i in range(60)] for prefix in ('jobp', 'jobc', 'jobw')]
+    jobs_probe = __import__('flask').Flask(__name__)
+    jobs_probe.register_blueprint(C.create_blueprint(None, root))
+    jobs_client = jobs_probe.test_client()
+    jobs_origin = {'Origin': 'http://localhost'}
+    real_region = C._read_region
+    C._read_region = lambda path, kind: (_time.sleep(0.03), real_region(path, kind))[1]  # a slow disk
+    try:
+        started = jobs_client.post('/api/windows/serato/cues/preview', json={'tracks': jobs_songs[0]}, headers=jobs_origin)
+        assert started.status_code == 200 and started.get_json()['background'] and started.get_json()['job_id'], started.get_json()
+        job_url = '/api/windows/serato/cues/job/' + started.get_json()['job_id']
+        states = []
+        wait_for(lambda: states.append(jobs_client.get(job_url).get_json()) or states[-1]['state'] != 'running', 30)
+        running = [s for s in states if s['state'] == 'running' and 0 < s['done'] < s['total']]
+        assert running and running[0]['total'] == 60 and running[0]['phase'] == 'checking' and running[0]['current_title'].startswith('jobp-'), states[:3]
+        assert states[-1]['state'] == 'done' and states[-1]['result']['counts']['songs_to_write'] == 60, states[-1]
+        # cancel in the middle of a check
+        started = jobs_client.post('/api/windows/serato/cues/preview', json={'tracks': jobs_songs[1]}, headers=jobs_origin)
+        job_url = '/api/windows/serato/cues/job/' + started.get_json()['job_id']
+        wait_for(lambda: jobs_client.get(job_url).get_json()['done'] >= 3)
+        assert jobs_client.post(job_url + '/cancel', headers=jobs_origin).get_json()['success']
+        wait_for(lambda: jobs_client.get(job_url).get_json()['state'] != 'running')
+        stopped = jobs_client.get(job_url).get_json()
+        assert stopped['state'] == 'cancelled' and 3 <= stopped['done'] < 60 and stopped['result'] is None, stopped
+        # a write of many songs: progress, cancel between songs (what was written stays written and can be undone)
+        C.PAUSE_SECONDS = 0.1
+        originals = {p: sha(p) for p in jobs_songs[2]}
+        started = jobs_client.post('/api/windows/serato/cues/apply', json={'tracks': jobs_songs[2], 'confirm': True}, headers=jobs_origin)
+        job_url = '/api/windows/serato/cues/job/' + started.get_json()['job_id']
+        wait_for(lambda: jobs_client.get(job_url).get_json()['phase'] == 'writing' and jobs_client.get(job_url).get_json()['done'] >= 2, 30)
+        jobs_client.post(job_url + '/cancel', headers=jobs_origin)
+        wait_for(lambda: jobs_client.get(job_url).get_json()['state'] != 'running', 30)
+        stopped = jobs_client.get(job_url).get_json()
+        assert stopped['state'] == 'cancelled' and stopped['result']['cancelled'] and 2 <= stopped['result']['written'] < 60, stopped
+        undone = C.undo(stopped['result']['backup_id'])
+        assert undone['success'] and {p: sha(p) for p in jobs_songs[2]} == originals, 'what was written was not undone'
+    finally:
+        C._read_region = real_region
+        C.PAUSE_SECONDS = 0.05
+    assert jobs_client.get('/api/windows/serato/cues/job/nope').status_code == 404
+    from windows_cue_jobs import is_big
+    assert is_big({'tracks': 'all'}) and is_big({'tracks': ['x'] * 51}) and not is_big({'tracks': ['x'] * 50})
 
     # ---------------------------------------------------------------- the DJ write queue and the routes
     class FakeQueue:

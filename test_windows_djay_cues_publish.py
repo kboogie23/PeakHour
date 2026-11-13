@@ -227,12 +227,20 @@ try:
  # ---- routes
  from flask import Flask
  web=Flask(__name__);web.register_blueprint(cues.create_blueprint(app,root,None));client=web.test_client();origin={'Origin':'http://localhost'}
+ import time as _t
+ def wait_job(job_id):  # "all" runs as a background job: progress, cancel, result
+  for _ in range(600):
+   j=client.get('/api/windows/djay/cues/job/'+job_id).json
+   if j['state']!='running':return j
+   _t.sleep(0.05)
+  raise AssertionError('job did not finish')
  assert client.post('/api/windows/djay/cues/preview',json={'tracks':'all'}).status_code==403  # same-origin only
- r=client.post('/api/windows/djay/cues/preview',json={'tracks':'all'},headers=origin);assert r.status_code==200 and r.json['counts']['songs_to_write']==4 and sha()==before_hash
+ r=client.post('/api/windows/djay/cues/preview',json={'tracks':'all'},headers=origin);assert r.status_code==200 and r.json['background'] and r.json['job_id'],r.json
+ job=wait_job(r.json['job_id']);assert job['state']=='done' and job['result']['counts']['songs_to_write']==4 and job['total']>=4 and sha()==before_hash,job
  assert client.post('/api/windows/djay/cues/apply',json={'tracks':'all'},headers=origin).status_code==400  # needs confirm
  running[0]=True
  r=client.post('/api/windows/djay/cues/apply',json={'tracks':'all','confirm':True},headers=origin)
- assert r.status_code==409 and r.json['code']=='djay_open' and sha()==before_hash
+ job=wait_job(r.json['job_id']);assert job['state']=='failed' and job['code']=='djay_open' and sha()==before_hash,job
  running[0]=False
  r=client.post('/api/windows/djay/cues/apply',json={'tracks':[paths['e1']],'confirm':True,'digest':cues.digest({'tracks':[paths['e1']]})},headers=origin)
  assert r.status_code==200 and r.json['written']==1,r.json
