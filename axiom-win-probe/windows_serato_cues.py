@@ -928,6 +928,59 @@ def _delta_for(path, kind, facts, region, cues, info, allow_grow):
     return delta
 
 
+_KNOWN = {}  # location.sqlite -> (size, mtime, {casefolded portable ids}), so a preview does not read a library twice
+
+
+def _known_assets(database):
+    info = os.stat(database)
+    cached = _KNOWN.get(str(database))
+    if cached and cached[:2] == (info.st_size, info.st_mtime_ns):
+        return cached[2]
+    connection = sqlite3.connect(Path(database).resolve().as_uri() + '?mode=ro', uri=True)
+    try:
+        ids = {row[0].casefold() for row in connection.execute('SELECT portable_id FROM asset')}
+    finally:
+        connection.close()
+    _KNOWN[str(database)] = (info.st_size, info.st_mtime_ns, ids)
+    return ids
+
+
+def _mark_not_in_serato(rows):
+    """Songs whose drive has no Serato library, or that Serato's library on that drive does not list, get row['not_in_serato']
+    (a note only: cue points are saved in the file and Serato shows them when it adds the song). Nothing is marked when no
+    Serato library is found at all."""
+    try:
+        libraries = {drive.upper(): database for drive, database in _libraries()}
+        if not libraries:
+            return
+        known = {}
+        for row in rows:
+            if row['skip_reason'] == 'The file is not there' or not row['format']:
+                continue
+            drive = ntpath.splitdrive(row['path'])[0].upper()
+            if drive not in libraries:
+                row['not_in_serato'] = True
+                continue
+            if drive not in known:
+                known[drive] = _known_assets(libraries[drive])
+            relative = ntpath.splitdrive(row['path'])[1].lstrip('\\/').replace('\\', '/').casefold()
+            if relative not in known[drive]:
+                row['not_in_serato'] = True
+    except Exception:
+        return
+
+
+_CODES = (('Only MP3', 'cannot_read'), ('The file is not there', 'missing'), ('could not be read', 'cannot_read'),
+          ('already has', 'has_cues'), ('No cues found', 'no_cues'), ('Not enough space', 'no_room'), ('changed since', 'changed'))
+
+
+def _reason_code(row):
+    for prefix, code in _CODES:
+        if prefix in row['skip_reason']:
+            return code
+    return ''
+
+
 def _plan(payload):
     from windows_cue_jobs import progress
     requested = _requested(payload)
@@ -983,13 +1036,18 @@ def _plan(payload):
         row['mode'] = f'file grows by {delta:,} bytes' if delta else 'in place'
         row['will_write'] = True
     save_cache()
+    _mark_not_in_serato(rows)
     return {'songs': rows, 'digest': digest(payload)}
 
 
 def _public(plan):
-    rows = [dict(row) for row in plan['songs']]
+    rows = [dict(row, code='' if row['will_write'] else _reason_code(row)) for row in plan['songs']]
+    count = lambda code: sum(1 for r in rows if r['code'] == code)
     return {'success': True, 'songs': rows, 'digest': plan['digest'], 'recovered_after_interrupt': _state['recovered'],
-            'counts': {'songs_to_write': sum(r['will_write'] for r in rows),
+            'counts': {'already_have_cues': count('has_cues'), 'no_cues_to_copy': count('no_cues'), 'file_not_found': count('missing'),
+                       'cannot_read': count('cannot_read'), 'no_room': count('no_room'),
+                       'not_in_serato': sum(1 for r in rows if r.get('not_in_serato')),
+                       'songs_to_write': sum(r['will_write'] for r in rows),
                        'cues_to_write': sum(len(r['cues']) for r in rows if r['will_write']),
                        'skipped': sum(not r['will_write'] for r in rows),
                        'songs_growing': sum(1 for r in rows if r['will_write'] and r['grows_by']),

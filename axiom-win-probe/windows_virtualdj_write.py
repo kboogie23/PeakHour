@@ -27,6 +27,7 @@ long as VirtualDJ has not changed the file since. Audio files are never opened
 for writing.
 """
 import hashlib
+import html
 import json
 import math
 import ntpath
@@ -45,6 +46,7 @@ from flask import Blueprint, jsonify, request
 from windows_virtualdj_database import read_database, VirtualDJDatabaseError
 from windows_virtualdj_library import database_paths
 from windows_virtualdj_lists import ensure_virtualdj_closed, VirtualDJListError
+import windows_cue_jobs as _jobs
 
 KINDS = ('cues', 'grids', 'play_counts')
 CUE_SLOTS = 8
@@ -345,14 +347,81 @@ def _apply_song(fragment, element, changes, newline, song_indent):
     return fragment
 
 
-def plan_database(database, kinds, sources, app):
-    """Plan for one database file: text before/after and per-song changes."""
+# ------------------------------------------------------------------ finding just the songs asked for
+# A VirtualDJ database can hold 200,000 songs (60 MB of text). Parsing every <Song> to find 61 of them is what made a small
+# send look frozen, so a request for some songs looks them up by path in an index of where each <Song FilePath="..."> starts
+# (built once per database file and remembered while its size and modified time stay the same) and parses only those.
+_INDEX_CACHE = OrderedDict()
+_INDEX_LOCK = threading.Lock()
+_SONG_MARK = '<Song FilePath="'
+
+
+def scope_keys(tracks):
+    """The set of path keys for a list of song paths (None = every song)."""
+    if not isinstance(tracks, list) or not tracks:
+        return None
+    return frozenset(_key(p.get('path') if isinstance(p, dict) else p) for p in tracks if (p.get('path') if isinstance(p, dict) else p))
+
+
+def _path_index(database, text):
+    """{path key: [offsets of its <Song FilePath=" ...]} for this database text."""
+    stat = Path(database).stat()
+    with _INDEX_LOCK:
+        entry = _INDEX_CACHE.get(str(database))
+        if entry and entry[0] == (stat.st_size, stat.st_mtime_ns) and entry[1] == len(text):
+            _INDEX_CACHE.move_to_end(str(database))
+            return entry[2]
+    index, size = {}, len(_SONG_MARK)
+    position = text.find(_SONG_MARK)
+    while position >= 0:
+        end = text.find('"', position + size)
+        if end < 0:
+            break
+        value = text[position + size:end]
+        index.setdefault(_key(html.unescape(value) if '&' in value else value), []).append(position)
+        position = text.find(_SONG_MARK, end)
+    with _INDEX_LOCK:
+        _INDEX_CACHE[str(database)] = ((stat.st_size, stat.st_mtime_ns), len(text), index)
+        while len(_INDEX_CACHE) > 4:
+            _INDEX_CACHE.popitem(last=False)
+    return index
+
+
+def scoped_songs(database, text, scope):
+    """[(start, end, Element)] for the songs of this database whose path is in scope, in file order (only these are parsed)."""
+    index = _path_index(database, text)
+    if not index or sum(len(offsets) for offsets in index.values()) != text.count('<Song '):
+        # an unusual file (a <Song> whose FilePath is not its first attribute): the slow way, but still correct
+        return [(s, e, el) for s, e, el in songs(text) if _key(el.get('FilePath', '')) in scope]
+    found = []
+    for position in sorted(p for key in scope for p in index.get(key, ())):
+        match = _SONG.match(text, position)
+        if match:
+            try:
+                found.append((match.start(), match.end(), SafeET.fromstring(match.group(0))))
+            except Exception as exc:
+                raise VirtualDJWriteError('A VirtualDJ song entry could not be read') from exc
+    return found
+
+
+def plan_database(database, kinds, sources, app, scope=None, label="Reading VirtualDJ's database…"):
+    """Plan for one database file: text before/after and per-song changes. scope: a set of path keys (see scope_keys) to look
+    at only those songs; None = every song."""
+    _jobs.progress(0, 0, label, 'reading')
     data = Path(database).read_bytes()
     text = data.decode('utf-8')
     newline = '\r\n' if '\r\n' in text else '\n'
     pieces, cursor, rows, skipped, audio = [], 0, [], [], {}
-    for start, end, element in songs(text):
+    before_frags, after_frags = [], []
+    if scope:
+        found = scoped_songs(database, text, scope)
+        iterator, total = found, len(found)
+    else:
+        iterator, total = songs(text), text.count('<Song ')
+    for number, (start, end, element) in enumerate(iterator):
         path = element.get('FilePath', '')
+        if number % 20 == 0:
+            _jobs.progress(number, total, os.path.splitext(ntpath.basename(path))[0], 'checking')
         if 'cues' in kinds:  # cues are read from the audio file and AXIOM's cue files: remember which versions
             audio[path] = _audio_signature(path)
         changes, skips = _plan_song(element, kinds, sources, app)
@@ -363,14 +432,23 @@ def plan_database(database, kinds, sources, app):
         line_start = text.rfind('\n', 0, start) + 1
         indent = text[line_start:start] if not text[line_start:start].strip() else ''
         pieces.append(text[cursor:start])
-        pieces.append(_apply_song(text[start:end], element, changes, newline, indent))
+        fragment = _apply_song(text[start:end], element, changes, newline, indent)
+        pieces.append(fragment)
+        before_frags.append(text[start:end])
+        after_frags.append(fragment)
         cursor = end
         tags = element.find('Tags')
         rows.append({'path': path, 'title': (tags.get('Title') if tags is not None else '') or ntpath.basename(path),
                      'artist': (tags.get('Author') if tags is not None else '') or '', 'changes': changes})
     pieces.append(text[cursor:])
-    return {'database': str(database), 'before': data, 'after': ''.join(pieces).encode('utf-8'),
+    plan = {'database': str(database), 'before': data, 'after': ''.join(pieces).encode('utf-8'),
             'rows': rows, 'skipped': skipped, 'audio': audio}
+    if scope:  # a small database of just the changed songs, so checking the plan does not parse the whole file again
+        first, last = text.find('<Song'), text.rfind('</VirtualDJ_Database>')
+        if rows and first >= 0 and last > first:
+            head, tail = text[:first], text[last:]
+            plan['mini'] = (''.join([head] + before_frags + [tail]).encode('utf-8'), ''.join([head] + after_frags + [tail]).encode('utf-8'))
+    return plan
 
 
 def verify(plan, scratch):
@@ -378,10 +456,12 @@ def verify(plan, scratch):
     The copies are read from AXIOM's own scratch folder, never VirtualDJ's."""
     Path(scratch).mkdir(parents=True, exist_ok=True)
     probe = Path(scratch) / f'verify-{uuid.uuid4().hex}.xml'
+    _jobs.progress(0, 0, 'Checking the changes…', 'reading')
+    mini = plan.get('mini')  # a request for some songs: only the changed songs are read back
     try:
-        probe.write_bytes(plan['before'])
+        probe.write_bytes(mini[0] if mini else plan['before'])
         before = read_database(probe)['tracks']
-        probe.write_bytes(plan['after'])
+        probe.write_bytes(mini[1] if mini else plan['after'])
         after = read_database(probe)['tracks']
     finally:
         try:
@@ -467,23 +547,24 @@ class VirtualDJWriter:
                 'djay': djay_play_counts(self.app) if 'play_counts' in kinds else {},
                 'grids': _grid_repairs(self.app) if 'grids' in kinds else {}}
 
-    def _plans(self, kinds):
+    def _plans(self, kinds, scope=None):
         kinds = tuple(k for k in KINDS if k in set(kinds or ()))
         if not kinds:
             raise ValueError('Choose cue points, beat grid repairs or play counts.')
         databases = list(self.databases())
         if not databases:
             raise ValueError('No VirtualDJ database was found on this PC.')
-        return self._plan_all(kinds, databases, self._sources(kinds))
+        return self._plan_all(kinds, databases, self._sources(kinds), scope)
 
-    def _plan_all(self, kinds, databases, sources):
+    def _plan_all(self, kinds, databases, sources, scope=None):
         plans = []
-        for database in databases:
+        for number, database in enumerate(databases):
             try:
-                plans.append(plan_database(database, kinds, sources, self.app))
+                label = "Reading VirtualDJ's database…" if len(databases) == 1 else f"Reading VirtualDJ's database ({number + 1} of {len(databases)})…"
+                plans.append(plan_database(database, kinds, sources, self.app, scope, label))
             except (OSError, UnicodeDecodeError, VirtualDJWriteError) as exc:
                 raise VirtualDJWriteError(f'{database}: {exc}') from exc
-        token = _sha(json.dumps([kinds] + [[p['database'], _sha(p['before']), _sha(p['after'])] for p in plans]).encode())
+        token = _sha(json.dumps([kinds, sorted(scope) if scope else None] + [[p['database'], _sha(p['before']), _sha(p['after'])] for p in plans]).encode())
         return kinds, plans, token, sources
 
     @staticmethod
@@ -501,9 +582,9 @@ class VirtualDJWriter:
                 'skipped': skipped[:ROW_LIMIT], 'skipped_count': len(skipped),
                 'databases': [{'path': p['database'], 'songs': len(p['rows'])} for p in plans]}
 
-    def preview(self, kinds):
+    def preview(self, kinds, scope=None):
         djay = _signature(getattr(self.app, 'DJAY_MEDIA_LIBRARY_DB', '') or '')  # taken before planning reads it
-        kinds, plans, token, sources = self._plans(kinds)
+        kinds, plans, token, sources = self._plans(kinds, scope)
         for plan in plans:
             if plan['rows']:
                 verify(plan, self.root / 'scratch')
@@ -515,14 +596,14 @@ class VirtualDJWriter:
         with self._previews_lock:
             for old in [t for t, e in self._previews.items() if now - e['at'] > PREVIEW_SECONDS]:
                 del self._previews[old]
-            self._previews[token] = {'kinds': kinds, 'plans': kept, 'sources': sources, 'djay': djay, 'at': now}
+            self._previews[token] = {'kinds': kinds, 'plans': kept, 'sources': sources, 'djay': djay, 'at': now, 'scope': scope}
             self._previews.move_to_end(token)
             while len(self._previews) > PREVIEWS_KEPT:
                 self._previews.popitem(last=False)
-        return dict(self._summary(kinds, plans), success=True, kinds=list(kinds), preview_token=token,
+        return dict(self._summary(kinds, plans), success=True, kinds=list(kinds), preview_token=token, scoped=bool(scope),
                     writes_to='nothing (preview)', undo=self.undo_status())
 
-    def _previewed(self, kinds, token):
+    def _previewed(self, kinds, token, scope=None):
         """The plans of this preview (with the databases' current bytes as 'before') when nothing they were made
         from has changed since: each database file byte for byte (sha256), each audio file and AXIOM's saved-cue
         files of that song (modified time and size), djay's media library file (modified time and size), and the
@@ -530,7 +611,7 @@ class VirtualDJWriter:
         kinds = tuple(k for k in KINDS if k in set(kinds or ()))
         with self._previews_lock:
             entry = self._previews.get(token)
-        if not entry or entry['kinds'] != kinds or time.monotonic() - entry['at'] > PREVIEW_SECONDS:
+        if not entry or entry['kinds'] != kinds or entry.get('scope') != scope or time.monotonic() - entry['at'] > PREVIEW_SECONDS:
             return None
         try:
             if [str(d) for d in self.databases()] != [p['database'] for p in entry['plans']]:
@@ -551,14 +632,14 @@ class VirtualDJWriter:
             return None
         return kinds, plans
 
-    def apply(self, kinds, token):
+    def apply(self, kinds, token, scope=None):
         with self._lock:
             self.ensure_closed()
-            previewed = self._previewed(kinds, token)
+            previewed = self._previewed(kinds, token, scope)
             if previewed:
                 kinds, plans = previewed
             else:  # nothing kept, expired or something changed since: plan again, as a preview would
-                kinds, plans, current, _sources = self._plans(kinds)
+                kinds, plans, current, _sources = self._plans(kinds, scope)
                 if token != current:
                     raise VirtualDJWriteError('The VirtualDJ library or the sources changed. Preview again before writing.')
             changed = [p for p in plans if p['rows']]
@@ -697,13 +778,23 @@ def create_write_blueprint(writer, license_guard):
     def status():
         return jsonify(success=True, undo=writer.undo_status())
 
+    _jobs.add_routes(bp, '/api/windows/virtualdj/write', 'virtualdj')
+
+    def job_or(data, kind, work):
+        """Small requests (a few songs; background:false) answer at once; the whole library or more than 50 songs start a
+        background job with progress and answer with its id."""
+        if data.get('background') is False or not _jobs.is_big(data):
+            return respond(work)
+        return jsonify(success=True, background=True, state='running', job_id=_jobs.start_job(kind, work))
+
     @bp.post('/api/windows/virtualdj/write/preview')
     def preview():
         gate = license_guard('Write to VirtualDJ')
         if gate:
             return gate
         data = request.get_json(silent=True) or {}
-        return respond(lambda: writer.preview(data.get('kinds') or []))
+        scope = scope_keys(data.get('tracks'))
+        return job_or(data, 'virtualdj-preview', lambda: writer.preview(data.get('kinds') or [], scope))
 
     @bp.post('/api/windows/virtualdj/write/apply')
     def apply():
@@ -713,7 +804,8 @@ def create_write_blueprint(writer, license_guard):
         data = request.get_json(silent=True) or {}
         if data.get('confirm') is not True:
             return jsonify(success=False, error='Confirm writing to VirtualDJ first.'), 400
-        return respond(lambda: writer.apply(data.get('kinds') or [], data.get('preview_token')))
+        scope = scope_keys(data.get('tracks'))
+        return job_or(data, 'virtualdj-apply', lambda: writer.apply(data.get('kinds') or [], data.get('preview_token'), scope))
 
     @bp.post('/api/windows/virtualdj/write/undo')
     def undo():

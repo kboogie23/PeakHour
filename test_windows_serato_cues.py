@@ -3,7 +3,7 @@
 No real song or Serato folder is touched. The Serato tag layout is checked against the bytes Serato DJ Pro 5 wrote for
 one song (investigation.md, 2026-11-13); that reference is embedded below, and the real file is only compared if present.
 """
-import os, sys, pathlib, shutil, subprocess, tempfile, traceback, hashlib, base64
+import os, sys, pathlib, shutil, subprocess, tempfile, traceback, hashlib, base64, sqlite3
 here = pathlib.Path(__file__).resolve().parent
 sys.path.insert(0, str(here / 'axiom-win-probe'))
 try:
@@ -100,8 +100,12 @@ try:
     listing = everything()
     plan = C.preview({'tracks': [mp3, mp3c, m4a, mp4, str(work / 'missing.mp3'), str(work / 'notes.txt')]})
     rows = {os.path.basename(r['path']): r for r in plan['songs']}
-    assert plan['counts'] == {'songs_to_write': 4, 'cues_to_write': 3 * 3 + 1, 'skipped': 2, 'songs_growing': 0, 'bytes_added': 0}, plan['counts']
+    assert {k: plan['counts'][k] for k in ('songs_to_write', 'cues_to_write', 'skipped', 'songs_growing', 'bytes_added')} == \
+        {'songs_to_write': 4, 'cues_to_write': 3 * 3 + 1, 'skipped': 2, 'songs_growing': 0, 'bytes_added': 0}, plan['counts']
     assert rows['one.mp3']['source'] == 'peakhour' and rows['three.mp3']['source'] == 'virtualdj'
+    counts = plan['counts']  # each reason is counted on its own
+    assert (counts['file_not_found'], counts['cannot_read'], counts['already_have_cues'], counts['no_cues_to_copy'], counts['not_in_serato']) == (1, 1, 0, 0, 0), counts
+    assert {r['path']: r['code'] for r in plan['songs']}[str(work / 'missing.mp3')] == 'missing'
     assert [(c['index'], c['ms'], c['color'], c['name']) for c in rows['one.mp3']['cues']] == WANT, rows['one.mp3']['cues']
     assert rows['missing.mp3']['skip_reason'] == 'The file is not there' and 'Only MP3' in rows['notes.txt']['skip_reason']
     assert everything() == listing and {p: sha(p) for p in before} == before and not root.exists(), 'preview wrote something'
@@ -148,6 +152,18 @@ try:
     plan = C.preview({'tracks': paths})
     rows = {os.path.basename(r['path']): r for r in plan['songs']}
     assert not rows['two.mp3']['will_write'] and 'already has 1 cue' in rows['two.mp3']['skip_reason'], rows['two.mp3']
+    assert plan['counts']['already_have_cues'] == 1 and plan['counts']['songs_to_write'] == 5 and plan['counts']['no_cues_to_copy'] == 0, plan['counts']
+    # songs that are in no Serato library are counted on their own (a note: the cues are saved in the file)
+    lib_db = work / 'fake-location.sqlite'
+    connection = sqlite3.connect(lib_db)
+    connection.execute('CREATE TABLE asset(portable_id TEXT)')
+    connection.execute('INSERT INTO asset VALUES (?)', (os.path.splitdrive(mp3)[1].lstrip('\\/').replace('\\', '/').casefold(),))
+    connection.commit()
+    connection.close()
+    C.configure(libraries=lambda: [(os.path.splitdrive(mp3)[0], lib_db)])
+    listed = C.preview({'tracks': [mp3, mp3c, str(work / 'missing.mp3')]})['counts']
+    assert listed['not_in_serato'] == 1 and listed['file_not_found'] == 1, listed  # mp3 is in the library; mp3c is not; a missing file is not 'not in Serato'
+    C.configure(libraries=lambda: [])
     assert all(rows[n]['will_write'] for n in ('one.mp3', 'three.mp3', 'four.m4a', 'five.mp4', 'six.mp4')), plan['counts']
     digest = plan['digest']
     check_raises(C.SeratoCueError, lambda: C.apply({'tracks': paths, 'digest': 'not-the-digest'}), 'stale')

@@ -69,7 +69,7 @@ FEATURES = [
     feature('export.dj_write_queue', 'Export', 'Writes wait for an open DJ program',
             'A write aimed at VirtualDJ, Serato or djay while it is open is queued, shown as "DJ writes waiting", and applied '
             'only after the program has closed and its files have settled; it can be cancelled.',
-            covered=('dj_write_queue',)),
+            covered=('dj_write_queue', 'dj_writes')),
 
     # ------------------------------------------------------------------ Performance
     feature('performance.dj_auto_follow', 'Performance', 'DJ Auto follows VirtualDJ, even on another tab',

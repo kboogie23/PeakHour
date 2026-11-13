@@ -30,13 +30,61 @@
    else toast(label(job)+' changed while waiting. Review it and send it again.',true);
   }
  }
+ let recent=[];
+ const PROGRAM_NAMES={virtualdj:'VirtualDJ',serato:'Serato',djay:'djay'};
+ function when(seconds){return seconds?new Date(seconds*1000).toLocaleString():'';}
+ // One line per recent write, with Undo; a refusal from the writer is shown as it is (text only).
+ function recentRow(write){
+  const row=document.createElement('div');
+  row.className='windows-dj-recent-row';row.dataset.id=write.id;
+  row.style.cssText='padding:3px 0;border-top:1px solid rgba(128,128,128,.25)';
+  const line=document.createElement('div');
+  line.style.cssText='display:flex;gap:8px;align-items:center';
+  const text=document.createElement('span');
+  text.style.flex='1';
+  text.textContent=(PROGRAM_NAMES[write.program]||write.program)+': '+write.label+(write.what?' — '+write.what:'')+' — '+when(write.created_at);
+  line.appendChild(text);
+  const refusal=document.createElement('div');
+  refusal.className='windows-dj-recent-refusal';refusal.style.cssText='color:#ff9d8a;margin-top:2px';refusal.hidden=true;
+  if(write.undone){
+   const done=document.createElement('small');done.textContent='undone';line.appendChild(done);
+  }else{
+   const undo=document.createElement('button');
+   undo.type='button';undo.textContent='Undo';undo.className='windows-dj-recent-undo';
+   undo.addEventListener('click',()=>undoWrite(write,undo,refusal));
+   line.appendChild(undo);
+  }
+  row.append(line,refusal);
+  return row;
+ }
+ async function undoWrite(write,button,refusal){
+  button.disabled=true;refusal.hidden=true;
+  try{
+   const response=await fetch(write.undo_url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({backup_id:write.id})});
+   const data=await response.json().catch(()=>({}));
+   if(!response.ok||data.success===false)throw new Error(data.error||data.message||'PEAK HOUR could not undo this write.');
+   toast((PROGRAM_NAMES[write.program]||write.program)+' restored. PEAK HOUR undid this write.',false);
+   await loadRecent();
+  }catch(error){
+   refusal.textContent=error.message;refusal.hidden=false;button.disabled=false;
+  }
+ }
+ async function loadRecent(){
+  try{
+   const response=await fetch('/api/windows/dj-writes/recent',{cache:'no-store'});
+   if(!response.ok)return;
+   recent=(await response.json()).writes||[];
+  }catch(error){/* the next load tries again */}
+  render();
+ }
  function render(){
   const waiting=jobs.filter(j=>j.status==='queued'||j.status==='applying');
   if(!pill)return;
-  pill.hidden=!waiting.length;
-  pill.textContent='DJ writes waiting ('+waiting.length+')';
-  if(!waiting.length&&panel)panel.hidden=true;
+  pill.hidden=!waiting.length&&!recent.length;
+  pill.textContent=waiting.length?'DJ writes waiting ('+waiting.length+')':'Recent DJ writes';
+  if(pill.hidden&&panel)panel.hidden=true;
   if(!panel||panel.hidden)return;
+  const refusals=new Map([...panel.querySelectorAll('.windows-dj-recent-row')].map(r=>[r.dataset.id,r.querySelector('.windows-dj-recent-refusal')]));
   panel.textContent='';
   for(const job of waiting){
    const row=document.createElement('div');
@@ -52,6 +100,16 @@
    }
    panel.appendChild(row);
   }
+  const heading=document.createElement('strong');
+  heading.textContent='Recent writes';heading.style.cssText='display:block;margin-top:6px';
+  panel.appendChild(heading);
+  if(!recent.length){const none=document.createElement('div');none.textContent='Nothing written yet.';panel.appendChild(none);}
+  for(const write of recent){
+   const row=recentRow(write);
+   const old=refusals.get(write.id);
+   if(old&&!old.hidden){const mine=row.querySelector('.windows-dj-recent-refusal');mine.textContent=old.textContent;mine.hidden=false;}
+   panel.appendChild(row);
+  }
  }
  async function cancelJob(id){
   try{
@@ -65,7 +123,9 @@
    const response=await fetch('/api/windows/dj-queue/list',{cache:'no-store'});
    if(!response.ok)return;
    jobs=(await response.json()).jobs||[];
+   const finished=jobs.some(j=>FINAL[j.status]&&seen.get(j.id)!==j.status);
    notify(jobs);render();
+   if(finished)loadRecent();
   }catch(error){/* the next poll tries again */}
  }
  function schedule(){
@@ -76,13 +136,14 @@
   pill=document.createElement('button');
   pill.type='button';pill.id='windows-dj-queue-pill';pill.hidden=true;
   pill.style.cssText='position:fixed;top:8px;right:150px;z-index:9000;padding:2px 10px;border-radius:12px;font-size:12px;cursor:pointer';
-  pill.title='Changes for VirtualDJ, Serato or djay that wait until the program is closed';
+  pill.title='Writes for VirtualDJ, Serato or djay that wait until the program is closed, and your recent writes (with Undo)';
   panel=document.createElement('div');
   panel.id='windows-dj-queue-panel';panel.hidden=true;
   panel.style.cssText='position:fixed;top:36px;right:150px;z-index:9000;min-width:260px;max-width:420px;padding:8px 10px;border-radius:8px;font-size:12px;background:var(--panel,#222);color:var(--text,#eee);border:1px solid rgba(128,128,128,.4)';
-  pill.addEventListener('click',()=>{panel.hidden=!panel.hidden;render();});
+  pill.addEventListener('click',()=>{panel.hidden=!panel.hidden;if(!panel.hidden)loadRecent();else render();});
   document.body.append(pill,panel);
  }
- function start(){build();document.addEventListener('visibilitychange',schedule);schedule();}
+ function start(){build();document.addEventListener('visibilitychange',schedule);schedule();loadRecent();}
+ window.AxiomDJQueue={showRecent(){if(!panel)return;panel.hidden=false;loadRecent();},refresh:loadRecent};
  if(document.body)start();else document.addEventListener('DOMContentLoaded',start);
 })();

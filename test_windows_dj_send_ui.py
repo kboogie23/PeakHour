@@ -93,8 +93,8 @@ try:
 <script>window.showToast=(t,bad)=>{(window.toasts=window.toasts||[]).push([t,!!bad])};
 window.ensureAxiomLicenseUsable=async()=>true;</script>
 <link rel="stylesheet" href="/static/css/windows-virtualdj.css"><link rel="stylesheet" href="/static/css/windows-dj-send.css">
-<script src="/static/js/shared/windows-dj-send.js?v=4"></script>
-<script src="/static/js/shared/windows-dj-queue.js?v=2"></script>
+<script src="/static/js/shared/windows-dj-send.js?v=5"></script>
+<script src="/static/js/shared/windows-dj-queue.js?v=3"></script>
 <pre id="out">waiting</pre>
 <script>
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));window.queuedMode=%s;
@@ -165,6 +165,34 @@ const text=()=>[...document.querySelectorAll('#axiom-dj-send-results .axiom-dj-s
         return (HARNESS % ('true' if only == 'queued' else 'false', json.dumps([{'path': t} for t in chosen]), json.dumps(name)),
                 200, {'Content-Type': 'text/html'})
     backend.app.add_url_rule('/__dj_send_harness', 'dj_send_harness', harness)
+
+    RECENT = '''<!doctype html><meta charset="utf-8"><title>recent</title>
+<script>window.showToast=(t,bad)=>{(window.toasts=window.toasts||[]).push([t,!!bad])};</script>
+<script src="/static/js/shared/windows-dj-queue.js?v=3"></script><pre id="out">waiting</pre>
+<script>
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+(async()=>{
+ const out={};
+ try{
+  const rowsOf=()=>[...document.querySelectorAll('.windows-dj-recent-row')];
+  for(let i=0;i<100&&!document.getElementById('windows-dj-queue-pill');i++)await sleep(100);
+  for(let i=0;i<100&&document.getElementById('windows-dj-queue-pill').hidden;i++)await sleep(100);
+  out.pillText=document.getElementById('windows-dj-queue-pill').textContent;
+  document.getElementById('windows-dj-queue-pill').click();
+  for(let i=0;i<100&&!rowsOf().length;i++)await sleep(100);
+  out.rows=rowsOf().map(r=>r.textContent);
+  out.undoButtons=document.querySelectorAll('.windows-dj-recent-undo').length;
+  const djay=rowsOf().find(r=>/djay cue points/.test(r.textContent));
+  djay.querySelector('.windows-dj-recent-undo').click();
+  for(let i=0;i<100&&djay.querySelector('.windows-dj-recent-refusal').hidden;i++)await sleep(100);
+  const shown=rowsOf().find(r=>/djay cue points/.test(r.textContent));
+  out.refusal=shown.querySelector('.windows-dj-recent-refusal').textContent;
+  out.refusalVisible=!shown.querySelector('.windows-dj-recent-refusal').hidden;
+ }catch(e){out.error=String(e&&e.stack||e)}
+ document.getElementById('out').textContent='RESULT'+JSON.stringify(out)+'ENDRESULT';
+})();
+</script>'''
+    backend.app.add_url_rule('/__dj_send_recent', 'dj_send_recent', lambda: (RECENT, 200, {'Content-Type': 'text/html'}))
 
     def close_programs():
         open_programs.clear()
@@ -258,8 +286,8 @@ const text=()=>[...document.querySelectorAll('#axiom-dj-send-results .axiom-dj-s
 
     # 6. the real page loads the script, and the dialog works in headless Edge
     index = urllib.request.urlopen(url + '/', timeout=60).read().decode('utf-8')
-    assert '/static/js/shared/windows-dj-send.js?v=4' in index and '/static/js/shared/windows-dj-queue.js?v=2' in index and '/static/css/windows-dj-send.css?v=2' in index
-    assert '/static/js/shared/windows-virtualdj-write.js?v=6' in index
+    assert '/static/js/shared/windows-dj-send.js?v=5' in index and '/static/js/shared/windows-dj-queue.js?v=3' in index and '/static/css/windows-dj-send.css?v=2' in index
+    assert '/static/js/shared/windows-virtualdj-write.js?v=7' in index
     for asset in ('/static/js/shared/windows-dj-send.js', '/static/css/windows-dj-send.css'):
         assert urllib.request.urlopen(url + asset, timeout=30).status == 200
     if not os.path.exists(EDGE):
@@ -312,6 +340,28 @@ const text=()=>[...document.querySelectorAll('#axiom-dj-send-results .axiom-dj-s
         assert queued['buttonAfter'] == 'Done' and queued['buttonEnabled'] and queued['dialogGone'] is True, queued
         assert any(t[0].startswith('Written to VirtualDJ') and not t[1] for t in queued['toasts']), queued['toasts']
         assert (vdj / 'Playlists' / 'PH Page' / 'Sub' / 'Page List queued.m3u').is_file()
+        # Recent writes: the writes above are listed with Undo; a refusal from the writer is shown verbatim
+        fake = base / 'data' / 'djay-cue-writes' / '20260101-000000-abcdef12'
+        fake.mkdir(parents=True)
+        (fake / 'receipt.json').write_text(json.dumps({'kind': 'peakhour_djay_cues', 'id': fake.name, 'created_at': time.time() + 5,
+                                                       'status': 'written', 'database': str(djay_db), 'before_sha256': 'x',
+                                                       'after_sha256': 'y', 'after_state': 'z', 'songs': [{'path': 'a'}, {'path': 'b'}]}))
+        shown = None
+        for attempt in range(4):
+            profile = [f'--user-data-dir={base / f"edge-recent{attempt}"}' if x.startswith('--user-data-dir=') else x for x in common]
+            dom = subprocess.run([*profile, '--dump-dom', url + '/__dj_send_recent'], capture_output=True, timeout=180,
+                                 encoding='utf-8', errors='replace').stdout
+            found = re.search(r'RESULT(.*?)ENDRESULT', dom, re.S)
+            if found:
+                shown = json.loads(html.unescape(found.group(1)))
+                break
+        assert shown and not shown.get('error'), shown
+        assert shown['pillText'] == 'Recent DJ writes' and shown['undoButtons'] >= 3, shown
+        assert any(row.startswith('djay: djay cue points — 2 songs') for row in shown['rows']), shown['rows']
+        assert any(row.startswith('VirtualDJ: VirtualDJ playlist — PH Page / Sub') for row in shown['rows']), shown['rows']
+        _, expected = call('/api/windows/dj-writes/recent')
+        refused = call('/api/windows/djay/cues/undo', {'backup_id': fake.name})[1]
+        assert shown['refusalVisible'] and shown['refusal'] == refused['error'] and 'changed' in refused['code'], (shown, refused)
         # the real page: the Export menu gets its "Send to DJ software" entry
         page = ''
         # a fresh Edge profile per try: re-using the harness run's profile makes headless Edge crash (exit 0x80000003, empty output)

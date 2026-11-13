@@ -61,16 +61,16 @@ try:
  from flask import Flask
  web=Flask('t');web.register_blueprint(W.create_write_blueprint(writer,lambda action:None));c=web.test_client()
  h={'Origin':'http://localhost'}
- assert c.post('/api/windows/virtualdj/write/apply',json={'kinds':kinds,'preview_token':p['preview_token']},headers=h).status_code==400
- assert c.post('/api/windows/virtualdj/write/preview',json={'kinds':kinds}).status_code==403  # no Origin
+ assert c.post('/api/windows/virtualdj/write/apply',json={'background':False,'kinds':kinds,'preview_token':p['preview_token']},headers=h).status_code==400
+ assert c.post('/api/windows/virtualdj/write/preview',json={'background':False,'kinds':kinds}).status_code==403  # no Origin
  running=True
- r=c.post('/api/windows/virtualdj/write/apply',json={'kinds':kinds,'preview_token':p['preview_token'],'confirm':True},headers=h)
+ r=c.post('/api/windows/virtualdj/write/apply',json={'background':False,'kinds':kinds,'preview_token':p['preview_token'],'confirm':True},headers=h)
  assert r.status_code==400 and 'Quit VirtualDJ' in r.get_json()['error'] and db.read_bytes()==original
  running=False
- r=c.post('/api/windows/virtualdj/write/apply',json={'kinds':kinds,'preview_token':'x','confirm':True},headers=h)
+ r=c.post('/api/windows/virtualdj/write/apply',json={'background':False,'kinds':kinds,'preview_token':'x','confirm':True},headers=h)
  assert r.status_code==400 and 'Preview again' in r.get_json()['error'] and db.read_bytes()==original
  # Write
- r=c.post('/api/windows/virtualdj/write/apply',json={'kinds':kinds,'preview_token':p['preview_token'],'confirm':True},headers=h).get_json()
+ r=c.post('/api/windows/virtualdj/write/apply',json={'background':False,'kinds':kinds,'preview_token':p['preview_token'],'confirm':True},headers=h).get_json()
  assert r['success'] and r['written']==5 and r['undo']['available'],r
  after=db.read_bytes();text=after.decode('utf-8')
  assert b'\r\n' in after and b'\n' not in after.replace(b'\r\n',b'') and '&apos;' in text and '&amp;' in text
@@ -182,6 +182,46 @@ try:
   r=big.apply(['cues'],pv['preview_token']);assert r['success'] and len(reads)==2000;big.undo()
   pv=fresh_preview();del reads[:];r=big.apply(['cues'],pv['preview_token']);assert r['success'] and reads==[];big.undo()
  finally:UC.sidecar_path_for=real_sidecar
+ # A request for some songs looks at those songs only: no tag reads for the others, and the same songs written
+ chosen=big_files[100:105]
+ for name in ('database.xml',):assert big_db.read_bytes()==big_original
+ del reads[:];t0=time.perf_counter();sp=big.preview(['cues'],W.scope_keys(chosen));t_scoped=time.perf_counter()-t0
+ assert sp['scoped'] and sp['songs']==5 and sp['counts']['cues']==5 and sorted(reads)==sorted(chosen),(sp['songs'],len(reads))
+ assert {row['path'] for row in sp['rows']}==set(chosen)
+ other=big.preview(['cues'],W.scope_keys(big_files[:3]));assert other['preview_token']!=sp['preview_token']  # the token names the songs
+ sp=big.preview(['cues'],W.scope_keys(chosen))
+ try:big.apply(['cues'],sp['preview_token']);raise AssertionError('a token for some songs wrote the whole library')
+ except W.VirtualDJWriteError as e:assert 'Preview again' in str(e)
+ del reads[:];r=big.apply(['cues'],sp['preview_token'],W.scope_keys(chosen))
+ assert r['success'] and r['written']==5 and reads==[] and big_db.read_bytes()!=big_original
+ changed_text=big_db.read_bytes().decode('utf-8');old_text=big_original.decode('utf-8')
+ assert [s for s,e,el in W.songs(changed_text) if el.get('FilePath') in chosen] and len(W.songs(changed_text))==2000
+ only={el.get('FilePath') for (a,b,el),(c2,d,f) in zip(W.songs(old_text),W.songs(changed_text)) if old_text[a:b]!=changed_text[c2:d]};assert only==set(chosen),only
+ big.undo();assert big_db.read_bytes()==big_original
+ # the path index is remembered while the file is unchanged; an odd file (FilePath not first) still works
+ t0=time.perf_counter();big.preview(['cues'],W.scope_keys(chosen));t_again=time.perf_counter()-t0
+ print('virtualdj write, 5 songs of 2000: preview %.2fs (%.2fs the second time); the whole library took %.2fs'%(t_scoped,t_again,t_preview))
+ assert t_again<t_preview
+ odd,odd_files=make_db(folder/'odd',3);odd.write_bytes(odd.read_bytes().replace(b'<Song FilePath=',b'<Song Flag="1" FilePath=',1))
+ oddw=W.VirtualDJWriter(CueApp(),folder/'odd-writes',databases=lambda:[odd],ensure_closed=lambda:None);oddw._sources=lambda kinds:{'serato':{},'djay':{},'grids':{}}
+ assert oddw.preview(['cues'],W.scope_keys(odd_files[:2]))['songs']==2
+ # Big requests run as background jobs with progress (the whole library, or more than 50 songs); a few songs answer at once
+ import time as _t
+ web2=Flask('t2');web2.register_blueprint(W.create_write_blueprint(big,lambda action:None));c2=web2.test_client()
+ def job_wait(job_id):
+  for _ in range(400):
+   j=c2.get('/api/windows/virtualdj/write/job/'+job_id).get_json()
+   if j['state']!='running':return j
+   _t.sleep(0.05)
+  raise AssertionError('job did not finish')
+ started=c2.post('/api/windows/virtualdj/write/preview',json={'kinds':['cues'],'tracks':big_files[:60]},headers=h).get_json()
+ assert started['background'] and started['job_id'],started
+ job=job_wait(started['job_id']);assert job['state']=='done' and job['result']['songs']==60,job
+ now=c2.post('/api/windows/virtualdj/write/preview',json={'kinds':['cues'],'tracks':big_files[:5]},headers=h).get_json()
+ assert now['songs']==5 and 'job_id' not in now,now  # few songs: no job
+ started=c2.post('/api/windows/virtualdj/write/preview',json={'kinds':['cues']},headers=h).get_json()  # no tracks = the whole library
+ job=job_wait(started['job_id']);assert job['state']=='done' and job['result']['songs']==2000,job['state']
+ assert c2.get('/api/windows/virtualdj/write/job/nope').status_code==404
  # A failed swap leaves no stage file; a failed rollback does not hide the first error; a bad read-back is rolled back
  small,_ = make_db(folder/'s1',3);small2,_ = make_db(folder/'s2',3)
  two=W.VirtualDJWriter(CueApp(),folder/'two-writes',databases=lambda:[small,small2],ensure_closed=lambda:None)

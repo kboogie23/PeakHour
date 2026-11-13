@@ -293,22 +293,79 @@ try:
     assert S._ledger_read() == ledger_before
     check_raises(S.SeratoLibraryError, lambda: S.undo_crate_write(wrote['backup_id']))
     check_raises(S.SeratoLibraryError, lambda: S.undo_crate_write('no-such-id'))
-    # a library Serato changed afterwards is not rolled back over
-    wrote = S.write_crate_folder(app, [{'path': songs_d[0]}], ['U2'], database_path=db_d)
-    con = sqlite3.connect(db_d)
-    con.execute("UPDATE container SET expanded = 1 WHERE name = 'Lexicon'")
+    # Serato opens after a send and adds the new songs as assets (and changes other rows): undo still works and takes out only
+    # what the send added
+    def serato_touches(db_x, root_x, tag):
+        """What Serato did to the library after a send: new assets, an edited crate, a revision bump, its own crate in neworder.pref."""
+        con = sqlite3.connect(db_x)
+        con.execute("INSERT INTO asset(revision, portable_id, file_name, type, format) VALUES (500, ?, ?, 'audio', 'mp3')", (f'serato/{tag}-added.mp3', f'{tag}-added.mp3'))
+        asset_id = con.execute('SELECT last_insert_rowid()').fetchone()[0]
+        con.execute('INSERT INTO space_asset(asset_id, space_id, revision) VALUES (?, 1, 500)', (asset_id,))
+        con.execute("UPDATE container SET expanded = 1, revision = 501 WHERE name = 'Lexicon'")
+        con.execute('UPDATE serato SET revision = revision + 7')
+        con.commit()
+        con.close()
+        order = root_x / '_Serato_' / 'neworder.pref'
+        text = order.read_bytes().decode('utf-16-be')
+        order.write_bytes(text.replace('[end record]', f'[crate]{tag} Own Crate\n[end record]').encode('utf-16-be'))
+    root_u, db_u, songs_u = make_library('drive-u')
+    u_dump, u_tree = dump(db_u), tree(root_u)
+    wrote = S.write_crate_folder(app, [{'path': songs_u[0]}, {'path': songs_u[1]}], ['TU Parent', 'TU Child'], database_path=db_u)
+    assert (root_u / '_Serato_' / 'Subcrates' / 'TU Parent%%TU Child.crate').is_file()
+    serato_touches(db_u, root_u, 'one')
+    assets_now = rows(db_u, 'SELECT COUNT(*) FROM asset')[0][0]
+    undone = S.undo_crate_write(wrote['backup_id'])
+    assert undone['success'] and undone['mode'] == 'targeted' and undone['removed_crates'] == ['TU Parent%%TU Child', 'TU Parent'], undone
+    assert rows(db_u, 'SELECT COUNT(*) FROM container WHERE name LIKE ?', 'TU %') == [(0,)], 'the crates are still there'
+    assert rows(db_u, 'SELECT COUNT(*) FROM asset')[0][0] == assets_now, 'the assets Serato added were touched'
+    assert rows(db_u, 'SELECT COUNT(*) FROM asset WHERE portable_id = ?', 'serato/one-added.mp3') == [(1,)]
+    assert rows(db_u, 'SELECT expanded FROM container WHERE name = ?', 'Lexicon') == [(1,)], "Serato's own change was undone"
+    assert rows(db_u, 'SELECT COUNT(*) FROM dj_container_metadata WHERE filename LIKE ?', 'TU %') == [(0,)]
+    assert rows(db_u, 'PRAGMA integrity_check') == [('ok',)] and rows(db_u, 'PRAGMA foreign_key_check') == []
+    assert not (root_u / '_Serato_' / 'Subcrates' / 'TU Parent%%TU Child.crate').exists()
+    order_text = (root_u / '_Serato_' / 'neworder.pref').read_bytes().decode('utf-16-be')
+    assert 'TU Parent' not in order_text and '[crate]one Own Crate' in order_text and '[crate]Lexicon%%HIPHOP Party' in order_text, order_text
+    assert (root_u / '_Serato_' / 'Subcrates' / 'Lexicon.crate').read_bytes() == b'lexicon crate, never touched'
+    check_raises(S.SeratoLibraryError, lambda: S.undo_crate_write(wrote['backup_id']))
+    # a crate that is no longer what PEAK HOUR made stays; a parent that now holds another crate stays
+    wrote = S.write_crate_folder(app, [{'path': songs_u[0]}], ['KP Parent', 'KP Child'], database_path=db_u)
+    con = sqlite3.connect(db_u)
+    parent_id = con.execute("SELECT id FROM container WHERE name = 'KP Parent'").fetchone()[0]
+    con.execute("INSERT INTO container(revision, parent_id, name, type, list_order, space_id, time_added, expanded, portable_id) VALUES (600, ?, 'Own Sub', 1, 2, 1, 1, 0, '')", (parent_id,))
     con.commit()
     con.close()
-    changed_dump, changed_tree = dump(db_d), tree(root_d)
-    err = check_raises(S.SeratoLibraryError, lambda: S.undo_crate_write(wrote['backup_id']), 'changed')
-    assert 'changed its library' in str(err) and dump(db_d) == changed_dump and tree(root_d) == changed_tree
+    serato_touches(db_u, root_u, 'two')
+    undone = S.undo_crate_write(wrote['backup_id'])
+    assert undone['removed_crates'] == ['KP Parent%%KP Child'] and any('KP Parent' in k and 'other crates' in k for k in undone['kept']), undone
+    assert rows(db_u, "SELECT COUNT(*) FROM container WHERE name IN ('KP Parent', 'Own Sub')") == [(2,)] and rows(db_u, "SELECT COUNT(*) FROM container WHERE name = 'KP Child'") == [(0,)]
+    # a crate that was already there and got replaced has its old songs back
+    members_before = rows(db_u, 'SELECT space_asset_id, list_order FROM container_asset WHERE container_id = 3 ORDER BY list_order')
+    wrote = S.write_crate_folder(app, [{'path': songs_u[1]}, {'path': songs_u[2]}], ['Lexicon', 'HIPHOP Party'], overwrite=True, database_path=db_u)
+    assert rows(db_u, 'SELECT COUNT(*) FROM container_asset WHERE container_id = 3') == [(2,)] and wrote['replaced_existing']
+    serato_touches(db_u, root_u, 'three')
+    undone = S.undo_crate_write(wrote['backup_id'])
+    assert undone['success'] and undone['removed_crates'] == [], undone
+    assert rows(db_u, 'SELECT space_asset_id, list_order FROM container_asset WHERE container_id = 3 ORDER BY list_order') == members_before
+    assert rows(db_u, 'PRAGMA integrity_check') == [('ok',)] and rows(db_u, 'SELECT COUNT(*) FROM container WHERE name = ?', 'HIPHOP Party') == [(1,)]
+    assert not (root_u / '_Serato_' / 'Subcrates' / 'Lexicon%%HIPHOP Party.crate').exists(), "PEAK HOUR's file for the old crate went"
     # the undo route
     from flask import Flask
     import windows_serato_cues as C
     flask_app = Flask(__name__)
     flask_app.register_blueprint(C.create_blueprint(None, folder / 'cue-writes'))
+    wrote = S.write_crate_folder(app, [{'path': songs_u[0]}], ['RT Crate'], database_path=db_u)
+    serato_touches(db_u, root_u, 'four')
     reply = flask_app.test_client().post('/api/windows/serato/folders/undo', json={'backup_id': wrote['backup_id']}, headers={'Origin': 'http://localhost'})
-    assert reply.status_code == 409 and reply.get_json()["code"] == "changed", (reply.status_code, reply.data[:300])
+    assert reply.status_code == 200 and reply.get_json()['mode'] == 'targeted' and rows(db_u, "SELECT COUNT(*) FROM container WHERE name = 'RT Crate'") == [(0,)], (reply.status_code, reply.data[:300])
+    # an old receipt without the targeted record keeps the careful refusal
+    wrote = S.write_crate_folder(app, [{'path': songs_u[0]}], ['OLD Crate'], database_path=db_u)
+    receipt_file = next((S._FOLDER_STATE['backups'] / wrote['backup_id']).glob('receipt.json'))
+    import json as _json
+    old_receipt = _json.loads(receipt_file.read_text(encoding='utf-8'))
+    old_receipt.pop('targeted')
+    receipt_file.write_text(_json.dumps(old_receipt), encoding='utf-8')
+    serato_touches(db_u, root_u, 'five')
+    check_raises(S.SeratoLibraryError, lambda: S.undo_crate_write(wrote['backup_id']), 'changed')
 
     # ---------------------------------------------------------------- a plain crate survives a legacy-file failure (with a warning)
     root_e, db_e, songs_e = make_library('drive-e')

@@ -118,7 +118,10 @@
   const sendButton=el('button','Send',{type:'button',id:'axiom-dj-send-go',disabled:true});
   const closeButton=el('button','Close',{type:'button'});
   const actions=el('div',undefined,{className:'axiom-vdj-actions'});
-  actions.append(closeButton,previewButton,sendButton);
+  const recentButton=el('button','Recent writes',{type:'button',id:'axiom-dj-send-recent'});
+  recentButton.title='See what PEAK HOUR wrote lately, and undo it';
+  recentButton.onclick=()=>{stopWatching();box.close();box.remove();window.AxiomDJQueue?.showRecent();};
+  actions.append(closeButton,recentButton,previewButton,sendButton);
   box.append(title,intro,programBox,el('label','Folder / Subfolder'),folderInput,el('label','Playlist name'),nameInput,styleSelect,results,actions);
   document.body.append(box);
   closeButton.onclick=()=>{stopWatching();box.close();box.remove();};

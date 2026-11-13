@@ -257,6 +257,8 @@ def build_app(port, device=False):
         vdj_folders.register_with_queue(axiom.DJ_WRITE_QUEUE, root / 'virtualdj-list-writes')
         import windows_virtualdj_filesize  # keeps VirtualDJ's file sizes right after a Serato cue write made a song bigger
         windows_virtualdj_filesize.register_with_queue(axiom.DJ_WRITE_QUEUE, root / 'virtualdj-size-writes')
+        import windows_dj_writes  # "Recent writes" with Undo, read from the writers' receipt folders
+        axiom.app.register_blueprint(windows_dj_writes.create_blueprint(root, axiom._license_gate))
         import windows_serato_cues
         windows_serato_cues.register_with_queue(axiom.DJ_WRITE_QUEUE)
         import windows_serato_export as serato_export

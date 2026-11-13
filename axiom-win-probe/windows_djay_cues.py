@@ -677,10 +677,26 @@ def _plan(payload):
     return {'database': database, 'songs': rows, 'digest': token, 'library_errors': len(errors or []), 'note': note}
 
 
+_CODES = (('Not in the djay library', 'not_in_djay'), ('no record', 'no_record'), ('could not be read', 'cannot_read'),
+          ('already has', 'has_cues'), ('No cues found', 'no_cues'))
+
+
+def _reason_code(row):
+    if row['will_write']:
+        return ''
+    for prefix, code in _CODES:
+        if prefix in row['skip_reason']:
+            return code
+    return ''
+
+
 def _public(plan):
-    rows = [{k: v for k, v in row.items()} for row in plan['songs']]
+    rows = [dict(row, code=_reason_code(row)) for row in plan['songs']]
+    count = lambda code: sum(1 for r in rows if r['code'] == code)
     return {'success': True, 'database': plan['database'], 'songs': rows, 'digest': plan['digest'],
-            'counts': {'songs_to_write': sum(r['will_write'] for r in rows),
+            'counts': {'already_have_cues': count('has_cues'), 'no_cues_to_copy': count('no_cues'), 'not_in_djay': count('not_in_djay'),
+                       'no_djay_record': count('no_record'), 'cannot_read': count('cannot_read'),
+                       'songs_to_write': sum(r['will_write'] for r in rows),
                        'cues_to_write': sum(len(r['cues']) for r in rows if r['will_write']),
                        'skipped': sum(not r['will_write'] for r in rows)},
             'sources_order': [LABELS[s] for s in SOURCES], 'note': plan.get('note', ''), 'writes_to': 'nothing (preview)'}

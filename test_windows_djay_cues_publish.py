@@ -237,6 +237,9 @@ try:
  assert client.post('/api/windows/djay/cues/preview',json={'tracks':'all'}).status_code==403  # same-origin only
  r=client.post('/api/windows/djay/cues/preview',json={'tracks':'all'},headers=origin);assert r.status_code==200 and r.json['background'] and r.json['job_id'],r.json
  job=wait_job(r.json['job_id']);assert job['state']=='done' and job['result']['counts']['songs_to_write']==4 and job['total']>=4 and sha()==before_hash,job
+ gone=cues.preview({'tracks':['C:\\nowhere\\not in djay.mp3']})['counts']  # a song djay does not have is not one that "already has cue points"
+ assert gone['not_in_djay']==1 and gone['already_have_cues']==0 and gone['songs_to_write']==0,gone
+ assert job['result']['counts']['already_have_cues']+job['result']['counts']['no_cues_to_copy']+job['result']['counts']['not_in_djay']+job['result']['counts']['no_djay_record']+job['result']['counts']['cannot_read']+job['result']['counts']['songs_to_write']==len(job['result']['songs']),job['result']['counts']
  assert client.post('/api/windows/djay/cues/apply',json={'tracks':'all'},headers=origin).status_code==400  # needs confirm
  running[0]=True
  r=client.post('/api/windows/djay/cues/apply',json={'tracks':'all','confirm':True},headers=origin)
