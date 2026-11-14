@@ -43,6 +43,7 @@
   [/\bCore Audio\b/g,'Windows audio'],
   [/Slow Mac\b/g,'Slow PC'],
   [/the Mac folder picker/g,'the folder picker'],
+  [/Reinstall the complete AXIOM app for this Mac/g,'Reinstall the complete PEAK HOUR app on this PC'],  // stem engine / decoder / model messages
   [/\b(this|your|another|This|Your|Another) Mac\b/g,'$1 PC'],
  ];
  // A quoted path ('C:\...\.lock') is set aside while the rest of the sentence is renamed, so a message

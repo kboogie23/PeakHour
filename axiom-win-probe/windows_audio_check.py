@@ -2,7 +2,7 @@ r"""Plain reasons for the Studio audio check (Audio check complete ... need atte
 
 studio_daw.imports._duration_asset answers "Audio file is missing or is not a regular file." for every path
 Path.resolve().is_file() refuses, and "Audio path or format is not permitted." for a format outside FORMATS (aac, aif,
-aiff, flac, m4a, mp3, mp4, wav) or a place is_safe_location refuses. It never looks at the library: a song counts as
+aiff, flac, m4a, mp3, mp4, wav; windows_studio_formats.py adds ogg, opus, wma, mpg, avi ...) or a place is_safe_location refuses. It never looks at the library: a song counts as
 checked wherever its file is. On this PC the common causes of "missing" are:
   - the song's drive letter is gone (a library imported from VirtualDJ still lists F:\2022\... after the files moved to
     D:\2022\...), which this module says, and names the same file on another drive when there is one;

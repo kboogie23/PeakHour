@@ -102,6 +102,10 @@
       const response = await fetch('/api/studio-daw/stems',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({path:clip.path,start:Math.max(0,start),duration,reuseExisting:true,...(options.fullSource?{fullSource:true}:{})})});
       let data = await response.json();
       if(!response.ok) {
+        if(data.install_required&&!options.engineInstallTried&&window.AxiomStemInstall&&await window.AxiomStemInstall.ensure(data)){
+          related().forEach(item=>{item.stemState='failed';});  // Windows: the engine was just installed; ask again for the same stems
+          return await request(clip,{...options,engineInstallTried:true});
+        }
         const build=data.identity?.build;
         throw new Error((data.error||'Stem separation could not start.')+(build?` Installed build: ${build}.`:''));
       }

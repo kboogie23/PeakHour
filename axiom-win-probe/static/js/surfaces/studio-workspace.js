@@ -974,7 +974,11 @@
         const resp = await fetch('/api/studio/audit', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body });
         if (!resp.ok) throw new Error('Studio audit could not be refreshed');
         const data = await resp.json();
-        if (requestId !== studioAuditRequestId || body !== JSON.stringify({ playlist: currentPlaylist })) return;
+        // Compare the song order, not the whole objects: hydrateStudioTrackVersions() adds available_versions
+        // to every track while the audit is in flight, which made the old whole-JSON compare discard every
+        // audit result (Set Score stayed "--" and the transition markers never appeared).
+        const auditOrder = list => (Array.isArray(list) ? list : []).map(track => String(track?.path || '')).join('\n');
+        if (requestId !== studioAuditRequestId || auditOrder(JSON.parse(body).playlist) !== auditOrder(currentPlaylist)) return;
         renderPlaylist(data.transitions);
         renderMetrics(data);
       } catch (error) {

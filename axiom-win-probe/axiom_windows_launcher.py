@@ -22,6 +22,7 @@ Differences from macOS, by design:
 """
 import ctypes
 import io
+import json
 import msvcrt
 import os
 import re
@@ -358,7 +359,8 @@ KEEP_AWAKE = ['--disable-background-timer-throttling', '--disable-renderer-backg
 # which made the whole window slow. None of this changes downloads, the folder picker or media playback.
 QUIET = ['--disable-extensions', '--disable-sync', '--disable-background-networking',
          '--disable-component-extensions-with-background-pages', '--disable-default-apps']
-WINDOW_FLAGS = ['--no-first-run', '--no-default-browser-check', '--disable-features=msEdgeStartupBoost', *QUIET, *KEEP_AWAKE]
+WINDOW_FLAGS = ['--no-first-run', '--no-default-browser-check', '--disable-features=msEdgeStartupBoost', '--disable-pinch',
+                *QUIET, *KEEP_AWAKE]
 
 
 def edge_command(edge, url, profile):
@@ -477,6 +479,34 @@ def delete_trash(profile):
     return left
 
 
+ZOOM_KEYS = ('per_host_zoom_levels', 'default_zoom_level')  # under "partition" in Default\Preferences
+
+
+def reset_page_zoom(profile):
+    """Edge remembers page zoom per site, so a window zoomed by Ctrl+wheel once stays zoomed. The page now blocks page
+    zoom (windows-studio-zoom.js) and the window has --disable-pinch, but a zoom already saved still applies, so
+    drop the saved zoom levels (partition.per_host_zoom_levels and partition.default_zoom_level) from the profile's
+    Preferences file before the browser starts. Only while no browser has the profile open, only when there is
+    something to drop, and the file is replaced in one step. Returns True when a saved zoom was removed."""
+    profile = Path(profile)
+    prefs = profile / 'Default' / 'Preferences'
+    if _is_link(prefs) or not prefs.is_file() or profile_in_use(profile):
+        return False
+    try:
+        data = json.loads(prefs.read_text(encoding='utf-8'))
+        partition = data.get('partition') if isinstance(data, dict) else None
+        if not isinstance(partition, dict) or not any(partition.get(key) for key in ZOOM_KEYS):
+            return False
+        for key in ZOOM_KEYS:
+            partition.pop(key, None)
+        scratch = prefs.with_name('Preferences.peak-hour-tmp')
+        scratch.write_text(json.dumps(data, ensure_ascii=False, separators=(',', ':')), encoding='utf-8')
+        os.replace(scratch, prefs)
+        return True
+    except (OSError, ValueError):
+        return False
+
+
 def prepare_window_profile(profile=None):
     """Move aside what clean_window_profile names and delete the trash on a background thread. Call it before anything
     that can start the browser (the Ctrl+F hotkey), so no window opens while folders are being renamed."""
@@ -485,6 +515,8 @@ def prepare_window_profile(profile=None):
     if not profile:
         return []
     try:
+        if reset_page_zoom(profile):
+            log('Cleared the window\'s saved page zoom')
         moved = clean_window_profile(profile)
         if moved:
             log('Moved the window profile\'s synced extensions and caches aside: ' + ', '.join(moved))

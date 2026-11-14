@@ -10,7 +10,8 @@
   dist/PEAK HOUR User Manual.html
                              the user manual (static/manual) as one file, pictures included
 
-Not included: the GPU stem runtime (PyTorch + Demucs, several GB) stays a separate download, and
+Not included: the stem runtime (PyTorch + Demucs, several GB) is downloaded on first use by the app
+itself (windows_stem_installer.py: Studio > Stems > "Install stem engine", into the data folder), and
 the program is not code-signed (that needs a certificate bought by the publisher), so Windows
 SmartScreen will warn on first run.
 Usage: python build_installer.py [--no-setup]
@@ -54,6 +55,9 @@ REQUIRED_MODULES = ('flask', 'numpy', 'sounddevice', 'soundfile', 'pedalboard', 
                     'librosa', 'numba', 'llvmlite', 'joblib', 'PIL', 'cryptography', 'keyring', 'mutagen', 'serato_tools',
                     'mltseratotags', 'rtmidi', 'soxr', 'requests', 'tkinter', '_tkinter', 'sqlite3', 'ssl', 'ctypes', 'unittest')
 EXCLUDED_MODULES = ('pip', 'ensurepip', 'idlelib', 'venv', 'lib2to3')
+# The stem engine's download is installed from these (windows_stem_installer.py: exact versions and SHA-256 of every package); the
+# app folder is copied whole, but the installer must never ship without them.
+REQUIRED_APP_FILES = ('stem_engine_lock_cuda.txt', 'stem_engine_lock_cpu.txt')
 SKIP_FILES = {'make_90s_art.py', 'make_peak_hour_logo.py', 'make_region_backgrounds.py', 'make_regions_art.py'}
 
 
@@ -108,6 +112,9 @@ def stage(target):
     shutil.copytree(packages, runtime / 'Lib' / 'site-packages', dirs_exist_ok=True,
                     ignore=ignore_runtime(packages, SKIP_PACKAGE_PATHS, package=True))
     shutil.copytree(APP, target / 'app', ignore=ignore_app)
+    missing = [name for name in REQUIRED_APP_FILES if not (target / 'app' / name).is_file()]
+    if missing:
+        raise SystemExit('The package lacks the stem engine lock file(s): ' + ', '.join(missing))
     shutil.copy2(WORK / 'installer' / 'uninstall.ps1', target / 'uninstall.ps1')
     (target / 'version.txt').write_text(version(), encoding='utf-8')
     # The packaged Python must find the libraries without the workspace's virtual environment.

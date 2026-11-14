@@ -54,7 +54,12 @@ FEATURES = [
     # ------------------------------------------------------------------ Studio and export
     feature('studio.sets_stems_stretch', 'Studio', 'Studio sets, stems and tempo stretch',
             'Sets can be built and saved, stems split, and a song stretched to a new tempo.',
-            covered=('studio', 'stems', 'stretch')),
+            covered=('studio', 'stems', 'stem_installer', 'stretch', 'magic_set')),
+    feature('studio.daw_timeline', 'Studio', 'Studio DAW: formats, recording, plugins, controls, zoom and automation',
+            'The DAW opens every supported audio format, records, hosts plug-ins, draws automation and keeps its controls working; '
+            'Ctrl+wheel and Ctrl +/-/0 zoom the timeline and never the whole window; Stems offers the one-time engine install.',
+            covered=('studio_formats', 'studio_recording', 'studio_plugins', 'studio_controls', 'studio_zoom', 'studio_automation',
+                     'studio_polish', 'studio_stems_flow', 'studio_window_zoom'), requires=['ui']),
     feature('export.formats', 'Export', 'Export to CSV, rekordbox, M3U, Serato, djay, VirtualDJ and a mix file',
             'Each export writes a file the DJ software opens, and never overwrites the DJ software\'s own library.',
             covered=('exports', 'serato_export', 'djay_playlist', 'virtualdj_exports', 'virtualdj_lists', 'mix_export', 'crate_publish')),

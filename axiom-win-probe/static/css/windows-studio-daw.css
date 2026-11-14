@@ -1,0 +1,21 @@
+/* PEAK HOUR (Windows) Studio DAW: timeline zoom and automation curves (windows-studio-zoom.js, windows-studio-automation.js). */
+
+/* Pinch and Ctrl+wheel zoom the timeline, not the window; only panning is left to the browser. */
+.studio-daw-lanes,
+#studio-daw-lanes,
+#studio-daw-ruler { touch-action: pan-x pan-y; }
+
+/* Automation curves drawn over a clip, a deck lane or the master clip. Read-only; the labels open the editor. */
+.ph-auto { position: absolute; inset: 0; z-index: 7; pointer-events: none; }
+.ph-auto svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: hidden; }
+.ph-auto-line { fill: none; stroke-width: 2.25; vector-effect: non-scaling-stroke; stroke-linejoin: round; stroke-linecap: round; }
+.ph-auto-line.ph-auto-filter { stroke: #38d6ff; }
+.ph-auto-line.ph-auto-volume { stroke: #ff5fb0; }
+.ph-auto-line.ph-auto-trim { stroke: #f4f0e0; stroke-dasharray: 6 3; }
+.ph-auto-legend { position: absolute; top: 3px; right: 16px; display: flex; gap: 3px; max-width: calc(100% - 24px); overflow: hidden; }
+.ph-auto-chip { pointer-events: auto; padding: 2px 5px; border: 1px solid currentColor; border-radius: 3px; background: rgba(5, 8, 5, .82);
+  font: 600 9px/1 Barlow, sans-serif; letter-spacing: .02em; cursor: pointer; white-space: nowrap; }
+.ph-auto-chip.ph-auto-filter { color: #38d6ff; }
+.ph-auto-chip.ph-auto-volume { color: #ff5fb0; }
+.ph-auto-chip.ph-auto-trim { color: #f4f0e0; }
+.ph-auto-chip:hover, .ph-auto-chip:focus-visible { background: rgba(20, 28, 20, .95); }

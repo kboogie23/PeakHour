@@ -25,6 +25,8 @@ def build_backend(*, recording_settings, recording_directory, capture_factory=No
     install_cache_fallback(log=cache_log)  # before app: the Studio blueprints read their cache folders when app is imported
     from windows_audio_check import install as install_audio_check
     install_audio_check()  # Studio "Audio check": say why a song is not ready (drive gone, path too long, moved, ...)
+    from windows_studio_formats import install as install_studio_formats
+    install_studio_formats()  # Studio DAW takes ogg, opus, wma, alac and the sound of video files too (FFmpeg decodes them)
     if video_ffmpeg:  # before app: Studio DAW blueprints look up their audio tools when app is imported
         from windows_studio import install as install_studio
         install_studio(video_ffmpeg)
@@ -65,6 +67,8 @@ def build_backend(*, recording_settings, recording_directory, capture_factory=No
     install_track_info(app)  # Track Information: the library is read and resolved once, not on every open
     from windows_filetypes import install as install_filetypes
     install_filetypes(app)  # Library > Type: audio, video or one file type
+    from windows_studio_durations import install as install_studio_durations
+    install_studio_durations(app)  # Magic Set / Build Around / Autofill answers carry duration_sec (the Time column, Total time)
     from windows_remote_library import install as install_remote_library
     install_remote_library(app)
     from windows_reconnect import install as install_reconnect
@@ -105,6 +109,10 @@ def build_backend(*, recording_settings, recording_directory, capture_factory=No
         from windows_video_api import VideoPreviewStore, create_video_blueprint
         app.WINDOWS_VIDEO_STORE = VideoPreviewStore(video_cache_root, video_allowed_path, video_ffmpeg)
         app.app.register_blueprint(create_video_blueprint(app.WINDOWS_VIDEO_STORE))
+    from windows_stem_installer import install as install_stem_installer
+    # "Install stem engine": the status route and the Windows wording of the stems 503 always (so it is never the Mac wording);
+    # install/cancel only with FFmpeg, which the stem worker needs
+    install_stem_installer(app, can_install=bool(video_ffmpeg))
     if video_ffmpeg:
         from windows_mix_export import MixExports, create_mix_export_blueprint
         app.WINDOWS_MIX_EXPORTS = MixExports(video_ffmpeg, **({'chooser': mix_export_chooser} if mix_export_chooser else {}))

@@ -32,6 +32,8 @@
    const [account,license]=await Promise.all(['/api/account/status','/api/license/status'].map(url=>fetch(url,{cache:'no-store'}).then(r=>r.json())));
    hideAccount=account?.login_required===false&&license?.access_tier==='full';
   }catch(error){hideAccount=false;}
+  // Activation is off: runtime-foundation.js skips its online licence check (POST /api/license/validate answers 400 here).
+  window.PeakHourActivationOff=hideAccount;
   if(hideAccount)apply();
  }
  const style=document.createElement('style');

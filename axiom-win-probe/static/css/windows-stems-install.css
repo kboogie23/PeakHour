@@ -1,0 +1,11 @@
+/* "Install stem engine" dialog (windows-stems-install.js); the dialog itself reuses the .axiom-vdj-inspect look. */
+.axiom-stem-install{max-width:640px}
+.axiom-stem-install-list{margin:8px 0;padding-left:20px}
+.axiom-stem-install-list li{padding:2px 0}
+.axiom-stem-install-facts{font-size:.9em;opacity:.9}
+.axiom-stem-bar{height:14px;margin:12px 0 6px;border:1px solid #a9da43;border-radius:7px;background:#0b110a;overflow:hidden}
+.axiom-stem-bar[hidden]{display:none}
+.axiom-stem-bar>i{display:block;height:100%;width:0;background:#b7f34a}
+.axiom-stem-phase{min-height:1.4em;font-size:.95em}
+.axiom-stem-error{color:#ff9d8a;margin:6px 0;overflow-wrap:anywhere}
+.axiom-stem-install button[hidden]{display:none}

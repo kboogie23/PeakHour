@@ -117,10 +117,10 @@ try:
 
     # Every script that changed has a newer cache-busting number in each page that loads it.
     for template, scripts in {
-        'index.html': {'windows-rename.js': 11, 'windows-virtualdj.js': 2, 'windows-virtualdj-grids.js': 2, 'windows-virtualdj-health.js': 2,
+        'index.html': {'windows-rename.js': 12, 'windows-virtualdj.js': 2, 'windows-virtualdj-grids.js': 2, 'windows-virtualdj-health.js': 2,
                        'windows-virtualdj-exports.js': 2, 'windows-virtualdj-write.js': 7,'windows-mix-export.js': 3},
-        'live_assist_window.html': {'windows-rename.js': 11},
-        'live_assist_coach_prompt.html': {'windows-rename.js': 11},
+        'live_assist_window.html': {'windows-rename.js': 12},
+        'live_assist_coach_prompt.html': {'windows-rename.js': 12},
     }.items():
         page = (PROBE / 'templates' / template).read_text(encoding='utf-8')
         for script, version in scripts.items():

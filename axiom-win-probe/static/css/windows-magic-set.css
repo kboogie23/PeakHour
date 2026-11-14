@@ -1,0 +1,1515 @@
+/* PEAK HOUR (Windows edition): the Magic Set / Manual Build / Harmonic Route look.
+   Loaded after the stage stylesheets and windows-theme-urban.css, so it wins. Every rule starts with
+   "html body[data-ph-region]" (windows-regions.js sets that attribute, so only the Windows edition matches) and the
+   Studio tab id (repeated to outrank the stage rules' ids), so nothing outside the Studio and nothing on macOS is touched.
+   Layout: 1 Shape the set -> 2 Build -> 3 Refine, a big BPM chart, a score ring with stat chips, and clean track rows.
+   No animations: the app removed its looping effects for speed, so this adds none (hover colour changes only). */
+
+html body[data-ph-region] #tab-content-studio#tab-content-studio {
+  --wms-panel: #151212;
+  --wms-panel-2: #1f1b1b;
+  --wms-line: rgba(255, 255, 255, 0.16);
+  --wms-text: #f6f3f0;
+  --wms-muted: #c4bfbb;
+  --wms-accent: var(--accent, #b82330);
+  --wms-accent-ink: #ffffff;
+  --wms-accent-btn: #a31d29;   /* white text on this is 7.8:1; the plain accent gives 3.1:1 */
+  --wms-accent-text: #ff8c93;
+  --wms-cyan: #5fdcf0;
+  --wms-good: #62d98c;
+  --wms-warn: #f2c94c;
+  --wms-bad: #ff7b7b;
+  --wms-radius: 6px;
+  --wms-shadow: 3px 3px 0 #000;
+}
+html body[data-ph-region].light-mode #tab-content-studio#tab-content-studio {
+  --wms-panel: #ffffff;
+  --wms-panel-2: #f1ece8;
+  --wms-line: rgba(20, 12, 8, 0.2);
+  --wms-text: #17120f;
+  --wms-muted: #4d4640;
+  --wms-accent-text: #a31d28;
+  --wms-cyan: #0a6f82;
+  --wms-good: #17703a;
+  --wms-warn: #8a6100;
+  --wms-bad: #b3202a;
+  --wms-shadow: 2px 2px 0 rgba(0, 0, 0, 0.35);
+}
+
+/* ------------------------------------------------------------------------------------------------
+   Shared bits
+   ------------------------------------------------------------------------------------------------ */
+html body[data-ph-region] #tab-content-studio#tab-content-studio #studio-active-view#studio-active-view :is(button, select, input):focus-visible,
+html body[data-ph-region] #tab-content-studio#tab-content-studio #studio-active-view#studio-active-view .playlist-row:focus-visible {
+  outline: 3px solid var(--wms-cyan) !important;
+  outline-offset: 2px !important;
+}
+
+/* ------------------------------------------------------------------------------------------------
+   1 / 2 / 3 flow bar (visible in Magic Set, Manual Build and Harmonic Route)
+   ------------------------------------------------------------------------------------------------ */
+html body[data-ph-region] #tab-content-studio#tab-content-studio #magic-flow#magic-flow {
+  display: block !important;
+  flex: 0 0 auto !important;
+  margin: 10px 14px 0 !important;
+  padding: 0 !important;
+}
+html body[data-ph-region].studio-health-mode #tab-content-studio#tab-content-studio #magic-flow#magic-flow { display: none !important; }
+html body[data-ph-region] #tab-content-studio#tab-content-studio #magic-flow ol {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 8px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  list-style: none !important;
+}
+html body[data-ph-region] #tab-content-studio#tab-content-studio #magic-flow li { position: relative !important; margin: 0 !important; padding: 0 !important; }
+html body[data-ph-region] #tab-content-studio#tab-content-studio #magic-flow button {
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  width: 100% !important;
+  min-height: 46px !important;
+  padding: 4px 14px !important;
+  text-align: left !important;
+  color: var(--wms-muted) !important;
+  background: var(--wms-panel) !important;
+  border: 1px solid var(--wms-line) !important;
+  border-bottom: 4px solid transparent !important;
+  border-radius: var(--wms-radius) !important;
+  box-shadow: none !important;
+  cursor: pointer !important;
+  font-family: Barlow, 'Segoe UI', sans-serif !important;
+  text-transform: none !important;
+  letter-spacing: 0 !important;
+}
+html body[data-ph-region] #tab-content-studio#tab-content-studio #magic-flow button:hover { background: var(--wms-panel-2) !important; color: var(--wms-text) !important; }
+html body[data-ph-region] #tab-content-studio#tab-content-studio #magic-flow button[aria-disabled="true"] { cursor: not-allowed !important; background: transparent !important; border-style: dashed !important; }
+html body[data-ph-region] #tab-content-studio#tab-content-studio #magic-flow b {
+  flex: 0 0 auto !important;
+  display: grid !important;
+  place-items: center !important;
+  width: 28px !important;
+  height: 28px !important;
+  border-radius: 50% !important;
+  border: 2px solid var(--wms-muted) !important;
+  font: 400 17px/1 'Bebas Neue', Impact, sans-serif !important;
+  letter-spacing: 0 !important;
+  color: var(--wms-text) !important;
+}
+html body[data-ph-region] #tab-content-studio#tab-content-studio #magic-flow span { display: flex !important; flex-direction: column !important; min-width: 0 !important; line-height: 1.2 !important; }
+html body[data-ph-region] #tab-content-studio#tab-content-studio #magic-flow strong {
+  font: 400 21px/1 'Bebas Neue', Impact, sans-serif !important;
+  letter-spacing: 0.06em !important;
+  text-transform: uppercase !important;
+  color: inherit !important;
+}
+html body[data-ph-region] #tab-content-studio#tab-content-studio #magic-flow small {
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  color: var(--wms-muted) !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+html body[data-ph-region] #tab-content-studio#tab-content-studio #magic-flow li[data-state="current"] button {
+  background: var(--wms-panel-2) !important;
+  color: var(--wms-text) !important;
+  border-color: var(--wms-accent) !important;
+  border-bottom-color: var(--wms-accent) !important;
+  box-shadow: var(--wms-shadow) !important;
+}
+html body[data-ph-region] #tab-content-studio#tab-content-studio #magic-flow li[data-state="current"] b {
+  background: var(--wms-accent-btn) !important;
+  border-color: var(--wms-accent) !important;
+  color: var(--wms-accent-ink) !important;
+}
+html body[data-ph-region] #tab-content-studio#tab-content-studio #magic-flow li[data-state="done"] b {
+  background: var(--wms-good) !important;
+  border-color: var(--wms-good) !important;
+  font-size: 0 !important;
+  position: relative !important;
+}
+html body[data-ph-region] #tab-content-studio#tab-content-studio #magic-flow li[data-state="done"] b::after {
+  content: "" !important;
+  position: absolute !important;
+  left: 9px !important;
+  top: 5px !important;
+  width: 6px !important;
+  height: 11px !important;
+  border: solid #07140b !important;
+  border-width: 0 3px 3px 0 !important;
+  transform: rotate(40deg) !important;
+}
+html body[data-ph-region].light-mode #tab-content-studio#tab-content-studio #magic-flow li[data-state="done"] b::after { border-color: #ffffff !important; }
+
+/* ------------------------------------------------------------------------------------------------
+   Magic Set header: title, stat chips, score ring (Magic Set view only; the page hides it elsewhere)
+   ------------------------------------------------------------------------------------------------ */
+html body[data-ph-region] #tab-content-studio#tab-content-studio #studio-active-view #magic-set-command#magic-set-command {
+  flex: 0 0 auto !important;
+  height: auto !important;
+  min-height: 0 !important;
+  margin: 8px 14px 0 !important;
+  padding: 0 !important;
+}
+html body[data-ph-region] #tab-content-studio#tab-content-studio #studio-active-view #magic-set-command .magic-command-main {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 16px !important;
+  min-height: 0 !important;
+  padding: 6px 12px !important;
+  background: var(--wms-panel) !important;
+  border: 1px solid var(--wms-line) !important;
+  border-radius: var(--wms-radius) !important;
+  box-shadow: none !important;
+}
+html body[data-ph-region] #tab-content-studio#tab-content-studio #studio-active-view #magic-set-command .magic-command-main > div:first-child { flex: 0 1 auto !important; min-width: 0 !important; }
+html body[data-ph-region] #tab-content-studio#tab-content-studio #studio-active-view #magic-set-command .magic-command-title {
+  margin: 0 !important;
+  font: 400 34px/1 'Bebas Neue', Impact, sans-serif !important;
+  letter-spacing: 0.05em !important;
+  color: var(--wms-text) !important;
+  -webkit-text-fill-color: var(--wms-text) !important;
+  -webkit-text-stroke: 0 !important;
+  background: none !important;
+  filter: none !important;
+  text-shadow: none !important;
+}
+html body[data-ph-region] #tab-content-studio#tab-content-studio #studio-active-view #magic-set-command .magic-command-copy {
+  margin: 4px 0 0 !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.04em !important;
+  text-transform: none !important;
+  color: var(--wms-muted) !important;
+  white-space: nowrap !important;
+}
+
+html body[data-ph-region] #tab-content-studio#tab-content-studio #magic-stat-chips {
+  display: flex !important;
+  flex: 1 1 auto !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  min-width: 0 !important;
+}
+html body[data-ph-region] #tab-content-studio#tab-content-studio .magic-stat-chip {
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  min-width: 82px !important;
+  padding: 6px 12px !important;
+  background: var(--wms-panel-2) !important;
+  border: 1px solid var(--wms-line) !important;
+  border-radius: var(--wms-radius) !important;
+  line-height: 1.1 !important;
+}
+html body[data-ph-region] #tab-content-studio#tab-content-studio .magic-stat-chip small {
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.1em !important;
+  text-transform: uppercase !important;
+  color: var(--wms-muted) !important;
+}
+html body[data-ph-region] #tab-content-studio#tab-content-studio .magic-stat-chip strong {
+  margin-top: 3px !important;
+  font: 400 24px/1 'Bebas Neue', Impact, sans-serif !important;
+  letter-spacing: 0.04em !important;
+  color: var(--wms-text) !important;
+}
+
+html body[data-ph-region] #tab-content-studio#tab-content-studio #magic-set-command .magic-score-card {
+  --wms-score: 0;
+  position: relative !important;
+  display: grid !important;
+  grid-template-columns: 56px minmax(0, 1fr) !important;
+  grid-template-rows: auto auto auto !important;
+  grid-template-areas: "ring name" "ring tone" "ring hint" !important;
+  column-gap: 12px !important;
+  align-items: center !important;
+  flex: 0 1 330px !important;
+  width: 330px !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  padding: 6px 12px 6px 8px !important;
+  background: var(--wms-panel-2) !important;
+  border: 1px solid var(--wms-line) !important;
+  border-radius: var(--wms-radius) !important;
+  box-shadow: none !important;
+}
+html body[data-ph-region] #tab-content-studio#tab-content-studio #magic-set-command .magic-score-card::before {
+  content: "" !important;
+  grid-area: ring !important;
+  display: block !important;
+  position: static !important;
+  width: 56px !important;
+  height: 56px !important;
+  border-radius: 50% !important;
+  background: conic-gradient(var(--wms-ring, var(--wms-muted)) calc(var(--wms-score) * 1%), rgba(128, 128, 128, 0.28) 0) !important;
+  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 7px), #000 calc(100% - 6px)) !important;
+  mask: radial-gradient(farthest-side, transparent calc(100% - 7px), #000 calc(100% - 6px)) !important;
+  opacity: 1 !important;
+  transform: none !important;
+  filter: none !important;
+}
+html body[data-ph-region] #tab-content-studio#tab-content-studio #magic-set-command .magic-score-card::after { display: none !important; }
+html body[data-ph-region] #tab-content-studio#tab-content-studio #magic-set-command .magic-score-card[data-tone="good"] { --wms-ring: var(--wms-good); }
+html body[data-ph-region] #tab-content-studio#tab-content-studio #magic-set-command .magic-score-card[data-tone="ok"] { --wms-ring: var(--wms-warn); }
+html body[data-ph-region] #tab-content-studio#tab-content-studio #magic-set-command .magic-score-card[data-tone="low"] { --wms-ring: var(--wms-bad); }
+html body[data-ph-region] #tab-content-studio#tab-content-studio #magic-set-command .magic-score-card > strong {
+  grid-area: ring !important;
+  justify-self: center !important;
+  align-self: center !important;
+  font: 400 28px/1 'Bebas Neue', Impact, sans-serif !important;
+  color: var(--wms-text) !important;
+  text-shadow: none !important;
+  letter-spacing: 0.02em !important;
+}
+html body[data-ph-region] #tab-content-studio#tab-content-studio #magic-set-command .magic-score-card > span {
+  grid-area: name !important;
+  align-self: end !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.12em !important;
+  text-transform: uppercase !important;
+  color: var(--wms-muted) !important;
+}
+html body[data-ph-region] #tab-content-studio#tab-content-studio #magic-set-command .magic-score-card > small {
+  grid-area: tone !important;
+  font: 400 22px/1.1 'Bebas Neue', Impact, sans-serif !important;
+  letter-spacing: 0.06em !important;
+  color: var(--wms-text) !important;
+  text-transform: uppercase !important;
+}
+html body[data-ph-region] #tab-content-studio#tab-content-studio #magic-set-command .magic-score-card > .magic-score-hint {
+  grid-area: hint !important;
+  margin: 0 !important;
+  font-size: 12px !important;
+  font-weight: 500 !important;
+  line-height: 1.25 !important;
+  color: var(--wms-muted) !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+/* ------------------------------------------------------------------------------------------------
+   Steps 1 and 2: the control cards
+   ------------------------------------------------------------------------------------------------ */
+html body[data-ph-region] #tab-content-studio#tab-content-studio #studio-active-view #studio-build-controls#studio-build-controls {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) minmax(300px, 0.62fr) !important;
+  gap: 8px !important;
+  flex: 0 0 auto !important;
+  align-items: stretch !important;
+  height: auto !important;
+  min-height: 0 !important;
+  width: auto !important;
+  max-width: none !important;
+  box-sizing: border-box !important;
+  margin: 8px 14px 0 !important;
+  padding: 0 !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #studio-active-view #studio-build-controls#studio-build-controls { display: none !important; }
+
+html body[data-ph-region] #tab-content-studio#tab-content-studio #studio-build-controls .magic-step-card {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  align-content: start !important;
+  align-items: center !important;
+  gap: 8px 12px !important;
+  min-width: 0 !important;
+  padding: 8px 14px 12px !important;
+  background: var(--wms-panel) !important;
+  border: 1px solid var(--wms-line) !important;
+  border-top: 4px solid var(--wms-accent) !important;
+  border-radius: var(--wms-radius) !important;
+}
+html body[data-ph-region] #tab-content-studio#tab-content-studio #studio-build-controls .magic-step-head {
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  min-width: 0 !important;
+}
+html body[data-ph-region] #tab-content-studio#tab-content-studio #studio-build-controls .magic-step-head b {
+  display: grid !important;
+  place-items: center !important;
+  flex: 0 0 auto !important;
+  width: 24px !important;
+  height: 24px !important;
+  border-radius: 50% !important;
+  background: var(--wms-accent-btn) !important;
+  color: var(--wms-accent-ink) !important;
+  font: 400 16px/1 'Bebas Neue', Impact, sans-serif !important;
+}
+html body[data-ph-region] #tab-content-studio#tab-content-studio #studio-build-controls .magic-step-head h4 {
+  margin: 0 !important;
+  flex: 0 0 auto !important;
+  font: 400 22px/1 'Bebas Neue', Impact, sans-serif !important;
+  letter-spacing: 0.06em !important;
+  text-transform: uppercase !important;
+  color: var(--wms-text) !important;
+  background: none !important;
+  -webkit-text-fill-color: var(--wms-text) !important;
+  -webkit-text-stroke: 0 !important;
+  filter: none !important;
+}
+html body[data-ph-region] #tab-content-studio#tab-content-studio #studio-build-controls .magic-step-head p {
+  margin: 0 !important;
+  min-width: 0 !important;
+  font-size: 12px !important;
+  font-weight: 500 !important;
+  color: var(--wms-muted) !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+html body[data-ph-region] #tab-content-studio#tab-content-studio #studio-build-controls .magic-step-body { display: contents !important; }
+html body[data-ph-region] #tab-content-studio#tab-content-studio #studio-build-controls .magic-step-head { grid-column: 1 !important; grid-row: 1 !important; }
+html body[data-ph-region] #tab-content-studio#tab-content-studio #studio-build-controls .magic-step-shape .magic-utility-rail { grid-column: 2 !important; grid-row: 1 !important; margin: 0 !important; }
+html body[data-ph-region] #tab-content-studio#tab-content-studio #studio-build-controls .magic-step-shape .magic-primary-rail { grid-column: 1 / -1 !important; grid-row: 2 !important; }
+html body[data-ph-region] #tab-content-studio#tab-content-studio #studio-build-controls .magic-step-build .studio-magic-build-pair { grid-column: 1 / -1 !important; grid-row: 2 !important; }
+html body[data-ph-region] #tab-content-studio#tab-content-studio #studio-build-controls .magic-step-build .magic-build-hint { grid-column: 1 / -1 !important; grid-row: 3 !important; }
+html body[data-ph-region] #tab-content-studio#tab-content-studio #studio-build-controls .magic-step-build #btn-view-studio-set { grid-column: 2 !important; grid-row: 1 !important; }
+
+html body[data-ph-region] #tab-content-studio#tab-content-studio #studio-build-controls .magic-primary-rail,
+html body[data-ph-region] #tab-content-studio#tab-content-studio #studio-build-controls .magic-utility-rail {
+  display: flex !important;
+  flex: 0 0 auto !important;
+  flex-wrap: nowrap !important;
+  align-items: flex-end !important;
+  gap: 10px !important;
+  width: auto !important;
+  min-width: 0 !important;
+  margin: 0 !important;
+}
+html body[data-ph-region] #tab-content-studio#tab-content-studio #studio-build-controls .magic-utility-rail { margin-left: auto !important; }
+html body[data-ph-region] #tab-content-studio#tab-content-studio #studio-build-controls .magic-primary-rail > .w-px,
+html body[data-ph-region] #tab-content-studio#tab-content-studio #studio-build-controls .magic-utility-rail > .w-px { display: none !important; }
+
+html body[data-ph-region] #tab-content-studio#tab-content-studio #studio-build-controls :is(.magic-parameter-module, .magic-bpm-range) {
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: flex-start !important;
+  flex: 0 0 auto !important;
+  width: auto !important;
+  min-width: 0 !important;
+  height: auto !important;
+  min-height: 0 !important;
+  padding: 0 !important;
+  overflow: visible !important;
+  background: none !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+html body[data-ph-region] #tab-content-studio#tab-content-studio #studio-build-controls .magic-parameter-module > select { margin: 0 !important; }
+html body[data-ph-region] #tab-content-studio#tab-content-studio #studio-build-controls :is(.magic-parameter-module label, .magic-bpm-field label, .magic-module-label) {
+  display: block !important;
+  margin: 0 0 3px !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.1em !important;
+  text-transform: uppercase !important;
+  color: var(--wms-muted) !important;
+}
+html body[data-ph-region] #tab-content-studio#tab-content-studio #studio-build-controls select,
+html body[data-ph-region] #tab-content-studio#tab-content-studio #studio-build-controls input[type="number"] {
+  width: 100% !important;
+  min-width: 0 !important;
+  height: 36px !important;
+  min-height: 36px !important;
+  padding: 0 10px !important;
+  font: 700 14px/1 Barlow, 'Segoe UI', sans-serif !important;
+  letter-spacing: 0.02em !important;
+  text-transform: none !important;
+  color: var(--wms-text) !important;
+  background-color: var(--wms-panel-2) !important;
+  border: 1px solid var(--wms-line) !important;
+  border-radius: 4px !important;
+  box-shadow: none !important;
+}
+html body[data-ph-region] #tab-content-studio#tab-content-studio #studio-build-controls select { width: 112px !important; }
+html body[data-ph-region] #tab-content-studio#tab-content-studio #studio-build-controls .magic-mix-module select { width: 96px !important; }
+html body[data-ph-region] #tab-content-studio#tab-content-studio #studio-build-controls input[type="number"] { width: 64px !important; text-align: center !important; }
+html body[data-ph-region] #tab-content-studio#tab-content-studio #studio-build-controls select:hover,
+html body[data-ph-region] #tab-content-studio#tab-content-studio #studio-build-controls input[type="number"]:hover { border-color: var(--wms-muted) !important; }
+
+html body[data-ph-region] #tab-content-studio#tab-content-studio #studio-build-controls .magic-bpm-range {
+  display: grid !important;
+  grid-template-columns: auto auto !important;
+  grid-template-rows: auto auto !important;
+  align-items: end !important;
+  gap: 0 8px !important;
+}
+html body[data-ph-region] #tab-content-studio#tab-content-studio #studio-build-controls .magic-bpm-range .magic-module-label { grid-column: 1 / -1 !important; }
+html body[data-ph-region] #tab-content-studio#tab-content-studio #studio-build-controls .magic-bpm-field {
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: none !important;
+}
+html body[data-ph-region] #tab-content-studio#tab-content-studio #studio-build-controls .magic-bpm-field label { margin: 0 !important; }
+html body[data-ph-region] #tab-content-studio#tab-content-studio #studio-build-controls .magic-bpm-start::after {
+  content: "\2192" !important;
+  margin-left: 4px !important;
+  color: var(--wms-muted) !important;
+  font-size: 16px !important;
+}
+
+/* Quiet buttons: +Mid Point, Clear */
+html body[data-ph-region] #tab-content-studio#tab-content-studio #studio-build-controls :is(.magic-midpoint-btn, .magic-clear-btn) {
+  height: 36px !important;
+  min-height: 36px !important;
+  padding: 0 14px !important;
+  font: 700 13px/1 Barlow, 'Segoe UI', sans-serif !important;
+  letter-spacing: 0.04em !important;
+  text-transform: uppercase !important;
+  color: var(--wms-text) !important;
+  background: transparent !important;
+  border: 1px solid var(--wms-line) !important;
+  border-radius: 4px !important;
+  box-shadow: none !important;
+  cursor: pointer !important;
+}
+html body[data-ph-region] #tab-content-studio#tab-content-studio #studio-build-controls .magic-midpoint-btn:hover { background: var(--wms-panel-2) !important; border-color: var(--wms-cyan) !important; color: var(--wms-cyan) !important; }
+html body[data-ph-region] #tab-content-studio#tab-content-studio #studio-build-controls .magic-clear-btn { color: var(--wms-muted) !important; }
+html body[data-ph-region] #tab-content-studio#tab-content-studio #studio-build-controls .magic-clear-btn:hover { background: var(--wms-panel-2) !important; border-color: var(--wms-bad) !important; color: var(--wms-bad) !important; }
+html body[data-ph-region] #tab-content-studio#tab-content-studio #studio-build-controls .magic-est-tracks { display: flex !important; align-items: baseline !important; gap: 6px !important; text-align: left !important; }
+html body[data-ph-region] #tab-content-studio#tab-content-studio #studio-build-controls .magic-est-tracks p:first-child {
+  margin: 0 !important;
+  font: 400 26px/1 'Bebas Neue', Impact, sans-serif !important;
+  letter-spacing: 0.04em !important;
+  color: var(--wms-text) !important;
+}
+html body[data-ph-region] #tab-content-studio#tab-content-studio #studio-build-controls .magic-est-tracks p:last-child {
+  margin: 2px 0 0 !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.08em !important;
+  color: var(--wms-muted) !important;
+  white-space: nowrap !important;
+}
+
+/* Step 2: one obvious primary button */
+html body[data-ph-region] #tab-content-studio#tab-content-studio #studio-build-controls .studio-magic-build-pair {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr) !important;
+  align-items: stretch !important;
+  gap: 8px !important;
+  width: 100% !important;
+  height: auto !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+html body[data-ph-region] #tab-content-studio#tab-content-studio #studio-build-controls .studio-magic-build-pair button {
+  height: 44px !important;
+  min-height: 44px !important;
+  margin: 0 !important;
+  padding: 0 10px !important;
+  align-self: stretch !important;
+  font: 400 20px/1 'Bebas Neue', Impact, sans-serif !important;
+  letter-spacing: 0.08em !important;
+  text-transform: uppercase !important;
+  white-space: normal !important;
+  border-radius: 4px !important;
+  cursor: pointer !important;
+  opacity: 1 !important;
+}
+html body[data-ph-region] #tab-content-studio#tab-content-studio #studio-build-controls #btn-magic-set {
+  grid-column: 1 !important;
+  grid-row: 1 !important;
+  color: var(--wms-accent-ink) !important;
+  background: var(--wms-accent-btn) !important;
+  border: 2px solid #000 !important;
+  box-shadow: var(--wms-shadow) !important;
+}
+html body[data-ph-region] #tab-content-studio#tab-content-studio #studio-build-controls #btn-magic-set:hover:not(:disabled) { filter: brightness(1.12) !important; }
+html body[data-ph-region] #tab-content-studio#tab-content-studio #studio-build-controls #btn-magic-set:active:not(:disabled) { transform: translate(2px, 2px) !important; box-shadow: 1px 1px 0 #000 !important; }
+html body[data-ph-region] #tab-content-studio#tab-content-studio #studio-build-controls #btn-magic-set:disabled {
+  cursor: progress !important;
+  background: repeating-linear-gradient(135deg, #5b1219 0 10px, #6d1820 10px 20px) !important;
+  box-shadow: none !important;
+}
+html body[data-ph-region] #tab-content-studio#tab-content-studio #studio-build-controls #btn-build-around-tracks {
+  grid-column: 2 !important;
+  grid-row: 1 !important;
+  font-size: 16px !important;
+  line-height: 1.05 !important;
+  color: var(--wms-text) !important;
+  background: transparent !important;
+  border: 1px solid var(--wms-line) !important;
+  box-shadow: none !important;
+}
+html body[data-ph-region] #tab-content-studio#tab-content-studio #studio-build-controls #btn-build-around-tracks:hover:not(:disabled) { border-color: var(--wms-cyan) !important; color: var(--wms-cyan) !important; background: var(--wms-panel-2) !important; }
+html body[data-ph-region] #tab-content-studio#tab-content-studio #studio-build-controls #btn-build-around-tracks:disabled {
+  cursor: not-allowed !important;
+  color: var(--wms-muted) !important;
+  border-style: dashed !important;
+  background: transparent !important;
+}
+html body[data-ph-region] #tab-content-studio#tab-content-studio #studio-build-controls .magic-build-hint {
+  margin: 0 !important;
+  font-size: 12px !important;
+  font-weight: 500 !important;
+  line-height: 1.3 !important;
+  color: var(--wms-muted) !important;
+}
+
+/* ------------------------------------------------------------------------------------------------
+   The chart is the hero
+   ------------------------------------------------------------------------------------------------ */
+html body[data-ph-region].studio-magic-mode #tab-content-studio#tab-content-studio #studio-active-view#studio-active-view {
+  overflow: hidden !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+html body[data-ph-region].studio-magic-mode #tab-content-studio#tab-content-studio #studio-active-view #studio-workspace#studio-workspace {
+  flex: 1 1 0 !important;
+  min-height: 0 !important;
+  margin: 8px 14px 12px !important;
+  width: auto !important;
+  max-width: none !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+html body[data-ph-region].studio-magic-mode #tab-content-studio#tab-content-studio #studio-active-view #graph-container#graph-container {
+  position: relative !important;
+  flex: 1 1 0 !important;
+  min-height: 250px !important;
+  height: auto !important;
+  width: 100% !important;
+  margin: 0 !important;
+  padding: 56px 16px 46px 8px !important;
+  box-sizing: border-box !important;
+  overflow: hidden !important;
+  background: var(--wms-panel) !important;
+  border: 1px solid var(--wms-line) !important;
+  border-radius: var(--wms-radius) !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+}
+html body[data-ph-region].studio-magic-mode #tab-content-studio#tab-content-studio #graph-container #bpmChart { position: relative !important; z-index: 2 !important; }
+
+/* phase zones above the plot */
+html body[data-ph-region].studio-magic-mode #tab-content-studio#tab-content-studio #graph-container .magic-phase-band {
+  position: absolute !important;
+  top: 10px !important;
+  left: var(--wms-plot-left, 56px) !important;
+  width: calc(var(--wms-plot-right, 1100px) - var(--wms-plot-left, 56px)) !important;
+  height: 40px !important;
+  z-index: 3 !important;
+  display: grid !important;
+  grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+  gap: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  background: none !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+html body[data-ph-region].studio-magic-mode #tab-content-studio#tab-content-studio #graph-container .magic-phase-band > div {
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  gap: 2px !important;
+  min-width: 0 !important;
+  height: 40px !important;
+  padding: 0 10px !important;
+  background: rgba(128, 160, 190, 0.16) !important;
+  border: 0 !important;
+  border-top: 3px solid rgba(150, 190, 220, 0.9) !important;
+  border-left: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+html body[data-ph-region].studio-magic-mode #tab-content-studio#tab-content-studio #graph-container .magic-phase-band > .magic-phase-build,
+html body[data-ph-region].studio-magic-mode #tab-content-studio#tab-content-studio #graph-container .magic-phase-band > .magic-phase-drive { background: rgba(242, 190, 70, 0.14) !important; border-top-color: #f2be46 !important; }
+html body[data-ph-region].studio-magic-mode #tab-content-studio#tab-content-studio #graph-container .magic-phase-band > .magic-phase-peak { background: rgba(226, 70, 80, 0.2) !important; border-top-color: #ff6b73 !important; }
+html body[data-ph-region].studio-magic-mode #tab-content-studio#tab-content-studio #graph-container .magic-phase-band > :first-child { border-left: 0 !important; border-radius: 4px 0 0 0 !important; }
+html body[data-ph-region].studio-magic-mode #tab-content-studio#tab-content-studio #graph-container .magic-phase-band > :last-child { border-radius: 0 4px 0 0 !important; }
+html body[data-ph-region].studio-magic-mode #tab-content-studio#tab-content-studio #graph-container .magic-phase-band :is(strong, input) {
+  width: 100% !important;
+  height: auto !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  font: 400 19px/1 'Bebas Neue', Impact, sans-serif !important;
+  letter-spacing: 0.07em !important;
+  text-transform: uppercase !important;
+  color: var(--wms-text) !important;
+  background: transparent !important;
+  border: 0 !important;
+  border-bottom: 1px dashed transparent !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  outline-offset: 2px !important;
+}
+html body[data-ph-region].studio-magic-mode #tab-content-studio#tab-content-studio #graph-container .magic-phase-band input::placeholder { color: var(--wms-text) !important; opacity: 1 !important; }
+html body[data-ph-region].studio-magic-mode #tab-content-studio#tab-content-studio #graph-container .magic-phase-band input:hover { border-bottom-color: var(--wms-muted) !important; }
+html body[data-ph-region].studio-magic-mode #tab-content-studio#tab-content-studio #graph-container .magic-phase-band span {
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.02em !important;
+  text-transform: none !important;
+  color: var(--wms-muted) !important;
+  background: none !important;
+  white-space: nowrap !important;
+}
+
+/* axis captions */
+html body[data-ph-region].studio-magic-mode #tab-content-studio#tab-content-studio #graph-container .magic-graph-hud {
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: 3 !important;
+  pointer-events: none !important;
+  background: none !important;
+  border: 0 !important;
+}
+html body[data-ph-region].studio-magic-mode #tab-content-studio#tab-content-studio #graph-container .magic-axis-title.bpm {
+  position: absolute !important;
+  left: 12px !important;
+  top: 18px !important;
+  display: block !important;
+  width: auto !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  transform: none !important;
+  background: none !important;
+}
+html body[data-ph-region].studio-magic-mode #tab-content-studio#tab-content-studio #graph-container .magic-axis-title.bpm span { display: none !important; }
+html body[data-ph-region].studio-magic-mode #tab-content-studio#tab-content-studio #graph-container .magic-axis-title.bpm strong {
+  font: 400 24px/1 'Bebas Neue', Impact, sans-serif !important;
+  letter-spacing: 0.06em !important;
+  color: var(--wms-accent-text) !important;
+  -webkit-text-fill-color: var(--wms-accent-text) !important;
+  text-shadow: none !important;
+}
+html body[data-ph-region].studio-magic-mode #tab-content-studio#tab-content-studio #graph-container :is(.magic-axis-title.time, .magic-dot-summary) { display: none !important; }
+
+/* empty-state card over the plot */
+html body[data-ph-region].studio-magic-mode #tab-content-studio#tab-content-studio #graph-container .magic-empty-state {
+  position: absolute !important;
+  z-index: 4 !important;
+  left: calc(var(--wms-plot-left, 56px) + 24px) !important;
+  top: calc(var(--wms-plot-top, 60px) + 18px) !important;
+  display: none !important;
+  max-width: 430px !important;
+  padding: 14px 18px !important;
+  pointer-events: none !important;
+  background: var(--wms-panel) !important;
+  border: 1px solid var(--wms-line) !important;
+  border-left: 4px solid var(--wms-accent) !important;
+  border-radius: var(--wms-radius) !important;
+  box-shadow: var(--wms-shadow) !important;
+}
+html body[data-ph-region].studio-magic-mode #tab-content-studio#tab-content-studio #graph-container[data-magic-empty="true"] .magic-empty-state { display: block !important; }
+html body[data-ph-region].studio-magic-mode #tab-content-studio#tab-content-studio #graph-container .magic-empty-state strong {
+  display: block !important;
+  text-transform: uppercase !important;
+  margin-bottom: 6px !important;
+  font: 400 26px/1 'Bebas Neue', Impact, sans-serif !important;
+  letter-spacing: 0.06em !important;
+  color: var(--wms-text) !important;
+}
+html body[data-ph-region].studio-magic-mode #tab-content-studio#tab-content-studio #graph-container .magic-empty-state ol {
+  margin: 0 !important;
+  padding: 0 0 0 20px !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  line-height: 1.45 !important;
+  color: var(--wms-muted) !important;
+  list-style: decimal !important;
+}
+html body[data-ph-region].studio-magic-mode #tab-content-studio#tab-content-studio #graph-container .magic-empty-state em { font-style: normal !important; font-weight: 700 !important; color: var(--wms-text) !important; }
+
+/* legend row (target vs actual) and totals */
+html body[data-ph-region].studio-magic-mode #tab-content-studio#tab-content-studio #graph-container .magic-chart-footer {
+  position: absolute !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  z-index: 3 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 16px !important;
+  height: 42px !important;
+  min-height: 0 !important;
+  max-height: 42px !important;
+  box-sizing: border-box !important;
+  padding: 0 16px !important;
+  margin: 0 !important;
+  background: var(--wms-panel-2) !important;
+  border: 0 !important;
+  border-top: 1px solid var(--wms-line) !important;
+}
+html body[data-ph-region].studio-magic-mode #tab-content-studio#tab-content-studio #graph-container .magic-legend {
+  display: flex !important;
+  align-items: center !important;
+  flex-wrap: nowrap !important;
+  gap: 18px !important;
+  min-width: 0 !important;
+  margin: 0 !important;
+}
+html body[data-ph-region].studio-magic-mode #tab-content-studio#tab-content-studio #graph-container .magic-legend > span {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.02em !important;
+  text-transform: none !important;
+  white-space: nowrap !important;
+  color: var(--wms-text) !important;
+}
+html body[data-ph-region].studio-magic-mode #tab-content-studio#tab-content-studio #graph-container .magic-legend > span:not(.magic-legend-target):not(.magic-legend-actual):not(:last-child) { display: none !important; }
+html body[data-ph-region].studio-magic-mode #tab-content-studio#tab-content-studio #graph-container .magic-legend i {
+  display: inline-block !important;
+  position: relative !important;
+  flex: 0 0 auto !important;
+  width: 30px !important;
+  height: 12px !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: none !important;
+  box-shadow: none !important;
+}
+html body[data-ph-region].studio-magic-mode #tab-content-studio#tab-content-studio #graph-container .magic-legend i.target { border-top: 3px dashed var(--wms-cyan) !important; height: 0 !important; top: 0 !important; }
+html body[data-ph-region].studio-magic-mode #tab-content-studio#tab-content-studio #graph-container .magic-legend i.target::after {
+  content: "" !important; position: absolute !important; left: 9px !important; top: -9px !important; width: 10px !important; height: 10px !important;
+  border-radius: 50% !important; background: var(--wms-cyan) !important; border: 2px solid var(--wms-panel-2) !important;
+}
+html body[data-ph-region].studio-magic-mode #tab-content-studio#tab-content-studio #graph-container .magic-legend i.actual { border-top: 3px solid var(--wms-accent) !important; height: 0 !important; top: 0 !important; }
+html body[data-ph-region].studio-magic-mode #tab-content-studio#tab-content-studio #graph-container .magic-legend i.actual::after {
+  content: "" !important; position: absolute !important; left: 9px !important; top: -8px !important; width: 10px !important; height: 10px !important;
+  border-radius: 50% !important; background: var(--wms-accent) !important; border: 2px solid var(--wms-panel-2) !important;
+}
+html body[data-ph-region].studio-magic-mode #tab-content-studio#tab-content-studio #graph-container .magic-legend i.empty {
+  width: 12px !important; height: 12px !important; border: 2px dashed var(--wms-muted) !important; border-radius: 50% !important;
+}
+html body[data-ph-region].studio-magic-mode #tab-content-studio#tab-content-studio #graph-container .magic-chart-stats {
+  display: flex !important;
+  align-items: center !important;
+  gap: 18px !important;
+  flex: 0 0 auto !important;
+  margin: 0 !important;
+}
+html body[data-ph-region].studio-magic-mode #tab-content-studio#tab-content-studio #graph-container .magic-chart-stats > span:last-child { display: inline !important; }
+html body[data-ph-region].studio-magic-mode #tab-content-studio#tab-content-studio #graph-container .magic-chart-stats > span {
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.02em !important;
+  text-transform: none !important;
+  white-space: nowrap !important;
+  color: var(--wms-muted) !important;
+}
+html body[data-ph-region].studio-magic-mode #tab-content-studio#tab-content-studio #graph-container .magic-chart-stats strong {
+  font: 400 20px/1 'Bebas Neue', Impact, sans-serif !important;
+  letter-spacing: 0.04em !important;
+  color: var(--wms-text) !important;
+}
+
+/* Refine in Manual Build (appears once a set exists): the next step, right under the Build buttons */
+html body[data-ph-region] #tab-content-studio#tab-content-studio #studio-build-controls #btn-view-studio-set:not(.hidden) {
+  position: static !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  order: 0 !important;
+  width: auto !important;
+  height: 40px !important;
+  min-width: 0 !important;
+  margin: 0 !important;
+  padding: 0 12px !important;
+  gap: 14px !important;
+  color: #07140b !important;
+  background: var(--wms-good) !important;
+  border: 2px solid #000 !important;
+  border-radius: 4px !important;
+  box-shadow: var(--wms-shadow) !important;
+  cursor: pointer !important;
+}
+html body[data-ph-region] #tab-content-studio#tab-content-studio #studio-build-controls #btn-view-studio-set.hidden { display: none !important; }
+html body[data-ph-region] #tab-content-studio#tab-content-studio #studio-build-controls #btn-view-studio-set strong { font: 400 19px/1 'Bebas Neue', Impact, sans-serif !important; letter-spacing: 0.08em !important; text-transform: uppercase !important; color: inherit !important; }
+html body[data-ph-region] #tab-content-studio#tab-content-studio #studio-build-controls #btn-view-studio-set small { display: none !important; font-size: 12px !important; font-weight: 700 !important; color: #07140b !important; text-transform: none !important; letter-spacing: 0.01em !important; }
+html body[data-ph-region] #tab-content-studio#tab-content-studio #studio-build-controls #btn-view-studio-set .magic-studio-return-copy { display: flex !important; flex-direction: column !important; align-items: flex-start !important; gap: 1px !important; text-align: left !important; }
+html body[data-ph-region] #tab-content-studio#tab-content-studio #studio-build-controls #btn-view-studio-set svg { width: 18px !important; height: 18px !important; }
+html body[data-ph-region] #tab-content-studio#tab-content-studio #studio-build-controls #btn-view-studio-set:hover { filter: brightness(1.08) !important; }
+html body[data-ph-region].light-mode #tab-content-studio#tab-content-studio #studio-build-controls #btn-view-studio-set:not(.hidden) { color: #fff !important; }
+html body[data-ph-region].light-mode #tab-content-studio#tab-content-studio #studio-build-controls #btn-view-studio-set small { color: #fff !important; }
+/* once the set exists the Build card shows the next step in its header and the head text makes room */
+html body[data-ph-region] #tab-content-studio#tab-content-studio #studio-build-controls .magic-step-build:has(#btn-view-studio-set:not(.hidden)) .magic-step-head p { display: none !important; }
+
+/* other buttons that float over the chart */
+html body[data-ph-region].studio-magic-mode #tab-content-studio#tab-content-studio #graph-container :is(#btn-fill-set, #btn-generate-from-anchor) {
+  z-index: 5 !important;
+  top: 62px !important;
+  border: 2px solid #000 !important;
+  border-radius: 4px !important;
+  box-shadow: var(--wms-shadow) !important;
+  font: 400 17px/1 'Bebas Neue', Impact, sans-serif !important;
+  letter-spacing: 0.08em !important;
+  padding: 8px 14px !important;
+}
+html body[data-ph-region].studio-magic-mode #tab-content-studio#tab-content-studio #graph-container #btn-generate-from-anchor { left: calc(var(--wms-plot-left, 56px) + 10px) !important; color: var(--wms-accent-ink) !important; background: var(--wms-accent) !important; }
+html body[data-ph-region].studio-magic-mode #tab-content-studio#tab-content-studio #graph-container #btn-fill-set { right: 24px !important; background: var(--wms-cyan) !important; }
+
+/* tracks of the set are not shown under the chart; they live in Manual Build */
+html body[data-ph-region].studio-magic-mode #tab-content-studio#tab-content-studio :is(#magic-list-head, #magic-route-banner, #magic-manual-empty) { display: none !important; }
+
+/* ------------------------------------------------------------------------------------------------
+   Manual Build and Harmonic Route: tab bar
+   ------------------------------------------------------------------------------------------------ */
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #studio-active-view .studio-tabbar {
+  display: flex !important;
+  align-items: center !important;
+  flex: 0 0 auto !important;
+  gap: 10px !important;
+  margin: 8px 14px 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: none !important;
+}
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #studio-mode-controls#studio-mode-controls {
+  display: flex !important;
+  align-items: center !important;
+  flex-wrap: wrap !important;
+  gap: 8px !important;
+  width: 100% !important;
+  min-height: 0 !important;
+  height: auto !important;
+  padding: 8px 10px !important;
+  background: var(--wms-panel) !important;
+  border: 1px solid var(--wms-line) !important;
+  border-radius: var(--wms-radius) !important;
+  box-shadow: none !important;
+}
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #studio-mode-controls .studio-mode-selector { display: inline-flex !important; gap: 8px !important; align-items: center !important; }
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #studio-mode-controls .studio-mode-divider { display: none !important; }
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #studio-mode-controls :is(.studio-mode-tab, #btn-optimize) {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  height: 40px !important;
+  min-height: 40px !important;
+  min-width: 0 !important;
+  width: auto !important;
+  margin: 0 !important;
+  padding: 0 16px !important;
+  font: 400 19px/1 'Bebas Neue', Impact, sans-serif !important;
+  letter-spacing: 0.08em !important;
+  text-transform: uppercase !important;
+  color: var(--wms-text) !important;
+  background: var(--wms-panel-2) !important;
+  border: 1px solid var(--wms-line) !important;
+  border-radius: 4px !important;
+  box-shadow: none !important;
+  cursor: pointer !important;
+  opacity: 1 !important;
+  transform: none !important;
+}
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #studio-mode-controls :is(.studio-mode-tab, #btn-optimize):hover:not(:disabled) { border-color: var(--wms-muted) !important; }
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #studio-mode-controls#studio-mode-controls .studio-mode-tab.active,
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #studio-mode-controls#studio-mode-controls .studio-mode-tab[aria-pressed="true"] {
+  background: var(--wms-accent) !important;
+  border-color: #000 !important;
+  color: var(--wms-accent-ink) !important;
+  box-shadow: var(--wms-shadow) !important;
+}
+/* the two logo tabs (DAW, Magic Set): the logo art is too wide for a compact bar, so they read as text like the others */
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #studio-mode-controls :is(#studio-open-daw, #studio-tab-magic) { padding: 0 16px !important; overflow: hidden !important; }
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #studio-mode-controls :is(#studio-open-daw, #studio-tab-magic) .axiom-tool-logo { display: none !important; }
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #studio-mode-controls #studio-open-daw::before { content: "Studio DAW" !important; }
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #studio-mode-controls #studio-tab-magic::before { content: "Magic Set" !important; }
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #studio-mode-controls :is(#studio-open-daw, #studio-tab-magic)::after { display: none !important; }
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #studio-mode-controls :is(#studio-open-daw, #studio-tab-magic)::before { position: static !important; display: inline !important; opacity: 1 !important; transform: none !important; background: none !important; width: auto !important; height: auto !important; color: inherit !important; }
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #studio-mode-controls #btn-optimize { margin-left: auto !important; border-color: var(--wms-cyan) !important; color: var(--wms-cyan) !important; background: transparent !important; }
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #studio-mode-controls #btn-optimize img { width: 18px !important; height: 18px !important; }
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #studio-mode-controls #btn-optimize:hover:not(:disabled) { background: var(--wms-panel-2) !important; }
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #studio-mode-controls #btn-optimize:disabled {
+  cursor: not-allowed !important;
+  color: var(--wms-muted) !important;
+  border: 1px dashed var(--wms-line) !important;
+  background: transparent !important;
+}
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #studio-mode-controls #btn-optimize[aria-busy="true"] { cursor: progress !important; background: var(--wms-panel-2) !important; }
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #studio-mode-controls #btn-optimize.is-completed { background: transparent !important; color: var(--wms-cyan) !important; border-color: var(--wms-cyan) !important; }
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #studio-mode-controls .route-tab-hidden { display: none !important; }
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #studio-mode-controls#studio-mode-controls #studio-tab-route:not(.route-tab-hidden) { background: var(--wms-cyan) !important; color: #04202a !important; border-color: #000 !important; box-shadow: var(--wms-shadow) !important; }
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #magic-suggest-hint {
+  order: 5 !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  color: var(--wms-muted) !important;
+}
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #magic-suggest-hint:empty { display: none !important; }
+
+/* ------------------------------------------------------------------------------------------------
+   Manual Build / Harmonic Route: list
+   ------------------------------------------------------------------------------------------------ */
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #studio-active-view #studio-workspace#studio-workspace {
+  flex: 1 1 0 !important;
+  min-height: 0 !important;
+  margin: 8px 14px 12px !important;
+  width: auto !important;
+  max-width: none !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #studio-workspace #energy-ladder#energy-ladder {
+  flex: 0 0 auto !important;
+  height: auto !important;
+  min-height: 0 !important;
+  margin: 0 0 8px !important;
+  padding: 6px 12px !important;
+  background: var(--wms-panel) !important;
+  border: 1px solid var(--wms-line) !important;
+  border-radius: var(--wms-radius) !important;
+  box-shadow: none !important;
+}
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #magic-route-banner:not([hidden]) {
+  display: flex !important;
+  align-items: center !important;
+  flex-wrap: wrap !important;
+  gap: 10px 16px !important;
+  flex: 0 0 auto !important;
+  margin: 0 0 8px !important;
+  padding: 10px 14px !important;
+  background: var(--wms-panel) !important;
+  border: 1px solid var(--wms-cyan) !important;
+  border-left: 6px solid var(--wms-cyan) !important;
+  border-radius: var(--wms-radius) !important;
+}
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #magic-route-banner[hidden] { display: none !important; }
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #magic-route-banner .magic-route-copy { display: flex !important; flex-direction: column !important; gap: 2px !important; flex: 0 0 auto !important; }
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #magic-route-banner .magic-route-copy strong { font: 400 24px/1 'Bebas Neue', Impact, sans-serif !important; text-transform: uppercase !important; letter-spacing: 0.07em !important; color: var(--wms-cyan) !important; }
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #magic-route-banner .magic-route-copy span { font-size: 13px !important; font-weight: 500 !important; color: var(--wms-muted) !important; }
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #magic-route-keys {
+  display: flex !important;
+  flex: 1 1 260px !important;
+  flex-wrap: wrap !important;
+  align-items: center !important;
+  gap: 4px !important;
+  min-width: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  list-style: none !important;
+}
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #magic-route-keys li {
+  margin: 0 !important;
+  padding: 3px 8px !important;
+  font: 400 16px/1 'Bebas Neue', Impact, sans-serif !important;
+  letter-spacing: 0.05em !important;
+  border-radius: 3px !important;
+  color: #fff !important;
+  background: #555 !important;
+}
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #magic-route-keys li:not(:last-child)::after { content: "\2192"; margin-left: 8px; color: inherit; font-family: Barlow, sans-serif; }
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #magic-route-keys li.more { background: transparent !important; color: var(--wms-muted) !important; }
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #magic-route-back {
+  flex: 0 0 auto !important;
+  height: 40px !important;
+  padding: 0 16px !important;
+  font: 400 19px/1 'Bebas Neue', Impact, sans-serif !important;
+  letter-spacing: 0.08em !important;
+  text-transform: uppercase !important;
+  color: var(--wms-text) !important;
+  background: var(--wms-panel-2) !important;
+  border: 2px solid var(--wms-text) !important;
+  border-radius: 4px !important;
+  cursor: pointer !important;
+}
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #magic-route-back::before { content: "\2190  "; font-family: Barlow, sans-serif; }
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #magic-route-back:hover { background: var(--wms-text) !important; color: var(--wms-panel) !important; }
+
+/* column header (always visible above the scrolling list) and the rows share one grid */
+html body[data-ph-region] #tab-content-studio#tab-content-studio {
+  --wms-cols: 22px 34px minmax(150px, 1fr) 54px 62px 74px 50px 148px 26px 26px;
+}
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #magic-list-head {
+  display: grid !important;
+  grid-template-columns: var(--wms-cols) !important;
+  align-items: center !important;
+  column-gap: 8px !important;
+  flex: 0 0 auto !important;
+  margin: 0 !important;
+  padding: 6px 28px 6px 11px !important;
+  background: var(--wms-panel-2) !important;
+  border: 1px solid var(--wms-line) !important;
+  border-radius: var(--wms-radius) var(--wms-radius) 0 0 !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.1em !important;
+  text-transform: uppercase !important;
+  color: var(--wms-muted) !important;
+}
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #magic-list-head .mlh-num { grid-column: 2 !important; text-align: center !important; }
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #magic-list-head .mlh-track { grid-column: 3 !important; }
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #magic-list-head .mlh-bpm { grid-column: 4 !important; text-align: center !important; }
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #magic-list-head .mlh-key { grid-column: 5 !important; text-align: center !important; }
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #magic-list-head .mlh-harm { grid-column: 6 !important; text-align: center !important; }
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #magic-list-head .mlh-time { grid-column: 7 !important; text-align: center !important; }
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #magic-list-head .mlh-act { display: none !important; }
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #magic-list-head:has(+ #active-playlist-container > .text-center),
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #magic-list-head:has(+ #active-playlist-container:empty) { display: none !important; }
+
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #studio-workspace #active-playlist-container#active-playlist-container {
+  flex: 1 1 0 !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+  padding: 8px 0 16px !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  scrollbar-gutter: stable !important;
+  counter-reset: wms-row !important;
+  background: rgba(10, 8, 8, 0.55) !important;
+  border: 1px solid var(--wms-line) !important;
+  border-top: 0 !important;
+  border-radius: 0 0 var(--wms-radius) var(--wms-radius) !important;
+}
+html body[data-ph-region].light-mode:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #studio-workspace #active-playlist-container#active-playlist-container { background: rgba(255, 255, 255, 0.6) !important; }
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #active-playlist-container::before,
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #active-playlist-container::after { display: none !important; }
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #active-playlist-container:has(> .text-center) { display: none !important; }
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #magic-manual-empty { display: none !important; }
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #active-playlist-container:has(> .text-center) ~ #magic-manual-empty {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 10px !important;
+  flex: 1 1 0 !important;
+  min-height: 200px !important;
+  padding: 24px !important;
+  text-align: center !important;
+  background: var(--wms-panel) !important;
+  border: 2px dashed var(--wms-line) !important;
+  border-radius: var(--wms-radius) !important;
+}
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #magic-manual-empty strong { font: 400 34px/1 'Bebas Neue', Impact, sans-serif !important; letter-spacing: 0.06em !important; color: var(--wms-text) !important; }
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #magic-manual-empty p { margin: 0 !important; max-width: 520px !important; font-size: 15px !important; font-weight: 500 !important; line-height: 1.4 !important; color: var(--wms-muted) !important; }
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #magic-manual-empty em { font-style: normal !important; font-weight: 700 !important; color: var(--wms-text) !important; }
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #magic-manual-empty small { max-width: 520px !important; font-size: 13px !important; font-weight: 500 !important; line-height: 1.35 !important; color: var(--wms-muted) !important; }
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio .magic-manual-empty-actions { display: flex !important; gap: 10px !important; margin: 4px 0 !important; }
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio .magic-manual-empty-actions button {
+  height: 42px !important;
+  padding: 0 20px !important;
+  font: 400 20px/1 'Bebas Neue', Impact, sans-serif !important;
+  letter-spacing: 0.08em !important;
+  text-transform: uppercase !important;
+  color: var(--wms-text) !important;
+  background: transparent !important;
+  border: 1px solid var(--wms-line) !important;
+  border-radius: 4px !important;
+  cursor: pointer !important;
+}
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio .magic-manual-empty-actions button.primary { color: var(--wms-accent-ink) !important; background: var(--wms-accent) !important; border: 2px solid #000 !important; box-shadow: var(--wms-shadow) !important; }
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio .magic-manual-empty-actions button:hover { filter: brightness(1.15) !important; }
+
+/* rows */
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #active-playlist-container#active-playlist-container .playlist-row.studio-transition-row.axiom-focus-deck-row {
+  position: relative !important;
+  display: grid !important;
+  grid-template-columns: var(--wms-cols) !important;
+  align-items: center !important;
+  column-gap: 8px !important;
+  min-height: 62px !important;
+  height: auto !important;
+  margin: 0 0 8px !important;
+  padding: 6px 10px !important;
+  background: var(--wms-panel) !important;
+  border: 1px solid var(--wms-line) !important;
+  border-radius: var(--wms-radius) !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  transform: none !important;
+  cursor: default !important;
+  overflow: visible !important;
+}
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #active-playlist-container#active-playlist-container .playlist-row.studio-transition-row.axiom-focus-deck-row > * { min-width: 0 !important; margin: 0 !important; }
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #active-playlist-container#active-playlist-container .playlist-row.studio-transition-row.axiom-focus-deck-row::before {
+  counter-increment: wms-row !important;
+  content: counter(wms-row, decimal-leading-zero) !important;
+  display: block !important;
+  visibility: visible !important;
+  grid-column: 2 !important;
+  grid-row: 1 !important;
+  position: static !important;
+  inset: auto !important;
+  width: auto !important;
+  height: auto !important;
+  background: none !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  transform: none !important;
+  opacity: 1 !important;
+  text-align: center !important;
+  font: 400 22px/1 'Bebas Neue', Impact, sans-serif !important;
+  letter-spacing: 0.04em !important;
+  color: var(--wms-muted) !important;
+}
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #active-playlist-container#active-playlist-container .playlist-row.studio-transition-row.axiom-focus-deck-row::after { display: none !important; }
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #active-playlist-container#active-playlist-container .playlist-row.studio-transition-row.axiom-focus-deck-row:hover { background: var(--wms-panel-2) !important; border-color: var(--wms-muted) !important; }
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #active-playlist-container#active-playlist-container .playlist-row.studio-transition-row.axiom-focus-deck-row:focus-visible { border-color: var(--wms-cyan) !important; }
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #active-playlist-container#active-playlist-container .playlist-row.studio-transition-row.axiom-focus-deck-row.playing-track {
+  background: var(--wms-panel-2) !important;
+  border-color: var(--wms-accent) !important;
+  box-shadow: inset 5px 0 0 var(--wms-accent) !important;
+}
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #active-playlist-container#active-playlist-container .playlist-row.studio-transition-row.axiom-focus-deck-row.studio-sortable-ghost { opacity: 1 !important; background: transparent !important; border: 2px dashed var(--wms-cyan) !important; }
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #active-playlist-container#active-playlist-container .playlist-row.studio-transition-row.axiom-focus-deck-row.studio-sortable-ghost > * { visibility: hidden !important; }
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #active-playlist-container#active-playlist-container .playlist-row.studio-transition-row.axiom-focus-deck-row.studio-sortable-chosen,
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #active-playlist-container#active-playlist-container .playlist-row.studio-transition-row.axiom-focus-deck-row.studio-sortable-drag { background: var(--wms-panel-2) !important; border-color: var(--wms-cyan) !important; box-shadow: 0 8px 22px rgba(0, 0, 0, 0.55) !important; }
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #active-playlist-container#active-playlist-container .playlist-row.studio-transition-row.axiom-focus-deck-row .axiom-focus-marker,
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #active-playlist-container#active-playlist-container .playlist-row.studio-transition-row.axiom-focus-deck-row > .absolute.w-px { display: none !important; }
+
+/* grid placement of the row's pieces */
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #active-playlist-container#active-playlist-container .playlist-row.studio-transition-row.axiom-focus-deck-row .drag-handle {
+  grid-column: 1 !important;
+  grid-row: 1 !important;
+  display: grid !important;
+  place-items: center !important;
+  width: 22px !important;
+  height: 36px !important;
+  padding: 0 !important;
+  color: var(--wms-muted) !important;
+  cursor: grab !important;
+  position: static !important;
+}
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #active-playlist-container#active-playlist-container .playlist-row.studio-transition-row.axiom-focus-deck-row .drag-handle:hover { color: var(--wms-text) !important; }
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #active-playlist-container#active-playlist-container .playlist-row.studio-transition-row.axiom-focus-deck-row .drag-handle svg { width: 18px !important; height: 18px !important; }
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #active-playlist-container#active-playlist-container .playlist-row.studio-transition-row.axiom-focus-deck-row .studio-row-main {
+  grid-column: 3 !important;
+  grid-row: 1 !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  min-width: 0 !important;
+  padding: 0 !important;
+  background: none !important;
+  border: 0 !important;
+}
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #active-playlist-container#active-playlist-container .playlist-row.studio-transition-row.axiom-focus-deck-row .studio-track-artwork,
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #active-playlist-container#active-playlist-container .playlist-row.studio-transition-row.axiom-focus-deck-row .studio-row-main > :first-child:not(.studio-row-text) {
+  flex: 0 0 auto !important;
+  width: 46px !important;
+  height: 46px !important;
+  border-radius: 4px !important;
+  overflow: hidden !important;
+  box-shadow: none !important;
+}
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #active-playlist-container#active-playlist-container .playlist-row.studio-transition-row.axiom-focus-deck-row .studio-track-artwork img { width: 100% !important; height: 100% !important; object-fit: cover !important; }
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #active-playlist-container#active-playlist-container .playlist-row.studio-transition-row.axiom-focus-deck-row .studio-row-text { min-width: 0 !important; flex: 1 1 auto !important; display: flex !important; flex-direction: column !important; gap: 3px !important; }
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #active-playlist-container#active-playlist-container .playlist-row.studio-transition-row.axiom-focus-deck-row .studio-row-title-line { min-width: 0 !important; }
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #active-playlist-container#active-playlist-container .playlist-row.studio-transition-row.axiom-focus-deck-row .studio-row-title {
+  margin: 0 !important;
+  font: 700 17px/1.15 Barlow, 'Segoe UI', sans-serif !important;
+  letter-spacing: 0.01em !important;
+  text-transform: none !important;
+  color: var(--wms-text) !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #active-playlist-container#active-playlist-container .playlist-row.studio-transition-row.axiom-focus-deck-row:hover .studio-row-title { color: var(--wms-text) !important; }
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #active-playlist-container#active-playlist-container .playlist-row.studio-transition-row.axiom-focus-deck-row .studio-row-text > .flex { flex-wrap: nowrap !important; gap: 8px !important; min-width: 0 !important; align-items: center !important; }
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #active-playlist-container#active-playlist-container .playlist-row.studio-transition-row.axiom-focus-deck-row .studio-row-artist {
+  margin: 0 !important;
+  min-width: 0 !important;
+  font: 500 14px/1.15 Barlow, 'Segoe UI', sans-serif !important;
+  letter-spacing: 0.01em !important;
+  text-transform: none !important;
+  color: var(--wms-muted) !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #active-playlist-container#active-playlist-container .playlist-row.studio-transition-row.axiom-focus-deck-row .studio-dna-chip {
+  flex: 0 1 auto !important;
+  max-width: 190px !important;
+  height: 20px !important;
+  padding: 0 7px !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.04em !important;
+  text-transform: uppercase !important;
+  color: var(--wms-muted) !important;
+  background: transparent !important;
+  border: 1px solid var(--wms-line) !important;
+  border-radius: 3px !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+/* edit / version buttons only on hover or keyboard focus */
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #active-playlist-container#active-playlist-container .playlist-row.studio-transition-row.axiom-focus-deck-row .studio-row-identity-actions {
+  display: none !important;
+  flex: 0 0 auto !important;
+  gap: 6px !important;
+}
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #active-playlist-container#active-playlist-container .playlist-row.studio-transition-row.axiom-focus-deck-row:is(:hover, :focus-within) .studio-row-identity-actions { display: flex !important; }
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #active-playlist-container#active-playlist-container .playlist-row.studio-transition-row.axiom-focus-deck-row .studio-row-identity-actions button {
+  height: 26px !important;
+  padding: 0 10px !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.06em !important;
+  text-transform: uppercase !important;
+  color: var(--wms-text) !important;
+  background: transparent !important;
+  border: 1px solid var(--wms-line) !important;
+  border-radius: 3px !important;
+}
+
+/* BPM, key, harmonic, time: one cell each, centred */
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #active-playlist-container#active-playlist-container .playlist-row.studio-transition-row.axiom-focus-deck-row .studio-metric {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: auto !important;
+  height: auto !important;
+  min-height: 0 !important;
+  padding: 0 !important;
+  background: none !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  position: static !important;
+  text-align: center !important;
+}
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #active-playlist-container#active-playlist-container .playlist-row.studio-transition-row.axiom-focus-deck-row .studio-metric::before,
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #active-playlist-container#active-playlist-container .playlist-row.studio-transition-row.axiom-focus-deck-row .studio-metric::after { display: none !important; }
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #active-playlist-container#active-playlist-container .playlist-row.studio-transition-row.axiom-focus-deck-row .studio-metric small { display: none !important; }
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #active-playlist-container#active-playlist-container .playlist-row.studio-transition-row.axiom-focus-deck-row .studio-bpm-metric { grid-column: 4 !important; grid-row: 1 !important; }
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #active-playlist-container#active-playlist-container .playlist-row.studio-transition-row.axiom-focus-deck-row .studio-key-metric { grid-column: 5 !important; grid-row: 1 !important; }
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #active-playlist-container#active-playlist-container .playlist-row.studio-transition-row.axiom-focus-deck-row .studio-harmonic-metric { grid-column: 6 !important; grid-row: 1 !important; }
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #active-playlist-container#active-playlist-container .playlist-row.studio-transition-row.axiom-focus-deck-row .wms-duration { grid-column: 7 !important; grid-row: 1 !important; text-align: center !important; font: 600 15px/1 Barlow, 'Segoe UI', sans-serif !important; font-variant-numeric: tabular-nums !important; color: var(--wms-muted) !important; }
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #active-playlist-container#active-playlist-container .playlist-row.studio-transition-row.axiom-focus-deck-row .studio-bpm-metric strong {
+  font: 400 26px/1 'Bebas Neue', Impact, sans-serif !important;
+  letter-spacing: 0.03em !important;
+  color: var(--wms-text) !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  text-shadow: none !important;
+  background: none !important;
+  width: auto !important;
+  height: auto !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #active-playlist-container#active-playlist-container .playlist-row.studio-transition-row.axiom-focus-deck-row .studio-harmonic-metric strong {
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.02em !important;
+  text-transform: none !important;
+  color: var(--wms-muted) !important;
+}
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #active-playlist-container#active-playlist-container .playlist-row.studio-transition-row.axiom-focus-deck-row .studio-harmonic-indicator.is-percentage { color: var(--wms-good) !important; }
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #active-playlist-container#active-playlist-container .playlist-row.studio-transition-row.axiom-focus-deck-row .studio-harmonic-indicator.is-anchor { color: var(--wms-text) !important; }
+
+/* key badge, coloured around the Camelot wheel: minor (A) deep, major (B) light */
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #active-playlist-container#active-playlist-container .playlist-row.studio-transition-row.axiom-focus-deck-row .camelot-pill {
+  display: inline-grid !important;
+  place-items: center !important;
+  min-width: 46px !important;
+  height: 28px !important;
+  padding: 0 8px !important;
+  font: 400 19px/1 'Bebas Neue', Impact, sans-serif !important;
+  letter-spacing: 0.05em !important;
+  color: #fff !important;
+  background: #4a4a4a !important;
+  border: 2px solid rgba(0, 0, 0, 0.55) !important;
+  border-radius: 4px !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #active-playlist-container#active-playlist-container .playlist-row.studio-transition-row.axiom-focus-deck-row .camelot-pill.camelot-unknown,
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #active-playlist-container#active-playlist-container .playlist-row.studio-transition-row.axiom-focus-deck-row .studio-key-metric.is-missing .camelot-pill { background: transparent !important; color: var(--wms-muted) !important; border: 1px dashed var(--wms-muted) !important; }
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio .camelot-pill.camelot-a, html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #magic-route-keys li { --k-l: 30%; }
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #active-playlist-container#active-playlist-container .playlist-row.studio-transition-row.axiom-focus-deck-row .camelot-pill.camelot-a { background: hsl(var(--k-h, 0), 55%, 30%) !important; color: #fff !important; }
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #active-playlist-container#active-playlist-container .playlist-row.studio-transition-row.axiom-focus-deck-row .camelot-pill.camelot-b { background: hsl(var(--k-h, 0), 70%, 72%) !important; color: #120b08 !important; }
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #active-playlist-container#active-playlist-container .playlist-row.studio-transition-row.axiom-focus-deck-row .camelot-pill.camelot-unknown { --k-h: 0; }
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio :is(.wms-k0) { --k-h: 0; }
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio :is(.wms-k1) { --k-h: 28; }
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio :is(.wms-k2) { --k-h: 52; }
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio :is(.wms-k3) { --k-h: 90; }
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio :is(.wms-k4) { --k-h: 140; }
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio :is(.wms-k5) { --k-h: 170; }
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio :is(.wms-k6) { --k-h: 190; }
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio :is(.wms-k7) { --k-h: 215; }
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio :is(.wms-k8) { --k-h: 245; }
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio :is(.wms-k9) { --k-h: 275; }
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio :is(.wms-k10) { --k-h: 305; }
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio :is(.wms-k11) { --k-h: 335; }
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #magic-route-keys li[class^="wms-k"] { background: hsl(var(--k-h, 0), 55%, 30%) !important; }
+
+/* right-hand actions */
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #active-playlist-container#active-playlist-container .playlist-row.studio-transition-row.axiom-focus-deck-row .studio-row-smart-actions,
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #active-playlist-container#active-playlist-container .playlist-row.studio-transition-row.axiom-focus-deck-row > .studio-smart-btn {
+  grid-column: 8 !important;
+  grid-row: 1 !important;
+  display: flex !important;
+  justify-content: flex-end !important;
+  position: static !important;
+  margin-right: 0 !important;
+}
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #active-playlist-container#active-playlist-container .playlist-row.studio-transition-row.axiom-focus-deck-row .studio-smart-btn {
+  position: static !important;
+  height: 30px !important;
+  min-height: 30px !important;
+  width: auto !important;
+  padding: 0 12px !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.05em !important;
+  text-transform: uppercase !important;
+  color: var(--wms-text) !important;
+  background: transparent !important;
+  border: 1px solid var(--wms-line) !important;
+  border-radius: 4px !important;
+  box-shadow: none !important;
+  white-space: nowrap !important;
+}
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #active-playlist-container#active-playlist-container .playlist-row.studio-transition-row.axiom-focus-deck-row .studio-smart-btn:hover:not(:disabled) { border-color: var(--wms-cyan) !important; color: var(--wms-cyan) !important; }
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #active-playlist-container#active-playlist-container .playlist-row.studio-transition-row.axiom-focus-deck-row .fav-star-btn { grid-column: 9 !important; grid-row: 1 !important; position: static !important; width: 26px !important; height: 30px !important; font-size: 18px !important; color: var(--wms-muted) !important; background: none !important; border: 0 !important; }
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #active-playlist-container#active-playlist-container .playlist-row.studio-transition-row.axiom-focus-deck-row .fav-star-btn.fav-star-active { color: var(--wms-warn) !important; }
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #active-playlist-container#active-playlist-container .playlist-row.studio-transition-row.axiom-focus-deck-row .studio-remove-btn {
+  grid-column: 10 !important;
+  grid-row: 1 !important;
+  position: static !important;
+  width: 26px !important;
+  height: 30px !important;
+  color: var(--wms-muted) !important;
+  background: none !important;
+  border: 0 !important;
+  border-radius: 4px !important;
+}
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #active-playlist-container#active-playlist-container .playlist-row.studio-transition-row.axiom-focus-deck-row .studio-remove-btn:hover { color: var(--wms-bad) !important; background: rgba(255, 90, 90, 0.14) !important; }
+
+/* transition quality: a small marker on the edge between this row and the next (green strong, amber ok, red review) */
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #active-playlist-container#active-playlist-container .playlist-row.studio-transition-row.axiom-focus-deck-row .transition-badge {
+  position: absolute !important;
+  left: 38px !important;
+  top: auto !important;
+  right: auto !important;
+  bottom: -12px !important;
+  z-index: 4 !important;
+  display: grid !important;
+  place-items: center !important;
+  width: 16px !important;
+  height: 16px !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  max-width: 16px !important;
+  max-height: 16px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  transform: none !important;
+  border-radius: 50% !important;
+  background: var(--wms-good) !important;
+  border: 3px solid var(--wms-panel) !important;
+  box-shadow: none !important;
+  cursor: help !important;
+}
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #active-playlist-container#active-playlist-container .playlist-row.studio-transition-row.axiom-focus-deck-row .transition-badge.badge-yellow { background: var(--wms-warn) !important; }
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #active-playlist-container#active-playlist-container .playlist-row.studio-transition-row.axiom-focus-deck-row .transition-badge.badge-red { background: var(--wms-bad) !important; }
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #active-playlist-container#active-playlist-container .playlist-row.studio-transition-row.axiom-focus-deck-row .transition-badge.is-last-node { display: none !important; }
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #active-playlist-container#active-playlist-container .playlist-row.studio-transition-row.axiom-focus-deck-row .transition-badge > strong,
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #active-playlist-container#active-playlist-container .playlist-row.studio-transition-row.axiom-focus-deck-row .transition-badge .studio-spine-orb,
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #active-playlist-container#active-playlist-container .playlist-row.studio-transition-row.axiom-focus-deck-row .transition-badge .transition-node-ripple,
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #active-playlist-container#active-playlist-container .playlist-row.studio-transition-row.axiom-focus-deck-row .transition-badge::before,
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #active-playlist-container#active-playlist-container .playlist-row.studio-transition-row.axiom-focus-deck-row .transition-badge::after { display: none !important; }
+
+/* Harmonic Route: cyan edge and key-path look, so it is never mistaken for Manual Build */
+html body[data-ph-region][data-magic-view="route"]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #active-playlist-container#active-playlist-container .playlist-row.studio-transition-row.axiom-focus-deck-row { border-left: 5px solid var(--wms-cyan) !important; }
+html body[data-ph-region][data-magic-view="route"]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #active-playlist-container#active-playlist-container .playlist-row.studio-transition-row.axiom-focus-deck-row::before { color: var(--wms-cyan) !important; }
+html body[data-ph-region][data-magic-view="route"]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #active-playlist-container { border-color: var(--wms-cyan) !important; }
+html body[data-ph-region][data-magic-view="route"]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #magic-list-head { border-color: var(--wms-cyan) !important; color: var(--wms-cyan) !important; }
+
+/* narrow windows (1280 wide and smaller content area) */
+@media (max-width: 1500px) {
+  html body[data-ph-region] #tab-content-studio#tab-content-studio #magic-flow small { display: none !important; }
+  html body[data-ph-region] #tab-content-studio#tab-content-studio #magic-flow button { min-height: 44px !important; }
+  html body[data-ph-region] #tab-content-studio#tab-content-studio #studio-build-controls .magic-step-head p { display: none !important; }
+  html body[data-ph-region] #tab-content-studio#tab-content-studio #magic-set-command .magic-score-card { flex-basis: 250px !important; width: 250px !important; }
+  html body[data-ph-region] #tab-content-studio#tab-content-studio .magic-stat-chip { min-width: 70px !important; padding: 5px 9px !important; }
+  html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #active-playlist-container#active-playlist-container .playlist-row.studio-transition-row.axiom-focus-deck-row .studio-dna-chip { display: none !important; }
+}
+@media (max-width: 1250px) {
+  html body[data-ph-region] #tab-content-studio#tab-content-studio #magic-set-command .magic-score-card > .magic-score-hint { display: none !important; }
+  html body[data-ph-region] #tab-content-studio#tab-content-studio #magic-set-command .magic-score-card { flex-basis: 190px !important; width: 190px !important; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html body[data-ph-region] #tab-content-studio#tab-content-studio * { transition: none !important; animation: none !important; }
+}
+
+/* ------------------------------------------------------------------------------------------------
+   Manual Build / Harmonic Route: a shorter header and brief bar so more of the list fits on screen
+   ------------------------------------------------------------------------------------------------ */
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #studio-active-view#studio-active-view > .studio-header {
+  min-height: 76px !important;
+  height: 76px !important;
+  padding-top: 8px !important;
+  padding-bottom: 8px !important;
+  margin-bottom: 0 !important;
+}
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #studio-active-view#studio-active-view > .studio-header #set-score-display { font-size: 46px !important; line-height: 1 !important; }
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #studio-active-view#studio-active-view > .studio-header .studio-score-summary { height: auto !important; min-height: 0 !important; }
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #studio-active-view#studio-active-view > .studio-header .studio-set-facts { min-height: 0 !important; height: auto !important; }
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #studio-active-view#studio-active-view > #studio-set-brief-bar { min-height: 34px !important; height: 34px !important; }
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #studio-active-view#studio-active-view #magic-flow#magic-flow { margin-top: 8px !important; }
+
+/* a little tighter than before: 56px rows */
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #active-playlist-container#active-playlist-container .playlist-row.studio-transition-row.axiom-focus-deck-row { min-height: 56px !important; margin-bottom: 6px !important; padding-top: 4px !important; padding-bottom: 4px !important; }
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #active-playlist-container#active-playlist-container .playlist-row.studio-transition-row.axiom-focus-deck-row .studio-track-artwork,
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #active-playlist-container#active-playlist-container .playlist-row.studio-transition-row.axiom-focus-deck-row .studio-row-main > :first-child:not(.studio-row-text) { width: 40px !important; height: 40px !important; }
+
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #studio-mode-controls#studio-mode-controls .studio-mode-tab span { color: inherit !important; }
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #magic-manual-empty strong { text-transform: uppercase !important; }
+/* the step that is current stays solid even while it is locked */
+html body[data-ph-region] #tab-content-studio#tab-content-studio #magic-flow li[data-state="current"] button[aria-disabled="true"] { border-style: solid !important; background: var(--wms-panel-2) !important; }
+
+/* the selected / playing row: the stage "SELECTED" tab, red button and underline are replaced by the one accent edge above */
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #active-playlist-container#active-playlist-container .playlist-row.studio-transition-row.axiom-focus-deck-row:is(.selected, .playing-track) .drag-handle {
+  background: none !important; border: 0 !important; box-shadow: none !important; width: 22px !important; height: 36px !important; position: static !important; inset: auto !important;
+}
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #active-playlist-container#active-playlist-container .playlist-row.studio-transition-row.axiom-focus-deck-row .drag-handle::before,
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #active-playlist-container#active-playlist-container .playlist-row.studio-transition-row.axiom-focus-deck-row .drag-handle::after { display: none !important; content: none !important; }
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #active-playlist-container#active-playlist-container .playlist-row.studio-transition-row.axiom-focus-deck-row:is(.selected, .playing-track) .studio-smart-btn:not(:disabled) {
+  color: var(--wms-text) !important; background: transparent !important; border: 1px solid var(--wms-line) !important; box-shadow: none !important;
+}
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #active-playlist-container#active-playlist-container .playlist-row.studio-transition-row.axiom-focus-deck-row .studio-row-title { text-decoration: none !important; border: 0 !important; box-shadow: none !important; }
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #active-playlist-container#active-playlist-container .playlist-row.studio-transition-row.axiom-focus-deck-row.selected { background: var(--wms-panel-2) !important; border-color: var(--wms-accent) !important; box-shadow: inset 5px 0 0 var(--wms-accent) !important; }
+
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #studio-active-view#studio-active-view #studio-mode-controls#studio-mode-controls span { color: inherit !important; }
+
+/* the Studio header above the list: readable text on its red buttons and a readable score */
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #studio-active-view#studio-active-view > .studio-header #set-score-display { color: var(--wms-accent-text) !important; }
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #studio-active-view#studio-active-view > .studio-header :is(#studio-save-set-btn, #export-dropdown-btn.magic-set-export-ready, #studio-save-set-btn span) { color: #ffffff !important; }
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #studio-active-view#studio-active-view > .studio-header #studio-save-set-btn { background: var(--wms-accent-btn) !important; }
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #studio-active-view#studio-active-view > .studio-header #export-dropdown-btn.magic-set-export-ready { background: var(--wms-accent-btn) !important; }
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #studio-active-view#studio-active-view > .studio-header #export-dropdown-btn span { color: var(--wms-text) !important; }
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #studio-active-view#studio-active-view > .studio-header #export-dropdown-btn.magic-set-export-ready span { color: #ffffff !important; }
+
+/* the stage rules paint some labels with -webkit-text-fill-color (dark "primary contrast"); use the colours chosen above */
+html body[data-ph-region] #tab-content-studio#tab-content-studio #studio-active-view#studio-active-view :is(#magic-flow, #studio-build-controls, #magic-set-command, #magic-route-banner, #magic-manual-empty, #magic-list-head, #graph-container .magic-chart-footer) :is(*, *::before, *::after) { -webkit-text-fill-color: currentColor !important; }
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #studio-active-view#studio-active-view :is(#studio-mode-controls, > .studio-header .studio-actions) :is(button, span, strong, small, *::before) { -webkit-text-fill-color: currentColor !important; }
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #active-playlist-container#active-playlist-container .playlist-row :is(.studio-row-title, .studio-row-artist, .studio-dna-chip, .studio-metric strong, .camelot-pill, .studio-smart-btn, .wms-duration, .studio-row-identity-actions button) { -webkit-text-fill-color: currentColor !important; }
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #studio-active-view#studio-active-view .studio-header .studio-actions :is(button, button span) { -webkit-text-fill-color: currentColor !important; }
+
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #studio-mode-controls#studio-mode-controls #btn-optimize img { filter: brightness(0) invert(1) !important; opacity: 1 !important; }
+html body[data-ph-region].light-mode:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #studio-mode-controls#studio-mode-controls #btn-optimize img { filter: brightness(0) !important; }
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #studio-mode-controls#studio-mode-controls #btn-optimize:disabled img { opacity: 0.6 !important; }
+html body[data-ph-region].light-mode #tab-content-studio#tab-content-studio #studio-build-controls #btn-view-studio-set:not(.hidden),
+html body[data-ph-region].light-mode #tab-content-studio#tab-content-studio #studio-build-controls #btn-view-studio-set:not(.hidden) strong { color: #ffffff !important; }
+html body[data-ph-region].light-mode:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #studio-mode-controls#studio-mode-controls#studio-mode-controls #studio-tab-route:not(.route-tab-hidden) { color: #ffffff !important; }

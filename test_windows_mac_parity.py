@@ -110,6 +110,15 @@ try:
  real=M._bin_settings(M._volume_root(str(usb)));assert len(real)==2  # the real lookup works on this fixed drive
  import duplicate_trash
  assert duplicate_trash.apply.__defaults__[-1] is M.recycle and duplicate_trash.mac_trash is M.recycle
+ # the shared Studio renderer (also the macOS edition's) keeps the Mac chart styling: the Magic Set redesign sets it from
+ # windows-magic-set.js (only with body[data-ph-region]). The one change allowed here is the 2% -> Match text bug fix.
+ now=(probe/'static'/'js'/'surfaces'/'studio-render.js').read_text(encoding='utf-8')
+ for mac in ("const gridColor = isLight ? 'rgba(0,0,0,0.1)' : 'rgba(255,255,255,0.05)';","const labelColor = isLight ? '#555555' : '#666';",
+             "padding: { top: 12, right: 14, bottom: 34, left: 8 }","title: { display: true, text: 'BPM'"):
+  assert mac in now,mac
+ for windows in ('pointHitRadius','pointHoverRadius: 11',"weight: '600'","bottom: 6"):
+  assert windows not in now,windows  # HEAD (the Mac styling) has none of these
+ assert "isHarmonic ? 'Match' : '--'" in now and "'2%'" not in now
  shutil.rmtree(folder)
  print('PASS: File Explorer reveal, Windows audio check and Recycle Bin replace the Mac-only versions')
 except BaseException:

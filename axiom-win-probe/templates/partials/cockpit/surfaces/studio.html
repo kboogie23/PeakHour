@@ -482,16 +482,31 @@
         </div>
 
 
+        <nav id="magic-flow" class="magic-flow" aria-label="Set building steps">
+          <ol>
+            <li data-magic-step="shape"><button type="button" id="magic-flow-shape"><b>1</b><span><strong>Shape the set</strong><small>Length, BPM start and end, mid points</small></span></button></li>
+            <li data-magic-step="build"><button type="button" id="magic-flow-build"><b>2</b><span><strong>Build</strong><small id="magic-flow-build-note">Generate Set or Build Around</small></span></button></li>
+            <li data-magic-step="refine"><button type="button" id="magic-flow-refine"><b>3</b><span><strong>Refine</strong><small id="magic-flow-refine-note">Manual Build and Suggest Order</small></span></button></li>
+          </ol>
+        </nav>
+
         <section id="magic-set-command" aria-label="Magic Set overview">
           <div class="magic-command-main">
             <div class="min-w-0">
               <h3 class="magic-command-title">Magic Set</h3>
               <p class="magic-command-copy"><span id="magic-set-subtitle">AXIOM-built journey · 0 tracks · 2 hours</span></p>
             </div>
+            <div class="magic-stat-chips" id="magic-stat-chips" aria-label="Set summary">
+              <span class="magic-stat-chip"><small>Tracks</small><strong id="magic-chip-tracks">0</strong></span>
+              <span class="magic-stat-chip"><small>Total time</small><strong id="magic-chip-time">0 min</strong></span>
+              <span class="magic-stat-chip"><small>BPM range</small><strong id="magic-chip-bpm">--</strong></span>
+              <span class="magic-stat-chip"><small>Key changes</small><strong id="magic-chip-keys">--</strong></span>
+            </div>
             <div class="magic-score-card" aria-label="Set score">
               <span>Set Score</span>
               <strong id="magic-score-value">--</strong>
               <small id="magic-score-label">Ready</small>
+              <p class="magic-score-hint" id="magic-score-hint">Build a set to see how well its songs mix.</p>
             </div>
           </div>
         </section>
@@ -517,14 +532,22 @@
                     <img class="studio-mode-icon studio-suggest-order-icon" src="/static/icons/zap.svg" alt="" aria-hidden="true">
                     <span>Suggest Order</span>
                 </button>
+                <span id="magic-suggest-hint" class="magic-suggest-hint" role="status"></span>
 	            </div>
         </div>
 
 
-        <div id="studio-build-controls" class="flex justify-between items-center mb-4">
+        <div id="studio-build-controls" class="magic-steps-row flex justify-between items-center mb-4">
+          <section class="magic-step-card magic-step-shape" data-magic-step-card="shape" aria-labelledby="magic-step-shape-title">
+            <header class="magic-step-head">
+              <b aria-hidden="true">1</b>
+              <h4 id="magic-step-shape-title">Shape the set</h4>
+              <p>Length and BPM journey</p>
+            </header>
+            <div class="magic-step-body">
           <div class="magic-primary-rail flex gap-6 items-center">
             <div class="magic-parameter-module magic-duration-module">
-              <label class="text-[9px] font-black text-axiom-muted uppercase tracking-widest block mb-1">Duration</label>
+              <label for="set-length-selector" class="text-[9px] font-black text-axiom-muted uppercase tracking-widest block mb-1">Duration</label>
               <select id="set-length-selector" onchange="handleMagicSetTimelineControlChange()"
                 class="bg-black border border-white/10 text-white text-[10px] font-black uppercase rounded-md px-3 py-1 outline-none">
                 <option value="30">30 Mins</option>
@@ -536,7 +559,7 @@
               </select>
             </div>
             <div class="magic-parameter-module magic-mix-module">
-              <label class="text-[9px] font-black text-axiom-muted uppercase tracking-widest block mb-1">Avg Mix</label>
+              <label for="avg-duration-selector" class="text-[9px] font-black text-axiom-muted uppercase tracking-widest block mb-1">Avg Mix</label>
               <select id="avg-duration-selector" onchange="handleMagicSetTimelineControlChange()"
                 class="bg-black border border-white/10 text-white text-[10px] font-black uppercase rounded-md px-3 py-1 outline-none">
                 <option value="1">1 Min</option>
@@ -560,20 +583,41 @@
                   class="bg-black border border-white/10 text-axiom-accent text-[10px] font-black rounded-md px-3 py-1 w-16 outline-none">
               </div>
             </div>
-            <div class="studio-magic-build-pair">
-              <button id="btn-build-around-tracks" data-axiom-cta-skip="true" onclick="buildMagicSetAroundWorkingTracks()" class="magic-build-around-btn" type="button" title="Keep the tracks already in the Working Set and build around their collective sound">Build Around These Tracks</button>
-              <button id="btn-magic-set" data-axiom-cta-skip="true" onclick="generateMagicSetFromParameters()" class="magic-generate-btn px-4 py-1.5 bg-axiom-accent text-black text-[9px] font-black uppercase rounded-md hover:brightness-110 transition-all self-end">Generate Set</button>
-            </div>
           </div>
           <div class="magic-utility-rail flex gap-4 items-center">
-            <button type="button" onclick="addBlueprintSegment()" class="magic-midpoint-btn px-3 py-1.5 bg-white/5 border border-white/10 text-white text-[9px] font-black uppercase rounded-md hover:bg-white/10 transition-all">+ Mid Point</button>
-            <button type="button" onclick="clearBlueprint()" class="magic-clear-btn px-3 py-1.5 bg-red-500/10 border border-red-500/20 text-red-500 text-[9px] font-black uppercase rounded-md hover:bg-red-500 hover:text-white transition-all">Clear</button>
+            <button type="button" data-axiom-cta-skip="true" onclick="addBlueprintSegment()" class="magic-midpoint-btn px-3 py-1.5 bg-white/5 border border-white/10 text-white text-[9px] font-black uppercase rounded-md hover:bg-white/10 transition-all" title="Add a BPM point in the widest gap of the curve. Drag a point up or down to reshape the journey.">+ Mid Point</button>
+            <button type="button" data-axiom-cta-skip="true" onclick="clearBlueprint()" class="magic-clear-btn px-3 py-1.5 bg-red-500/10 border border-red-500/20 text-red-500 text-[9px] font-black uppercase rounded-md hover:bg-red-500 hover:text-white transition-all" title="Remove the BPM points you placed on the chart">Clear</button>
             <div class="w-px h-8 bg-white/10 mx-1"></div>
-            <div class="text-right">
+            <div class="text-right magic-est-tracks">
               <p class="text-white font-black text-2xl" id="est-track-count">60</p>
               <p class="text-[9px] font-black text-axiom-muted uppercase tracking-widest">Est. Tracks Needed</p>
             </div>
           </div>
+            </div>
+          </section>
+          <section class="magic-step-card magic-step-build" data-magic-step-card="build" aria-labelledby="magic-step-build-title">
+            <header class="magic-step-head">
+              <b aria-hidden="true">2</b>
+              <h4 id="magic-step-build-title">Build</h4>
+              <p>PEAK HOUR picks the songs</p>
+            </header>
+            <div class="magic-step-body">
+              <button id="btn-view-studio-set" data-axiom-cta-skip="true" onclick="viewMagicSetInStudio()" type="button" class="hidden">
+                <span class="magic-studio-return-copy">
+                  <strong>Refine in Manual Build</strong>
+                  <small>Reorder, swap songs, then export</small>
+                </span>
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                </svg>
+              </button>
+            <div class="studio-magic-build-pair">
+              <button id="btn-build-around-tracks" data-axiom-cta-skip="true" onclick="buildMagicSetAroundWorkingTracks()" class="magic-build-around-btn" type="button" title="Keep the tracks already in the Working Set and build around their collective sound">Build Around These Tracks</button>
+              <button id="btn-magic-set" data-axiom-cta-skip="true" onclick="generateMagicSetFromParameters()" class="magic-generate-btn px-4 py-1.5 bg-axiom-accent text-black text-[9px] font-black uppercase rounded-md hover:brightness-110 transition-all self-end">Generate Set</button>
+            </div>
+            <p class="magic-build-hint" id="magic-build-hint" role="status">Generate Set fills the timeline from your BPM curve.</p>
+            </div>
+          </section>
         </div>
 
         {% include "partials/cockpit/surfaces/health.html" %}
@@ -581,11 +625,11 @@
         <div id="studio-workspace" class="flex-1 min-h-0 flex flex-col">
         <div id="graph-container" class="glass rounded-3xl p-8 mb-6 h-56 border border-white/5 relative">
           <div class="magic-phase-band" aria-label="Set timeline sections">
-            <div><strong>Warm Up</strong><span id="magic-phase-time-0">0 - 24 min</span></div>
-            <div><input type="text" maxlength="18" placeholder="Type label" aria-label="Name timeline section two"><span id="magic-phase-time-1">24 - 48 min</span></div>
-            <div class="active"><strong>Halfway There</strong><span id="magic-phase-time-2">48 - 72 min</span></div>
-            <div><input type="text" maxlength="18" placeholder="Type label" aria-label="Name timeline section four"><span id="magic-phase-time-3">72 - 96 min</span></div>
-            <div class="active"><strong>End Of Set</strong><span id="magic-phase-time-4">96 - 120 min</span></div>
+            <div class="magic-phase magic-phase-warm"><strong>Warm-up</strong><span id="magic-phase-time-0">0 - 24 min</span></div>
+            <div class="magic-phase magic-phase-build"><input type="text" maxlength="18" placeholder="Build" aria-label="Name timeline section two"><span id="magic-phase-time-1">24 - 48 min</span></div>
+            <div class="active magic-phase magic-phase-peak"><strong>Peak</strong><span id="magic-phase-time-2">48 - 72 min</span></div>
+            <div class="magic-phase magic-phase-drive"><input type="text" maxlength="18" placeholder="Drive" aria-label="Name timeline section four"><span id="magic-phase-time-3">72 - 96 min</span></div>
+            <div class="active magic-phase magic-phase-cool"><strong>Cool-down</strong><span id="magic-phase-time-4">96 - 120 min</span></div>
           </div>
           <div class="magic-graph-hud">
             <div class="magic-axis-title bpm">
@@ -603,27 +647,28 @@
           </div>
           <div id="magic-selected-card" class="magic-selected-card hidden" aria-live="polite"></div>
           <button id="pill-tuck" class="pill-tuck hidden" onclick="tuckGraph()">TUCK GRAPH</button>
-          <button id="btn-fill-set" onclick="fillSetFromBPMPoints()" type="button"
+          <button id="btn-fill-set" data-axiom-cta-skip="true" onclick="fillSetFromBPMPoints()" type="button"
             class="hidden px-4 py-2 bg-cyan-400 text-black font-black text-[9px] uppercase rounded-md absolute top-4 right-4 z-10 shadow-lg hover:scale-105 transition-all">BUILD SET</button>
-          <button id="btn-generate-from-anchor" onclick="generateSetFromAnchor()"
+          <button id="btn-generate-from-anchor" data-axiom-cta-skip="true" onclick="generateSetFromAnchor()"
             class="hidden px-4 py-2 text-black font-black text-[9px] uppercase rounded-md absolute top-4 left-4 z-10 hover:scale-105 transition-all flex items-center gap-2"
             style="background:var(--accent); box-shadow:0 0 14px rgba(163,255,0,0.55), 0 0 30px rgba(163,255,0,0.2);">
             <span id="gen-anchor-text">GENERATE SET TO TARGET</span>
             <div id="gen-anchor-spinner" class="spinner hidden border-black border-l-black/30" style="width:10px;height:10px;border-width:2px;"></div>
           </button>
-          <button id="btn-view-studio-set" onclick="viewMagicSetInStudio()" type="button" class="hidden">
-            <span class="magic-studio-return-copy">
-              <strong>Back to Studio</strong>
-              <small>Next: Export Set</small>
-            </span>
-            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M13 7l5 5m0 0l-5 5m5-5H6" />
-            </svg>
-          </button>
           <div id="magic-point-actions" class="magic-point-actions hidden" aria-live="polite"></div>
+          <div id="magic-empty-state" class="magic-empty-state" aria-live="polite">
+            <strong>Your set starts here</strong>
+            <ol>
+              <li>Choose a <em>duration</em> and a <em>BPM start and end</em> on the left.</li>
+              <li>Press <em>Generate Set</em>, or click the chart to place your own BPM points.</li>
+              <li>Then refine it in Manual Build. Suggest Order unlocks at 5 tracks.</li>
+            </ol>
+          </div>
           <canvas id="bpmChart"></canvas>
           <div id="magic-chart-footer" class="magic-chart-footer">
             <div class="magic-legend" aria-label="Magic Set legend">
+              <span class="magic-legend-target"><i class="target"></i>Target curve</span>
+              <span class="magic-legend-actual"><i class="actual"></i>Your set</span>
               <span><i></i>Strong transition</span>
               <span><i class="compatible"></i>Compatible transition</span>
               <span><i class="review"></i>Needs review</span>
@@ -638,8 +683,31 @@
 
         <div class="glass rounded-xl px-8 py-4 mb-6 border border-white/5 flex gap-1 h-12" id="energy-ladder"></div>
 
+        <div id="magic-route-banner" class="magic-route-banner" hidden>
+          <div class="magic-route-copy">
+            <strong>Harmonic Route</strong>
+            <span>Your songs reordered so each key flows into the next.</span>
+          </div>
+          <ol id="magic-route-keys" class="magic-route-keys" aria-label="Key path"></ol>
+          <button type="button" id="magic-route-back" onclick="setGraphMode(false); setStudioView('manual', { userActivated: true })">Back to Manual Build</button>
+        </div>
+
+        <div id="magic-list-head" class="magic-list-head" aria-hidden="true">
+          <span class="mlh-num">#</span><span class="mlh-track">Track</span><span class="mlh-bpm">BPM</span><span class="mlh-key">Key</span><span class="mlh-harm">Harmonic</span><span class="mlh-time">Time</span><span class="mlh-act"></span>
+        </div>
+
         <div id="active-playlist-container" class="flex-1 space-y-2 overflow-y-auto pr-4 pb-10" role="list" aria-label="Studio track order"
           ondragover="allowDropPlaylist(event)" ondrop="dropTrackPlaylist(event)"></div>
+
+        <div id="magic-manual-empty" class="magic-manual-empty">
+          <strong>No tracks in this set yet</strong>
+          <p>Add songs from the Library with <em>Add to Set</em>, or let Magic Set build a first draft for you.</p>
+          <div class="magic-manual-empty-actions">
+            <button type="button" class="primary" onclick="openMagicSetWorkspace()">Open Magic Set</button>
+            <button type="button" onclick="showTab('library')">Go to Library</button>
+          </div>
+          <small>Suggest Order is locked until the set has 5 or more tracks. It needs a few songs to find a good key path.</small>
+        </div>
         </div>
       </div>
 
@@ -697,7 +765,7 @@
                   <div id="daw-key-sync-slot" class="daw-key-sync-slot" aria-label="Key sync control"></div>
                 </div>
               </div>
-              <div id="daw-idle-transport-controls"><button type="button" id="daw-toolbar-back" aria-label="Jump to project start" title="Jump to project start / Bar 1" onclick="AxiomArrangement?.seek?.(0); AxiomStudioDaw?.setCursorBeat?.(0);"><span class="daw-skip-start-icon" aria-hidden="true"></span></button><button type="button" id="daw-toolbar-play" aria-label="Play project" onclick="AxiomArrangement.toggle()"><span aria-hidden="true">▶</span></button><button type="button" id="daw-toolbar-stop" aria-label="Stop project" onclick="AxiomDawTimelineRecording.stop(); AxiomArrangement.stop()"><span aria-hidden="true">■</span></button><button type="button" id="daw-toolbar-record" aria-label="Record take" aria-pressed="false" title="Record into the Recordings lane; right-click to choose input" onclick="AxiomDawTimelineRecording.toggle()" oncontextmenu="event.preventDefault(); AxiomDawTimelineRecording.setup()"><span aria-hidden="true">●</span></button></div>
+              <div id="daw-idle-transport-controls"><button type="button" id="daw-toolbar-back" aria-label="Jump to project start" title="Jump to project start / Bar 1" onclick="AxiomArrangement?.seek?.(0); AxiomStudioDaw?.setCursorBeat?.(0);"><span class="daw-skip-start-icon" aria-hidden="true"></span></button><button type="button" id="daw-toolbar-play" aria-label="Play project" onclick="AxiomArrangement.toggle()"><span aria-hidden="true">▶</span></button><button type="button" id="daw-toolbar-stop" aria-label="Stop project" onclick="AxiomDawTimelineRecording.stop(); AxiomArrangement.stop()"><span aria-hidden="true">■</span></button><button type="button" id="daw-toolbar-record" aria-label="Record take" aria-pressed="false" title="Record into the Recordings lane; right-click to choose input" onclick="window.AxiomDawTimelineRecording?.toggle?.()" oncontextmenu="event.preventDefault(); window.AxiomDawTimelineRecording?.setup?.()"><span aria-hidden="true">●</span></button></div>
             </div>
             <div class="daw-toolbar-creative-group" aria-label="Creative controls">
               <button type="button" class="daw-tool-primary" id="daw-fx-button" aria-pressed="false" onclick="AxiomDawFx.edit()" title="FX off: no effects applied. Add an effect and choose its target track.">FX</button>
@@ -761,7 +829,7 @@
               <i></i>
             </aside>
             <aside class="studio-daw-mixer-bank studio-daw-left-mixer-bank" aria-label="Studio DAW mixer">
-              <div class="studio-daw-mixer-header"><span>Mixer</span><button type="button" onclick="showToast('Mixer collapse is scaffolded for this DAW slice.')">Expand</button></div>
+              <div class="studio-daw-mixer-header"><span>Mixer</span><button type="button" onclick="AxiomStudioDaw.toggleMixer()" aria-expanded="true" aria-label="Collapse mixer">Collapse</button></div>
               <div class="studio-daw-mixer-strips">
                 <div class="studio-daw-mixer-strip">
                   <strong>MIX</strong>
@@ -808,8 +876,7 @@
                 <button type="button" aria-label="Stop playback" onclick="AxiomStudioDaw?.stopPlayback?.()">■</button>
                 <button type="button" aria-label="Play" onclick="AxiomStudioDaw?.playOrToggle?.()">▶</button>
                 <button type="button" aria-label="Repeat selected clip" onclick="AxiomStudioDaw?.repeatSelection?.()">↻</button>
-                <button type="button" aria-label="Record">●</button>
-                <select aria-label="Recording input"><option>No Device</option></select>
+                <button type="button" aria-label="Record take" title="Record into the Recordings lane; right-click to choose input" onclick="window.AxiomDawTimelineRecording?.toggle?.()" oncontextmenu="event.preventDefault(); window.AxiomDawTimelineRecording?.setup?.()">●</button>
                 <div class="studio-daw-zoom-group" aria-label="Timeline zoom">
                   <button type="button" id="studio-daw-zoom-arrange" class="active" onclick="AxiomStudioDaw?.setZoom?.('arrange')">16 Bars</button>
                   <button type="button" id="studio-daw-zoom-bar" onclick="AxiomStudioDaw?.setZoom?.('bar')">1 Bar</button>

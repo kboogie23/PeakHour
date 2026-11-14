@@ -116,7 +116,7 @@ class BrowserError(RuntimeError):
 
 class Browser:
     def __init__(self, sandbox=None, base_url='', port=None, shots=None, edge=None, node=None, width=1400, height=900,
-                 headless=True, autostart=True, **ignored):
+                 headless=True, autostart=True, extra_args=(), **ignored):
         """sandbox: folder for the browser profile; base_url: where relative navigate urls go. edge / node: program paths
         (found when not given). The browser opens now (autostart) so a PC without Edge or node fails here, not in a check."""
         self.sandbox = Path(sandbox)
@@ -127,6 +127,7 @@ class Browser:
         self.node_path = str(node) if node else None
         self.width, self.height = width, height
         self.headless = headless
+        self.extra_args = [str(a) for a in (extra_args or ())]  # more Edge flags, e.g. a fake microphone
         self.edge = None
         self.node = None
         self.debug_port = None
@@ -160,7 +161,7 @@ class Browser:
                     '--no-first-run', '--no-default-browser-check', '--disable-features=msEdgeStartupBoost',
                     '--disable-extensions', '--mute-audio', f'--window-size={self.width},{self.height}',
                     # no internet: everything but this PC goes to a proxy that nothing listens on
-                    '--proxy-server=127.0.0.1:9', '--proxy-bypass-list=127.0.0.1;localhost;[::1]', *KEEP_AWAKE]
+                    '--proxy-server=127.0.0.1:9', '--proxy-bypass-list=127.0.0.1;localhost;[::1]', *KEEP_AWAKE, *self.extra_args]
             if self.headless:
                 args.insert(1, '--headless=new')
             args.append('about:blank')

@@ -25,7 +25,7 @@ try:
  gone=next(c for c in string.ascii_uppercase[::-1] if not os.path.isdir(c+':'+chr(92)))  # a drive letter nothing uses
  drive,tail=os.path.splitdrive(str(lib/'plain.wav'))
  on_gone=gone+':'+tail;on_gone_alone=gone+':'+chr(92)+'no'+chr(92)+'copy'+chr(92)+'anywhere.wav'
- moved=lib/'moved.wav';(lib/'folder.wav').mkdir();video=lib/'clip.mpg';video.write_bytes(b'\0'*64)
+ moved=lib/'moved.wav';(lib/'folder.wav').mkdir();video=lib/'clip.xyz';video.write_bytes(b'\0'*64)
  from windows_bootstrap import build_backend
  app=build_backend(recording_settings=folder/'settings.json',recording_directory=folder,video_cache_root=folder,video_allowed_path=lambda p:True,video_ffmpeg=ff)
  client=app.app.test_client();h={'Host':'127.0.0.1','Origin':'http://127.0.0.1'}
@@ -43,7 +43,7 @@ try:
  r=res[on_gone_alone]['reason'];assert 'drive %s:'%gone in r and 'not connected' in r and 'same file' not in r,r
  r=res[str(moved)]['reason'];assert 'no longer at that location' in r,r
  r=res[str(lib/'folder.wav')]['reason'];assert 'folder, not an audio file' in r,r
- r=res[str(video)]['reason'];assert r.startswith('.mpg files cannot be used in Studio') and 'mp3' in r,r
+ r=res[str(video)]['reason'];assert r.startswith('.xyz files cannot be used in Studio') and 'mp3' in r,r
  assert not any('missing or is not a regular file' in a.get('reason','') or 'not permitted' in a.get('reason','') for a in res.values())
  import windows_audio_check as c
  d=c.explain('x.mp3',{'status':'unavailable','reason':c.DECODER},{'.mp3'});assert d['reason'].startswith(c.DECODER) and 'damaged' in d['reason']

@@ -1250,6 +1250,8 @@ async function validateAxiomLicenseOnline(userInitiated = false) {
         showRawFileLaunchWarning();
         return false;
     }
+    // Windows (windows-hide-mac.js sets this) with activation switched off: there is nothing to validate, and the server answers 400.
+    if (window.PeakHourActivationOff === true && axiomLicenseState?.required === false) return Boolean(axiomLicenseState?.usable);
     try {
         const resp = await fetch('/api/license/validate', {
             method: 'POST',
