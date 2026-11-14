@@ -46,6 +46,14 @@ def check_path(path, kind='write'):
 
 
 def _norm(path):
+    # \\?\C:\x and \\?\UNC\server\share\x are the long-path spellings of C:\x and \\server\share\x: the same place.
+    # Any other \\?\ form (GLOBALROOT, volume GUIDs) is left as it is, so it matches no allowed root and stays blocked.
+    if isinstance(path, str) and path.startswith('\\\\?\\'):
+        rest = path[4:]
+        if rest[:4].upper() == 'UNC\\':
+            path = '\\\\' + rest[4:]
+        elif len(rest) > 2 and rest[1] == ':' and rest[0].isalpha() and rest[2] in '\\/':
+            path = rest
     return os.path.normcase(os.path.abspath(path))
 
 
