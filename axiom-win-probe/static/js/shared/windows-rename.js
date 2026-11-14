@@ -45,7 +45,17 @@
   [/the Mac folder picker/g,'the folder picker'],
   [/\b(this|your|another|This|Your|Another) Mac\b/g,'$1 PC'],
  ];
- const rename=text=>typeof text!=='string'||PATH.test(text)?text:PHRASES.reduce((value,[from,to])=>value.replace(from,to),text).replace(WORD,NAME);
+ // A quoted path ('C:\...\.lock') is set aside while the rest of the sentence is renamed, so a message
+ // such as "...: 'C:\Users\x\.cache\..'. AXIOM will try..." still says PEAK HOUR. Any other path-like text left over: unchanged.
+ const PATHRUN=/(['"])(?:[A-Za-z]:[\\/]|\\\\)[^'"\r\n]*\1/g;
+ const swap=value=>PHRASES.reduce((text,[from,to])=>text.replace(from,to),value).replace(WORD,NAME);
+ function rename(text){
+  if(typeof text!=='string')return text;
+  if(!PATH.test(text))return swap(text);
+  const held=[];
+  const masked=text.replace(PATHRUN,found=>'\u0001'+(held.push(found)-1)+'\u0001');
+  return PATH.test(masked)?text:swap(masked).replace(/\u0001(\d+)\u0001/g,(_,index)=>held[Number(index)]);
+ }
  const kept=element=>!element||SKIP_TAGS.has(element.tagName)||!!element.closest(KEEP);
  function fixText(node){
   if(kept(node.parentElement))return;

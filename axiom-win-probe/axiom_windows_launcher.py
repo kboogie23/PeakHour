@@ -219,7 +219,7 @@ def build_app(port, device=False):
     axiom = build_backend(recording_settings=root / 'recording-settings.json', recording_directory=recordings,
                           video_cache_root=root / 'Video Cache', video_allowed_path=video_policy,
                           video_ffmpeg=imageio_ffmpeg.get_ffmpeg_exe(),
-                          virtualdj_allowed_path=vdj_policy, safe_location=deny_all if device else None)
+                          virtualdj_allowed_path=vdj_policy, safe_location=deny_all if device else None, cache_log=log)
     if device:
         from windows_audio import NoAudioDeck
         axiom.NATIVE_AUDIO_DECK = NoAudioDeck()

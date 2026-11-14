@@ -31,6 +31,7 @@ for(const n of names){
 }
 const other=new Element();other.setAttribute('title','AXIOM_x');out.title=other.getAttribute('title');
 out.nonString=filename(null);
+out.text=JSON.parse(process.argv[4]).map(t=>win.PeakHourRename(t));
 console.log(JSON.stringify(out));
 '''
 
@@ -57,6 +58,20 @@ CASES = {
 }
 
 
+# Visible sentences; a quoted path inside one is kept as it is while the rest is renamed (the Studio "paused" toast).
+TEXTS = {
+    "Song paused: Prepared audio cache unavailable: [Errno 13] Permission denied: 'C:\\Users\\a\\.cache\\axiom-stretch-managed-v1\\.lock' AXIOM will try the remaining clips.":
+        "Song paused: Prepared audio cache unavailable: [Errno 13] Permission denied: 'C:\\Users\\a\\.cache\\axiom-stretch-managed-v1\\.lock' PEAK HOUR will try the remaining clips.",
+    'AXIOM will try the remaining clips.': 'PEAK HOUR will try the remaining clips.',
+    'Saved to D:\\Old AXIOM': 'Saved to D:\\Old AXIOM',
+    'Saved to D:\\Sets\\My AXIOM files': 'Saved to D:\\Sets\\My AXIOM files',
+    'Saved to D:/Old AXIOM': 'Saved to D:/Old AXIOM',
+    'Saved to \\\\server\\share\\AXIOM mixes': 'Saved to \\\\server\\share\\AXIOM mixes',
+    'AXIOM saved it to C:\\Users\\a\\Music\\AXIOM DJ\\Recordings': 'AXIOM saved it to C:\\Users\\a\\Music\\AXIOM DJ\\Recordings',
+    'AXIOM could not open C:\\Users\\a\\Music\\AXIOM DJ\\x.wav.': 'AXIOM could not open C:\\Users\\a\\Music\\AXIOM DJ\\x.wav.',
+}
+
+
 def node_executable():
     found = shutil.which('node')
     if found:
@@ -71,7 +86,7 @@ try:
     with tempfile.TemporaryDirectory() as folder:
         harness = Path(folder) / 'harness.js'
         harness.write_text(HARNESS, encoding='utf-8')
-        done = subprocess.run([node, str(harness), str(SHARED / 'windows-rename.js'), json.dumps(list(CASES))],
+        done = subprocess.run([node, str(harness), str(SHARED / 'windows-rename.js'), json.dumps(list(CASES)), json.dumps(list(TEXTS))],
                               capture_output=True, text=True, timeout=60)
     assert done.returncode == 0, done.stderr
     out = json.loads(done.stdout)
@@ -80,6 +95,8 @@ try:
             assert out[route][name] == want, f'{route}: {name!r} became {out[route][name]!r}, wanted {want!r}'
     assert out['title'] == 'AXIOM_x', 'setAttribute changed an attribute other than download'
     assert out['nonString'] is None
+    for (text, want), got in zip(TEXTS.items(), out['text']):
+        assert got == want, f'text {text!r} became {got!r}, wanted {want!r}'
 
     # The scripts' own wording says PEAK HOUR (identifiers, class names and API paths keep AXIOM).
     visible = {
@@ -100,10 +117,10 @@ try:
 
     # Every script that changed has a newer cache-busting number in each page that loads it.
     for template, scripts in {
-        'index.html': {'windows-rename.js': 9, 'windows-virtualdj.js': 2, 'windows-virtualdj-grids.js': 2, 'windows-virtualdj-health.js': 2,
+        'index.html': {'windows-rename.js': 11, 'windows-virtualdj.js': 2, 'windows-virtualdj-grids.js': 2, 'windows-virtualdj-health.js': 2,
                        'windows-virtualdj-exports.js': 2, 'windows-virtualdj-write.js': 7,'windows-mix-export.js': 3},
-        'live_assist_window.html': {'windows-rename.js': 9},
-        'live_assist_coach_prompt.html': {'windows-rename.js': 9},
+        'live_assist_window.html': {'windows-rename.js': 11},
+        'live_assist_coach_prompt.html': {'windows-rename.js': 11},
     }.items():
         page = (PROBE / 'templates' / template).read_text(encoding='utf-8')
         for script, version in scripts.items():

@@ -11,7 +11,7 @@ def build_backend(*, recording_settings, recording_directory, capture_factory=No
                   device_query=None, host_query=None, video_cache_root=None,
                   video_allowed_path=None, video_ffmpeg=None,
                   virtualdj_allowed_path=None, virtualdj_chooser=None, mix_export_chooser=None,
-                  safe_location=None):
+                  safe_location=None, cache_log=None):
     from windows_paths import is_safe_location as windows_safe_location
     is_safe_location = safe_location or windows_safe_location  # a laptop's engine passes deny-all
     import utils.path_ops
@@ -21,6 +21,10 @@ def build_backend(*, recording_settings, recording_directory, capture_factory=No
             raise ValueError('Video preview requires an explicit path policy and FFmpeg executable')
         from windows_video_scan import install_video_scanning
         install_video_scanning(video_cache_root)
+    from windows_cache_fallback import install as install_cache_fallback
+    install_cache_fallback(log=cache_log)  # before app: the Studio blueprints read their cache folders when app is imported
+    from windows_audio_check import install as install_audio_check
+    install_audio_check()  # Studio "Audio check": say why a song is not ready (drive gone, path too long, moved, ...)
     if video_ffmpeg:  # before app: Studio DAW blueprints look up their audio tools when app is imported
         from windows_studio import install as install_studio
         install_studio(video_ffmpeg)
