@@ -260,3 +260,11 @@ html body.light-mode #tab-content-performance.performance-cockpit .performance-s
 html body.light-mode #tab-content-performance.performance-cockpit .performance-coach-copy small { color: #4a5870 !important; }
 html body.light-mode #tab-content-performance.performance-cockpit .performance-coach-copy strong { color: #07111f !important; }
 html body.light-mode #tab-content-performance.performance-cockpit .performance-coach-copy p { color: #26364d !important; }
+
+/* Speed: AXIOM's always-on decorative loops (the active sidebar icon's pulsing glow and the "shine" sweeping across one
+   button on each page) keep the browser repainting 60 times a second even when nothing else changes. Measured on a
+   20,000-song library with the page idle: about 7 s of renderer CPU and 4 s of GPU CPU per 8 s with them, 1 s and 0 without. */
+html body #axiom-sidebar .axiom-sidebar-nav-item[data-nav-state="active"] :is(svg, img, .axiom-sidebar-nav-icon) { animation: none !important; will-change: auto !important; }
+html body #studio-tab-magic#studio-tab-magic::after,
+html body #tab-content-performance.performance-cockpit #performance-rail-open-receipt::after,
+html body #tab-content-library.library-cockpit#tab-content-library #library-brief-lens[data-library-brief-panel="closed"] .library-gap-launch::after { animation: none !important; will-change: auto !important; }

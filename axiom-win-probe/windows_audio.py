@@ -1,5 +1,6 @@
 """Experimental Windows replacement for AXIOM's macOS preview-audio deck."""
 import os
+import sys
 import threading
 from pathlib import Path
 import numpy as np
@@ -20,7 +21,31 @@ class NoAudioDeck:
 
 # Containers libsndfile cannot read; PyAV (FFmpeg) decodes them while they play.
 STREAMED_SUFFIXES = {'.m4a', '.aac', '.mp4', '.m4v', '.mov', '.avi', '.vob', '.mpg', '.mpeg'}
-RING_SECONDS = 2.0       # decoded audio the reader keeps ahead of the speakers
+RING_SECONDS = 4.0       # decoded audio the reader keeps ahead of the speakers (rides out a slow disk or a busy server)
+# Python hands its global lock to another thread only every 5 ms by default. The PortAudio callback (and the reader
+# thread) need that lock, so two busy request threads starved them: 1,200 silent 10 ms blocks in 15 s. A shorter
+# interval fixes that but makes every other thread (library counts, scans) slower, so it is lowered ONLY while a
+# track is playing and put back when playback pauses, ends, fails or stops. Never raised above what it was.
+SWITCH_INTERVAL = 0.0005  # 1 ms was tried: 201 of 688 blocks still silent beside two busy threads; 0.5 ms: 0
+_interval_lock = threading.Lock()  # held for microseconds; pause, resume, stop and the end-of-track callback all come here
+_boosted = False                   # True only while WE lowered the interval; _original is then the value to go back to
+_original = 0.0
+
+
+def _boost_threads():
+    global _boosted, _original
+    with _interval_lock:
+        if not _boosted and sys.getswitchinterval() > SWITCH_INTERVAL:
+            _original, _boosted = sys.getswitchinterval(), True  # captured once per boost, never while already boosted
+            sys.setswitchinterval(SWITCH_INTERVAL)
+
+
+def _restore_threads():
+    global _boosted
+    with _interval_lock:
+        if _boosted:
+            _boosted = False
+            sys.setswitchinterval(_original)
 PREBUFFER_SECONDS = 0.1  # the callback stays silent until this much is ready (or the file ended)
 READ_FRAMES = 4096
 
@@ -202,6 +227,7 @@ class WindowsAudioDeck:
         if ring.pull(output, self._volume) < frames and ring.eof and ring.read >= ring.written:
             self._playing = False
             self._ended = True
+            _restore_threads()
 
     def _read_loop(self, source, stop):
         """Reader thread: owns the source, keeps the current ring full, re-seeks when the ring is replaced."""
@@ -235,6 +261,7 @@ class WindowsAudioDeck:
                 self._error = str(exc)
                 self._playing = False
                 ring.eof = True
+                _restore_threads()
         finally:
             source.close()
 
@@ -271,6 +298,7 @@ class WindowsAudioDeck:
                 handed_over = True
                 reader.start()  # owns (and closes) the source from here on
                 try:
+                    _boost_threads()
                     stream.start()
                 except Exception:
                     self._stop_locked()
@@ -282,12 +310,14 @@ class WindowsAudioDeck:
 
     def pause(self):
         self._playing = False
+        _restore_threads()
         return self.status()
 
     def resume(self):
         with self._lock:
             if self._ring is not None:
                 self._playing, self._ended = True, False
+                _boost_threads()
         return self.status()
 
     def stop(self):
@@ -296,6 +326,7 @@ class WindowsAudioDeck:
         return self.status()
 
     def _stop_locked(self):
+        _restore_threads()
         if self._pending is not None:
             self._pending.set()
             self._pending = None

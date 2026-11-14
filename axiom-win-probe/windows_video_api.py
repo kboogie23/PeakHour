@@ -2,17 +2,38 @@
 import re,tempfile,threading,time,uuid
 from pathlib import Path
 from flask import Blueprint,request,jsonify,send_file
-from windows_video_preview import create_video_preview,preview_plan,VideoPreviewError
+from windows_video_preview import create_video_preview,preview_plan,VideoPreviewError,DIRECT_CONTAINERS,DIRECT_AUDIO
 from windows_media_probe import MediaProbeError,probe_media
 
 class VideoPreviewStore:
  MAX_ITEMS=4
+ MAX_PROBES=256
  def __init__(self,root,allowed_path,ffmpeg,idle_seconds=7200,clock=time.monotonic):
+  self._probes={}
   self.root=Path(root).resolve(strict=True);self.allowed_path=allowed_path;self.ffmpeg=ffmpeg
   self.idle_seconds=idle_seconds;self._clock=clock
   # _lock only guards these tables and is never held while probing, converting or deleting files
   self._lock=threading.RLock();self._items={};self._preparing=0;self._trash=[];self._trash_tried=None
- def prepare(self,path,convert=False):
+ def _probe(self,source):
+  # Inspecting a file starts a helper process (0.7 s warm, 5 s on the first run, much longer on a busy PC or a drive
+  # that is waking up): remember the answer for a file that has not changed so the second click is instant.
+  stat=source.stat();key=(str(source),stat.st_size,stat.st_mtime_ns)
+  with self._lock:
+   if key in self._probes:return self._probes[key]
+  info=probe_media(str(source),scratch_dir=self.root)
+  with self._lock:
+   self._probes[key]=info
+   while len(self._probes)>self.MAX_PROBES:self._probes.pop(next(iter(self._probes)))
+  return info
+ def plan(self,key):
+  """What a quickly published direct preview really needs: 'direct', 'copy' or 'convert' (inspects the file now)."""
+  source=Path(self.get(key)).resolve(strict=True)
+  info=self._probe(source)
+  codec=next((s['codec'] for s in info['streams'] if s['type']=='audio'),None)
+  # audio_ok: Edge can decode the sound as it is. A picture Edge cannot decode errors out by itself (and is converted
+  # then); sound it cannot decode would play silently, so the page must swap on that one.
+  return {'plan':preview_plan(info,source.suffix),'duration_seconds':info.get('duration_seconds'),'audio':codec is not None,'audio_ok':codec in DIRECT_AUDIO}
+ def prepare(self,path,convert=False,fast=False):
   source=Path(path).resolve(strict=True)
   if not source.is_file() or not self.allowed_path(source):raise ValueError('Video path is not permitted')
   self._sweep()
@@ -26,7 +47,11 @@ class VideoPreviewStore:
    self._preparing+=1
   for directory in evicted:self._discard(directory)
   try:
-   info=probe_media(str(source),scratch_dir=self.root)
+   if fast and not convert and source.suffix.lower() in DIRECT_CONTAINERS:
+    # Music videos are nearly always H.264 + AAC, which Edge plays as they are: start the picture now and let the
+    # page ask plan() in the background (and switch to a copy/conversion if the file turns out to need one).
+    return {'id':self._publish(None,source),'duration_seconds':None,'audio':None,'mode':'direct','verified':False}
+   info=self._probe(source)
    plan='convert' if convert else preview_plan(info,source.suffix)
    audio=any(s['type']=='audio' for s in info['streams'])
    if plan=='direct':  # played from the library file itself; nothing is copied or written
@@ -102,7 +127,12 @@ def create_video_blueprint(store):
   if request.content_length is not None and request.content_length>16384:return jsonify(error='Video request is too large'),413
   data=request.get_json(silent=True)
   if not isinstance(data,dict) or not isinstance(data.get('path'),str):return jsonify(error='Video path is required'),400
-  try:return jsonify(success=True,**store.prepare(data['path'],convert=data.get('convert') is True))
+  try:return jsonify(success=True,**store.prepare(data['path'],convert=data.get('convert') is True,fast=data.get('fast') is True))
+  except (ValueError,OSError,VideoPreviewError,MediaProbeError) as exc:return jsonify(success=False,error=str(exc)),400
+ @bp.get('/api/windows/video/<key>/plan')
+ def plan(key):
+  try:return jsonify(success=True,**store.plan(key))
+  except KeyError:return jsonify(error='Preview not found'),404
   except (ValueError,OSError,VideoPreviewError,MediaProbeError) as exc:return jsonify(success=False,error=str(exc)),400
  @bp.get('/api/windows/video/<key>')
  def stream(key):

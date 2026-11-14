@@ -21,6 +21,7 @@ call: sorted, escaped and joined, then compiled for each title and artist. The e
 import math
 import os
 import re
+import time
 
 MUSIC = ('music', 'Individual music track')
 MANUAL = frozenset({'dj_mix', 'music', 'live_recording'})  # AXIOM's override values
@@ -93,8 +94,40 @@ def suffix_stripper(app):
     return _strip_suffixes
 
 
+MAX_AGE = 10.0
+
+
+def remembered_year_prep(app, original):
+    """/api/library/stats counts, on every call, the songs whose year still needs review (a pass over all songs: 0.8 s
+    for 21,000, polled by the page). The count is kept for the same song list while the library file is unchanged;
+    every edit saves the file, which makes AXIOM load a new list. An edit that changes the list in place before saving
+    is caught by a content signature (the fields the count reads, about 15 ms for 21,000 songs), and a kept answer is
+    never older than MAX_AGE seconds."""
+    last = {}
+
+    def year_prep_summary(tracks):
+        try:
+            stat = os.stat(app.CACHE_PATH)
+            signature = hash(tuple((t.get('path'), t.get('year'), t.get('year_health_state'), t.get('year_locked'),
+                                    t.get('manual_year_lock')) for t in tracks))
+            key = (stat.st_mtime_ns, stat.st_size, len(tracks), signature)
+        except (OSError, TypeError, AttributeError):
+            return original(tracks)
+        now = time.monotonic()
+        if last.get('tracks') is tracks and last.get('key') == key and now - last['at'] < MAX_AGE:
+            return dict(last['result'])
+        result = original(tracks)
+        last.update(tracks=tracks, key=key, result=dict(result), at=now)
+        return result
+    year_prep_summary.windows_original = original
+    return year_prep_summary
+
+
 def install(app):
     from windows_intake import FAST_REALPATH
+    import live_assist_similarity
+    if not getattr(live_assist_similarity.year_prep_summary, 'windows_original', None):
+        live_assist_similarity.year_prep_summary = remembered_year_prep(app, live_assist_similarity.year_prep_summary)
     if not getattr(app._strip_suffixes, 'windows_original', None):
         app._strip_suffixes = suffix_stripper(app)
     if getattr(os.stat, '__self__', None) is not FAST_REALPATH:  # a bound method is a new object each time

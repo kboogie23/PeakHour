@@ -32,10 +32,42 @@
    const types=d.types.filter(t=>t.group!=='other');
    select.innerHTML=option('','All files')+option('audio',`${labels.audio} (${d.audio.toLocaleString()})`)+option('video',`${labels.video} (${d.video.toLocaleString()})`)
     +types.map(t=>option(t.type,`${t.type.toUpperCase()} (${t.count.toLocaleString()})`)).join('');
-   if(current&&select.value!==current){select.insertAdjacentHTML('beforeend',option(current,current.toUpperCase()+' (0)'));select.value=current;}
+   if(current&&select.value!==current){select.add(new Option(current.toUpperCase()+' (0)',current));select.value=current;}  // text, never HTML: the value comes from localStorage
   }catch(_){if(tries>1)setTimeout(()=>fill(select,tries-1),3000);}  // PEAK HOUR may still be starting
  }
+ // A kept Type that matches nothing ("MP3" on an all-video library) lands in the Library on "No Matching Records":
+ // say why, and offer the way out.
+ function hint(){
+  const box=document.querySelector('#search-results .library-no-results');
+  const done=document.getElementById('ph-filetype-hint');
+  if(!current){done?.remove();return;}
+  // only when Type is the one thing narrowing the list: not for a search or an era / BPM / folder / preparation filter
+  const other=()=>{
+   if((document.getElementById('main-search')?.value||'').trim())return true;
+   try{if(typeof activeEra!=='undefined'&&activeEra&&activeEra!=='All')return true;}catch(_){}
+   try{if(typeof activeLibraryBpmFilter!=='undefined'&&activeLibraryBpmFilter&&activeLibraryBpmFilter!=='all')return true;}catch(_){}
+   try{if(typeof activeLibraryRootFilter!=='undefined'&&activeLibraryRootFilter)return true;}catch(_){}
+   try{if(typeof activeLibraryPreparationFilter!=='undefined'&&activeLibraryPreparationFilter&&activeLibraryPreparationFilter!=='all')return true;}catch(_){}
+   return false;
+  };
+  if(!box||other()){done?.remove();return;}
+  if(done&&done.parentNode===box.parentNode)return;
+  done?.remove();
+  const note=document.createElement('div');note.id='ph-filetype-hint';note.className='ph-filetype-hint';
+  const name=current==='audio'?'All audio':current==='video'?'All video':current.toUpperCase();
+  note.innerHTML=`<p>Type is set to <b></b>. Nothing in your library matches it.</p><button type="button" class="library-empty-primary">Show all files</button>`;
+  note.querySelector('b').textContent=name;
+  note.querySelector('button').addEventListener('click',()=>{
+   const select=document.getElementById('ph-library-filetype');
+   current='';try{localStorage.setItem(key,'');}catch(_){}
+   if(select)select.value='';
+   document.querySelector('.ph-library-filetype')?.classList.remove('active');
+   note.remove();window.refreshLibrary?.();
+  });
+  box.after(note);
+ }
  function mount(){
+  hint();
   const bar=document.getElementById('library-top-sort-bar');
   if(!bar||document.getElementById('ph-library-filetype'))return;
   const label=document.createElement('label');label.className='ph-library-filetype';

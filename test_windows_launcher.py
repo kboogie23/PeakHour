@@ -78,7 +78,69 @@ with tempfile.TemporaryDirectory(dir=root) as d:
   assert '--app=http://127.0.0.1:8080/' in command and '--start-maximized' in command and f'--user-data-dir={local/"AXIOM DJ"/"Window"}' in command
   keep=('--disable-background-timer-throttling','--disable-renderer-backgrounding','--disable-backgrounding-occluded-windows')
   assert all(s in command for s in keep) and '--disable-features=msEdgeStartupBoost' in command  # a minimised window keeps following the DJ software
-  import inspect;assert 'KEEP_AWAKE' in inspect.getsource(L.open_live_assist) and set(keep)==set(L.KEEP_AWAKE)  # the Live Assist pop-up too
+  import inspect;assert 'WINDOW_FLAGS' in inspect.getsource(L.open_live_assist) and set(keep)==set(L.KEEP_AWAKE)  # the Live Assist pop-up too
+  assert 'WINDOW_FLAGS' in inspect.getsource(L.open_live_assist_mini) and 'WINDOW_FLAGS' in inspect.getsource(L.edge_command)  # and PEAK HOUR Mini: one flag list for every window
+  quiet=('--disable-extensions','--disable-sync','--disable-background-networking','--disable-component-extensions-with-background-pages')
+  assert all(s in command and s in L.WINDOW_FLAGS for s in quiet)  # no synced extensions, sync or background networking in the app window
+  assert '--no-first-run' in command and '--no-default-browser-check' in command and command.count('--disable-features=msEdgeStartupBoost')==1  # a second --disable-features would replace the first
+  assert not any(s.startswith(('--disable-web-security','--disable-popup','--disable-gpu','--disable-audio','--autoplay','--mute')) for s in L.WINDOW_FLAGS)  # media, downloads and pickers untouched
+  # Existing installs: the extensions Edge already synced into the profile are removed once, only while the profile is not open
+  profile=local/'AXIOM DJ'/'Window'
+  for name in L.PROFILE_JUNK:(profile/'Default'/name/'sub').mkdir(parents=True);(profile/'Default'/name/'sub'/'f.bin').write_bytes(b'x')
+  for name in ('Local Storage','IndexedDB','Sync Data'):(profile/'Default'/name).mkdir();(profile/'Default'/name/'keep.ldb').write_bytes(b'peakhour.setting')
+  (profile/'Default'/'Preferences').write_text('{}');(profile/'Local State').write_text('{}')
+  assert not L.profile_in_use(profile)
+  default=profile/'Default';settings=('Local Storage','IndexedDB','Sync Data')
+  def settings_intact():return all((default/n/'keep.ldb').read_bytes()==b'peakhour.setting' for n in settings) and (default/'Preferences').is_file() and (profile/'Local State').is_file()
+  trash=lambda:[p for p in default.iterdir() if p.name.startswith(L.TRASH)]
+  # a file held open in Cache (as a running program would): that folder cannot be moved, the others are; not marked, tried again
+  held=open(default/'Cache'/'sub'/'f.bin','rb')
+  try:
+   moved=L.clean_window_profile(profile)
+   assert sorted(moved)==sorted(n for n in L.PROFILE_JUNK if n!='Cache') and (default/'Cache').is_dir() and not (profile/L.PROFILE_CLEANED).exists()
+   assert (profile/(L.PROFILE_CLEANED+'.tries')).read_text()=='1' and len(trash())==4
+  finally:held.close()
+  # renamed first, deleted afterwards in the background: the junk is already gone from its place before any deleting happens
+  assert L.clean_window_profile(profile)==['Cache'] and not any((default/n).exists() for n in L.PROFILE_JUNK) and len(trash())==5
+  assert (profile/L.PROFILE_CLEANED).exists() and settings_intact()
+  # a delete that fails (file held in the trash) leaves the folder, says so, and the next start's sweep finishes it
+  stuck=trash()[0];held=open(next(stuck.rglob('f.bin')),'rb')
+  try:assert L.delete_trash(profile)==[stuck.name] and len(trash())==1
+  finally:held.close()
+  assert L.delete_trash(profile)==[] and trash()==[] and settings_intact()
+  (default/'Extensions').mkdir();assert L.clean_window_profile(profile)==[] and (default/'Extensions').is_dir()  # once only: the marker stops a second run
+  # prepare_window_profile (called before the Ctrl+F hotkey starts) renames, then deletes on a background thread
+  (profile/L.PROFILE_CLEANED).unlink();(profile/(L.PROFILE_CLEANED+'.tries')).unlink();(default/'Extensions'/'x.bin').write_bytes(b'x')
+  assert L.prepare_window_profile(profile)==['Extensions'] and not (default/'Extensions').exists()
+  for _ in range(100):
+   if not trash():break
+   time.sleep(0.1)
+  assert trash()==[] and settings_intact()
+  (profile/L.PROFILE_CLEANED).unlink();real=L.profile_in_use;L.profile_in_use=lambda p:True
+  (default/'Extensions').mkdir()
+  try:assert L.clean_window_profile(profile)==[] and (default/'Extensions').is_dir() and not (profile/L.PROFILE_CLEANED).exists()  # a running Edge: nothing touched, no marker
+  finally:L.profile_in_use=real
+  # five starts that cannot move a folder: give up (marker), never loop forever
+  held=open(default/'Extensions'/'h.bin','wb')
+  try:
+   for _ in range(L.PROFILE_TRIES):L.clean_window_profile(profile)
+   assert (profile/L.PROFILE_CLEANED).read_text()=='gave up'
+  finally:held.close()
+  assert L.clean_window_profile(local/'AXIOM DJ'/'No such profile')==[]
+  # a junction (or symlink) is never followed: Default itself, or one of the folders
+  if os.name=='nt':
+   elsewhere=local/'elsewhere';(elsewhere/'Extensions').mkdir(parents=True);(elsewhere/'Extensions'/'keep.txt').write_text('mine')
+   linked=local/'AXIOM DJ'/'Linked';linked.mkdir()
+   subprocess.run(['cmd','/c','mklink','/J',str(linked/'Default'),str(elsewhere)],check=True,capture_output=True)
+   assert L._is_link(linked/'Default') and L.clean_window_profile(linked)==[] and (elsewhere/'Extensions'/'keep.txt').read_text()=='mine'
+   (linked/'Default').rmdir()
+   (linked/'Default').mkdir();subprocess.run(['cmd','/c','mklink','/J',str(linked/'Default'/'Extensions'),str(elsewhere/'Extensions')],check=True,capture_output=True)
+   (linked/'Default'/'Cache').mkdir()
+   assert L.clean_window_profile(linked)==['Cache'] and (elsewhere/'Extensions'/'keep.txt').read_text()=='mine' and not (linked/L.PROFILE_CLEANED).exists()
+   L.delete_trash(linked);assert (elsewhere/'Extensions'/'keep.txt').read_text()=='mine'
+  # the hotkey starts only after the profile has been prepared
+  main_source=inspect.getsource(L.main);assert main_source.index('prepare_window_profile()')<main_source.index('LIVE_ASSIST_HOTKEY.start()')
+  print('launcher flags: no extensions/sync/background networking in any PEAK HOUR window; profile clean-up removes only',', '.join(L.PROFILE_JUNK))
  finally:
   if old is None:os.environ.pop('LOCALAPPDATA',None)
   else:os.environ['LOCALAPPDATA']=old

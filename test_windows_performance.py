@@ -70,6 +70,16 @@ try:
  web=Flask('s');web.register_blueprint(R.create_stress_report_blueprint(Report(),lambda p:None));c=web.test_client()
  data=c.get('/api/windows/threads?seconds=0.1').get_json();assert data['success'] and isinstance(data['threads'],list)
  assert c.get('/api/windows/threads',environ_base={'REMOTE_ADDR':'192.168.0.9'}).status_code==403
+ # The year-review count (polled by /api/library/stats) is kept for the same song list while the library file is unchanged
+ import types as _types
+ calls=[];lib=base/'lib.json';lib.write_text('{}');songs=[{'year':1999}]*3
+ fake=_types.SimpleNamespace(CACHE_PATH=str(lib));remembered=P.remembered_year_prep(fake,lambda t:calls.append(1) or {'year_review_tracks':len(t),'year_review_recommended':True})
+ first=remembered(songs);first['year_review_tracks']=99  # a caller changing its copy must not change the kept answer
+ assert remembered(songs)=={'year_review_tracks':3,'year_review_recommended':True} and len(calls)==1
+ assert remembered(list(songs))['year_review_tracks']==3 and len(calls)==2  # another list (a reload): counted again
+ lib.write_text('{"edited":1}');remembered(songs);assert len(calls)==3  # the file changed (every edit saves it): counted again
+ live=[{'path':'a','year':1999},{'path':'b','year':None}];remembered(live);n=len(calls);remembered(live);assert len(calls)==n  # unchanged: kept
+ live[1]['year']=2001;remembered(live);assert len(calls)==n+1  # edited in place before any save: counted again
  shutil.rmtree(base,ignore_errors=True)
  print('PASS: big-library speed-ups give AXIOM\'s exact answers: recordings, drive checks, Health-count stat, suffixes')
 except BaseException:

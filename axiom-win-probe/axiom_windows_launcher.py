@@ -25,6 +25,7 @@ import io
 import msvcrt
 import os
 import re
+import shutil
 import socket
 import subprocess
 import sys
@@ -32,6 +33,7 @@ import threading
 import time
 import traceback
 import urllib.request
+import uuid
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
@@ -351,11 +353,18 @@ KEEP_AWAKE = ['--disable-background-timer-throttling', '--disable-renderer-backg
               '--disable-backgrounding-occluded-windows']
 
 
+# PEAK HOUR's window is an app, not a browser: Edge signed itself in with the Windows account, synced the user's
+# extensions into this profile (1.1 GB) and ran them (10 renderer processes, a search indexer, background networking),
+# which made the whole window slow. None of this changes downloads, the folder picker or media playback.
+QUIET = ['--disable-extensions', '--disable-sync', '--disable-background-networking',
+         '--disable-component-extensions-with-background-pages', '--disable-default-apps']
+WINDOW_FLAGS = ['--no-first-run', '--no-default-browser-check', '--disable-features=msEdgeStartupBoost', *QUIET, *KEEP_AWAKE]
+
+
 def edge_command(edge, url, profile):
     """App window for the cockpit (Edge or Chrome take the same switches): its own profile, opened
     maximized like the full-size macOS window (Edge's default placement could sit off to the right)."""
-    return [str(edge), f'--app={url}', f'--user-data-dir={profile}', '--start-maximized', '--no-first-run',
-            '--no-default-browser-check', '--disable-features=msEdgeStartupBoost', *KEEP_AWAKE]
+    return [str(edge), f'--app={url}', f'--user-data-dir={profile}', '--start-maximized', *WINDOW_FLAGS]
 
 
 # The browser the open window uses: (name, program, profile), or None for the default browser.
@@ -378,7 +387,7 @@ def open_live_assist(url):
         os.startfile(target)
         return
     subprocess.Popen([str(browser[1]), f'--app={target}', f'--user-data-dir={browser[2]}', '--window-size=438,690',
-                      '--no-first-run', '--no-default-browser-check', '--disable-features=msEdgeStartupBoost', *KEEP_AWAKE],
+                      *WINDOW_FLAGS],
                      close_fds=True)
 
 
@@ -390,14 +399,107 @@ def open_live_assist_mini(url):
         os.startfile(target)
         return
     subprocess.Popen([str(browser[1]), f'--app={target}', f'--user-data-dir={browser[2]}', '--window-size=380,560',
-                      '--no-first-run', '--no-default-browser-check', '--disable-features=msEdgeStartupBoost', *KEEP_AWAKE],
+                      *WINDOW_FLAGS],
                      close_fds=True)
+
+
+PROFILE_CLEANED = 'peak-hour-profile-cleaned-1'  # marker file in the profile: the one-time clean-up below has run
+PROFILE_JUNK = ('Extensions', 'Local Extension Settings', 'Service Worker', 'Cache', 'Code Cache')  # folders of Default\
+
+
+PROFILE_TRIES = 5  # starts that may fail to move a folder aside before the clean-up gives up
+TRASH = '_trash-'
+
+
+def _is_link(path):
+    """A symlink or a Windows junction: never followed or touched."""
+    path = Path(path)
+    return path.is_symlink() or (hasattr(path, 'is_junction') and path.is_junction())
+
+
+def clean_window_profile(profile):
+    """Once per profile, move the extensions Edge synced into PEAK HOUR's window profile (over 1 GB on one PC) and the
+    caches next to them out of the way: each folder is RENAMED to Default\\_trash-<id> (instant), so the window opens
+    at once and nothing can find half a folder; delete_trash() then removes them in the background. Only the folders
+    in PROFILE_JUNK go (the settings PEAK HOUR keeps in the page's localStorage live elsewhere in the profile), only
+    while no browser has the profile open, and a Default or folder that is a symlink/junction is left alone. The
+    marker is written once every folder is gone from its place; a folder that cannot be moved (in use) is tried
+    again on the next start, up to PROFILE_TRIES starts. Returns the folders moved aside."""
+    profile = Path(profile)
+    default = profile / 'Default'
+    marker, tries = profile / PROFILE_CLEANED, profile / (PROFILE_CLEANED + '.tries')
+    if _is_link(default) or not default.is_dir() or marker.exists() or profile_in_use(profile):
+        return []
+    moved, stuck = [], []
+    for name in PROFILE_JUNK:
+        folder = default / name
+        if not (folder.exists() or _is_link(folder)):
+            continue
+        if _is_link(folder) or not folder.is_dir():
+            stuck.append(name)  # not ours to follow or delete
+            continue
+        try:
+            folder.rename(default / f'{TRASH}{uuid.uuid4().hex}')
+            moved.append(name)
+        except OSError:
+            stuck.append(name)
+    try:
+        if stuck:
+            count = int(tries.read_text(encoding='ascii') or 0) + 1 if tries.exists() else 1
+            tries.write_text(str(count), encoding='ascii')
+            log(f'Window profile: could not move {", ".join(stuck)} aside (try {count} of {PROFILE_TRIES})')
+            if count >= PROFILE_TRIES:
+                marker.write_text('gave up', encoding='ascii')
+        else:
+            marker.write_text('1', encoding='ascii')
+    except (OSError, ValueError):
+        pass
+    return moved
+
+
+def delete_trash(profile):
+    """Remove the _trash-* folders under Default\\ (this start's, and any an earlier start could not finish).
+    Returns the names still there afterwards."""
+    default = Path(profile) / 'Default'
+    left = []
+    try:
+        found = [p for p in default.iterdir() if p.name.startswith(TRASH)]
+    except OSError:
+        return left
+    for folder in found:
+        if _is_link(folder) or not folder.is_dir():
+            continue
+        shutil.rmtree(folder, ignore_errors=True)
+        if folder.exists():
+            left.append(folder.name)
+    if left:
+        log(f'Window profile: could not delete {", ".join(left)}; it will be tried again at the next start')
+    return left
+
+
+def prepare_window_profile(profile=None):
+    """Move aside what clean_window_profile names and delete the trash on a background thread. Call it before anything
+    that can start the browser (the Ctrl+F hotkey), so no window opens while folders are being renamed."""
+    browser = window_browser()
+    profile = profile or (browser[2] if browser else None)
+    if not profile:
+        return []
+    try:
+        moved = clean_window_profile(profile)
+        if moved:
+            log('Moved the window profile\'s synced extensions and caches aside: ' + ', '.join(moved))
+        threading.Thread(target=delete_trash, args=(profile,), name='axiom-profile-trash', daemon=True).start()
+        return moved
+    except Exception:
+        log('Could not clear the window profile:\n' + traceback.format_exc())
+        return []
 
 
 def open_window(url):
     """Open the cockpit; returns a process to wait on, or None (browser fallback)."""
     browser = window_browser()
     if browser:
+        prepare_window_profile(browser[2])  # already done at start-up; a no-op then (marker), and safe if not
         log(f'Opening {browser[0]} app window')
         return subprocess.Popen(edge_command(browser[1], url, browser[2]), close_fds=True)
     log('Neither Edge nor Chrome found; opening the default browser')
@@ -485,6 +587,8 @@ def main():
                 log(f'Other laptops on the home network: {hub[2]}' if hub else 'No home network found; laptops cannot connect.')
             except OSError as exc:
                 log(f'Home-network access unavailable: {exc}')
+        if os.environ.get('AXIOM_NO_OPEN') != '1':
+            prepare_window_profile()  # before the hotkey can open a Live Assist window in the same profile
         axiom.LIVE_ASSIST_HOTKEY.opener = lambda: open_live_assist(url)
         axiom.LIVE_ASSIST_HOTKEY.start()
         log('Ctrl+F in the DJ software shows Live Assist (' + ('on' if axiom.LIVE_ASSIST_HOTKEY.snapshot()['enabled'] else 'off') + ')')
