@@ -145,6 +145,11 @@ FEATURES = [
     feature('launcher.lifecycle', 'Launcher', 'Start, single instance, clean exit, logs, installer size',
             'A second launch opens the running app, closing the window ends the app and its helpers, logs do not grow forever, '
             'and the installer stays a sensible size.', covered=('launcher', 'exit', 'installer_size')),
+    feature('launcher.native_window', 'Launcher', 'Own native window (opt-in, PEAKHOUR_WINDOW=native)',
+            'Unless PEAKHOUR_WINDOW=native is set the Edge app window opens exactly as before; the native window opens only when this PC '
+            'can run it (otherwise, or if it fails to start, Edge opens instead), loads the app in WebView2, opens same-origin windows '
+            'as real windows and other sites in the browser, keeps the microphone and MIDI working, and closing it quits the app.',
+            covered=('window_mode', 'native_window')),
 
     # ------------------------------------------------------------------ Quality sweeps
     feature('quality.click_sweep', 'Quality', 'Click-through sweep of every tab',

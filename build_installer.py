@@ -17,6 +17,8 @@ download, says "already installed - skipped" and shows no window when the engine
 a failure or a skip never fails Setup; a silent Setup (/Q, or PEAK_HOUR_SETUP_SILENT=1) skips it), and, for
 anyone who skipped, in the app (Studio > Stems > "Install stem engine"). The program is not code-signed (that
 needs a certificate bought by the publisher), so Windows SmartScreen will warn on first run.
+The native window (windows_native_window.py, opt-in with PEAKHOUR_WINDOW=native or window-mode.txt) needs pywebview and its
+packages (native_window_lock.txt) in runtime/ and the licences in THIRD-PARTY-NOTICES.txt; stage() checks both. Edge stays the default.
 Usage: python build_installer.py [--no-setup]
 """
 import json
@@ -47,7 +49,8 @@ SKIP_APP = {('data', 'theme-cache')}  # rebuilt on first run
 SKIP_PYTHON_PATHS = {'include', 'libs', 'Scripts',                        # C headers, import libraries, pip.exe
                      'Lib/ensurepip', 'Lib/idlelib', 'Lib/lib2to3', 'Lib/turtledemo', 'Lib/venv', 'Lib/msilib',
                      'Lib/test', 'tcl/tix8.4.3', 'tcl/nmake'}
-SKIP_PACKAGE_PATHS = {'numpy/_core/include', 'numpy/_core/lib', 'numpy/random/lib'}  # build-only headers/.lib files
+SKIP_PACKAGE_PATHS = {'numpy/_core/include', 'numpy/_core/lib', 'numpy/random/lib',  # build-only headers/.lib files
+                      'webview/lib/pywebview-android.jar'}  # pywebview's Android backend: never used on Windows
 SKIP_PACKAGE_NAMES = {'tests', 'pip'}                                     # libraries' own test suites; pip
 SKIP_PACKAGE_SUFFIXES = ('.whl',)                                         # a 0-byte scipy wheel marker
 SKIP_PACKAGE_PREFIXES = ('pip-',)                                         # pip-<v>.dist-info
@@ -60,7 +63,14 @@ REQUIRED_MODULES = ('flask', 'numpy', 'sounddevice', 'soundfile', 'pedalboard', 
 EXCLUDED_MODULES = ('pip', 'ensurepip', 'idlelib', 'venv', 'lib2to3')
 # The stem engine's download is installed from these (windows_stem_installer.py: exact versions and SHA-256 of every package); the
 # app folder is copied whole, but the installer must never ship without them.
-REQUIRED_APP_FILES = ('stem_engine_lock_cuda.txt', 'stem_engine_lock_cpu.txt', 'windows_stem_setup.py')  # the last: Setup's stem engine step
+REQUIRED_APP_FILES = ('stem_engine_lock_cuda.txt', 'stem_engine_lock_cpu.txt', 'windows_stem_setup.py',  # the last: Setup's stem engine step
+                      'windows_native_window.py', 'windows_window_mode.py',  # the opt-in native window (PEAKHOUR_WINDOW=native)
+                      'native_window_lock.txt', 'THIRD-PARTY-NOTICES.txt')  # its pinned packages, and their licences
+# The native window's libraries come from the build environment's site-packages (copied whole above); native_window_lock.txt pins
+# them. The build checks the INSTALLED VERSIONS against the pins and that they import in the packaged Python. The SHA-256 hashes in
+# that file only document which wheels were used (and let a fresh environment be rebuilt with pip --require-hashes); the build does
+# not re-verify the copied files against them. WebView2 itself is not packaged.
+NATIVE_MODULES = ('webview', 'clr_loader', 'pythonnet', 'clr', 'bottle', 'proxy_tools', 'cffi', 'pycparser', 'typing_extensions')
 SKIP_FILES = {'make_90s_art.py', 'make_peak_hour_logo.py', 'make_region_backgrounds.py', 'make_regions_art.py'}
 
 
@@ -129,10 +139,41 @@ def stage(target):
     check = subprocess.run([str(runtime / 'python.exe'), '-I', '-c', code], capture_output=True, text=True, timeout=300)
     if check.stdout.strip() != 'ok':
         raise SystemExit('The packaged Python cannot load PEAK HOUR\'s libraries:\n' + check.stderr)
+    check_native_window(target)
     leftovers = [p for p in ('include', 'libs', 'Scripts', 'Lib/ensurepip', 'Lib/idlelib', 'Lib/test') if (runtime / p).exists()]
     leftovers += [str(p.relative_to(runtime)) for p in (runtime / 'Lib' / 'site-packages').rglob('tests') if p.is_dir()]
     if leftovers:
         raise SystemExit('Excluded folders are still in the package: ' + ', '.join(leftovers[:10]))
+
+
+def native_window_pins():
+    """[(name, version)] from native_window_lock.txt."""
+    pins = []
+    for line in (APP / 'native_window_lock.txt').read_text(encoding='utf-8').splitlines():
+        if line and not line.startswith('#'):
+            name, version = line.split()[0].split('==')
+            pins.append((name, version))
+    return pins
+
+
+def check_native_window(target):
+    """In the packaged Python (isolated mode): the native window's libraries are at the pinned versions and import (including
+    `clr`, which starts the .NET runtime, so this needs .NET Framework on the build PC), and windows_window_mode agrees the
+    window can run when the PC has WebView2 and .NET 4.8 (a build PC without those two still passes)."""
+    code = ('import sys, importlib, importlib.metadata\n'
+            f'sys.path.insert(0, {str(target / "app")!r})\n'
+            f'for name, version in {native_window_pins()!r}:\n'
+            '    assert importlib.metadata.version(name) == version, (name, importlib.metadata.version(name), version)\n'
+            f'for name in {NATIVE_MODULES!r}: importlib.import_module(name)\n'
+            'import windows_window_mode as m\n'
+            'assert set(m.failed_probes()) <= {"webview2", "dotnet48"}, m.failed_probes()\n'
+            'ok = {n: (lambda: True) for n in m.PROBE_ORDER}\n'
+            'assert m.choose_window({"PEAKHOUR_WINDOW": "native"}, ok)["mode"] == "native"\n'
+            'assert m.choose_window({}, ok)["mode"] == "edge"\n'
+            'print("ok")')
+    check = subprocess.run([str(target / 'runtime' / 'python.exe'), '-I', '-c', code], capture_output=True, text=True, timeout=300)
+    if check.stdout.strip() != 'ok':
+        raise SystemExit('The packaged Python cannot run the native window:\n' + check.stderr)
 
 
 def pack(folder, archive):

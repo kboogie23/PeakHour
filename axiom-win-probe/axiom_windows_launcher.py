@@ -385,6 +385,8 @@ def window_browser():
 
 def open_live_assist(url):
     """Live Assist in its own app window, in the cockpit's browser and profile (Ctrl+F in the DJ software)."""
+    if native_window_command('live_assist'):  # the native window is up: open it inside that process
+        return
     browser = window_browser()
     target = f'{url}live_assist_window?popup=1&open={int(time.time() * 1000)}'
     if not browser:
@@ -397,6 +399,8 @@ def open_live_assist(url):
 
 def open_live_assist_mini(url):
     """PEAK HOUR Mini in its own small app window; the page pins itself on top (windows_live_assist_mini.py)."""
+    if native_window_command('mini'):
+        return
     browser = window_browser()
     target = f'{url}static/windows-live-assist-mini.html'
     if not browser:
@@ -541,6 +545,199 @@ def open_window(url):
     return None
 
 
+NATIVE_READY_SECONDS = 40  # the native window must report "page loaded" in this time, or it is killed and Edge opens instead
+NATIVE_FOCUS_SECONDS = 30  # a second launch keeps asking a live native window to come forward for this long (it may still be loading)
+NATIVE_CONTROL = None  # {'process', 'token', 'port'} of the native window this launcher started ('port' is read from the control file)
+NATIVE_ANSWER_SECONDS = 2.0  # a native window that does not answer a command in this time is not used: Edge opens instead
+NATIVE_COMMANDS = ('focus', 'live_assist', 'mini', 'manual')  # what the native window accepts (it builds every address itself)
+STILL_ACTIVE = 259
+
+
+def control_file():
+    return data_root() / 'native-control.json'
+
+
+def forget_control_file():
+    """A native window's control file is only valid while that window runs: remove any left over (a crash, a kill)."""
+    try:
+        control_file().unlink(missing_ok=True)
+    except OSError:
+        pass
+
+
+def read_control_info():
+    """{'pid', 'port', 'token', 'loaded'} written by the native window, or None (no file, junk, wrong types)."""
+    try:
+        info = json.loads(control_file().read_text(encoding='utf-8'))
+        if (isinstance(info, dict) and isinstance(info.get('pid'), int) and isinstance(info.get('port'), int)
+                and isinstance(info.get('token'), str) and 0 < info['port'] < 65536):
+            return info
+    except (OSError, ValueError):
+        pass
+    return None
+
+
+def native_pid_alive(pid):
+    """True when `pid` is a running python process (the native window is one): a stale file whose number Windows has since
+    given to something else does not count. Cheap, no extra packages."""
+    try:
+        kernel32 = ctypes.WinDLL('kernel32', use_last_error=True)
+        kernel32.OpenProcess.restype = ctypes.c_void_p
+        kernel32.OpenProcess.argtypes = [ctypes.c_uint32, ctypes.c_int, ctypes.c_uint32]
+        kernel32.CloseHandle.argtypes = [ctypes.c_void_p]
+        kernel32.GetExitCodeProcess.argtypes = [ctypes.c_void_p, ctypes.POINTER(ctypes.c_uint32)]
+        kernel32.QueryFullProcessImageNameW.argtypes = [ctypes.c_void_p, ctypes.c_uint32, ctypes.c_wchar_p, ctypes.POINTER(ctypes.c_uint32)]
+        handle = kernel32.OpenProcess(0x1000, False, pid)  # PROCESS_QUERY_LIMITED_INFORMATION
+        if not handle:
+            return False
+        try:
+            code = ctypes.c_uint32()
+            if not kernel32.GetExitCodeProcess(handle, ctypes.byref(code)) or code.value != STILL_ACTIVE:
+                return False
+            size = ctypes.c_uint32(520)
+            name = ctypes.create_unicode_buffer(size.value)
+            if not kernel32.QueryFullProcessImageNameW(handle, 0, name, ctypes.byref(size)):
+                return False
+            return os.path.basename(name.value).lower().startswith('python')
+        finally:
+            kernel32.CloseHandle(handle)
+    except Exception:
+        return False
+
+
+def send_native_command(command, port, token, seconds=NATIVE_ANSWER_SECONDS):
+    """Ask the native window process (loopback socket + secret token) to do one of NATIVE_COMMANDS; True when it says so.
+    Whatever comes back, a junk answer is just False."""
+    if command not in NATIVE_COMMANDS:
+        return False
+    deadline = time.monotonic() + seconds
+    while True:
+        try:
+            with socket.create_connection((HOST, port), timeout=max(0.1, deadline - time.monotonic())) as s:
+                s.settimeout(max(0.1, deadline - time.monotonic()))
+                s.sendall((json.dumps({'token': token, 'command': command}) + '\n').encode('ascii'))
+                reply = b''
+                while not reply.endswith(b'\n') and len(reply) < 200:
+                    chunk = s.recv(64)
+                    if not chunk:
+                        break
+                    reply += chunk
+            answer = json.loads(reply.decode('ascii', 'replace'))
+            return isinstance(answer, dict) and answer.get('ok') is True
+        except ConnectionRefusedError:  # still starting up: try again until the deadline
+            if time.monotonic() >= deadline:
+                return False
+            time.sleep(0.1)
+        except (OSError, ValueError, AttributeError, TypeError):
+            return False
+
+
+def native_window_command(command):
+    """True when the native window of this launcher did `command`; False when there is none (the Edge path then runs)."""
+    control = NATIVE_CONTROL
+    if not control or control['process'].poll() is not None:
+        return False
+    if control.get('port') is None:  # the window tells us its port in the control file
+        info = read_control_info()
+        if not info or info['token'] != control['token']:
+            return False
+        control['port'] = info['port']
+    return send_native_command(command, control['port'], control['token'])
+
+
+def native_is_ready(token):
+    """True when the native window with this token has reported that its page loaded."""
+    info = read_control_info()
+    return bool(info and info['token'] == token and info.get('loaded') is True)
+
+
+def kill_process_tree(process):
+    """Stop the process this launcher started (and what it started), nothing else."""
+    try:
+        subprocess.run(['taskkill', '/F', '/T', '/PID', str(process.pid)], capture_output=True, timeout=30)
+    except Exception:
+        try:
+            process.kill()
+        except Exception:
+            pass
+
+
+def start_native_window(url):
+    """The native window (opt-in: PEAKHOUR_WINDOW=native, or window-mode.txt): PEAK HOUR's own window
+    (windows_native_window.py, a separate process) instead of Edge. Returns (process, start time), or None to keep the usual
+    Edge/Chrome window (nothing asked for it, or this PC cannot run it: windows_window_mode says why). The process gets a
+    control channel (a secret token in its environment; it chooses its own port and says so in native-control.json) that
+    open_live_assist and friends use. Only the first launcher ever calls this: a second launch never starts a window."""
+    global NATIVE_CONTROL
+    try:
+        from windows_window_mode import choose_window
+        choice = choose_window()
+        if choice.get('source') != 'default':
+            log(f'Window mode: {choice["mode"]} ({choice["reason"]})')
+        if choice['mode'] != 'native':
+            return None
+        import secrets
+        token = secrets.token_hex(16)
+        command = [sys.executable, str(HERE / 'windows_native_window.py'), '--url', url, '--title', DISPLAY_NAME,
+                   '--profile', str(data_root() / 'NativeWindow')]
+        # test switches (PEAKHOUR_TEST*) never reach the window
+        env = {k: v for k, v in os.environ.items() if not k.upper().startswith('PEAKHOUR_TEST')}
+        env['PEAKHOUR_NATIVE_CONTROL'] = token
+        forget_control_file()
+        log('Opening the native PEAK HOUR window')
+        process = subprocess.Popen(command, env=env, close_fds=True)
+        NATIVE_CONTROL = {'process': process, 'token': token, 'port': None}
+        return process, time.monotonic()
+    except Exception:
+        log('Could not start the native window; using Edge:\n' + traceback.format_exc())
+        return None
+
+
+def forget_native_window():
+    if NATIVE_CONTROL:
+        forget_control_file()
+
+
+def wait_native_window(native, url):
+    """Wait for the native window to load, then to close. Exit code 0 is the user closing it: PEAK HOUR ends with it. Anything
+    else (it never loaded within NATIVE_READY_SECONDS, it exited 3 because WebView2 is not usable, it crashed at any time) keeps
+    the session alive: the Edge/Chrome window opens instead, once, and that process is returned to wait on."""
+    process, started = native
+    token = NATIVE_CONTROL['token'] if NATIVE_CONTROL else None
+    deadline = time.monotonic() + NATIVE_READY_SECONDS
+    while process.poll() is None and not (token and native_is_ready(token)):
+        if time.monotonic() >= deadline:
+            log(f'The native window did not report ready in {NATIVE_READY_SECONDS}s; stopping it and opening the Edge window instead')
+            kill_process_tree(process)
+            forget_control_file()
+            return open_window(url)
+        time.sleep(0.25)
+    code = process.wait()
+    if code != 0:
+        log(f'The native window ended with code {code} after {time.monotonic() - started:.1f}s; opening the Edge window instead')
+        forget_control_file()
+        return open_window(url)
+    log('The native window closed (code 0)')
+    return process
+
+
+def open_in_running_instance(url):
+    """A second launch. It never starts a native window: with a live native window (the control file names a running python
+    process) it asks that window to come forward, retrying for NATIVE_FOCUS_SECONDS because it may still be loading; with none,
+    or when it does not answer, it does what it always did: the Edge/Chrome window."""
+    info = read_control_info()
+    if info and native_pid_alive(info['pid']):
+        deadline = time.monotonic() + NATIVE_FOCUS_SECONDS
+        while True:
+            if send_native_command('focus', info['port'], info['token']):
+                return
+            if time.monotonic() >= deadline or not native_pid_alive(info['pid']):
+                break
+            time.sleep(0.5)
+        log('The running native window did not answer; opening the Edge window')
+    open_window(url)
+
+
 def profile_in_use(profile):
     """True while an Edge process has AXIOM's window profile open: Edge keeps the
     profile's lockfile open without sharing until its last window closes."""
@@ -585,6 +782,7 @@ def main():
     log(f'PEAK HOUR launch requested executable={sys.executable}')
     instance = SingleInstance()
     if instance.acquire():  # only the running launcher rotates the log and holds it open
+        forget_control_file()  # a native window's control file from a run that did not end cleanly
         rotate_log(log_file())
         log_server_errors()
     else:
@@ -596,7 +794,7 @@ def main():
         log(f'Another PEAK HOUR launcher is running (port {port})')
         if url and is_axiom(url):
             if os.environ.get('AXIOM_NO_OPEN') != '1':
-                open_window(url)
+                open_in_running_instance(url)
         else:
             show_dialog(DISPLAY_NAME, 'PEAK HOUR is already starting. Please wait a moment, then try again.')
         return 0
@@ -628,13 +826,14 @@ def main():
         log('Ctrl+F in the DJ software shows Live Assist (' + ('on' if axiom.LIVE_ASSIST_HOTKEY.snapshot()['enabled'] else 'off') + ')')
         if os.environ.get('AXIOM_NO_OPEN') == '1':
             threading.Event().wait()
-        window = open_window(url)
+        native = start_native_window(url)
+        window = open_window(url) if native is None else wait_native_window(native, url)
         if window is not None:
             window.wait()
             # If an AXIOM window was already open, Edge (or Chrome) hands the new one
             # to that process and this one exits within seconds. Serve until no
             # browser process holds AXIOM's window profile any more.
-            while profile_in_use(window_browser()[2]):
+            while window_browser() and profile_in_use(window_browser()[2]):
                 time.sleep(1)
         else:
             show_dialog(DISPLAY_NAME, f'PEAK HOUR is running at {url}\n\nKeep this message open while you use PEAK HOUR.\nClick OK to quit PEAK HOUR.')
@@ -647,6 +846,7 @@ def main():
         show_dialog(DISPLAY_NAME, f'PEAK HOUR could not start.\n\nDetails are in:\n{log_file()}')
         return 1
     finally:
+        forget_native_window()
         if axiom is not None:
             finish_recording(axiom, instance)  # also when startup failed or something else ended the launcher
             stop_background_jobs(axiom, port)
