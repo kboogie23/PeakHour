@@ -303,7 +303,7 @@ try:
     fake_python.write_text('@echo off\r\necho Collecting torch==2.6.0\r\necho Downloading torch-2.6.0%%2Bcu124-cp312-cp312-win_amd64.whl (2.5 GB)\r\n'
                            'echo Progress 0 of 2500000000\r\necho Progress 1500000000 of 2500000000\r\necho Progress 2500000000 of 2500000000\r\n'
                            'echo Installing collected packages: torch\r\necho Successfully installed torch-2.6.0\r\n', 'utf-8')
-    inst._stages = [('torch', 50), ('packages', 50)]
+    inst._stages = [('torch', 30), ('unpack', 20), ('packages', 50)]
     snapshots = []
     original = inst._detail
     inst._detail = lambda phase, detail, fraction=None: (original(phase, detail, fraction), snapshots.append((inst._status['percent'], detail)))
@@ -320,7 +320,8 @@ try:
     finally:
         subprocess.Popen = real_popen
     percents = [p for p, _ in snapshots]
-    assert percents == sorted(percents) and percents[-1] == 50, snapshots  # 'torch' is half of this plan
+    assert percents == sorted(percents) and percents[-1] == 50, snapshots  # 'torch' + 'unpack' are half of this plan
+    assert any(d.startswith('Unpacking onto this PC') for _, d in snapshots), snapshots
     assert any('1.5 GB of about 2.5 GB' in d for _, d in snapshots) and any(d.startswith('Installed') for _, d in snapshots), snapshots
     assert flags and all(f & 0x08000000 for f in flags), flags
     assert 'Successfully installed' in (folder / 'stem-engine.log').read_text('utf-8')
@@ -351,6 +352,154 @@ try:
     assert subprocess.run(['tasklist', '/FI', 'PID eq %d' % pid], capture_output=True, text=True, creationflags=0x08000000).stdout.count(str(pid)) == 0
     assert 'could not reach' in W.StemInstaller._explain_pip(['ERROR: Could not install: ProxyError'])
     assert 'filled up' in W.StemInstaller._explain_pip(['OSError: [Errno 28] No space left on device'])
+
+    # 11b. the long silent step: pip downloads, prints "Installing collected packages", then says nothing for minutes while it
+    #      unpacks ~22,000 files. The bar then follows the growth of the build folder; elapsed time and a stall note come from the
+    #      status. The clock is injected (nothing really waits) and the fake pip is driven line by line.
+    inst, folder = fresh('unpack')
+    clock = {'t': 5000.0}
+    inst.clock = lambda: clock['t']
+    inst.watch_every = 3600  # the real size watcher never fires here; the test calls _tick itself
+    inst._stages = [(name, W.WEIGHTS['cuda'][name]) for name in W.RUNTIME_STEPS]
+    assert sum(w for _, w in inst._stages) == 100 and W.WEIGHTS['cuda']['unpack'] > W.WEIGHTS['cuda']['packages'] > W.WEIGHTS['cuda']['verify']
+    assert sum(W.WEIGHTS['cpu'].values()) == 100
+    partial = inst.partial
+    partial.mkdir(parents=True)
+    (partial / 'python.exe').write_bytes(b'x' * 1000)  # the copy of Python that is already there when unpacking begins
+    hold = threading.Event()
+    inst._thread = threading.Thread(target=hold.wait, daemon=True)
+    inst._thread.start()
+    inst._started = inst._last_progress = clock['t']
+    inst._set(state='running', phase='packages')
+    walks, real_size = [], W.StemInstaller._tree_size
+    inst._tree_size = lambda path: (walks.append(1), real_size(path))[1]
+    trail, commands = [], []
+    expected = W.SIZES['cuda']['unpacked']
+
+    def snap():
+        s = inst.status()
+        trail.append((s['phase'], s['percent'], s['detail'], s['elapsed_seconds'], s['idle_seconds'], s['stalled'], s['stall_text']))
+        return s
+
+    def grow(nbytes, name):
+        (partial / 'Lib').mkdir(exist_ok=True)
+        (partial / 'Lib' / name).write_bytes(b'\0' * nbytes)
+
+    def fake_run(command, on_line, cwd=None):
+        commands.append(list(command))
+
+        def say(line, seconds=1):
+            clock['t'] += seconds
+            inst._last_progress = clock['t']
+            on_line(line)
+            snap()
+        say('Collecting torch==2.6.0')
+        say('Downloading torch-2.6.0%2Bcu124-cp312-cp312-win_amd64.whl (2.5 GB)')
+        say('Progress 1000000000 of 2500000000')
+        say('Progress 2500000000 of 2500000000')
+        say('Building wheel for demucs (setup.py)')
+        say('Successfully built demucs')
+        say('Installing collected packages: torchaudio, mpmath, torch')
+        assert trail[-1][0] == 'unpack' and trail[-1][2].startswith('Unpacking onto this PC'), trail[-1]
+        assert 'several minutes' in trail[-1][2] and 'has not stopped' in trail[-1][2], trail[-1]
+        assert len(walks) == 1, walks  # one look at the folder when unpacking starts
+        # silence: no output at all, the folder grows; each look is >= 3 s apart (the fake clock decides)
+        for i in range(1, 9):
+            clock['t'] += 4
+            grow(expected // 10, 'f%d.bin' % i)
+            inst._tick()
+            snap()
+        walked = len(walks)
+        assert walked == 9, walked
+        inst._tick()
+        inst._tick()  # same instant: throttled, no second walk
+        assert len(walks) == walked, (walked, len(walks))
+        # nothing grows and nothing prints: 299 s is not yet a stall, 300 s is, and the text is honest
+        clock['t'] += 299
+        inst._tick()
+        quiet = snap()
+        assert quiet['idle_seconds'] == 299 and quiet['stalled'] is False and quiet['stall_text'] == '', quiet
+        clock['t'] += 1
+        inst._tick()
+        stalled = snap()
+        assert stalled['stalled'] is True and stalled['state'] == 'running', stalled
+        assert stalled['stall_text'].startswith('No progress for 5 minutes. Antivirus scanning can slow this step.'), stalled['stall_text']
+        assert 'keep waiting or cancel and retry' in stalled['stall_text'] and 're-uses what was downloaded' in stalled['stall_text']
+        assert stalled['elapsed_seconds'] > 300 and stalled['idle_seconds'] == 300
+        # growth is progress again: the stall note goes away
+        clock['t'] += 5
+        grow(1_000_000, 'late.bin')
+        inst._tick()
+        assert snap()['stalled'] is False
+        # even a huge folder never takes the bar to the end of the step before pip exits
+        clock['t'] += 5
+        grow(expected * 2, 'huge.bin')
+        inst._tick()
+        top = snap()
+        assert top['phase'] == 'unpack' and top['percent'] < inst._percent('unpack', 1.0), (top, inst._percent('unpack', 1.0))
+        # a folder that shrinks (pip's temp files) never moves the bar back
+        (partial / 'Lib' / 'huge.bin').unlink()
+        clock['t'] += 5
+        inst._tick()
+        assert snap()['percent'] == top['percent']
+        say('Successfully installed torch-2.6.0 torchaudio-2.6.0', 2)
+        return 0
+    inst._run_process = fake_run
+    inst._pip(partial / 'python.exe', ['install', '--no-deps', '-r', 'lock.txt'], 'packages', W.SIZES['cuda']['download'], 'PyTorch and the audio libraries')
+    assert '--no-warn-script-location' in commands[0] and commands[0].count('--require-hashes') == 1 and '--no-deps' in commands[0], commands[0]
+    phases = [row[0] for row in trail]
+    assert phases[:6] == ['packages'] * 6 and set(phases[6:]) == {'unpack'}, phases
+    assert any(row[2].startswith('Downloading torch (1.0 GB of about 2.7 GB)') for row in trail), [r[2] for r in trail[:4]]
+    assert any(row[2].startswith('Preparing demucs') for row in trail) and any(row[2] == 'Prepared demucs.' for row in trail), [r[2] for r in trail[:7]]
+    percents = [row[1] for row in trail]
+    assert percents == sorted(percents), percents  # monotonic, also across the download -> unpack switch
+    unpack_percents = [row[1] for row in trail if row[0] == 'unpack' and row[2].startswith('Unpacking')]
+    assert len(set(unpack_percents)) >= 8 and unpack_percents[-1] < inst._percent('unpack', 1.0), unpack_percents  # real movement while pip is silent
+    assert any('GB written' in row[2] for row in trail if row[0] == 'unpack')
+    assert trail[-1][2] == 'Installed PyTorch and the audio libraries.' and trail[-1][1] == inst._percent('unpack', 1.0), trail[-1]
+    assert trail[-1][3] > 300 and inst._unpack is None, trail[-1]
+    # the walk is cheap: 1,500 small files are counted in well under a second
+    many = folder / 'many'
+    many.mkdir()
+    for i in range(1500):
+        (many / ('f%d.txt' % i)).write_bytes(b'12345')
+    started = time.time()
+    assert real_size(many) == 7500
+    assert time.time() - started < 1.0, time.time() - started
+    assert real_size(folder / 'does-not-exist') == 0
+    # the steps after pip: the engine test and the final rename have their own words and the bar still never goes back
+    inst._run_process = lambda command, on_line, cwd=None: (trail.append(('verify', inst._status['percent'], inst._status['detail'], 0, 0, False, '')),
+                                                           on_line('PEAKHOUR ' + json.dumps({'torch': '2.6.0+cu124', 'cuda': True, 'device': 'cuda', 'numpy': '1.26.4'})), 0)[2]
+    (partial / 'Scripts').mkdir(exist_ok=True)
+    (partial / 'Scripts' / 'python.exe').write_bytes(b'MZ')
+    inst._verify(partial, 'cuda')
+    assert trail[-1][0] == 'verify' and trail[-1][2].startswith('Testing the engine'), trail[-1]
+    inst._finish_runtime(partial, 'cuda')
+    last = inst.status()
+    assert last['phase'] == 'finish' and last['detail'] == 'Finishing.' and python_present(folder), last
+    assert trail[-1][1] <= last['percent'] <= 99, (last['percent'], trail[-1])
+    assert inst._percent('unpack', 1.0) < inst._percent('verify', 0.5) <= inst._percent('finish', 0) < inst._percent('model', 0), 'step order'
+    # the elapsed time stops when the job ends
+    inst._ended = clock['t'] + 10
+    hold.set()
+    inst._thread.join(5)
+    ended = inst.status()
+    assert ended['elapsed_seconds'] == int(inst._ended - inst._started) and ended['stalled'] is False and ended['idle_seconds'] == 0, ended
+    # the build-tools run is small: its "Installing collected packages" does not switch to the unpacking step
+    inst2, _ = fresh('unpack_tools')
+    inst2._stages = [(name, W.WEIGHTS['cuda'][name]) for name in W.RUNTIME_STEPS]
+    inst2._track_unpack = False
+    inst2._run_process = lambda command, on_line, cwd=None: (on_line('Installing collected packages: setuptools'), on_line('Successfully installed setuptools-1'), 0)[2]
+    inst2._pip(Path('python.exe'), ['install', 'setuptools==1'], 'packages', 10, 'the build tools')
+    assert inst2._status['phase'] == 'packages' and inst2._status['detail'] == 'Installed the build tools.', inst2._status
+    # and _pip_lock chooses: build tools -> no unpacking step; the whole lock -> unpacking measured against that build's size
+    inst3, folder3 = fresh('unpack_lock')
+    flags = []
+    inst3._pip = lambda python, args, phase, exp, label: flags.append((inst3._track_unpack, inst3._unpack_expected))
+    (folder3 / W.INSTALLING).mkdir(parents=True)
+    state3 = {'flavour': 'cpu', 'steps': {}}
+    inst3._pip_lock(Path('python.exe'), folder3 / W.INSTALLING, 'cpu', state3, lambda step: state3['steps'].__setitem__(step, True))
+    assert flags[0][0] is False and flags[1] == (True, W.SIZES['cpu']['unpacked']), flags
 
     # 12. HTTP: routes are local-only, status/install/cancel answer, the Mac wording of stems' 503 becomes the Windows one
     from flask import Flask, jsonify
@@ -756,13 +905,17 @@ try:
         def step(n):
             return dict(BASE, running=n['state'] in ('running', 'cancelling'), **n)
 
-        def run_line(pct, text):
-            return step({'state': 'running', 'percent': pct, 'detail': text})
+        def run_line(pct, text, **more):
+            return step(dict({'state': 'running', 'percent': pct, 'detail': text}, **more))
 
         def timelines():
             return [[run_line(10, 'Downloading torch (300 MB of about 2.7 GB).'), run_line(55, 'Installing PyTorch.'),
                      step({'state': 'failed', 'error': 'PEAK HOUR could not reach the download servers.', 'detail': 'x'})],
-                    [run_line(60, 'Installing Demucs.'),
+                    [run_line(60, 'Installing Demucs.', elapsed_seconds=30),
+                     run_line(62, 'Unpacking onto this PC, 1.2 of about 4.9 GB written. This step takes several minutes and the bar moves slowly. It has not stopped.', elapsed_seconds=540),
+                     run_line(64, 'Unpacking onto this PC, 1.2 of about 4.9 GB written. This step takes several minutes and the bar moves slowly. It has not stopped.', elapsed_seconds=840, stalled=True, stall_text='No progress for 5 minutes. Antivirus scanning can slow this step. You can keep waiting or cancel and retry. A retry re-uses what was downloaded.'),
+                     run_line(90, 'Testing the engine. A short test separation runs; this takes under a minute.', elapsed_seconds=900),
+                     run_line(97, 'Finishing. Putting the engine into place.', elapsed_seconds=910),
                      step({'state': 'done', 'percent': 100, 'ready': True, 'runtime_ready': True, 'model_ready': True})],
                     [run_line(5, 'Checking this PC.'), run_line(12, 'Downloading torch (100 MB of about 2.7 GB).')]]
         HARNESS = """<!doctype html><html><head><link rel="stylesheet" href="/static/css/windows-virtualdj.css">
@@ -770,11 +923,14 @@ try:
 const toasts=[];window.showToast=(t,b)=>toasts.push([t,!!b]);
 </script><script src="/static/js/shared/windows-stems-install.js"></script><script>
 const wait=ms=>new Promise(r=>setTimeout(r,ms));
-const out={};
+const out={seen:[]};
 const q=(sel)=>document.querySelector('#axiom-stem-install '+sel);
 const snap=()=>({detail:q('.axiom-stem-phase').textContent,error:q('.axiom-stem-error').textContent,width:q('.axiom-stem-bar>i').style.width,
  barHidden:q('.axiom-stem-bar').hidden,install:q('#axiom-stem-install-go').hidden?'':q('#axiom-stem-install-go').textContent,
  cancel:!q('#axiom-stem-install-cancel').hidden,close:q('.axiom-vdj-actions button:first-child').hidden?'':q('.axiom-vdj-actions button:first-child').textContent});
+new MutationObserver(()=>{const box=document.getElementById('axiom-stem-install');if(!box)return;
+ const row=[box.querySelector('.axiom-stem-phase').textContent,box.querySelector('.axiom-stem-beat').textContent,box.querySelector('.axiom-stem-bar>i').style.width];
+ const last=out.seen[out.seen.length-1];if(!last||last.join('|')!==row.join('|'))out.seen.push(row);}).observe(document.body,{childList:true,subtree:true,characterData:true});
 (async()=>{try{
  const first=AxiomStemInstall.ensure({});
  await wait(300);
@@ -876,6 +1032,19 @@ document.body.append(Object.assign(document.createElement('pre'),{textContent:'P
         assert re.search(r'\((10|55)%\)', ui['progress']['detail']) and re.match(r'(10|55)%', ui['progress']['width']), ui['progress']
         assert 'could not reach the download servers' in ui['failed']['error'] and ui['failed']['install'] == 'Retry' and ui['failed']['close'] == 'Close', ui['failed']
         assert ui['retrying']['cancel'] and ui['retrying']['error'] == '', ui['retrying']
+        texts = [(row[0], row[1], row[2]) for row in ui['seen']]
+        start = next(i for i, row in enumerate(texts) if row[0].startswith('Installing Demucs.'))
+        later = texts[start:]
+        later = later[:next(i for i, row in enumerate(later) if row[0].startswith('Finishing.')) + 1]
+        unpack_row = next(row for row in later if row[0].startswith('Unpacking onto this PC'))
+        assert 'has not stopped' in unpack_row[0] and '(62%)' in unpack_row[0] and unpack_row[1] == '9 min so far' and unpack_row[2] == '62%', unpack_row
+        stall_row = next(row for row in later if 'No progress for 5 minutes' in row[0])
+        assert 'cancel and retry' in stall_row[0] and stall_row[1] == '14 min so far', stall_row
+        assert any(row[0].startswith('Testing the engine') and '(90%)' in row[0] for row in later), later
+        assert any(row[0].startswith('Finishing.') and '(97%)' in row[0] for row in later), later
+        assert any(row[1] == '30 s so far' for row in later), later
+        widths = [int(row[2].rstrip('%')) for row in later if row[2]]
+        assert widths == sorted(widths) and widths[-1] == 97, widths
         assert ui['result'] is True and ui['gone'] is True and any('Stem engine installed' in t and not bad for t, bad in ui['toasts']), ui
         assert ui['cancelled']['install'] == 'Continue install' and 'Cancelled' in ui['cancelled']['detail'] and ui['cancelled']['close'] == 'Close', ui['cancelled']
         assert ui['result2'] is False, ui

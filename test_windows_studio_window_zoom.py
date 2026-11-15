@@ -69,7 +69,10 @@ let failed = 0;
 for (const a of actions) {
   let reply;
   if (a.t === 'wheel') {
-    reply = await send('Input.dispatchMouseEvent', { type: 'mouseWheel', x: a.x, y: a.y, deltaX: 0, deltaY: a.dy, modifiers: a.mod ?? 2, pointerType: 'mouse' });
+    reply = await send('Input.dispatchMouseEvent', { type: 'mouseWheel', x: a.x, y: a.y, deltaX: a.dx ?? 0, deltaY: a.dy, modifiers: a.mod ?? 2, pointerType: 'mouse' });
+  } else if (a.t === 'pinch') {
+    // a real browser-synthesized pinch: gestureSourceType 'mouse' = a touchpad pinch, 'touch' = two fingers on a touch screen
+    reply = await send('Input.synthesizePinchGesture', { x: a.x, y: a.y, scaleFactor: a.scale, relativeSpeed: a.speed ?? 800, gestureSourceType: a.src });
   } else if (a.t === 'key') {
     const base = { key: a.key, code: a.code, windowsVirtualKeyCode: a.vk, nativeVirtualKeyCode: a.vk, modifiers: a.mod };
     reply = await send('Input.dispatchKeyEvent', { type: 'rawKeyDown', ...base });
@@ -219,6 +222,44 @@ def same_metrics(before, after, label):
         check(before[name] == after[name], f'{label}: {name} changed {before[name]} -> {after[name]}')
 
 
+WATCH_BARS = r'''
+(() => {
+  const el = document.querySelector('.studio-daw-timeline');
+  window.__barsSeen = [];
+  if (window.__barsObserver) window.__barsObserver.disconnect();
+  window.__barsObserver = new MutationObserver(() => window.__barsSeen.push(Number(el.style.getPropertyValue('--visible-bars'))));
+  window.__barsObserver.observe(el, {attributes: true, attributeFilter: ['style']});
+  return true;
+})()
+'''
+LANES = r'''(() => { const l = document.getElementById('studio-daw-lanes'); return {start: Number(l.dataset.viewStart), beats: Number(l.dataset.viewBeats)}; })()'''
+
+
+def pinch_case(b, label, src, scale, x, y, rect, start_bars=0):
+    """One synthesized pinch over the DAW lanes: returns (bars before, bars after, distinct --visible-bars values seen during it).
+    The page metrics must not move; the beat under the pinch centre must stay under it."""
+    b.eval('(()=>{AxiomStudioDaw.setZoom(%s);return 1})()' % start_bars)
+    time.sleep(0.3)
+    b.eval(CAPTURE)
+    b.eval(WATCH_BARS)
+    m0 = metrics(b)
+    v0 = b.eval(LANES)
+    beat_under = v0['start'] + (x - rect['l']) / rect['w'] * v0['beats']
+    send_input(b, [{'t': 'move', 'x': x, 'y': y}, {'t': 'pinch', 'x': x, 'y': y, 'scale': scale, 'src': src}])
+    m1 = metrics(b)
+    v1 = b.eval(LANES)
+    seen = b.eval('window.__barsSeen')
+    same_metrics(m0, m1, f'{label} ({src} pinch x{scale})')
+    cancelled = [e for e in json.loads(b.eval(READ_EVENTS))['cancelled'] if e['type'] == 'wheel']
+    if src == 'mouse':
+        # the browser may merge wheel events while the page is busy redrawing, so count what arrived, not what was sent
+        seen_n = len([e for e in json.loads(b.eval(READ_EVENTS))['seen'] if e['type'] == 'wheel'])
+        check(len(cancelled) >= 2 and len(cancelled) == seen_n and all(e['prevented'] for e in cancelled),
+              f'{label}: the touchpad pinch events were not all cancelled ({len(cancelled)} of {seen_n})')
+    beat_after = v1['start'] + (x - rect['l']) / rect['w'] * v1['beats']
+    return m0['bars'], m1['bars'], len(set(round(s, 4) for s in seen)), abs(beat_after - beat_under), v1['start']
+
+
 def exercise(b, label, x, y, expect_bars=False):
     b.eval(CAPTURE)
     before = metrics(b)
@@ -234,6 +275,10 @@ def exercise(b, label, x, y, expect_bars=False):
     check(len(wheels) == 7 and all(e['prevented'] for e in wheels), f'{label}: only {len(wheels)} of 7 Ctrl+wheel events were cancelled ({[e["prevented"] for e in wheels]}): the window would zoom')
     check(len(keys) == 8 and all(e['prevented'] for e in keys), f'{label}: only {len(keys)} of 8 Ctrl +/-/0 key events were cancelled ({[(e["key"], e["prevented"]) for e in keys]}): the window would zoom')
     same_metrics(before, after, label)
+    # a pinch (touchpad-style and two-finger touch) must not zoom this page either
+    for src, scale in (('mouse', 2.0), ('mouse', 0.5), ('touch', 2.0), ('touch', 0.5)):
+        send_input(b, [{'t': 'pinch', 'x': x, 'y': y, 'scale': scale, 'src': src}])
+        same_metrics(before, metrics(b), f'{label} ({src} pinch x{scale})')
     return before, after
 
 
@@ -245,7 +290,12 @@ try:
     track = {'path': str(music / 'one.wav'), 'title': 'one.wav', 'artist': 'Test', 'bpm': 120, 'durationSec': 6, 'duration': 6, 'key': '8A', 'name': 'one.wav'}
     (base / 'input.mjs').write_text(INPUT_JS, encoding='utf-8')
     start()
-    b = fb.Browser(sandbox=base / 'edge', base_url=url)
+    # the window runs with the launcher's own pinch-related flags (today none): re-adding --disable-pinch there fails this test.
+    # PH_TEST_EDGE_ARGS adds more flags (the mutation run adds --disable-pinch to show the pinch then never arrives)
+    sys.path.insert(0, APP_DIR)
+    import axiom_windows_launcher as launcher
+    pinch_flags = [f for f in launcher.WINDOW_FLAGS if 'pinch' in f or 'touch' in f or 'zoom' in f]
+    b = fb.Browser(sandbox=base / 'edge', base_url=url, extra_args=pinch_flags + os.environ.get('PH_TEST_EDGE_ARGS', '').split())
     browsers.append(b)
 
     print('[control: a bare page without the app\'s handlers]')
@@ -258,6 +308,13 @@ try:
     print(f'  bare page: {len(ev)} Ctrl+wheel events, none cancelled={not any(e["prevented"] for e in ev)}')
     check(len(ev) >= 5, f'the input channel delivered only {len(ev)} Ctrl+wheel events to a bare page')
     check(not any(e['prevented'] for e in ev), 'a bare page cancelled Ctrl+wheel (the control is not clean)')
+
+    # the pinch itself must REACH the page (as ctrl+wheel); --disable-pinch makes it vanish, so the DAW could never zoom
+    b.eval(CAPTURE)
+    send_input(b, [{'t': 'pinch', 'x': 500, 'y': 300, 'scale': 2.0, 'src': 'mouse'}])
+    pev = [e for e in json.loads(b.eval(READ_EVENTS))['seen'] if e['type'] == 'wheel']
+    print(f'  bare page: a touchpad-style pinch delivered {len(pev)} Ctrl+wheel events, none cancelled={not any(e["prevented"] for e in pev)}')
+    check(len(pev) >= 5, f'a touchpad-style pinch delivered only {len(pev)} Ctrl+wheel events to a bare page (is --disable-pinch back in the window flags?)')
 
     print('[Library tab]')
     b.run([{'op': 'navigate', 'url': '/', 'settle': 4000}, {'op': 'click_text', 'text': 'Skip Tour', 'timeout': 3}])
@@ -308,6 +365,49 @@ try:
     send_input(b, key(KEYS[2]))
     k3 = metrics(b)['bars']
     check(abs(k3 - k0) < 1e-6, f'real Ctrl+0 did not reset the timeline zoom ({k0} -> {k3})')
+    # a touchpad pinch zooms the TIMELINE: pinch out = zoom in, pinch in = zoom out, in proportion to the gesture, continuously,
+    # around the pinch centre, and the page never moves
+    print('[DAW: touchpad-style pinch]')
+    px, py = rect['x'] - 150, rect['y']
+    lane_box = b.eval("(()=>{const r=document.querySelector('#studio-daw-lanes .studio-daw-lane').getBoundingClientRect();return {l:r.left,w:r.width}})()")
+    full, small_b, small_n, small_drift, _ = pinch_case(b, 'DAW', 'mouse', 1.5, px, py, lane_box)
+    _, big_b, big_n, big_drift, _ = pinch_case(b, 'DAW', 'mouse', 3.0, px, py, lane_box)
+    out0, out_b, out_n, _, _ = pinch_case(b, 'DAW', 'mouse', 0.5, px, py, lane_box, start_bars=16)
+    print(f'  pinch x1.5: bars {full} -> {small_b} ({small_n} distinct values); x3: -> {big_b} ({big_n}); pinch in x0.5 from 16 beats: {out0} -> {out_b}; beat drift {small_drift:.3f} / {big_drift:.3f}')
+    check(small_b < full * 0.85, f'a 1.5x pinch out barely zoomed the timeline in ({full} -> {small_b})')
+    check(big_b < small_b * 0.8, f'a 3x pinch did not zoom further than a 1.5x pinch ({small_b} vs {big_b})')
+    check(big_b > full * 0.02, f'a 3x pinch jumped to the zoom limit ({big_b})')
+    check(small_n >= 3 and big_n >= 3, f'the pinch zoom was not continuous (distinct --visible-bars values {small_n} / {big_n})')
+    check(out_b > out0 * 1.3, f'a pinch in did not zoom the timeline out ({out0} -> {out_b})')
+    check(small_drift < 1.0 and big_drift < 1.0, f'the beat under the pinch centre moved ({small_drift:.2f} / {big_drift:.2f} beats)')
+
+    print('[DAW: touch-screen pinch]')
+    t0, t1, tn, tdrift, _ = pinch_case(b, 'DAW', 'touch', 2.5, px, py, lane_box)
+    print(f'  two fingers apart x2.5: bars {t0} -> {t1} ({tn} distinct values), beat drift {tdrift:.3f}')
+    check(t1 < t0 * 0.85, f'a two-finger touch pinch out did not zoom the timeline in ({t0} -> {t1})')
+    t2, t3, _, _, _ = pinch_case(b, 'DAW', 'touch', 0.4, px, py, lane_box, start_bars=16)
+    check(t3 > t2 * 1.3, f'a two-finger touch pinch in did not zoom the timeline out ({t2} -> {t3})')
+
+    print('[DAW: ctrl-less two-finger scroll and a mouse notch]')
+    b.eval('(()=>{AxiomStudioDaw.setZoom(16);return 1})()')
+    time.sleep(0.3)
+    q0, l0 = metrics(b), b.eval(LANES)
+    send_input(b, [{'t': 'move', 'x': px, 'y': py}] + [{'t': 'wheel', 'x': px, 'y': py, 'dx': 60, 'dy': 0, 'mod': 0} for _ in range(5)])
+    q1, l1 = metrics(b), b.eval(LANES)
+    send_input(b, [{'t': 'wheel', 'x': px, 'y': py, 'dx': 0, 'dy': 80, 'mod': 0} for _ in range(3)])
+    q2 = metrics(b)
+    print(f'  horizontal two-finger scroll: view start {l0["start"]} -> {l1["start"]}; bars {q0["bars"]} -> {q2["bars"]}')
+    check(l1['start'] > l0['start'], f'a plain horizontal two-finger scroll no longer pans the timeline ({l0["start"]} -> {l1["start"]})')
+    check(q0['bars'] == q1['bars'] == q2['bars'], f'a plain scroll changed the timeline zoom ({q0["bars"]} -> {q2["bars"]})')
+    same_metrics(q0, q2, 'DAW plain scroll')
+    b.eval('(()=>{AxiomStudioDaw.setZoom(0);return 1})()')
+    time.sleep(0.3)
+    n0 = metrics(b)['bars']
+    send_input(b, [{'t': 'move', 'x': px, 'y': py}, {'t': 'wheel', 'x': px, 'y': py, 'dy': -120, 'mod': CTRL}])
+    n1 = metrics(b)['bars']
+    print(f'  one mouse Ctrl+wheel notch: bars {n0} -> {n1} (x{n1 / n0:.2f})')
+    check(0.5 < n1 / n0 < 0.9, f'one Ctrl+wheel notch should be a sensible step (x{n1 / n0:.2f})')
+
     # the page itself never moved, over the same events plus a full burst
     b.eval('(()=>{AxiomStudioDaw.setZoom(0);return 1})()')
     before, after = exercise(b, 'DAW (lanes)', rect['x'], rect['y'])

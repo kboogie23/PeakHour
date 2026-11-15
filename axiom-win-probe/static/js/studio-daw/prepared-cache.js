@@ -27,7 +27,7 @@
           if(!response.ok||! /^[a-f0-9]{64}$/.test(data.token)||data.ttlSeconds!==120)throw new Error(data.error||'Audio cache protection is unavailable. Restart playback.');
           if(closed){await releaseToken(kind,data.token);return;}
           group.token=data.token;
-          group.held=new Set(keys);group.renewedAt=Date.now();
+          group.held=new Set(keys);group.renewedAt=Date.now();group.confirmedAt=group.renewedAt;
         }catch(error){group.held.clear();group.renewedAt=0;throw error;
         }finally{clearTimeout(timeout);}
       }
@@ -38,7 +38,7 @@
       async hold(url){
         if(closed)throw new Error('Playback cancelled');
         const item=address(url);if(!item)return;
-        if(!groups.has(item.kind))groups.set(item.kind,{keys:new Set(),held:new Set(),renewedAt:0,token:null});
+        if(!groups.has(item.kind))groups.set(item.kind,{keys:new Set(),held:new Set(),renewedAt:0,confirmedAt:0,token:null});
         const group=groups.get(item.kind);group.keys.add(item.key);
         // Repeated clips and stem voices often use the same prepared file.
         // Await any pending reconciliation before trusting its verified lease;
@@ -50,7 +50,15 @@
       },
       forget(url){const item=address(url);if(item)groups.get(item.kind)?.keys.delete(item.key);},
       release(){closed=true;clearInterval(timer);for(const [kind,group] of groups)if(group.token){releaseToken(kind,group.token);group.token=null;}},
-      renew:()=>sync(true)
+      renew:()=>sync(true),
+      // Time (ms epoch) of the last real server confirmation; 0 when never confirmed. With a url: that url's group. Without:
+      // the oldest across groups that hold keys. A skipped renewal (a hold within 60 s of one) does not move it.
+      confirmedAt(url){
+        if(url){const item=address(url);return item?groups.get(item.kind)?.confirmedAt||0:0;}
+        let oldest=0,seen=false;
+        for(const group of groups.values()){if(!group.keys.size)continue;oldest=seen?Math.min(oldest,group.confirmedAt):group.confirmedAt;seen=true;}
+        return oldest;
+      }
     };
   }
   window.AxiomPreparedCache={create};

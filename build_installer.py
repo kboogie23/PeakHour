@@ -10,10 +10,13 @@
   dist/PEAK HOUR User Manual.html
                              the user manual (static/manual) as one file, pictures included
 
-Not included: the stem runtime (PyTorch + Demucs, several GB) is downloaded on first use by the app
-itself (windows_stem_installer.py: Studio > Stems > "Install stem engine", into the data folder), and
-the program is not code-signed (that needs a certificate bought by the publisher), so Windows
-SmartScreen will warn on first run.
+Not included: the stem runtime (PyTorch + Demucs, several GB) is too big for Setup. It is installed into the
+data folder (%LOCALAPPDATA%/AXIOM DJ, never the program folder, so upgrades keep it) by windows_stem_installer.py,
+from two places: as the LAST step of install.ps1 (app/windows_stem_setup.py: a small window that offers the
+download, says "already installed - skipped" and shows no window when the engine is there, and can be skipped;
+a failure or a skip never fails Setup; a silent Setup (/Q, or PEAK_HOUR_SETUP_SILENT=1) skips it), and, for
+anyone who skipped, in the app (Studio > Stems > "Install stem engine"). The program is not code-signed (that
+needs a certificate bought by the publisher), so Windows SmartScreen will warn on first run.
 Usage: python build_installer.py [--no-setup]
 """
 import json
@@ -57,7 +60,7 @@ REQUIRED_MODULES = ('flask', 'numpy', 'sounddevice', 'soundfile', 'pedalboard', 
 EXCLUDED_MODULES = ('pip', 'ensurepip', 'idlelib', 'venv', 'lib2to3')
 # The stem engine's download is installed from these (windows_stem_installer.py: exact versions and SHA-256 of every package); the
 # app folder is copied whole, but the installer must never ship without them.
-REQUIRED_APP_FILES = ('stem_engine_lock_cuda.txt', 'stem_engine_lock_cpu.txt')
+REQUIRED_APP_FILES = ('stem_engine_lock_cuda.txt', 'stem_engine_lock_cpu.txt', 'windows_stem_setup.py')  # the last: Setup's stem engine step
 SKIP_FILES = {'make_90s_art.py', 'make_peak_hour_logo.py', 'make_region_backgrounds.py', 'make_regions_art.py'}
 
 
@@ -139,6 +142,27 @@ def pack(folder, archive):
                 out.write(path, path.relative_to(folder).as_posix())
 
 
+def setup_cmd_text():
+    """setup.cmd: runs install.ps1 on the zip. "setup.cmd /quiet" (what a silent Setup runs) passes -Quiet: no message boxes
+    and no stem engine window."""
+    return ('@echo off\r\nset "PH_QUIET="\r\nif /i "%~1"=="/quiet" set "PH_QUIET=-Quiet"\r\n'
+            'powershell.exe -NoProfile -ExecutionPolicy Bypass -File "%~dp0install.ps1" -Zip "%~dp0PEAK-HOUR.zip" %PH_QUIET%\r\n')
+
+
+def setup_sed_text(exe, work, files):
+    sed = ['[Version]', 'Class=IEXPRESS', 'SEDVersion=3', '[Options]', 'PackagePurpose=InstallApp', 'ShowInstallProgramWindow=0',
+           'HideExtractAnimation=0', 'UseLongFileName=1', 'InsideCompressed=0', 'CAB_FixedSize=0', 'CAB_ResvCodeSigning=0',
+           'RebootMode=N', 'InstallPrompt=%InstallPrompt%', 'DisplayLicense=%DisplayLicense%', 'FinishMessage=%FinishMessage%',
+           'TargetName=%TargetName%', 'FriendlyName=%FriendlyName%', 'AppLaunched=%AppLaunched%', 'PostInstallCmd=%PostInstallCmd%',
+           'AdminQuietInstCmd=%AdminQuietInstCmd%', 'UserQuietInstCmd=%UserQuietInstCmd%', 'SourceFiles=SourceFiles',
+           '[Strings]', 'InstallPrompt=', 'DisplayLicense=', 'FinishMessage=PEAK HOUR is installed. Open it from the Start menu or your desktop.',
+           f'TargetName={exe}', 'FriendlyName=PEAK HOUR Setup', 'AppLaunched=cmd.exe /c setup.cmd', 'PostInstallCmd=<None>',
+           'AdminQuietInstCmd=cmd.exe /c setup.cmd /quiet', 'UserQuietInstCmd=cmd.exe /c setup.cmd /quiet']  # Setup's /Q: no stem engine window
+    sed += [f'FILE{i}="{name}"' for i, name in enumerate(files)]
+    sed += ['[SourceFiles]', f'SourceFiles0={work}\\', '[SourceFiles0]'] + [f'%FILE{i}%=' for i in range(len(files))]
+    return '\r\n'.join(sed) + '\r\n'
+
+
 def setup_exe(archive, exe):
     """Self-extracting setup with IExpress (built into Windows); runs install.ps1 on the zip."""
     work = DIST / 'iexpress'
@@ -147,20 +171,9 @@ def setup_exe(archive, exe):
     work.mkdir()
     shutil.copy2(archive, work / 'PEAK-HOUR.zip')
     shutil.copy2(WORK / 'installer' / 'install.ps1', work / 'install.ps1')
-    (work / 'setup.cmd').write_text('@echo off\r\npowershell.exe -NoProfile -ExecutionPolicy Bypass -File "%~dp0install.ps1" '
-                                    '-Zip "%~dp0PEAK-HOUR.zip"\r\n', encoding='ascii')
+    (work / 'setup.cmd').write_text(setup_cmd_text(), encoding='ascii')
     files = ['PEAK-HOUR.zip', 'install.ps1', 'setup.cmd']
-    sed = ['[Version]', 'Class=IEXPRESS', 'SEDVersion=3', '[Options]', 'PackagePurpose=InstallApp', 'ShowInstallProgramWindow=0',
-           'HideExtractAnimation=0', 'UseLongFileName=1', 'InsideCompressed=0', 'CAB_FixedSize=0', 'CAB_ResvCodeSigning=0',
-           'RebootMode=N', 'InstallPrompt=%InstallPrompt%', 'DisplayLicense=%DisplayLicense%', 'FinishMessage=%FinishMessage%',
-           'TargetName=%TargetName%', 'FriendlyName=%FriendlyName%', 'AppLaunched=%AppLaunched%', 'PostInstallCmd=%PostInstallCmd%',
-           'AdminQuietInstCmd=%AdminQuietInstCmd%', 'UserQuietInstCmd=%UserQuietInstCmd%', 'SourceFiles=SourceFiles',
-           '[Strings]', 'InstallPrompt=', 'DisplayLicense=', 'FinishMessage=PEAK HOUR is installed. Open it from the Start menu or your desktop.',
-           f'TargetName={exe}', 'FriendlyName=PEAK HOUR Setup', 'AppLaunched=cmd.exe /c setup.cmd', 'PostInstallCmd=<None>',
-           'AdminQuietInstCmd=', 'UserQuietInstCmd=']
-    sed += [f'FILE{i}="{name}"' for i, name in enumerate(files)]
-    sed += ['[SourceFiles]', f'SourceFiles0={work}\\', '[SourceFiles0]'] + [f'%FILE{i}%=' for i in range(len(files))]
-    (work / 'setup.sed').write_text('\r\n'.join(sed) + '\r\n', encoding='ascii')
+    (work / 'setup.sed').write_text(setup_sed_text(exe, work, files), encoding='ascii')
     # IExpress fails (exit 1) when it has to overwrite the previous setup file, e.g. while it is still being
     # scanned: the previous one is set aside first and put back if the new build fails.
     previous = exe.with_name(exe.name + '.previous')

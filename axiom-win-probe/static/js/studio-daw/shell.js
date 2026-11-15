@@ -917,9 +917,13 @@
     const precise=existing.compileTempoMap(activeProject).bpmAtBeat(beat);
     const card=input.closest?.('.daw-project-tempo'),label=card?.querySelector('span');
     if(card)card.dataset.mode=activeProject.mode==='mixtape'?'mixtape':'edit';
-    if(label)label.textContent=activeProject.mode==='mixtape'?'NOW':'BPM';
-    input.setAttribute('aria-label',activeProject.mode==='mixtape'?'Current automation BPM':'Project BPM');
-    input.title=activeProject.mode==='mixtape'?`Current automation tempo: ${precise} BPM. Type here only if you want one fixed tempo.`:`Exact project tempo: ${precise} BPM. Click to edit.`;
+    // Called on every playback tick: write only what changed (identical text is still a DOM mutation that the page's
+    // observers react to by repainting the whole timeline).
+    const labelText=activeProject.mode==='mixtape'?'NOW':'BPM',ariaLabel=activeProject.mode==='mixtape'?'Current automation BPM':'Project BPM';
+    if(label&&label.textContent!==labelText)label.textContent=labelText;
+    if(input.getAttribute('aria-label')!==ariaLabel)input.setAttribute('aria-label',ariaLabel);
+    const tempoTitle=activeProject.mode==='mixtape'?`Current automation tempo: ${precise} BPM. Type here only if you want one fixed tempo.`:`Exact project tempo: ${precise} BPM. Click to edit.`;
+    if(input.title!==tempoTitle)input.title=tempoTitle;
     if(force||document.activeElement!==input)input.value=String(Math.round(precise));
   }
 
@@ -2582,7 +2586,7 @@
   function stemProgressValues(clip) {
     const progress=window.AxiomStems?.progress?.(clip);
     return {
-      mode:progress?.mode==='mps'?'GPU/MPS':progress?.mode==='cpu'?'CPU':'Checking hardware',
+      mode:progress?.mode==='mps'?'GPU/MPS':/cuda/i.test(progress?.mode||'')?'GPU/CUDA':progress?.mode==='cpu'?'CPU':'Checking hardware',  // Windows: the worker reports GPU/CUDA
       detail:progress?.detail||'Starting the local stem engine.',
       elapsed:`${Math.floor((progress?.elapsedSeconds||0)/60)}:${String(Math.floor((progress?.elapsedSeconds||0)%60)).padStart(2,'0')}`,
     };
@@ -4888,9 +4892,12 @@
     const button=document.getElementById('daw-key-sync');if(!button)return;
     const clips=arrangementClips().filter(c=>mixerSelection.has(c.id));
     const synced=clips.filter(c=>c.keySync).length;
-    button.disabled=!clips.length;button.setAttribute('aria-pressed',synced===clips.length&&synced?'true':synced?'mixed':'false');
-    button.textContent='SYNC KEY';
-    button.title=synced===clips.length&&synced?'Key sync on. Click to restore the selected clips\' original pitch.':'Match the selected clips to the anchor song';
+    // Runs on every playback tick: write only what changed (see syncBpmDisplay).
+    const pressed=synced===clips.length&&synced?'true':synced?'mixed':'false',keyTitle=synced===clips.length&&synced?'Key sync on. Click to restore the selected clips\' original pitch.':'Match the selected clips to the anchor song';
+    if(button.disabled!==!clips.length)button.disabled=!clips.length;
+    if(button.getAttribute('aria-pressed')!==pressed)button.setAttribute('aria-pressed',pressed);
+    if(button.textContent!=='SYNC KEY')button.textContent='SYNC KEY';
+    if(button.title!==keyTitle)button.title=keyTitle;
   }
   function keySyncError(message){
     const dialog=document.createElement('dialog');dialog.id='daw-key-sync-error';dialog.className='daw-fx-dialog';

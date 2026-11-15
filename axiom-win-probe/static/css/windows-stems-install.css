@@ -7,5 +7,6 @@
 .axiom-stem-bar[hidden]{display:none}
 .axiom-stem-bar>i{display:block;height:100%;width:0;background:#b7f34a}
 .axiom-stem-phase{min-height:1.4em;font-size:.95em}
+body[data-ph-region] .axiom-stem-beat{min-height:1.2em;font-size:.85em;opacity:.8}
 .axiom-stem-error{color:#ff9d8a;margin:6px 0;overflow-wrap:anywhere}
 .axiom-stem-install button[hidden]{display:none}

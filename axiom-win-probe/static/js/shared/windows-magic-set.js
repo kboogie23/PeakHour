@@ -258,10 +258,267 @@
     });
   }
 
+  // ---- fill one segment ---------------------------------------------------------------------------------------
+  // The five timeline segments (the chart's phase band, the Manual Build energy ladder) each get a Fill button that runs the
+  // existing autoFillSegment (studio-folders.js) for that slice of the set. The page's own model puts song i at i x "Avg Mix"
+  // minutes (that is how the "Your set" line is drawn), so segment k holds the songs whose index falls in its fifth of the
+  // timeline. Songs are only ever appended: a segment that still has room is the last one with songs, so nothing the DJ placed
+  // moves, and a segment can only be filled once the ones before it are full (otherwise its songs would land in an earlier one).
+  var SEGMENTS = [
+    { name: 'Warm-up', lower: 'warm-up' }, { name: 'Build', lower: 'build' }, { name: 'Peak', lower: 'peak' },
+    { name: 'Drive', lower: 'drive' }, { name: 'Cool-down', lower: 'cool-down' }
+  ];
+  var fill = { running: false, seg: -1, result: null };
+
+  function numberValue(id, fallback) {
+    var el = $(id), value = el ? parseFloat(el.value) : NaN;
+    return value > 0 ? value : fallback;
+  }
+  function geometry() {
+    var setLen = numberValue('set-length-selector', 120), avg = Math.max(0.5, numberValue('avg-duration-selector', 2));
+    var n = workingCount(), segLen = setLen / 5;
+    var segs = SEGMENTS.map(function (s, k) {
+      var start = Math.ceil(k * segLen / avg - 1e-6), end = Math.ceil((k + 1) * segLen / avg - 1e-6);
+      var expected = Math.max(0, end - start), count = Math.max(0, Math.min(n, end) - start);
+      return { k: k, name: s.name, lower: s.lower, start: start, end: end, expected: expected, count: count, room: Math.max(0, expected - count) };
+    });
+    return { setLen: setLen, avg: avg, n: n, segs: segs };
+  }
+  function otherJobRunning() {
+    return safe(function () {
+      return !!(fillSetFromBPMPoints.busy || buildMagicSetAroundWorkingTracks.busy || generateSetFromAnchor.busy || (autoFillSegment.busy && !fill.running));
+    }, false);
+  }
+  function globalReason(ignoreOwn) {
+    if (safe(function () { return libraryHasTracks; }, null) === false) return 'Your Library is empty. Add songs in Library first.';
+    if (fill.running && !ignoreOwn) return 'Filling...';
+    if (otherJobRunning()) return 'Another Magic Set job is running. Fill works again when it finishes.';
+    return '';
+  }
+  function segReason(g, s) {
+    if (s.expected < 1) return s.name + ' is too short at this set length and mix length.';
+    if (s.room < 1) return s.name + ' is full (' + s.count + ' of ' + s.expected + ' songs).';
+    if (g.n < s.start) return 'Fill ' + g.segs[s.k - 1].name + ' first. Songs are added in order along the timeline.';
+    return '';
+  }
+  // Where the buttons live: inside each phase-band cell of the chart (with the footer's "Fill empty segments" and a result chip over
+  // the plot, so the chart keeps its height), and in Manual Build under the energy ladder (a strip of five, then a bar).
+  function segButton(host, k) {
+    return '<button type="button" class="wms-fill-seg" data-axiom-cta-skip="true" data-host="' + host + '" data-seg="' + k + '" aria-describedby="wms-why-' + host + '-' + k + '"></button>' +
+      '<span class="wms-fill-why" id="wms-why-' + host + '-' + k + '"></span>';
+  }
+  function resultHtml(id, extra) {
+    return '<span id="' + id + '" class="wms-fill-result" role="status" aria-live="polite"' + (extra || '') + '><span class="wms-fill-msg"></span>' +
+      '<button type="button" class="wms-fill-undo" data-axiom-cta-skip="true" hidden></button>' +
+      '<button type="button" class="wms-fill-dismiss" data-axiom-cta-skip="true" aria-label="Dismiss this message" hidden>Dismiss</button></span>';
+  }
+  function allButton(id) {
+    return '<button type="button" id="' + id + '" class="wms-fill-all" data-axiom-cta-skip="true" title="Fill every segment that has room">Fill empty segments</button>';
+  }
+  function ensureFill() {
+    if (!document.body.hasAttribute('data-ph-region')) return false;
+    var graph = $('graph-container'), ladder = $('energy-ladder'), workspace = $('studio-workspace');
+    if (!graph || !ladder || !workspace || !ladder.parentNode) return false;
+    var band = graph.querySelector('.magic-phase-band'), footer = $('magic-chart-footer');
+    if (band) Array.prototype.forEach.call(band.children, function (cell, k) {
+      if (k < SEGMENTS.length && !cell.querySelector('.wms-fill-seg')) {
+        cell.insertAdjacentHTML('beforeend', '<b class="wms-fill-count" data-seg="' + k + '"></b>' + segButton('chart', k));
+      }
+    });
+    if (footer && !$('wms-fill-all-chart')) {
+      var stats = footer.querySelector('.magic-chart-stats');
+      footer.insertBefore(document.createRange().createContextualFragment(allButton('wms-fill-all-chart')), stats || null);
+    }
+    if (!$('wms-fill-result-chart')) graph.insertAdjacentHTML('beforeend', resultHtml('wms-fill-result-chart', ' hidden'));
+    if (!$('wms-fill-ladder')) {
+      var cells = SEGMENTS.map(function (s, k) { return '<div class="wms-fill-cell">' + segButton('ladder', k) + '<b class="wms-fill-count" data-seg="' + k + '"></b></div>'; }).join('');
+      ladder.insertAdjacentHTML('afterend', '<div id="wms-fill-ladder" class="wms-fill-strip" role="group" aria-label="Fill one segment of the set">' + cells + '</div>' +
+        '<div id="wms-fill-bar" class="wms-fill-bar">' + allButton('wms-fill-all-manual') + resultHtml('wms-fill-result-manual') + '<span id="wms-fill-hint" class="wms-fill-hint"></span></div>');
+    }
+    if (!workspace.dataset.fillWired) {
+      workspace.dataset.fillWired = '1';
+      workspace.addEventListener('click', function (event) {
+        var target = event.target.closest && event.target.closest('button');
+        if (!target || target.disabled) return;
+        if (target.classList.contains('wms-fill-seg')) runFill(Number(target.dataset.seg));
+        else if (target.classList.contains('wms-fill-all')) runFill(null);
+        else if (target.classList.contains('wms-fill-undo')) undoFill();
+        else if (target.classList.contains('wms-fill-dismiss')) { fill.result = null; updateFill(); }
+        else return;
+        event.stopPropagation();
+      });
+    }
+    return true;
+  }
+  function setText(el, value) { if (el && el.textContent !== value) el.textContent = value; }
+  function setAttr(el, name, value) { if (el && el.getAttribute(name) !== value) el.setAttribute(name, value); }
+  // the words on a disabled button (the full sentence is its title and the screen-reader description)
+  function shortReason(g, s, gr) {
+    if (gr) return fill.running ? 'Wait' : (/Library/.test(gr) ? 'Library empty' : 'Busy');
+    if (s.expected < 1) return 'Too short';
+    if (s.room < 1) return 'Full';
+    return 'Needs ' + g.segs[s.k - 1].name;
+  }
+  function updateFill() {
+    if (!ensureFill()) return;
+    var g = geometry(), gr = globalReason(false);
+    var full = [], waiting = [], anyCan = false;
+    g.segs.forEach(function (s) {
+      s.reason = gr || segReason(g, s);
+      s.can = !s.reason;
+      s.short = s.can ? '' : shortReason(g, s, gr);
+      if (s.can) anyCan = true;
+      else if (!gr) (s.room < 1 && s.expected > 0 ? full : waiting).push(s.name);
+    });
+    document.querySelectorAll('.wms-fill-seg').forEach(function (btn) {
+      var s = g.segs[Number(btn.dataset.seg)];
+      var busy = fill.running && fill.seg === s.k;
+      var description = s.reason && !busy ? s.reason : 'Add up to ' + plural(s.room, 'matching song') + ' to ' + s.name + ' (' + s.count + ' of ' + s.expected + ' there now).';
+      setText(btn, busy ? 'Filling...' : (s.can ? 'Fill ' + s.lower : s.short));
+      btn.disabled = !s.can;
+      setAttr(btn, 'aria-label', 'Fill ' + s.lower + ', ' + s.count + ' of ' + s.expected + ' songs' + (s.can || busy ? '' : '. ' + s.reason));
+      setAttr(btn, 'title', description);
+      setText($(btn.getAttribute('aria-describedby')), description);
+    });
+    document.querySelectorAll('.wms-fill-count').forEach(function (el) {
+      var s = g.segs[Number(el.dataset.seg)];
+      setText(el, s.count + '/' + s.expected);
+      setAttr(el, 'aria-hidden', 'true');
+    });
+    var allRunning = fill.running && fill.seg === -2;
+    document.querySelectorAll('.wms-fill-all').forEach(function (all) {
+      all.disabled = !anyCan;
+      setText(all, allRunning ? 'Filling...' : 'Fill empty segments');
+      setAttr(all, 'title', anyCan ? 'Fill every segment that has room, one after another. Your songs stay where they are.' : (gr || 'Every segment is full or waiting on an earlier one.'));
+    });
+    var hint = '';
+    if (fill.running) hint = 'Filling ' + (fill.seg >= 0 ? g.segs[fill.seg].name : 'the set') + '. Fill buttons wait until it finishes.';
+    else if (gr) hint = gr;
+    else {
+      if (full.length) hint += 'Full: ' + full.join(', ') + '. ';
+      if (waiting.length) hint += 'Fill earlier segments first: ' + waiting.join(', ') + '.';
+    }
+    setText($('wms-fill-hint'), hint.trim());
+    var result = fill.result, present = 0;
+    if (result && result.paths.length) {
+      var wanted = {};
+      result.paths.forEach(function (p) { wanted[p] = 1; });
+      present = safe(function () { return currentPlaylist.filter(function (t) { return wanted[t && t.path]; }).length; }, 0);
+    }
+    document.querySelectorAll('.wms-fill-result').forEach(function (box) {
+      setText(box.querySelector('.wms-fill-msg'), result ? result.text : '');
+      setAttr(box.querySelector('.wms-fill-msg'), 'data-tone', result ? result.tone : '');
+      var undo = box.querySelector('.wms-fill-undo'), dismiss = box.querySelector('.wms-fill-dismiss');
+      undo.hidden = !(present > 0);
+      if (present > 0) { setText(undo, 'Remove the ' + present + ' added ' + (present === 1 ? 'song' : 'songs')); undo.disabled = fill.running || otherJobRunning(); }
+      dismiss.hidden = !result || fill.running;
+      if (box.id === 'wms-fill-result-chart') box.hidden = !result;
+    });
+  }
+
+  function curveBpm(g) {
+    var dots = safe(function () {
+      return graphDots.map(function (d) { return { x: Number(d.x), y: Number(d.y) }; })
+        .filter(function (d) { return isFinite(d.x) && isFinite(d.y); }).sort(function (a, b) { return a.x - b.x; });
+    }, []);
+    if (dots.length < 2) dots = [{ x: 0, y: numberValue('blueprint-start-bpm', 120) }, { x: g.setLen, y: numberValue('blueprint-end-bpm', 128) }];
+    return function (t) {
+      if (t <= dots[0].x) return dots[0].y;
+      for (var i = 1; i < dots.length; i++) {
+        if (t <= dots[i].x) {
+          var span = dots[i].x - dots[i - 1].x;
+          return span <= 0 ? dots[i].y : dots[i - 1].y + (dots[i].y - dots[i - 1].y) * (t - dots[i - 1].x) / span;
+        }
+      }
+      return dots[dots.length - 1].y;
+    };
+  }
+  function plainError(message) {
+    var text = String(message || '').replace(/^Sub-segment \d+:\s*/, '').trim();
+    if (!text || /^HTTP \d+$/.test(text)) return 'the server could not fill it' + (text ? ' (' + text + ')' : '') + '. Try again in a moment';
+    if (/failed to fetch|networkerror|load failed/i.test(text)) return 'PEAK HOUR could not reach its server. Check that the app is still running';
+    return text;
+  }
+
+  // One segment: ask autoFillSegment for the slots after the last song, up to the segment's end. Returns what was really added.
+  async function fillOne(k) {
+    var g = geometry(), s = g.segs[k];
+    if (s.room < 1 || g.n < s.start) return { added: [], skipped: true };
+    var before = {};
+    safe(function () { currentPlaylist.forEach(function (t) { before[t && t.path] = 1; }); }, 0);
+    var t0 = g.n * g.avg, t1 = s.end * g.avg, bpmAt = curveBpm(g);
+    var out = await autoFillSegment({ segStart: { x: t0, y: bpmAt(t0) }, segEnd: { x: t1, y: bpmAt(t1) }, bpmAt: bpmAt, maxTracks: s.room, quiet: true });
+    var added = safe(function () { return currentPlaylist.filter(function (t) { return t && !before[t.path]; }).map(function (t) { return t.path; }); }, []);
+    return { added: added, room: s.room, name: s.name, error: out && out.error, stale: !!(out && out.stale), skipped: !!(out && out.skipped) };
+  }
+
+  async function runFill(only) {
+    if (fill.running || typeof autoFillSegment !== 'function') return;
+    if (globalReason(false)) return;
+    fill.running = true; fill.seg = only === null ? -2 : only; fill.result = null;
+    updateFill();
+    var paths = [], parts = [], notes = [], tone = 'ok', stopped = '';
+    try {
+      var licensed = true;
+      if (typeof ensureAxiomLicenseUsable === 'function') licensed = await ensureAxiomLicenseUsable('Magic Set');
+      if (licensed === false) { stopped = 'Fill did not start: the licence check did not pass.'; tone = 'error'; }
+      var order = only === null ? [0, 1, 2, 3, 4] : [only];
+      for (var i = 0; i < order.length && !stopped; i++) {
+        var k = order[i];
+        if (globalReason(true)) { stopped = globalReason(true); tone = 'warn'; break; }
+        var g = geometry(), s = g.segs[k];
+        if (s.room < 1 || g.n < s.start) { if (only !== null) notes.push(segReason(g, s)); continue; }
+        fill.seg = only === null ? k : only;
+        updateFill();
+        var out = await fillOne(k);
+        if (out.skipped) { stopped = 'Another fill is already running.'; tone = 'warn'; break; }
+        if (out.stale) { stopped = 'Your set changed while ' + s.name + ' was filling, so those songs were not added. Your edits were kept.'; tone = 'warn'; break; }
+        if (out.error) { stopped = 'Could not fill ' + s.name + ': ' + plainError(out.error) + '.'; tone = 'error'; if (out.added.length) { paths = paths.concat(out.added); parts.push(s.name + ' ' + out.added.length); } break; }
+        if (out.added.length) {
+          paths = paths.concat(out.added);
+          parts.push(s.name + ' ' + out.added.length);
+          if (only !== null) notes.push('Added ' + plural(out.added.length, 'song') + ' to ' + s.name + (out.added.length < out.room ? '. ' + plural(out.room - out.added.length, 'slot') + ' left open, widen the BPM range to find more' : ''));
+        } else {
+          notes.push('No matching songs found for ' + s.name + ' — widen the BPM range');
+          if (tone === 'ok') tone = 'warn';
+        }
+      }
+    } catch (error) {
+      stopped = 'Could not fill the set: ' + plainError(error && error.message) + '.';
+      tone = 'error';
+    }
+    var text;
+    if (only !== null && !stopped) text = notes.join(' ');
+    else if (only === null && !stopped) text = paths.length
+      ? 'Added ' + plural(paths.length, 'song') + ' (' + parts.join(', ') + ')' + (notes.length ? '. ' + notes.join('. ') : '')
+      : (notes.length ? notes.join('. ') : 'Nothing to fill: every segment is full.');
+    else text = (paths.length ? 'Added ' + plural(paths.length, 'song') + ' (' + parts.join(', ') + '). ' : '') + stopped;
+    fill.running = false; fill.seg = -1;
+    fill.result = { text: text, tone: tone, paths: paths };
+    updateFill();
+  }
+
+  async function undoFill() {
+    var result = fill.result;
+    if (!result || !result.paths.length || fill.running || otherJobRunning()) return;
+    var gone = {};
+    result.paths.forEach(function (p) { gone[p] = 1; });
+    var kept = currentPlaylist.filter(function (t) { return !(t && gone[t.path]); });
+    var removed = currentPlaylist.length - kept.length;
+    if (!removed) return;
+    saveHistory();
+    currentPlaylist = kept;
+    safe(function () { syncEditingPlaylistIfNeeded(); }, 0);
+    safe(function () { updateStudioToolsAvailability(); }, 0);
+    fill.result = { text: 'Removed ' + plural(removed, 'song') + ' you had just added.', tone: 'ok', paths: [] };
+    updateFill();
+    await recalculateAudit();
+  }
+
   // ---- plumbing ---------------------------------------------------------------------------------------------
   function refresh() {
     pending = false;
-    updateFlow(); updateChips(); updateScore(); updateHints(); updateRoute(); decorateRows();
+    updateFlow(); updateChips(); updateScore(); updateHints(); updateRoute(); decorateRows(); updateFill();
   }
   function schedule() {
     if (pending) return;
@@ -277,7 +534,7 @@
       if (li) flowClick(li.dataset.magicStep);
     });
     var observer = new MutationObserver(schedule);
-    observer.observe(document.body, { attributes: true, attributeFilter: ['class'] });
+    observer.observe(document.body, { attributes: true, attributeFilter: ['class', 'data-ph-region'] });
     ['magic-score-value', 'magic-score-label', 'magic-dot-track-count', 'studio-set-runtime', 'studio-set-track-count', 'magic-set-subtitle'].forEach(function (id) {
       var el = $(id);
       if (el) observer.observe(el, { childList: true, characterData: true, subtree: true });
@@ -286,7 +543,7 @@
       var el = $(id);
       if (el) observer.observe(el, { childList: true });
     });
-    ['btn-optimize', 'btn-build-around-tracks', 'studio-tab-route'].forEach(function (id) {
+    ['btn-optimize', 'btn-build-around-tracks', 'btn-magic-set', 'btn-generate-from-anchor', 'studio-tab-route'].forEach(function (id) {
       var el = $(id);
       if (el) observer.observe(el, { attributes: true, attributeFilter: ['disabled', 'class', 'aria-pressed'] });
     });
@@ -315,5 +572,5 @@
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
   else init();
-  window.AxiomWindowsMagicSet = { refresh: refresh };
+  window.AxiomWindowsMagicSet = { refresh: refresh, fillRunning: function () { return fill.running; } };
 })();

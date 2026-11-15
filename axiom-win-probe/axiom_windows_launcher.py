@@ -359,8 +359,10 @@ KEEP_AWAKE = ['--disable-background-timer-throttling', '--disable-renderer-backg
 # which made the whole window slow. None of this changes downloads, the folder picker or media playback.
 QUIET = ['--disable-extensions', '--disable-sync', '--disable-background-networking',
          '--disable-component-extensions-with-background-pages', '--disable-default-apps']
-WINDOW_FLAGS = ['--no-first-run', '--no-default-browser-check', '--disable-features=msEdgeStartupBoost', '--disable-pinch',
+WINDOW_FLAGS = ['--no-first-run', '--no-default-browser-check', '--disable-features=msEdgeStartupBoost',
                 *QUIET, *KEEP_AWAKE]
+# No --disable-pinch: it makes Edge drop a touchpad pinch before the page sees it (no ctrl+wheel events), so the DAW timeline
+# could not zoom. The page cannot be pinch-zoomed anyway: windows-studio-zoom.js cancels the pinch's ctrl+wheel events.
 
 
 def edge_command(edge, url, profile):
@@ -484,7 +486,7 @@ ZOOM_KEYS = ('per_host_zoom_levels', 'default_zoom_level')  # under "partition" 
 
 def reset_page_zoom(profile):
     """Edge remembers page zoom per site, so a window zoomed by Ctrl+wheel once stays zoomed. The page now blocks page
-    zoom (windows-studio-zoom.js) and the window has --disable-pinch, but a zoom already saved still applies, so
+    zoom (windows-studio-zoom.js, which also cancels a pinch), but a zoom already saved still applies, so
     drop the saved zoom levels (partition.per_host_zoom_levels and partition.default_zoom_level) from the profile's
     Preferences file before the browser starts. Only while no browser has the profile open, only when there is
     something to drop, and the file is replaced in one step. Returns True when a saved zoom was removed."""

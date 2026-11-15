@@ -270,7 +270,8 @@
       }
     }
 
-    function studioGenerationGuard() {
+    // quiet: the caller reports a stale response itself (the Windows Fill buttons), so no toast that could replace another notice.
+    function studioGenerationGuard(quiet = false) {
       const working = currentPlaylist, route = currentRoutePlaylist;
       // Song order, not whole objects: hydrateStudioTrackVersions() adds fields to the tracks while a request is in flight.
       const order = list => (Array.isArray(list) ? list : []).map(track => String(track?.path || ''));
@@ -282,30 +283,37 @@
       const requested = state();
       return () => {
         if (currentPlaylist === working && currentRoutePlaylist === route && requested === state()) return true;
-        showToast('Your set or setup changed while Magic Set was building. Your edits were kept; build again to use them.');
+        if (!quiet) showToast('Your set or setup changed while Magic Set was building. Your edits were kept; build again to use them.');
         return false;
       };
     }
 
-    async function autoFillSegment() {
-      if (autoFillSegment.busy) return;
-      if (graphDots.length < 2) return;
-      const segStart = graphDots[graphDots.length - 2];
-      const segEnd   = graphDots[graphDots.length - 1];
+    // Called with no argument it fills the last curve segment, as always. The Windows "Fill" buttons pass
+    // options { segStart, segEnd, bpmAt, maxTracks, quiet }: that time range instead of the last two points, a BPM
+    // lookup for the curve, a cap on the songs added, and no toasts (the caller shows the result and gets it back).
+    async function autoFillSegment(options) {
+      const opts = options && typeof options === 'object' && !options.target && options.segStart && options.segEnd ? options : null;
+      const outcome = { added: [], error: '', stale: false, skipped: false };
+      if (autoFillSegment.busy) { outcome.skipped = true; return outcome; }
+      if (!opts && graphDots.length < 2) return outcome;
+      const segStart = opts ? opts.segStart : graphDots[graphDots.length - 2];
+      const segEnd   = opts ? opts.segEnd : graphDots[graphDots.length - 1];
       const avgDur   = parseFloat(document.getElementById('avg-duration-selector').value);
       let anchorKey  = currentPlaylist.length > 0 ? currentPlaylist[currentPlaylist.length - 1].camelot : null;
 
       const btnAF = null; // btn-autofill removed
-      const stillCurrent = studioGenerationGuard();
+      const stillCurrent = studioGenerationGuard(!!opts);
       autoFillSegment.busy = true;
 
       try {
         const segTime = segEnd.x - segStart.x;
-        const tempoFlip = magicGraphTempoFlipInfo(segStart, segEnd, avgDur);
-        const need    = magicSetTrackEstimate(segTime, segStart.y, segEnd.y, avgDur, tempoFlip?.mode || '');
+        const tempoFlip = opts ? null : magicGraphTempoFlipInfo(segStart, segEnd, avgDur);
+        let need      = magicSetTrackEstimate(segTime, segStart.y, segEnd.y, avgDur, tempoFlip?.mode || '');
+        if (opts && opts.maxTracks > 0) need = Math.min(need, Math.floor(opts.maxTracks));
         if (need < 1) {
-          showToast('Segment too short — move the points further apart', true);
-          return;
+          if (!opts) showToast('Segment too short — move the points further apart', true);
+          outcome.error = 'Segment too short';
+          return outcome;
         }
         const dtTime = segTime / need;
         let addedTracks = [];
@@ -315,8 +323,8 @@
         for (let s = 0; s < need; s++) {
           const tFrom   = segStart.x + s * dtTime;
           const tTo     = segStart.x + (s + 1) * dtTime;
-          const bpmFrom = magicSegmentBpmAt(segStart.y, segEnd.y, s / need, tempoFlip?.mode || '');
-          const bpmTo   = magicSegmentBpmAt(segStart.y, segEnd.y, (s + 1) / need, tempoFlip?.mode || '');
+          const bpmFrom = opts && opts.bpmAt ? opts.bpmAt(tFrom) : magicSegmentBpmAt(segStart.y, segEnd.y, s / need, tempoFlip?.mode || '');
+          const bpmTo   = opts && opts.bpmAt ? opts.bpmAt(tTo) : magicSegmentBpmAt(segStart.y, segEnd.y, (s + 1) / need, tempoFlip?.mode || '');
 
           const start_dot = { time_min: tFrom, bpm: Math.round(bpmFrom * 10) / 10 };
           const end_dot   = { time_min: tTo,   bpm: Math.round(bpmTo   * 10) / 10 };
@@ -328,7 +336,7 @@
           });
           let data;
           try { data = await resp.json(); } catch(je) { data = {}; }
-          if (!stillCurrent()) return;
+          if (!stillCurrent()) { outcome.stale = true; return outcome; }
           if (!resp.ok) {
             const msg = data.error || data.message || data.detail || `HTTP ${resp.status}`;
             throw new Error(`Sub-segment ${s + 1}: ${msg}`);
@@ -350,26 +358,33 @@
           }
         }
 
+        if (opts && opts.maxTracks > 0) addedTracks = addedTracks.slice(0, Math.floor(opts.maxTracks));
         if (addedTracks.length > 0) {
           saveHistory();
           currentPlaylist = dedupePlaylistTracks(currentPlaylist.concat(addedTracks));
+          outcome.added = addedTracks;
           syncEditingPlaylistIfNeeded();
           // graphDots intentionally NOT cleared — allows chaining further segments
           initSortable();
           markMagicSetReady();
-          recalculateAudit();
-          showToast(`Auto-filled ${addedTracks.length} track${addedTracks.length !== 1 ? 's' : ''}`);
-          showStudioTrackAddedPulse({ title: `${addedTracks.length} Magic Set tracks` }, currentPlaylist.length);
-        } else {
+          if (opts) {
+            await recalculateAudit();
+          } else {
+            recalculateAudit();
+            showToast(`Auto-filled ${addedTracks.length} track${addedTracks.length !== 1 ? 's' : ''}`);
+            showStudioTrackAddedPulse({ title: `${addedTracks.length} Magic Set tracks` }, currentPlaylist.length);
+          }
+        } else if (!opts) {
           showToast('No matches found to fill gap', true);
         }
       } catch (e) {
         console.error('autoFillSegment error:', e);
-        showToast(e.message || 'Error filling segment', true);
+        outcome.error = e.message || 'Error filling segment';
+        if (!opts) showToast(outcome.error, true);
       } finally {
         autoFillSegment.busy = false;
       }
-
+      return outcome;
     }
 
     async function fillSetFromBPMPoints() {

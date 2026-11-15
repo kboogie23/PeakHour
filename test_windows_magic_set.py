@@ -27,6 +27,9 @@ import urllib.request
 from pathlib import Path
 
 workspace = Path(__file__).resolve().parent
+# a copy of the app with the Fill wiring removed can be tested with PH_TEST_APP_DIR (used to prove the Fill checks fail without it)
+APP_DIR = Path(os.environ.get('PH_TEST_APP_DIR') or workspace / 'axiom-win-probe')
+SHOTS = os.environ.get('PH_TEST_SHOTS')  # a folder: also save the 1600x900 Fill previews there
 sys.path.insert(0, str(workspace))
 from feature_check import browser as fb, synthetic_library as sl
 from feature_check.js_contrast import SCAN
@@ -93,7 +96,7 @@ def make_library():
 
 
 def start():
-    process = subprocess.Popen([sys.executable, '-c', SERVER, str(base), str(port), str(workspace / 'axiom-win-probe')],
+    process = subprocess.Popen([sys.executable, '-c', SERVER, str(base), str(port), str(APP_DIR)],
                                env=env, cwd=str(workspace), stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     servers.append(process)
     for _ in range(240):
@@ -296,6 +299,9 @@ def foreign_notice_survives(page, label):
 def case(width, height):
     label = f'{width}x{height}'
     print(f'[{label}]')
+    # Every size starts as a brand-new user. The earlier window's data snapshot (windows-window-snapshot.js backs up the Studio
+    # autosave and fills a new, empty profile from it, as designed) would otherwise hand this fresh profile the earlier size's songs.
+    shutil.rmtree(runtime / 'window-data-snapshot', ignore_errors=True)
     page = Page(width, height)
     try:
         r = page.run([
@@ -452,13 +458,282 @@ def case(width, height):
         page.close()
 
 
+FILL_LABELS = ['Fill warm-up', 'Fill build', 'Fill peak', 'Fill drive', 'Fill cool-down']
+CHART_SEG = '.magic-phase-band .wms-fill-seg[data-seg="{k}"]'
+LADDER_SEG = '#wms-fill-ladder .wms-fill-seg[data-seg="{k}"]'
+FILL_STATE = r'''JSON.stringify({
+  paths: currentPlaylist.map(t => t.path), rows: document.querySelectorAll('#active-playlist-container .playlist-row').length,
+  buttons: [...document.querySelectorAll('.magic-phase-band .wms-fill-seg')].map(b => ({text: b.textContent, aria: b.getAttribute('aria-label'), disabled: b.disabled, title: b.title,
+    why: (document.getElementById(b.getAttribute('aria-describedby')) || {}).textContent})),
+  counts: [...document.querySelectorAll('.magic-phase-band .wms-fill-count')].map(e => e.textContent),
+  ladder: [...document.querySelectorAll('#wms-fill-ladder .wms-fill-seg')].map(b => [b.textContent, b.disabled]),
+  ladderCounts: [...document.querySelectorAll('#wms-fill-ladder .wms-fill-count')].map(e => e.textContent),
+  all: {text: document.getElementById('wms-fill-all-chart').textContent, disabled: document.getElementById('wms-fill-all-chart').disabled},
+  hint: document.getElementById('wms-fill-hint').textContent, result: document.querySelector('#wms-fill-result-chart .wms-fill-msg').textContent,
+  chip: !document.getElementById('wms-fill-result-chart').hidden,
+  undo: {hidden: document.querySelector('#wms-fill-result-chart .wms-fill-undo').hidden, text: document.querySelector('#wms-fill-result-chart .wms-fill-undo').textContent},
+  score: document.getElementById('magic-score-value').textContent, chipTracks: document.getElementById('magic-chip-tracks').textContent,
+  chart: (Chart.getChart('bpmChart').data.datasets[0].data || []).length,
+  reqs: (window.__af ? window.__af.reqs.map(r => [r.body.start_dot.time_min, r.body.end_dot.time_min, r.t0, r.t1]) : []), maxActive: window.__af ? window.__af.maxActive : 0
+})'''
+MANUAL_STATE = r'''JSON.stringify({
+  all: {text: document.getElementById('wms-fill-all-manual').textContent, disabled: document.getElementById('wms-fill-all-manual').disabled},
+  result: document.querySelector('#wms-fill-result-manual .wms-fill-msg').textContent, hint: document.getElementById('wms-fill-hint').textContent,
+  hintShown: (() => { const r = document.getElementById('wms-fill-hint').getBoundingClientRect(); return r.width > 0 && r.height > 0 && r.right <= innerWidth + 1; })(),
+  undo: {hidden: document.querySelector('#wms-fill-result-manual .wms-fill-undo').hidden, text: document.querySelector('#wms-fill-result-manual .wms-fill-undo').textContent}
+})'''
+FILL_WRAP = '''(() => { if (window.__af) { window.__af.reqs = []; window.__af.maxActive = 0; window.__af.gate = null; return 1; }
+  window.__af = {reqs: [], maxActive: 0, active: 0, gate: null}; const real = window.fetch.bind(window);
+  window.fetch = async (input, init) => { const url = typeof input === 'string' ? input : input.url;
+    if (!/studio\\/autofill/.test(url)) return real(input, init);
+    const rec = {body: JSON.parse(init.body), t0: performance.now(), t1: 0}; window.__af.reqs.push(rec);
+    window.__af.active++; window.__af.maxActive = Math.max(window.__af.maxActive, window.__af.active);
+    try { const response = await real(input, init); if (window.__af.gate) await window.__af.gate; return response; }
+    finally { rec.t1 = performance.now(); window.__af.active--; } };
+  return 1; })()'''
+FILL_IDLE = '!AxiomWindowsMagicSet.fillRunning() && document.querySelector("#wms-fill-result-chart .wms-fill-msg").textContent'
+FILL_IDLE_MANUAL = '!AxiomWindowsMagicSet.fillRunning() && document.querySelector("#wms-fill-result-manual .wms-fill-msg").textContent'
+
+
+def fill_case(width, height):
+    """Fill one segment / Fill empty segments: 60 min set, 3 min mix = 12 slots, 4 per segment; 6 songs placed by hand."""
+    label = f'{width}x{height} Fill'
+    print(f'[{label}]')
+    page = Page(width, height)
+    cache = json.loads((runtime / 'data' / 'library_cache.json').read_text('utf-8'))['tracks']
+    seed_all = sorted([t for t in cache if 112 <= t['bpm'] <= 124], key=lambda t: t['bpm'])[:9]
+    check(len(seed_all) >= 8, f'{label}: the synthetic library has too few songs around 112-124 BPM to seed the set')
+    seed_paths = [t['path'] for t in seed_all]
+
+    def state():
+        return page.json(FILL_STATE)
+
+    def seed(count):
+        page.ev(f'(() => {{ currentPlaylist = {json.dumps(seed_all[:count])}; currentRoutePlaylist = []; renderPlaylist(); updateStudioToolsAvailability(); recalculateAudit(); '
+                f'AxiomWindowsMagicSet.refresh(); return 1; }})()')
+        time.sleep(1.0)
+
+    def finish(what, seconds=60, idle=FILL_IDLE):
+        ok_ = page.wait(idle, seconds)
+        check(ok_, f'{label}: {what}: the fill never finished')
+        time.sleep(0.6)
+        return state()
+
+    def no_duplicates(paths, what):
+        check(len(paths) == len(set(paths)), f'{label}: {what}: the set has a song twice ({len(paths) - len(set(paths))} duplicates)')
+
+    try:
+        r = page.run([
+            {'op': 'collect_errors', 'clear': True},
+            {'op': 'navigate', 'url': '/', 'settle': 4000},
+            {'op': 'eval', 'expr': "(()=>{const s=[...document.querySelectorAll('button')].find(x=>/skip tour/i.test(x.textContent)&&x.offsetParent);if(s)s.click();return 1})()"},
+            {'op': 'sleep', 'seconds': 1},
+            {'op': 'eval', 'expr': "(()=>{showTab('studio');return 1})()"},
+            {'op': 'sleep', 'seconds': 1.5},
+            {'op': 'eval', 'expr': "(()=>{openMagicSetWorkspace();return 1})()"},
+            {'op': 'sleep', 'seconds': 1.5},
+        ])
+        check(r.steps[1].get('ok'), f'{label}: could not load the app')
+        page.ev('''(() => { const set = (id, v) => { const el = document.getElementById(id); el.value = v; el.dispatchEvent(new Event('change', {bubbles: true})); };
+          set('set-length-selector', '60'); set('avg-duration-selector', '3'); set('blueprint-start-bpm', '116'); set('blueprint-end-bpm', '132');
+          applyBpmBlueprint(); window.__lib = libraryHasTracks; return 1; })()''')
+        page.ev(FILL_WRAP)
+        seed(6)
+
+        # ---- the buttons: one per segment, label, count and what is expected
+        f = state()
+        check(len(f['buttons']) == 5 and len(f['ladder']) == 5, f'{label}: expected 5 Fill buttons in the chart and 5 in the energy ladder, got {len(f["buttons"])}/{len(f["ladder"])}')
+        counts = ['4/4', '2/4', '0/4', '0/4', '0/4']
+        shown = ['Full', 'Fill build', 'Needs Build', 'Needs Peak', 'Needs Drive']
+        why = ['Warm-up is full (4 of 4 songs).', None, 'Fill Build first.', 'Fill Peak first.', 'Fill Drive first.']
+        check(f['counts'] == counts and f['ladderCounts'] == counts, f'{label}: segment counts are {f["counts"]} / {f["ladderCounts"]}, expected {counts}')
+        for k, b in enumerate(f['buttons']):
+            check(b['text'] == shown[k], f'{label}: button {k} reads {b["text"]!r}, expected {shown[k]!r}')
+            check(b['aria'].startswith(f'{FILL_LABELS[k]}, {counts[k][0]} of 4 songs'), f'{label}: button {k} aria-label is {b["aria"]!r}')
+            check(b['why'] == b['title'] and b['why'], f'{label}: button {k} aria-describedby text {b["why"]!r} differs from its title {b["title"]!r}')
+            check(b['disabled'] == (k != 1), f'{label}: button {k} disabled={b["disabled"]}, expected {k != 1}')
+            if why[k]:
+                check(b['title'].startswith(why[k][:-1]), f'{label}: button {k} says why with {b["title"]!r}, expected {why[k]!r}')
+        check(f['ladder'] == [[b['text'], b['disabled']] for b in f['buttons']], f'{label}: the energy-ladder buttons differ from the chart ones: {f["ladder"]}')
+        check('Full: Warm-up.' in f['hint'] and 'Fill earlier segments first: Peak, Drive, Cool-down.' in f['hint'], f'{label}: the hint does not explain the disabled buttons: {f["hint"]!r}')
+        check(not f['all']['disabled'] and f['all']['text'] == 'Fill empty segments', f'{label}: Fill empty segments should be enabled: {f["all"]}')
+        check(f['undo']['hidden'] and f['result'] == '' and not f['chip'], f'{label}: no result line expected before any fill: {f["result"]!r}')
+        fill_boxes = ['#wms-fill-all-chart'] + [CHART_SEG.format(k=k) for k in range(5)]
+        layout(page, fill_boxes + ['#magic-chart-footer .magic-legend', '#magic-chart-footer .magic-chart-stats'], f'{label} before filling')
+        # each button sits inside its own phase cell and above the plot
+        under = page.json('''JSON.stringify([...document.querySelectorAll('.magic-phase-band .wms-fill-seg')].map((b, i) => { const p = document.querySelectorAll('.magic-phase-band > div')[i].getBoundingClientRect(), r = b.getBoundingClientRect();
+          const g = document.getElementById('graph-container'); const plotTop = g.getBoundingClientRect().top + parseFloat(g.style.getPropertyValue('--wms-plot-top'));
+          return [Math.round(r.left - p.left), Math.round(p.right - r.right), Math.round(p.bottom - r.bottom), Math.round(plotTop - r.bottom), Math.round(r.top - p.top)]; }))''')
+        check(all(0 <= l <= 12 and 0 <= rr <= 12 and bt >= 0 and pt >= -1 and tp >= 20 for l, rr, bt, pt, tp in under), f'{label}: Fill buttons are not inside their phase columns and above the plot: {under}')
+        title_overlap = page.json('''JSON.stringify([...document.querySelectorAll('.magic-phase-band > div')].map(c => { const t = c.querySelector('strong, input').getBoundingClientRect(), n = c.querySelector('.wms-fill-count').getBoundingClientRect();
+          return Math.min(t.right, n.right) - Math.max(t.left, n.left) > 1 && Math.min(t.bottom, n.bottom) - Math.max(t.top, n.top) > 1; }))''')
+        check(not any(title_overlap), f'{label}: a segment count overlaps its name: {title_overlap}')
+        contrast(page, f'{label} before filling')
+        if SHOTS and width == 1600:
+            page.run([{'op': 'screenshot', 'path': str(Path(SHOTS) / '06-fill-segment.png')}])
+
+        # ---- Fill build (real mouse click): appends only, inside Build's time range
+        before = f['paths']
+        check(before == seed_paths[:6], f'{label}: seeding failed')
+        page.click(CHART_SEG.format(k=1), settle=0.3)
+        f = finish('Fill build')
+        check(f['paths'][:6] == before, f'{label}: Fill build moved or removed songs the DJ had placed')
+        added = f['paths'][6:]
+        check(1 <= len(added) <= 2, f'{label}: Fill build added {len(added)} songs, room was 2')
+        no_duplicates(f['paths'], 'Fill build')
+        check(all(p in DURATIONS and p not in before for p in added), f'{label}: Fill build added a song that is not from the library or was already in the set')
+        check(f['reqs'] and all(a >= 18 - 1e-6 and b <= 24 + 1e-6 for a, b, _, _ in f['reqs']),
+              f'{label}: Fill build asked for songs outside Build (12-24 min, from the first open slot at 18 min): {[(a, b) for a, b, _, _ in f["reqs"]]}')
+        word = 'song' if len(added) == 1 else 'songs'
+        check(f['chip'] and f['result'].startswith(f'Added {len(added)} {word} to Build'), f'{label}: result line is {f["result"]!r} (shown: {f["chip"]})')
+        check(page.wait('Number(document.getElementById("magic-score-value").textContent) > 0', 25), f'{label}: the Set Score did not appear after Fill build')
+        f = state()
+        check(f['chipTracks'] == str(len(f['paths'])) and f['chart'] == len(f['paths']) and f['rows'] == len(f['paths']),
+              f'{label}: chips/chart/rows do not match the {len(f["paths"])} songs: chip {f["chipTracks"]}, chart {f["chart"]}, rows {f["rows"]}')
+        check(f['counts'][1] == f'{2 + len(added)}/4', f'{label}: the Build count did not update: {f["counts"]}')
+        check(not f['undo']['hidden'] and f['undo']['text'] == f'Remove the {len(added)} added {word}', f'{label}: undo affordance reads {f["undo"]}')
+        real_times(page, label, 'after Fill build', rows=True)
+        check(page.json('JSON.stringify(!document.querySelector("#audio-player .player-notification-surface[data-notification-kind=working]"))'), f'{label}: Fill left a working notice on screen')
+        chip_boxes = fill_boxes + ['#wms-fill-result-chart', '#magic-chart-footer .magic-legend', '#magic-chart-footer .magic-chart-stats']
+        layout(page, chip_boxes, f'{label} after Fill build')
+        contrast(page, f'{label} after Fill build')
+        if SHOTS and width == 1600:
+            page.run([{'op': 'screenshot', 'path': str(Path(SHOTS) / '07-after-fill.png')}])
+
+        # ---- the undo removes exactly the added songs
+        page.click('#wms-fill-result-chart .wms-fill-undo', settle=1.0)
+        f = state()
+        check(f['paths'] == before and f['rows'] == 6, f'{label}: Remove the added songs did not restore exactly the 6 songs ({len(f["paths"])} left)')
+        check(f['result'].startswith('Removed') and f['undo']['hidden'], f'{label}: after the undo the line reads {f["result"]!r}')
+        page.click('#wms-fill-result-chart .wms-fill-dismiss', settle=0.3)
+        check(not state()['chip'], f'{label}: Dismiss did not close the result line')
+
+        # ---- Fill empty segments: one after another
+        page.ev(FILL_WRAP)
+        page.click('#wms-fill-all-chart', settle=0.3)
+        f = finish('Fill empty segments', 120)
+        check(f['paths'][:6] == before, f'{label}: Fill empty segments moved or removed songs the DJ had placed')
+        no_duplicates(f['paths'], 'Fill empty segments')
+        check(all(p in DURATIONS for p in f['paths']), f'{label}: Fill empty segments added a song that is not from the library')
+        check(len(f['paths']) == 20, f'{label}: Fill empty segments left {len(f["paths"])} of 20 songs ({f["result"]!r})')
+        check(f['result'].startswith(f'Added {len(f["paths"]) - 6} songs (Build 2'), f'{label}: result line is {f["result"]!r}')
+        check(f['maxActive'] == 1, f'{label}: the segment requests ran in parallel (max {f["maxActive"]} at once)')
+        order = sorted(f['reqs'], key=lambda q: q[2])
+        check(all(order[i][2] >= order[i - 1][3] for i in range(1, len(order))), f'{label}: a segment request started before the previous one finished')
+        check(len(f['reqs']) >= 4, f'{label}: Fill empty segments sent only {len(f["reqs"])} requests')
+        check(all(b['disabled'] and b['text'] == 'Full' for b in f['buttons']) and f['all']['disabled'] and f['counts'] == ['4/4'] * 5,
+              f'{label}: with every segment full the buttons should be disabled and say Full: {[b["text"] for b in f["buttons"]]}')
+        check('Full: Warm-up, Build, Peak, Drive, Cool-down.' in f['hint'], f'{label}: hint after filling everything is {f["hint"]!r}')
+        check(page.wait('Number(document.getElementById("magic-score-value").textContent) > 0', 25), f'{label}: no Set Score after Fill empty segments')
+        real_times(page, label, 'after Fill empty segments', rows=True)
+        check(f['chipTracks'] == '20' and f['chart'] == 20 and f['rows'] == 20, f'{label}: chips/chart/rows after Fill empty segments: {f["chipTracks"]}/{f["chart"]}/{f["rows"]}')
+        layout(page, chip_boxes, f'{label} after Fill empty segments')
+        contrast(page, f'{label} after Fill empty segments')
+        page.click('#wms-fill-result-chart .wms-fill-undo', settle=1.0)
+        check(state()['paths'] == before, f'{label}: Remove the added songs after Fill empty segments did not restore the original 6')
+
+        # ---- disabled states and their reasons
+        page.ev('(() => { libraryHasTracks = false; AxiomWindowsMagicSet.refresh(); return 1; })()')
+        f = state()
+        check(all(b['disabled'] and b['text'] == 'Library empty' and 'Library is empty' in b['title'] for b in f['buttons']) and f['all']['disabled'] and 'Library is empty' in f['hint'],
+              f'{label}: with an empty Library Fill must be disabled with a reason: {[b["text"] for b in f["buttons"]]} {f["hint"]!r}')
+        page.ev('(() => { libraryHasTracks = window.__lib; fillSetFromBPMPoints.busy = true; AxiomWindowsMagicSet.refresh(); return 1; })()')
+        f = state()
+        check(all(b['disabled'] and b['text'] == 'Busy' and 'Another Magic Set job is running' in b['title'] for b in f['buttons']) and f['all']['disabled'] and 'Another Magic Set job is running' in f['hint'],
+              f'{label}: while Generate Set runs Fill must be disabled with a reason: {[b["text"] for b in f["buttons"]]} {f["hint"]!r}')
+        page.ev('(() => { fillSetFromBPMPoints.busy = false; AxiomWindowsMagicSet.refresh(); return 1; })()')
+        check(not state()['buttons'][1]['disabled'], f'{label}: Fill build stayed disabled after the other job finished')
+        seed(0)
+        f = state()
+        check([b['disabled'] for b in f['buttons']] == [False, True, True, True, True] and f['buttons'][1]['text'] == 'Needs Warm-up' and 'Fill Warm-up first' in f['buttons'][1]['title'],
+              f'{label}: with an empty set only Warm-up can be filled: {[(b["text"], b["disabled"]) for b in f["buttons"]]}')
+
+        # ---- a double click sends one request; the button shows Filling... while it waits
+        seed(7)
+        page.ev(FILL_WRAP)
+        page.ev('(() => { window.__af.gate = new Promise(r => { window.__af.open = r; }); const b = document.querySelector(".magic-phase-band .wms-fill-seg[data-seg=\\"1\\"]"); b.click(); b.click(); return 1; })()')
+        check(page.wait('window.__af.reqs.length >= 1', 20), f'{label}: the double click sent no request')
+        time.sleep(0.5)
+        f = state()
+        check(f['buttons'][1]['text'] == 'Filling...' and all(b['disabled'] for b in f['buttons']) and f['all']['disabled'] and f['buttons'][0]['text'] == 'Wait',
+              f'{label}: while filling, the button should read Filling... and everything be disabled: {[(b["text"], b["disabled"]) for b in f["buttons"]]}')
+        check('Filling Build' in f['hint'], f'{label}: the hint while filling is {f["hint"]!r}')
+        page.ev('(() => { window.__af.open(); return 1; })()')
+        f = finish('double click')
+        check(len(f['reqs']) == 1, f'{label}: a double click sent {len(f["reqs"])} requests')
+        check(f['paths'][:7] == seed_paths[:7] and len(f['paths']) <= 8, f'{label}: after the double click the set is {len(f["paths"])} songs')
+        no_duplicates(f['paths'], 'double click')
+
+        # ---- a response that arrives after the DJ edited the set must not overwrite the edit (and a foreign notice survives)
+        seed(6)
+        page.ev(FILL_WRAP)
+        page.ev('(() => { window.__af.gate = new Promise(r => { window.__af.open = r; }); showToast("Exporting 3 songs to the crate..."); return 1; })()')
+        page.click(CHART_SEG.format(k=1), settle=0.3)
+        check(page.wait('window.__af.reqs.length >= 1', 20), f'{label}: the Fill click sent no request')
+        # the DJ removes the first song (deleteTrackFromPlaylist would show its own toast over the export notice, so do it without)
+        page.ev('(() => { currentPlaylist = currentPlaylist.slice(1); renderPlaylist(); recalculateAudit(); return 1; })()')
+        time.sleep(0.5)
+        page.ev('(() => { window.__af.open(); return 1; })()')
+        f = finish('stale response')
+        check(f['paths'] == seed_paths[1:6], f'{label}: the late response overwrote the DJ\'s edit: {len(f["paths"])} songs')
+        check('changed while Build was filling' in f['result'] and f['undo']['hidden'], f'{label}: the line after a stale response reads {f["result"]!r}')
+        left = page.json('JSON.stringify([...document.querySelectorAll("#audio-player .player-notification-surface")].map(s => [s.dataset.notificationKind, s.querySelector("strong").textContent]))')
+        check(any(kind == 'working' and 'Exporting 3 songs' in text for kind, text in left), f'{label}: Fill closed the export working notice (on screen: {left})')
+        page.ev('(() => { document.querySelectorAll("#audio-player .player-notification-dismiss").forEach(b => b.click()); return 1; })()')
+
+        # ---- keyboard: focus ring, Enter starts the fill
+        seed(6)
+        page.run([{'op': 'press', 'key': 'Tab'}])
+        page.ev('(() => { document.querySelector(".magic-phase-band .wms-fill-seg[data-seg=\\"1\\"]").focus(); return 1; })()')
+        ring = page.json('(() => { const s = getComputedStyle(document.activeElement); return JSON.stringify({w: s.outlineWidth, st: s.outlineStyle, id: document.activeElement.dataset.seg}); })()')
+        check(ring['id'] == '1' and ring['w'] == '3px' and ring['st'] == 'solid', f'{label}: the focused Fill button has no visible focus ring: {ring}')
+        page.run([{'op': 'press', 'key': 'Enter'}, {'op': 'sleep', 'seconds': 0.3}])
+        f = finish('keyboard fill')
+        check(len(f['paths']) > 6 and f['paths'][:6] == seed_paths[:6], f'{label}: pressing Enter on Fill build did not add songs ({len(f["paths"])})')
+
+        # ---- Manual Build: the ladder carries the same buttons, with a bar for Fill empty segments, the result and the reasons
+        seed(6)
+        page.ev('(() => { viewMagicSetInStudio(); return 1; })()')
+        time.sleep(1.2)
+        page.ev(FILL_WRAP)
+        ladder_boxes = ['#wms-fill-all-manual', '#energy-ladder', '#wms-fill-hint', '#active-playlist-container'] + [LADDER_SEG.format(k=k) for k in range(5)]
+        layout(page, ladder_boxes, f'{label} Manual Build')
+        contrast(page, f'{label} Manual Build')
+        m = page.json(MANUAL_STATE)
+        check(m['hintShown'] and 'Fill earlier segments first: Peak, Drive, Cool-down.' in m['hint'], f'{label}: Manual Build shows no visible reason for the disabled buttons: {m}')
+        check(page.json('JSON.stringify(document.getElementById("graph-container").offsetParent === null)'), f'{label}: the chart is showing in Manual Build')
+        page.click(LADDER_SEG.format(k=1), settle=0.3)
+        f = finish('Manual Build fill', idle=FILL_IDLE_MANUAL)
+        check(f['paths'][:6] == seed_paths[:6] and len(f['paths']) > 6, f'{label}: the ladder Fill button added nothing ({len(f["paths"])})')
+        no_duplicates(f['paths'], 'Manual Build fill')
+        m = page.json(MANUAL_STATE)
+        check(m['result'].startswith('Added ') and not m['undo']['hidden'] and m['undo']['text'].startswith('Remove the '), f'{label}: Manual Build result line: {m}')
+        real_times(page, label, 'Manual Build after Fill', rows=True)
+        layout(page, ladder_boxes + ['#wms-fill-result-manual', '#wms-fill-result-manual .wms-fill-undo'], f'{label} Manual Build after Fill')
+        contrast(page, f'{label} Manual Build after Fill')
+        page.click('#wms-fill-result-manual .wms-fill-undo', settle=1.0)
+        check(state()['paths'] == seed_paths[:6], f'{label}: Manual Build undo did not restore the 6 songs')
+        page.ev('(() => { currentRoutePlaylist = currentPlaylist.slice().reverse(); setStudioView("route"); return 1; })()')
+        time.sleep(0.8)
+        check(page.json('JSON.stringify(getComputedStyle(document.getElementById("wms-fill-bar")).display)') == 'none', f'{label}: the Fill bar should be hidden in the Harmonic Route')
+
+        errors = page.run([{'op': 'collect_errors'}]).steps[0].get('value') or []
+        real = [e for e in errors if not any(skip in json.dumps(e) for skip in ('/api/library/artwork', '/api/license/validate', 'favicon'))]
+        check(not real, f'{label}: script errors on the page: {json.dumps(real)[:600]}')
+    finally:
+        page.close()
+
+
 def static_checks():
-    css = (workspace / 'axiom-win-probe' / 'static' / 'css' / 'windows-magic-set.css').read_text('utf-8')
+    css = (APP_DIR / 'static' / 'css' / 'windows-magic-set.css').read_text('utf-8')
     unscoped = css.count('html body') - css.count('html body[data-ph-region]')
     check(unscoped == 0, f'windows-magic-set.css has {unscoped} "html body" selectors without [data-ph-region] (they would also restyle the macOS look)')
-    stems_css = (workspace / 'axiom-win-probe' / 'static' / 'css' / 'windows-stems-install.css').read_text('utf-8')
+    import re
+    bare = re.sub(r'/\*.*?\*/', '', css, flags=re.S)
+    check(not re.search(r'(^|[\s;{])(transition|animation)[\w-]*\s*:\s*(?!\s|none)|@keyframes', bare),'windows-magic-set.css has a transition or an animation')
+    stems_css = (APP_DIR / 'static' / 'css' / 'windows-stems-install.css').read_text('utf-8')
     check('transition' not in stems_css, 'windows-stems-install.css still has a transition')
-    render = (workspace / 'axiom-win-probe' / 'static' / 'js' / 'surfaces' / 'studio-render.js').read_text('utf-8')
+    render = (APP_DIR / 'static' / 'js' / 'surfaces' / 'studio-render.js').read_text('utf-8')
     for mac in ("labelColor = isLight ? '#555555' : '#666'", 'bottom: 34', "title: { display: true, text: 'BPM'"):
         check(mac in render, f'studio-render.js (shared with macOS) lost its Mac chart value {mac!r}')
     check('pointHitRadius' not in render and "weight: '600'" not in render and "isHarmonic ? 'Match'" in render, 'studio-render.js still carries Windows chart styling (or lost the Match fix)')
@@ -498,6 +773,9 @@ try:
     check(stats.get('total_tracks') == LIBRARY_SIZE, f'library has {stats.get("total_tracks")} tracks, expected {LIBRARY_SIZE}')
     for size in ((1280, 720), (1920, 1080)):
         case(*size)
+        fill_case(*size)
+    if SHOTS:
+        fill_case(1600, 900)
 except BaseException:
     import traceback
     traceback.print_exc()
@@ -522,6 +800,7 @@ finally:
             subprocess.run(['taskkill', '/T', '/F', '/PID', pid], capture_output=True)
     shutil.rmtree(base, ignore_errors=True)
 print('PASS: Magic Set restyle on Windows (1-2-3 flow, chart hero, score ring, track rows, Harmonic Route) works at 1280x720 and 1920x1080: '
-      'no overlaps or sideways scroll, text 4.5:1 or better, Generate Set, Build Around, Suggest Order and removing tracks all work'
+      'no overlaps or sideways scroll, text 4.5:1 or better, Generate Set, Build Around, Suggest Order and removing tracks all work; '
+      'Fill one segment / Fill empty segments only add songs inside the segment, keep and never duplicate songs, can be undone, ignore stale responses'
       if not failures else 'FAIL: ' + '; '.join(failures))
 sys.exit(1 if failures else 0)

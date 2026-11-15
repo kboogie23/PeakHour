@@ -307,6 +307,14 @@
     status.hidden=hidden;
     status.classList.toggle('is-error',Boolean(error));
   }
+  const waveRetries=new WeakMap();
+  const waveSized=typeof ResizeObserver==='function'?new ResizeObserver(entries=>{
+    for(const entry of entries){
+      const canvas=entry.target;
+      if(!canvas.isConnected){waveSized.unobserve(canvas);continue;}
+      if(entry.contentRect.width>0&&entry.contentRect.height>0){waveSized.unobserve(canvas);waveRetries.delete(canvas);canvas.dataset.waveLayoutRetry='';renderWave(canvas);}
+    }
+  }):null;
   function renderWave(canvas) {
     const path=canvas.dataset.wavePath,overview=cache.get(path);
     if(!path){canvas.dataset.waveState='unavailable';setWaveStatus(canvas,'Audio source unavailable for this clip.',true);return;}
@@ -326,11 +334,18 @@
       if(!rect.width||!rect.height){
         if(canvas.dataset.waveLayoutRetry!=='scheduled'){
           canvas.dataset.waveLayoutRetry='scheduled';
+          // A canvas that stays unlaid-out (a collapsed strip, a clip scrolled out of view) used to be retried on every frame,
+          // for ever: with 45 clips that was ~1,500 forced layouts a second while playing. Twenty quick tries (it is usually
+          // laid out on the next frame or two), then a ResizeObserver, which reports the first real size without forcing layout.
+          const tries=(waveRetries.get(canvas)||0)+1;waveRetries.set(canvas,tries);
           const schedule=window.requestAnimationFrame || (typeof requestAnimationFrame==='function' ? requestAnimationFrame : null);
-          if(schedule) schedule(()=>{canvas.dataset.waveLayoutRetry='';if(canvas.isConnected)renderWave(canvas);});
+          const again=()=>{canvas.dataset.waveLayoutRetry='';if(canvas.isConnected)renderWave(canvas);};
+          if(tries>20&&waveSized)waveSized.observe(canvas);
+          else if(tries>20)setTimeout(again,1000);
+          else if(schedule) schedule(again);
           else canvas.dataset.waveLayoutRetry='';
         }
-      }
+      }else waveRetries.delete(canvas);
     }
   }
   function deferDrain() {

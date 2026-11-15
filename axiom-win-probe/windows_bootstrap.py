@@ -113,6 +113,8 @@ def build_backend(*, recording_settings, recording_directory, capture_factory=No
     # "Install stem engine": the status route and the Windows wording of the stems 503 always (so it is never the Mac wording);
     # install/cancel only with FFmpeg, which the stem worker needs
     install_stem_installer(app, can_install=bool(video_ffmpeg))
+    from windows_window_snapshot import install as install_window_snapshot
+    install_window_snapshot(app)  # Studio drafts and settings saved through the app itself, for a new window or browser profile
     if video_ffmpeg:
         from windows_mix_export import MixExports, create_mix_export_blueprint
         app.WINDOWS_MIX_EXPORTS = MixExports(video_ffmpeg, **({'chooser': mix_export_chooser} if mix_export_chooser else {}))

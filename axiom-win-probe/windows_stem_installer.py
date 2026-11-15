@@ -90,9 +90,17 @@ VERIFY_CODE = (
 MIN_CUDA_DRIVER = 527.41  # CUDA 12.x minor-version compatibility on Windows
 
 # what the user is told, per build: bytes to download (estimate), disk needed while installing (download cache + unpacked)
-SIZES = {'cuda': {'download': 2_700_000_000, 'disk': 10_000_000_000},  # measured: torch 2.53 GB + libraries; 4.9 GB unpacked + pip's cache
-         'cpu': {'download': 350_000_000, 'disk': 3_000_000_000}}
+# 'unpacked': what the build folder (stem-new) grows by while pip unpacks the lock (CUDA measured: ~22,000 files, 4.9 GB; CPU estimated)
+SIZES = {'cuda': {'download': 2_700_000_000, 'disk': 10_000_000_000, 'unpacked': 4_900_000_000},  # measured: torch 2.53 GB + libraries; 4.9 GB unpacked + pip's cache
+         'cpu': {'download': 350_000_000, 'disk': 3_000_000_000, 'unpacked': 1_200_000_000}}
 MODEL_DISK = 200_000_000
+# The bar's steps and their share of it, following where the time goes (CUDA on the owner's PC: about 3 minutes of download,
+# about 5 minutes unpacking 22,000 files with pip silent, under a minute for the test separation, then the rename).
+RUNTIME_STEPS = ('space', 'python', 'pip', 'packages', 'unpack', 'verify', 'finish', 'model')
+WEIGHTS = {'cuda': {'space': 1, 'python': 3, 'pip': 1, 'packages': 28, 'unpack': 55, 'verify': 8, 'finish': 2, 'model': 2},
+           'cpu': {'space': 2, 'python': 10, 'pip': 4, 'packages': 25, 'unpack': 40, 'verify': 12, 'finish': 4, 'model': 3}}
+MEASURE_EVERY = 3  # seconds between looks at the size of the folder being built (a short walk of stem-new, in the job's own thread)
+STALL_SECONDS = 300  # no pip output, no download bytes and no growth on disk for this long: say so (never cancel by itself)
 
 INSTALLING = 'stem-new'  # short: torch's deepest file paths must stay under Windows' 260 limit
 OLD = 'stem-old'
@@ -309,6 +317,39 @@ def human(size):
     return '%.1f GB' % (size / 1e9) if size >= 1e9 else '%d MB' % round(size / 1e6)
 
 
+# ---------------------------------------------------------------- an install run by Setup (windows_stem_setup.py), seen from the app
+
+SETUP_STATUS = 'stem-setup-status.json'
+SETUP_FRESH_SECONDS = 20  # Setup's window rewrites the file about twice a second; an older one means that window is gone
+
+
+def write_setup_status(root, status):
+    """Setup's window publishes the job's status here so the app can show it (the job itself lives in the other process)."""
+    target = Path(root) / SETUP_STATUS
+    try:
+        target.parent.mkdir(parents=True, exist_ok=True)
+        temporary = target.with_name(target.name + '.tmp')
+        temporary.write_text(json.dumps(dict(status, written=time.time(), pid=os.getpid())), 'utf-8')
+        os.replace(temporary, target)
+    except OSError:
+        pass
+
+
+def read_setup_status(root, now=None):
+    """The status Setup's window published when it is fresh and the job is running, else None."""
+    target = Path(root) / SETUP_STATUS
+    try:
+        data = json.loads(target.read_text('utf-8'))
+        age = (now if now is not None else time.time()) - float(data['written'])
+    except (OSError, ValueError, KeyError, TypeError):
+        return None
+    if not isinstance(data, dict) or data.get('state') not in ('running', 'cancelling') or not -5 <= age <= SETUP_FRESH_SECONDS:
+        return None
+    if data.get('pid') == os.getpid():
+        return None  # this process wrote it (and knows its own job); only another process's job is "started by Setup"
+    return data
+
+
 # ---------------------------------------------------------------- the job
 
 class StemInstaller:
@@ -324,6 +365,14 @@ class StemInstaller:
         self._done_weight = 0.0
         self._bytes = {'done': 0, 'total': 0, 'files': 0}
         self.sleep = time.sleep
+        self.clock = time.monotonic  # replaced in tests
+        self.measure_every = MEASURE_EVERY  # the least time between two looks at the folder
+        self.watch_every = MEASURE_EVERY  # how often the watcher thread asks to look
+        self._started = self._ended = None
+        self._last_progress = 0.0
+        self._unpack = None  # while pip unpacks: {'base', 'size', 'expected', 'fraction', 'checked'}
+        self._track_unpack = True  # False for the small build-tools run: its "Installing collected packages" is not the long step
+        self._unpack_expected = SIZES['cuda']['unpacked']
 
     # -- paths
     @property
@@ -355,8 +404,9 @@ class StemInstaller:
         with self._lock:
             self._status['phase'] = phase
             self._status['detail'] = detail
-            if fraction is not None:
-                self._status['percent'] = self._percent(phase, fraction)
+            self._last_progress = self.clock()
+            if fraction is not None:  # never backwards, not even across steps or a CPU fallback
+                self._status['percent'] = max(self._status['percent'], self._percent(phase, fraction))
 
     def _percent(self, phase, fraction):
         fraction = max(0.0, min(1.0, fraction))
@@ -389,7 +439,22 @@ class StemInstaller:
         with self._lock:
             result = dict(self._status)
             running = self._thread is not None and self._thread.is_alive()
+            now, started, ended, last = self.clock(), self._started, self._ended, self._last_progress
         result['running'] = running
+        # the heartbeat: how long the job has run and how long since anything measurable moved (output, bytes, files on disk)
+        idle = max(0, int(now - last)) if running and started is not None else 0
+        stalled = running and result['state'] == 'running' and idle >= STALL_SECONDS
+        result['elapsed_seconds'] = max(0, int((ended if ended is not None else now) - started)) if started is not None else 0
+        result['idle_seconds'] = idle
+        result['stalled'] = stalled
+        result['stall_text'] = ('No progress for %d minutes. Antivirus scanning can slow this step. You can keep waiting or cancel '
+                                'and retry. A retry re-uses what was downloaded.' % (idle // 60)) if stalled else ''
+        outside = None if running else read_setup_status(self.root)
+        if outside:  # Setup's window is installing it: show that job (same fields), the cross-process lock keeps this app from starting a second
+            for key in ('state', 'phase', 'detail', 'percent', 'elapsed_seconds', 'idle_seconds', 'stalled', 'stall_text'):
+                if key in outside:
+                    result[key] = outside[key]
+            result.update(running=True, external=True, started_by='setup', error=None, error_code=None)
         result.update(self.plan(result.get('requested_build', 'auto')))
         return result
 
@@ -407,6 +472,8 @@ class StemInstaller:
             started = not (self._thread is not None and self._thread.is_alive())
             if started:
                 self._cancel.clear()
+                self._started, self._ended = self.clock(), None
+                self._last_progress = self._started
                 self._status = dict(self._idle(), state='running', phase='space', detail='Checking this PC.', requested_build=build)
                 self._thread = threading.Thread(target=self._main, args=(build,), name='peak-hour-stem-install', daemon=True)
                 self._thread.start()
@@ -450,6 +517,7 @@ class StemInstaller:
             self._fail('unexpected', '%s: %s' % (type(error).__name__, error))
         finally:
             self._process = None
+            self._ended = self.clock()
             if lock is not None:
                 self._release_process_lock(lock)
 
@@ -499,11 +567,11 @@ class StemInstaller:
         flavour = plan['flavour']
         self._stages = []
         if want_runtime:
-            self._stages += [('space', 1), ('python', 3), ('pip', 2), ('packages', 66 if flavour == 'cuda' else 41), ('verify', 6)]
+            self._stages += [(name, WEIGHTS[flavour][name]) for name in RUNTIME_STEPS if name != 'model' or want_model]
         else:
             self._stages += [('space', 1)]
-        if want_model:
-            self._stages += [('model', 10 if want_runtime else 90)]
+        if want_model and not want_runtime:
+            self._stages += [('model', 90)]
         self._check_space(plan, want_runtime)
         self._check_cancel()
         if want_runtime:
@@ -611,10 +679,12 @@ class StemInstaller:
         extra = ['--force-reinstall'] if force else []
         try:
             if not state['steps'].get('build'):
+                self._track_unpack = False  # a few small files: no unpacking step to show
                 self._pip(python, ['install', '--no-deps', '--require-hashes', '-r', str(build_file)] + sources + extra,
                           'packages', SIZES[flavour]['download'], 'the build tools')
                 done('build')
             # 2. everything else, including demucs built from its sdist with the tools installed above
+            self._track_unpack, self._unpack_expected = True, SIZES[flavour]['unpacked']
             self._pip(python, ['install', '--no-deps', '--require-hashes', '--no-build-isolation', '-r', lock] + sources + extra,
                       'packages', SIZES[flavour]['download'], 'PyTorch and the audio libraries')
         except InstallError as error:
@@ -674,6 +744,8 @@ class StemInstaller:
         self._check_cancel()
         if 'install' in args and '--require-hashes' not in args:
             args = list(args) + ['--require-hashes']  # the only place pip is started: nothing installs without a pinned SHA-256
+        if 'install' in args and '--no-warn-script-location' not in args:
+            args = list(args) + ['--no-warn-script-location']  # "script X.exe is not on PATH": noise, the engine is never run from PATH
         command = [str(python), '-I', '-m', 'pip'] + args + ['--progress-bar', 'raw', '--isolated', '--no-input',
                                                               '--disable-pip-version-check', '--no-color',
                                                               '--retries', '5', '--timeout', '30', '--resume-retries', '5']
@@ -697,14 +769,102 @@ class StemInstaller:
                 total = max(expected_bytes, seen['finished'] + seen['file_total'])
                 self._detail(phase, 'Downloading %s (%s of about %s).' % (seen['name'], human(got), human(total)), 0.95 * got / total)
             elif line.startswith('Installing collected packages'):
-                self._detail(phase, 'Installing %s.' % label, 0.96)
+                if tracking:  # the downloads are over; from here pip prints nothing for minutes while it unpacks
+                    self._begin_unpack()
+                else:
+                    self._detail(phase, 'Installing %s.' % label, 0.96)
             elif line.startswith('Successfully installed'):
-                self._detail(phase, 'Installed %s.' % label, 1)
+                if self._unpack is not None:
+                    self._end_unpack('Installed %s.' % label)
+                else:
+                    self._detail(phase, 'Installed %s.' % label, 1)
+            elif self._unpack is None:
+                building = re.match(r'Building wheel for (\S+)', line)
+                built = re.match(r'Successfully built (\S+)', line)
+                if building:
+                    self._detail(phase, 'Preparing %s (building it on this PC).' % building.group(1), 0.96)
+                elif built:
+                    self._detail(phase, 'Prepared %s.' % built.group(1), 0.96)
 
-        code = self._run_process(command, on_line, cwd=str(python.parent))
+        tracking = self._track_unpack
+        stop = threading.Event()
+
+        def watch():  # the size of the build folder is looked at from here: pip's silence cannot block it
+            while not stop.wait(self.watch_every):
+                try:
+                    self._tick()
+                except OSError:
+                    pass
+        watcher = threading.Thread(target=watch, name='peak-hour-stem-install-size', daemon=True) if tracking else None
+        if watcher:
+            watcher.start()
+        try:
+            code = self._run_process(command, on_line, cwd=str(python.parent))
+        finally:
+            stop.set()
+            if watcher:
+                watcher.join(5)
         self._check_cancel()
         if code != 0:
+            with self._lock:
+                self._unpack = None
             raise InstallError('pip_failed', self._explain_pip(tail) or 'pip stopped with code %s while installing %s.' % (code, label))
+        if self._unpack is not None:
+            self._end_unpack('Installed %s.' % label)
+
+    # -- the unpacking step: pip is silent, so progress is the growth of the build folder against its known final size
+    @staticmethod
+    def _tree_size(path):
+        """Bytes of all files below path (no symlinks followed). One os.scandir pass: sizes come with the directory listing."""
+        total, stack = 0, [str(path)]
+        while stack:
+            try:
+                with os.scandir(stack.pop()) as entries:
+                    for entry in entries:
+                        try:
+                            if entry.is_dir(follow_symlinks=False):
+                                stack.append(entry.path)
+                            elif entry.is_file(follow_symlinks=False):
+                                total += entry.stat(follow_symlinks=False).st_size
+                        except OSError:
+                            continue
+            except OSError:
+                continue
+        return total
+
+    @staticmethod
+    def _unpack_text(written, expected):
+        return ('Unpacking onto this PC, %s of about %s written. This step takes several minutes and the bar moves slowly. '
+                'It has not stopped.' % (human(min(written, expected)), human(expected)))
+
+    def _begin_unpack(self):
+        base = self._tree_size(self.partial)
+        with self._lock:
+            expected = max(1, self._unpack_expected)
+            self._unpack = {'base': base, 'size': base, 'expected': expected, 'fraction': 0.0, 'checked': self.clock()}
+            self._detail('unpack', self._unpack_text(0, expected), 0)
+
+    def _tick(self):
+        """At most every measure_every seconds: look at the build folder; when it grew, move the bar (never to the end, never back)."""
+        with self._lock:
+            unpack = self._unpack
+            now = self.clock()
+            if unpack is None or now - unpack['checked'] < self.measure_every:
+                return
+            unpack['checked'] = now
+        size = self._tree_size(self.partial)
+        with self._lock:
+            if self._unpack is not unpack or size <= unpack['size']:
+                return
+            unpack['size'] = size
+            written = size - unpack['base']
+            unpack['fraction'] = max(unpack['fraction'], min(0.97, written / unpack['expected']))
+            self._detail('unpack', self._unpack_text(written, unpack['expected']), unpack['fraction'])
+
+    def _end_unpack(self, detail):
+        with self._lock:
+            self._unpack = None
+            self._detail('unpack', detail, 1)
 
     @staticmethod
     def _explain_pip(lines):
@@ -740,6 +900,7 @@ class StemInstaller:
             for line in process.stdout:
                 line = line.rstrip()
                 if line:
+                    self._last_progress = self.clock()
                     self._log(line)
                     on_line(line)
             return process.wait()
@@ -752,7 +913,7 @@ class StemInstaller:
                 job.close()
 
     def _verify(self, partial, flavour):
-        self._detail('verify', 'Checking the engine.', 0.1)
+        self._detail('verify', 'Testing the engine. A short test separation runs; this takes under a minute.', 0.1)
         code = VERIFY_CODE
         out = []
         status = self._run_process([str(python_in(partial)), '-I', '-B', '-c', code], out.append, cwd=str(partial))
@@ -768,6 +929,7 @@ class StemInstaller:
         self._detail('verify', 'The engine separates audio (PyTorch %s, %s).' % (result['torch'], 'GPU ready' if result['cuda'] else 'CPU'), 1)
 
     def _finish_runtime(self, partial, flavour):
+        self._detail('finish', 'Finishing. Putting the engine into place.', 0.1)
         info = dict(getattr(self, '_engine_info', {}), flavour=flavour, installed=time.strftime('%Y-%m-%dT%H:%M:%S'),
                     demucs='4.0.1', complete=True)
         self._rmtree(partial / '_downloads')
@@ -779,6 +941,7 @@ class StemInstaller:
             self._replace(final, old)
         self._replace(partial, final)  # one rename: before it there is no stem-runtime\Scripts\python.exe, after it all of it
         self._rmtree(old)
+        self._detail('finish', 'Finishing.', 1)
 
     def _replace(self, source, target):
         """os.replace of a folder; Windows refuses it ("Access is denied") for a while after thousands of files were just written
@@ -791,7 +954,7 @@ class StemInstaller:
                 if attempt == 39:
                     raise
                 self._check_cancel()
-                self._detail('verify', 'Windows is still scanning the new files; finishing in a moment.')
+                self._detail('finish', 'Windows is still scanning the new files; finishing in a moment.')
                 self.sleep(1.5)
 
     # -- the checkpoint

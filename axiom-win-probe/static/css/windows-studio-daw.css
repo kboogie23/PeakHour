@@ -19,3 +19,29 @@
 .ph-auto-chip.ph-auto-volume { color: #ff5fb0; }
 .ph-auto-chip.ph-auto-trim { color: #f4f0e0; }
 .ph-auto-chip:hover, .ph-auto-chip:focus-visible { background: rgba(20, 28, 20, .95); }
+
+/* Pan: one horizontal slider per deck / lane in the detailed mixer (windows-studio-pan.js). Centre is marked; the coloured
+   part runs from the centre to the thumb, so left and right read at a glance. */
+html body[data-ph-region] #studio-daw-shell .daw-mixer-detail-panel .ph-pan {
+  display: grid; grid-template-columns: 34px minmax(0, 1fr) 3.4em; align-items: center; column-gap: 10px; padding: 2px 0 12px;
+  border-bottom: 1px solid #303934; color: #ccd4cc; font: 600 11px/1.3 Barlow, sans-serif; letter-spacing: .02em; text-transform: uppercase;
+}
+html body[data-ph-region] #studio-daw-shell .daw-mixer-detail-panel .ph-pan[hidden] { display: none; }
+html body[data-ph-region] #studio-daw-shell .daw-mixer-detail-panel .ph-pan-readout { justify-self: end; text-align: right; white-space: nowrap; }
+html body[data-ph-region] #studio-daw-shell .daw-mixer-detail-panel .ph-pan-slider {
+  -webkit-appearance: none; appearance: none; width: 100%; height: 22px; margin: 0; padding: 0; background: transparent; cursor: ew-resize;
+}
+html body[data-ph-region] #studio-daw-shell .daw-mixer-detail-panel .ph-pan-slider::-webkit-slider-runnable-track {
+  height: 8px; border: 1px solid #353f38; border-radius: 4px;
+  background:
+    linear-gradient(#8a928c, #8a928c) center / 1px 100% no-repeat,
+    linear-gradient(to right, transparent min(50%, calc(50% + var(--ph-pan, 0) * .5%)), var(--accent) min(50%, calc(50% + var(--ph-pan, 0) * .5%)),
+      var(--accent) max(50%, calc(50% + var(--ph-pan, 0) * .5%)), transparent max(50%, calc(50% + var(--ph-pan, 0) * .5%))),
+    #070908;
+}
+html body[data-ph-region] #studio-daw-shell .daw-mixer-detail-panel .ph-pan-slider::-webkit-slider-thumb {
+  -webkit-appearance: none; appearance: none; width: 12px; height: 20px; margin-top: -7px; border: 1px solid #5e6660; border-radius: 3px;
+  background: #b5bbb8; box-shadow: 0 2px 3px rgba(0, 0, 0, .6);
+}
+html body[data-ph-region] #studio-daw-shell .daw-mixer-detail-panel .ph-pan-slider:disabled { opacity: .45; cursor: default; }
+html body[data-ph-region] #studio-daw-shell .daw-mixer-detail-panel .ph-pan-slider:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }

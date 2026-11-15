@@ -587,7 +587,7 @@ html body[data-ph-region].studio-magic-mode #tab-content-studio#tab-content-stud
   height: auto !important;
   width: 100% !important;
   margin: 0 !important;
-  padding: 56px 16px 46px 8px !important;
+  padding: 66px 16px 46px 8px !important;
   box-sizing: border-box !important;
   overflow: hidden !important;
   background: var(--wms-panel) !important;
@@ -1513,3 +1513,208 @@ html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-conten
 html body[data-ph-region].light-mode #tab-content-studio#tab-content-studio #studio-build-controls #btn-view-studio-set:not(.hidden),
 html body[data-ph-region].light-mode #tab-content-studio#tab-content-studio #studio-build-controls #btn-view-studio-set:not(.hidden) strong { color: #ffffff !important; }
 html body[data-ph-region].light-mode:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #studio-mode-controls#studio-mode-controls#studio-mode-controls #studio-tab-route:not(.route-tab-hidden) { color: #ffffff !important; }
+
+/* ------------------------------------------------------------------------------------------------
+   Fill one segment (windows-magic-set.js builds these): a Fill button in each phase cell of the chart (a third row, the song
+   count top right), "Fill empty segments" in the chart footer, a result chip over the plot; in Manual Build a strip under the
+   energy ladder and a bar with the same. A disabled button says why in words; the full sentence is its title.
+   ------------------------------------------------------------------------------------------------ */
+html body[data-ph-region] #tab-content-studio#tab-content-studio :is(.wms-fill-seg, .wms-fill-all, .wms-fill-undo, .wms-fill-dismiss) {
+  font: 700 12px/1 Barlow, 'Segoe UI', sans-serif !important;
+  letter-spacing: 0.04em !important;
+  text-transform: uppercase !important;
+  color: var(--wms-text) !important;
+  -webkit-text-fill-color: currentColor !important;
+  background: var(--wms-panel-2) !important;
+  border: 1px solid var(--wms-line) !important;
+  border-radius: 4px !important;
+  box-shadow: none !important;
+  cursor: pointer !important;
+  white-space: nowrap !important;
+}
+html body[data-ph-region] #tab-content-studio#tab-content-studio :is(.wms-fill-seg, .wms-fill-all, .wms-fill-undo, .wms-fill-dismiss):hover:not(:disabled) {
+  border-color: var(--wms-cyan) !important;
+  color: var(--wms-cyan) !important;
+}
+html body[data-ph-region] #tab-content-studio#tab-content-studio :is(.wms-fill-seg, .wms-fill-all, .wms-fill-undo, .wms-fill-dismiss):disabled {
+  color: var(--wms-muted) !important;
+  background: transparent !important;
+  border-style: dashed !important;
+  cursor: not-allowed !important;
+}
+html body[data-ph-region] #tab-content-studio#tab-content-studio .wms-fill-seg {
+  display: block !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  height: 22px !important;
+  margin: 2px 0 0 !important;
+  padding: 0 6px !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  text-align: center !important;
+}
+html body[data-ph-region] #tab-content-studio#tab-content-studio .wms-fill-all {
+  flex: 0 0 auto !important;
+  height: 30px !important;
+  padding: 0 12px !important;
+  background: var(--wms-accent-btn) !important;
+  border-color: var(--wms-accent) !important;
+  color: var(--wms-accent-ink) !important;
+}
+html body[data-ph-region] #tab-content-studio#tab-content-studio .wms-fill-all:hover:not(:disabled) {
+  color: var(--wms-accent-ink) !important;
+  border-color: var(--wms-cyan) !important;
+}
+html body[data-ph-region] #tab-content-studio#tab-content-studio .wms-fill-all:disabled {
+  background: transparent !important;
+  border-color: var(--wms-line) !important;
+  color: var(--wms-muted) !important;
+}
+html body[data-ph-region] #tab-content-studio#tab-content-studio :is(.wms-fill-undo, .wms-fill-dismiss) {
+  flex: 0 0 auto !important;
+  height: 26px !important;
+  padding: 0 10px !important;
+}
+html body[data-ph-region] #tab-content-studio#tab-content-studio :is(.wms-fill-undo, .wms-fill-dismiss)[hidden] {
+  display: none !important;
+}
+html body[data-ph-region] #tab-content-studio#tab-content-studio .wms-fill-count {
+  font: 700 13px/1 Barlow, 'Segoe UI', sans-serif !important;
+  font-variant-numeric: tabular-nums !important;
+  color: var(--wms-muted) !important;
+  -webkit-text-fill-color: currentColor !important;
+}
+html body[data-ph-region] #tab-content-studio#tab-content-studio .wms-fill-why {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  margin: -1px !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  clip: rect(0 0 0 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+html body[data-ph-region] #tab-content-studio#tab-content-studio .wms-fill-result {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  align-items: center !important;
+  gap: 4px 10px !important;
+  min-width: 0 !important;
+}
+html body[data-ph-region] #tab-content-studio#tab-content-studio .wms-fill-result[hidden] {
+  display: none !important;
+}
+html body[data-ph-region] #tab-content-studio#tab-content-studio .wms-fill-msg {
+  font: 600 14px/1.3 Barlow, 'Segoe UI', sans-serif !important;
+  color: var(--wms-text) !important;
+  -webkit-text-fill-color: currentColor !important;
+  min-width: 0 !important;
+  overflow-wrap: anywhere !important;
+}
+html body[data-ph-region] #tab-content-studio#tab-content-studio .wms-fill-msg[data-tone="ok"] {
+  color: var(--wms-good) !important;
+}
+html body[data-ph-region] #tab-content-studio#tab-content-studio .wms-fill-msg[data-tone="warn"] {
+  color: var(--wms-warn) !important;
+}
+html body[data-ph-region] #tab-content-studio#tab-content-studio .wms-fill-msg[data-tone="error"] {
+  color: var(--wms-bad) !important;
+}
+html body[data-ph-region].studio-magic-mode #tab-content-studio#tab-content-studio #graph-container .magic-phase-band {
+  height: 72px !important;
+}
+html body[data-ph-region].studio-magic-mode #tab-content-studio#tab-content-studio #graph-container .magic-phase-band > div {
+  position: relative !important;
+  height: 72px !important;
+  min-height: 72px !important;
+  justify-content: flex-start !important;
+  gap: 1px !important;
+  padding: 5px 10px 0 !important;
+}
+html body[data-ph-region].studio-magic-mode #tab-content-studio#tab-content-studio #graph-container .magic-phase-band .wms-fill-count {
+  position: absolute !important;
+  top: 9px !important;
+  right: 10px !important;
+}
+html body[data-ph-region].studio-magic-mode #tab-content-studio#tab-content-studio #graph-container .magic-phase-band > div :is(strong, input):not(.wms-fill-count) {
+  width: calc(100% - 50px) !important;
+}
+html body[data-ph-region].studio-magic-mode #tab-content-studio#tab-content-studio #graph-container .magic-phase-band > div > span:not(.wms-fill-why) {
+  line-height: 16px !important;
+}
+html body[data-ph-region].studio-magic-mode #tab-content-studio#tab-content-studio #graph-container .magic-chart-footer {
+  gap: 12px !important;
+}
+html body[data-ph-region].studio-magic-mode #tab-content-studio#tab-content-studio #graph-container .magic-chart-footer .wms-fill-all {
+  margin-left: auto !important;
+}
+html body[data-ph-region].studio-magic-mode #tab-content-studio#tab-content-studio #graph-container #wms-fill-result-chart {
+  position: absolute !important;
+  left: calc(var(--wms-plot-left, 56px) + 8px) !important;
+  bottom: 84px !important;
+  max-width: calc(var(--wms-plot-right, 1100px) - var(--wms-plot-left, 56px) - 16px) !important;
+  box-sizing: border-box !important;
+  z-index: 5 !important;
+  padding: 6px 10px !important;
+  background: var(--wms-panel-2) !important;
+  border: 1px solid var(--wms-line) !important;
+  border-left: 4px solid var(--wms-accent) !important;
+  border-radius: var(--wms-radius) !important;
+}
+html body[data-ph-region].studio-magic-mode #tab-content-studio#tab-content-studio :is(#wms-fill-ladder, #wms-fill-bar) {
+  display: none !important;
+}
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #wms-fill-ladder {
+  display: grid !important;
+  grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+  gap: 0 !important;
+  flex: 0 0 auto !important;
+  margin: 0 0 8px !important;
+  padding: 0 12px !important;
+  box-sizing: border-box !important;
+}
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #wms-fill-ladder .wms-fill-cell {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  min-width: 0 !important;
+  margin: 0 4px !important;
+}
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #wms-fill-ladder .wms-fill-seg {
+  flex: 1 1 0 !important;
+  width: auto !important;
+  height: 30px !important;
+  margin: 0 !important;
+}
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #wms-fill-bar {
+  display: flex !important;
+  flex: 0 0 auto !important;
+  flex-wrap: wrap !important;
+  align-items: center !important;
+  gap: 6px 14px !important;
+  min-height: 42px !important;
+  margin: 0 0 8px !important;
+  padding: 6px 10px !important;
+  box-sizing: border-box !important;
+  background: var(--wms-panel) !important;
+  border: 1px solid var(--wms-line) !important;
+  border-radius: var(--wms-radius) !important;
+}
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #wms-fill-bar .wms-fill-result {
+  flex: 1 1 260px !important;
+}
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #wms-fill-hint {
+  flex: 0 1 auto !important;
+  max-width: 100% !important;
+  font: 500 13px/1.3 Barlow, 'Segoe UI', sans-serif !important;
+  color: var(--wms-muted) !important;
+  -webkit-text-fill-color: currentColor !important;
+  overflow-wrap: anywhere !important;
+}
+html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-content-studio #wms-fill-hint:empty {
+  display: none !important;
+}
+html body[data-ph-region][data-magic-view="route"] #tab-content-studio#tab-content-studio :is(#wms-fill-ladder, #wms-fill-bar) {
+  display: none !important;
+}

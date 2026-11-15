@@ -83,6 +83,9 @@ def run_one(path, box, allow_sound=False, timeout=TIMEOUT, guard='enforce'):
     if proc.returncode == 0 and pass_line:
         evidence['pass_line'] = pass_line
         return Result('PASS', seconds, evidence=evidence, reason=pass_line[:160])
+    skip_line = next((line.strip() for line in (out or '').splitlines() if line.startswith('SKIP')), None)
+    if proc.returncode == 0 and skip_line:
+        return Result('SKIP', seconds, reason=skip_line[:160], evidence=evidence)
     if proc.returncode == 0:
         return Result('WARN', seconds, reason='exit code 0 but no line starting with PASS', evidence=evidence)
     last = next((l for l in reversed((err or out or '').strip().splitlines()) if l.strip()), '')

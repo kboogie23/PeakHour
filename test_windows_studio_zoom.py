@@ -2,8 +2,8 @@
 whole window's page zoom (the events are cancelled anywhere in the app), and while the Studio DAW is showing they
 zoom the TIMELINE instead (--visible-bars changes; Ctrl+wheel keeps the beat under the pointer still; focus in a text
 box, a menu or a slider makes no difference). Outside the DAW the events are cancelled and nothing else changes, and
-normal text shortcuts (Ctrl+A, Ctrl+C) are left alone. Also checks the window launcher: --disable-pinch is in every
-window's flags, the lanes carry touch-action: pan-x pan-y, and a page zoom Edge saved earlier (Preferences
+normal text shortcuts (Ctrl+A, Ctrl+C) are left alone. Also checks the window launcher: --disable-pinch is in NO
+window's flags (it hides a touchpad pinch from the page), the lanes carry touch-action: pan-x pan-y, and a page zoom Edge saved earlier (Preferences
 partition.per_host_zoom_levels) is cleared before the window starts but nothing else in the file is touched.
 
 Real Edge page zoom cannot be driven in headless Edge (there is no browser chrome to zoom), so the page-zoom side is
@@ -176,6 +176,25 @@ try:
     s3 = state(b)
     check(s3['bars'] > s2['bars'], f'Ctrl+wheel down over the ruler did not zoom out ({s2["bars"]} -> {s3["bars"]})')
 
+    # a touchpad pinch = a stream of small FRACTIONAL ctrl+wheel events: the zoom follows their total size, not their count
+    print('[pinch-sized fractional Ctrl+wheel stream]')
+    stream = ("((count, each, x, y) => { let all = true; for (let i = 0; i < count; i++) { const e = new WheelEvent('wheel', {ctrlKey: true, deltaY: each, deltaMode: 0, clientX: x, clientY: y, bubbles: true, cancelable: true});"
+              " document.querySelector('#studio-daw-lanes .studio-daw-lane').dispatchEvent(e); all = all && e.defaultPrevented; } return all; })(%s, %s, %s, %s)")
+    ratios = {}
+    for label, count, each in (('small', 10, -1.1), ('big', 40, -1.1), ('out', 30, 1.1)):
+        b.eval('(()=>{AxiomStudioDaw.setZoom(%s);return 1})()' % ('8' if label == 'out' else '0'))
+        settle(b)
+        p0 = state(b)
+        check(b.eval(stream % (count, each, x, rect['t'])) is True, f'a {label} pinch-sized wheel stream was not cancelled')
+        settle(b, 500)
+        p1 = state(b)
+        ratios[label] = p1['bars'] / p0['bars']
+        print(f'  {label}: {count} x {each} -> bars {p0["bars"]} -> {p1["bars"]} (x{ratios[label]:.3f})')
+    check(ratios['small'] < 0.9, f'a small pinch stream barely zoomed in (x{ratios["small"]:.3f})')
+    check(ratios['big'] < ratios['small'] * 0.7, f'a bigger pinch did not zoom proportionally further (x{ratios["big"]:.3f} vs x{ratios["small"]:.3f})')
+    check(ratios['big'] > 0.02, f'a 30-event pinch jumped straight to the limit (x{ratios["big"]:.3f})')
+    check(ratios['out'] > 1.2, f'pinching in did not zoom out ({ratios["out"]})')
+
     print('[Ctrl +, -, 0]')
     full = s0['bars']
     for target, label in (('#studio-daw-lanes', 'lanes'), ('body', 'body')):
@@ -236,8 +255,9 @@ try:
     print('[launcher]')
     sys.path.insert(0, str(workspace / 'axiom-win-probe'))
     import axiom_windows_launcher as L
-    check('--disable-pinch' in L.WINDOW_FLAGS, '--disable-pinch missing from WINDOW_FLAGS')
-    check('--disable-pinch' in L.edge_command('edge.exe', 'http://127.0.0.1:1/', str(base / 'p')), '--disable-pinch missing from the app window command')
+    # --disable-pinch makes Edge drop a touchpad pinch before the page sees it (measured: 0 events vs ~35 ctrl+wheel), so the DAW could not zoom
+    check('--disable-pinch' not in L.WINDOW_FLAGS, '--disable-pinch must NOT be in WINDOW_FLAGS: the touchpad pinch would never reach the timeline')
+    check('--disable-pinch' not in L.edge_command('edge.exe', 'http://127.0.0.1:1/', str(base / 'p')), '--disable-pinch is in the app window command')
     profile = base / 'profile'
     (profile / 'Default').mkdir(parents=True)
     prefs = profile / 'Default' / 'Preferences'
@@ -276,6 +296,6 @@ finally:
         for pid in left:
             subprocess.run(['taskkill', '/T', '/F', '/PID', pid], capture_output=True)
     shutil.rmtree(base, ignore_errors=True)
-print('PASS: Ctrl+wheel and Ctrl +/-/0 never zoom the page (always cancelled); in the DAW they zoom the timeline around the pointer, also with focus in a text box, menu or slider; --disable-pinch, touch-action and the saved-zoom reset are in place'
+print('PASS: Ctrl+wheel and Ctrl +/-/0 never zoom the page (always cancelled); in the DAW they zoom the timeline around the pointer, also with focus in a text box, menu or slider; no --disable-pinch (the pinch must reach the page), touch-action and the saved-zoom reset are in place'
       if not failures else 'FAIL: ' + '; '.join(failures))
 sys.exit(1 if failures else 0)

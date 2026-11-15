@@ -39,13 +39,14 @@
    const fill=el('i');bar.append(fill);
    const phase=el('div',undefined,{className:'axiom-stem-phase'});
    phase.setAttribute('role','status');phase.setAttribute('aria-live','polite');
+   const beat=el('div',undefined,{className:'axiom-stem-beat'});  // elapsed time: proof the install is alive during the silent unpacking
    const problem=el('div',undefined,{className:'axiom-stem-error'});problem.setAttribute('role','alert');
    const closeButton=el('button','Not now',{type:'button'});
    const installButton=el('button','Install',{type:'button',id:'axiom-stem-install-go'});
    const cancelButton=el('button','Cancel install',{type:'button',id:'axiom-stem-install-cancel'});
    const actions=el('div',undefined,{className:'axiom-vdj-actions'});
    actions.append(closeButton,cancelButton,installButton);
-   box.append(title,intro,what,facts,bar,phase,problem,actions);
+   box.append(title,intro,what,facts,bar,phase,beat,problem,actions);
    document.body.append(box);
    let timer=null,finished=false,view='idle',gpuChecking=false;
    const finish=ok=>{if(finished)return;finished=true;clearInterval(timer);if(box.open)box.close();box.remove();resolve(ok);};
@@ -63,20 +64,24 @@
     facts.textContent=`Download: about ${s.download_text}. Disk space needed while installing: about ${s.disk_text}. `+
      `From: ${sources(s.sources)}. Nothing from your music leaves this PC.`;
    }
+   const elapsed=seconds=>{const n=Math.max(0,Math.floor(Number(seconds)||0));return n<60?`${n} s so far`:`${Math.floor(n/60)} min so far`;};
    function show(s){
     describe(s);
     const running=s.state==='running'||s.state==='cancelling';
     const percent=Math.max(0,Math.min(100,Number(s.percent)||0));
     bar.hidden=!running;fill.style.width=percent+'%';bar.setAttribute('aria-valuenow',String(percent));
-    phase.textContent=running?`${s.detail||'Working...'} (${percent}%)${s.notice?' '+s.notice:''}`:s.state==='cancelled'?s.detail:s.notice||'';
+    beat.textContent=running?elapsed(s.elapsed_seconds)+(s.external?'. The stem engine is being installed in another window (PEAK HOUR Setup); to cancel, use that window.':''):'';
+    // started by PEAK HOUR Setup (another process owns the job): show its live progress; Cancel is in that window
+    const setup=s.external?'Installing (started by Setup)... ':'';
+    phase.textContent=running?`${setup}${s.detail||'Working...'} (${percent}%)${s.notice?' '+s.notice:''}${s.stalled&&s.stall_text?' '+s.stall_text:''}`:s.state==='cancelled'?s.detail:s.notice||'';
     problem.textContent=s.state==='failed'?s.error||'The install failed.':'';
     installButton.hidden=running||s.state==='done';
     gpuChecking=Boolean(s.gpu_checking&&!s.runtime_ready&&!running);installButton.disabled=gpuChecking;if(gpuChecking)watch();
     installButton.textContent=s.state==='failed'?'Retry':s.state==='cancelled'||s.resumable?'Continue install':'Install';
-    cancelButton.hidden=!running;cancelButton.disabled=s.state==='cancelling';
+    cancelButton.hidden=!running||Boolean(s.external);cancelButton.disabled=s.state==='cancelling';
     closeButton.hidden=running;closeButton.textContent=s.state==='failed'||s.state==='cancelled'?'Close':'Not now';
     view=s.state;
-    if(s.state==='done'&&s.ready){toast('Stem engine installed. Starting your stems.');finish(true);}
+    if((s.state==='done'||s.ready)&&!running&&s.ready){toast('Stem engine installed. Starting your stems.');finish(true);}  // also when Setup's window finished it
    }
    async function poll(){
     try{
