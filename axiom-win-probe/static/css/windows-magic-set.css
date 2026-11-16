@@ -1718,3 +1718,15 @@ html body[data-ph-region]:not(.studio-magic-mode) #tab-content-studio#tab-conten
 html body[data-ph-region][data-magic-view="route"] #tab-content-studio#tab-content-studio :is(#wms-fill-ladder, #wms-fill-bar) {
   display: none !important;
 }
+
+/* ------------------------------------------------------------------------------------------------
+   Health opens inside the Studio tab (body.studio-health-mode). The app hides the Studio header, the tab bar, the energy ladder
+   and the workspace there, but the rules above re-show them with display:flex/grid !important, and nothing else hides the Fill
+   strip, so the Studio sub-navigation, the Fill strip and the track table header appeared on top of / under the Health page.
+   This block is last and out-ranks every rule above (more ids), so Health shows only Health.
+   ------------------------------------------------------------------------------------------------ */
+html body[data-ph-region].studio-health-mode #tab-content-studio#tab-content-studio#tab-content-studio #studio-active-view#studio-active-view#studio-active-view
+  :is(.studio-header, .studio-tabbar, #studio-mode-controls, #studio-workspace, #energy-ladder, #wms-fill-ladder, #wms-fill-bar, #magic-list-head,
+      #magic-route-banner, #magic-manual-empty, #magic-flow, #studio-build-controls, #magic-set-command, #graph-container, #active-playlist-container) {
+  display: none !important;
+}
