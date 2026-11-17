@@ -31,6 +31,117 @@ assert opened == [1] and forwarded == [77]
 assert client.post('/api/windows/live-assist-mini/pin', json={'on': False}).get_json() == {'success': True, 'on': False}
 assert pins == [(77, False)]
 assert M.find_window() is None or isinstance(M.find_window(), int)
+
+# 1b. Automatic open (a song was noticed), with a fake clock: opens once (also when two requests race), waits while the window
+# starts, never raises it, removes its border, stays closed once the DJ closed it, and the Mini button starts over
+import threading
+GRACE = M.OPEN_GRACE_SECONDS
+URL = '/api/windows/live-assist-mini/open'
+
+
+def rig(opener_delay=0.0):
+    rig_state = {'opened': [], 'forwarded': [], 'styled': [], 'window': [None], 'now': [1000.0]}
+
+    def opener():
+        if opener_delay:
+            time.sleep(opener_delay)
+        rig_state['opened'].append(1)
+    flask_app = Flask(__name__)
+    flask_app.register_blueprint(M.create_blueprint(opener, lambda: rig_state['window'][0], lambda hwnd, on: True,
+                                                    rig_state['forwarded'].append, rig_state['styled'].append,
+                                                    clock=lambda: rig_state['now'][0]))
+    rig_state['client'] = flask_app.test_client()
+    rig_state['auto'] = lambda: rig_state['client'].post(URL, json={'auto': True}).get_json()
+    rig_state['button'] = lambda: rig_state['client'].post(URL).get_json()
+    return rig_state
+
+
+QUIET = {'success': True, 'opened': False, 'auto': True}
+# 1. fresh state, no window: opens once. 2. again at once, still no window: the window is starting, no second one
+r = rig()
+assert r['auto']() == {'success': True, 'opened': True, 'auto': True} and r['opened'] == [1]
+assert r['auto']() == QUIET and r['opened'] == [1]
+# 3. the window appears: quiet, never brought forward, border removed with its handle
+r['window'][0] = 5
+assert r['auto']() == QUIET and r['forwarded'] == [] and r['styled'] == [5] and r['opened'] == [1]
+# 4. the DJ closes it: quiet and never opens again, however long ago
+r['window'][0] = None
+assert r['auto']() == QUIET and r['opened'] == [1]
+r['now'][0] += GRACE * 100
+assert r['auto']() == QUIET and r['auto']() == QUIET and r['opened'] == [1] and r['forwarded'] == []
+# ...until the Mini button: no window, so it opens (and starts over); auto within the grace is quiet; the window appears
+assert r['button']() == {'success': True, 'opened': True} and r['opened'] == [1, 1]
+assert r['auto']() == QUIET and r['opened'] == [1, 1]
+r['window'][0] = 6
+assert r['auto']() == QUIET and r['forwarded'] == [] and r['styled'] == [5, 6] and r['opened'] == [1, 1]
+# 5. the Mini button first on a fresh blueprint: opener runs, auto within the grace is quiet, then the window shows up
+r = rig()
+assert r['button']() == {'success': True, 'opened': True} and r['opened'] == [1]
+r['now'][0] += GRACE - 1
+assert r['auto']() == QUIET and r['opened'] == [1]
+r['window'][0] = 8
+assert r['auto']() == QUIET and r['forwarded'] == [] and r['styled'] == [8] and r['opened'] == [1]
+# 6. started but the window never appeared: after the grace it counts as closed (suppressed); the button opens again
+r = rig()
+assert r['auto']()['opened'] is True and r['opened'] == [1]
+r['now'][0] += GRACE + 1
+assert r['auto']() == QUIET and r['opened'] == [1]
+r['now'][0] += GRACE * 100
+assert r['auto']() == QUIET and r['opened'] == [1]
+assert r['button']() == {'success': True, 'opened': True} and r['opened'] == [1, 1]
+# 7. the Mini button with the window present: brought forward once, nothing opened
+r = rig()
+r['window'][0] = 9
+assert r['button']() == {'success': True, 'opened': False} and r['forwarded'] == [9] and r['opened'] == []
+# 8. two automatic requests at the same moment: one window
+r = rig(opener_delay=0.2)
+barrier, answers = threading.Barrier(2), []
+
+
+def post_auto():
+    thread_client = r['client']
+    barrier.wait()
+    answers.append(thread_client.post(URL, json={'auto': True}).get_json())
+
+
+threads = [threading.Thread(target=post_auto) for _ in range(2)]
+[t.start() for t in threads]
+[t.join(10) for t in threads]
+assert len(answers) == 2 and sorted(a['opened'] for a in answers) == [False, True] and r['opened'] == [1], (answers, r['opened'])
+# 9. the pin route with a window removes its border and records it as seen: closing it afterwards keeps it closed
+r = rig()
+r['window'][0] = 4
+assert r['client'].post('/api/windows/live-assist-mini/pin', json={'on': True}).get_json() == {'success': True, 'on': True}
+assert r['styled'] == [4]
+r['window'][0] = None
+assert r['auto']() == QUIET and r['opened'] == []
+r['now'][0] += GRACE * 100
+assert r['auto']() == QUIET and r['opened'] == []
+
+# 1c. The outline really goes: DWM is asked on a window of this test (off-screen, destroyed at once)
+import ctypes
+from ctypes import wintypes
+user32 = ctypes.WinDLL('user32', use_last_error=True)
+user32.CreateWindowExW.restype = wintypes.HWND
+user32.CreateWindowExW.argtypes = [wintypes.DWORD, wintypes.LPCWSTR, wintypes.LPCWSTR, wintypes.DWORD, ctypes.c_int, ctypes.c_int,
+                                   ctypes.c_int, ctypes.c_int, wintypes.HWND, wintypes.HMENU, wintypes.HINSTANCE, wintypes.LPVOID]
+user32.DestroyWindow.argtypes = [wintypes.HWND]
+probe_window = user32.CreateWindowExW(0x80, 'STATIC', 'PEAK HOUR Mini probe', 0x80CF0000, -32000, -32000, 200, 100, None, None, None, None)
+assert probe_window
+try:
+    dwm = ctypes.WinDLL('dwmapi')
+    dwm.DwmGetWindowAttribute.argtypes = [wintypes.HWND, wintypes.DWORD, ctypes.c_void_p, wintypes.DWORD]
+    border = wintypes.DWORD(0)
+    if sys.getwindowsversion().build >= 22000:
+        assert M.remove_border(probe_window) is True
+        # DWM accepts the border colour (S_OK) but cannot read it back; the corner preference can be read back
+        assert dwm.DwmGetWindowAttribute(probe_window, 33, ctypes.byref(border), 4) == 0 and border.value == 1, border.value
+    else:
+        assert M.remove_border(probe_window) in (True, False)  # older Windows: nothing to remove, nothing breaks
+finally:
+    user32.DestroyWindow(probe_window)
+css = (workspace / 'axiom-win-probe' / 'static' / 'css' / 'windows-live-assist-mini.css').read_text(encoding='utf-8')
+assert '#d9dbde' not in css and 'border: 1px solid var(--mini-line)' not in css
 assert blocked('/api/windows/live-assist-mini/open') and blocked('/api/windows/live-assist-mini/pin')
 
 # 2. The real page, on the real app, in headless Edge
@@ -111,4 +222,4 @@ else:
     finally:
         subprocess.run(['taskkill', '/T', '/F', '/PID', str(server.pid)], capture_output=True)
         shutil.rmtree(base, ignore_errors=True)
-print('PASS: PEAK HOUR Mini shows the published Live Assist song and suggestions, opens once, pins by title, is PC-only')
+print('PASS: PEAK HOUR Mini shows the published Live Assist song and suggestions, opens once (also when requests race), waits while it starts, stays closed once closed, pins by title, is PC-only')

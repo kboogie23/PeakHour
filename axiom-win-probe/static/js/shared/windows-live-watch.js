@@ -49,9 +49,28 @@
    return result;
   };
  }
+ // The core opens Live Assist by itself only inside the Mac shell (performanceHandleAutoLiveAssist returns at once
+ // unless isAxiomNativeShell()), and an Edge window cannot window.open without a click. So on Windows a fresh song
+ // asks PEAK HOUR (the server starts the window, not the page) to open PEAK HOUR Mini, once per song event.
+ const announced=new Set();
+ function openMini(data){
+  const track=data&&data.track&&typeof data.track==='object'?data.track:null;
+  const id=String(data&&data.event_id||'');
+  if(!track||!(track.path||track.title||track.name||track.id)||data.fresh_event!==true||!id||announced.has(id)||!autoLiveAssist())return;
+  announced.add(id);
+  fetch('/api/windows/live-assist-mini/open',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({auto:true})}).catch(()=>{});
+ }
+ function wrapAuto(){
+  const original=window.performanceHandleAutoLiveAssist;
+  if(typeof original!=='function')return;
+  window.performanceHandleAutoLiveAssist=function(data,...rest){
+   try{openMini(data);}catch(e){}
+   return original.call(this,data,...rest);
+  };
+ }
  function start(){
   if(!ready())return;
-  wrapToggle();wrapRead();
+  wrapToggle();wrapRead();wrapAuto();
   if(choice()!=='off'&&autoLiveAssist()&&!performanceSeratoEnabled){
    automatic=true;
    try{window.performanceToggleSeratoBridge();}finally{automatic=false;}
