@@ -17,6 +17,10 @@ def read_list(path):
   before=os.fstat(f.fileno());data=f.read(MAX_LIST_BYTES+1);after=os.fstat(f.fileno())
  if len(data)>MAX_LIST_BYTES:raise VirtualDJListError('VirtualDJ list exceeds the size limit')
  if (before.st_size,before.st_mtime_ns,before.st_ino)!=(after.st_size,after.st_mtime_ns,after.st_ino):raise VirtualDJListError('List changed while reading')
+ return parse_list(data)
+
+def parse_list(data):
+ """The list held in these bytes (same checks and errors as read_list, which reads the bytes from a file)."""
  try:root=SafeET.fromstring(data,forbid_dtd=True,forbid_entities=True,forbid_external=True)
  except Exception as e:raise VirtualDJListError('VirtualDJ list is invalid or unsupported') from e
  if root.tag!='VirtualFolder':raise VirtualDJListError('Not a VirtualDJ XML list')

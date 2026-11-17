@@ -102,6 +102,10 @@ FEATURES = [
     # ------------------------------------------------------------------ Playlists
     feature('playlists.favourites', 'Playlists', 'Playlists and favourites',
             'Songs can be starred, playlists made and opened again after a restart. (No checks written yet.)'),
+    feature('playlists.import_file', 'Playlists', 'Import a playlist file',
+            'Import Playlist reads an .m3u, .m3u8, .pls, .txt, .csv, Rekordbox, Serato or VirtualDJ playlist file, matches its songs to the '
+            'library (a file name alone never matches a different song), saves the result as a set, and says plainly which lines were not found.',
+            covered=('playlist_import', 'playlist_import_ui'), requires=['ui']),
 
     # ------------------------------------------------------------------ Health
     feature('health.open', 'Health', 'Health opens and shows its counts',
@@ -114,10 +118,15 @@ FEATURES = [
             'the music is now, and reconnects the missing songs by file name.',
             checks=[Check('ui', 'press Reconnect Music, choose a folder, start', health.reconnect_music),
                     Check('scale', 'reconnect 1,000 files among 48,000 missing songs', scale.reconnect)],
-            covered=('reconnect',), requires=['ui'], mvp=True),
+            covered=('reconnect', 'reconnect_results'), requires=['ui'], mvp=True),
     feature('health.scans_missing', 'Health', 'Health scans, stop, and remove missing songs',
             'Scans start and stop safely, years are fixed in the library only, and missing songs can be removed from the Library.',
             covered=('year_fixes', 'scan_speed')),
+    feature('health.metadata_apply', 'Health', 'Apply title and artist fixes',
+            'Title/Artist Cleanup and DJ Metadata Publish (which writes the cleaned title and artist into the music files) finish on Windows; '
+            'a status bar on the Health review page shows what is running, how far, and the result in plain words (never "[Errno 9]"), '
+            'and leaves with the page or Hide.',
+            covered=('metadata_publish', 'health_apply_status'), requires=['ui']),
 
     # ------------------------------------------------------------------ Recording, AI, other laptops
     feature('recording.record', 'Recording', 'Record a set',

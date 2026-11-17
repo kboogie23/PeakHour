@@ -8,7 +8,7 @@ the counts, the changed fields, untouched songs, the backup (newest 3 kept), ref
 running, a system folder, a bad folder, a second start), cancel, and a status route that reads no library.
 Front end: the real app and headless Edge; clicking the Health button opens the new window (no prompt()),
 choosing a folder and Start reconnect the songs and show the summary."""
-import os, sys, json, time, socket, shutil, tempfile, pathlib, subprocess, threading, traceback, urllib.request, copy
+import os, re, sys, json, time, socket, shutil, tempfile, pathlib, subprocess, threading, traceback, urllib.request, copy
 root = pathlib.Path(__file__).resolve().parent
 python = root / 'axiom-win-env' / 'Scripts' / 'python.exe'
 EDGES = [r'C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe', r'C:\Program Files\Microsoft\Edge\Application\msedge.exe']
@@ -383,7 +383,7 @@ def frontend(sandbox):
                 time.sleep(0.4)
         else:
             raise AssertionError('server did not start')
-        assert 'windows-reconnect.js?v=1' in html and html.index('windows-reconnect.js') > html.index('health-repairs.js') > 0 and html.index('windows-reconnect.js') > html.index('health-maintenance.js')
+        assert re.search(r'windows-reconnect\.js\?v=\d+', html) and re.search(r'windows-reconnect\.css\?v=\d+', html) and html.index('windows-reconnect.js') > html.index('health-repairs.js') > 0 and html.index('windows-reconnect.js') > html.index('health-maintenance.js')
         browser = subprocess.Popen([edge, '--headless=new', f'--remote-debugging-port={debug}', f'--user-data-dir={sandbox / "profile"}', '--no-first-run',
                                     '--no-default-browser-check', '--window-size=1400,900', 'about:blank'], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         procs.append(browser)

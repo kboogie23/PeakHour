@@ -8,8 +8,11 @@ handle music that moved into different folders, so on Windows the Reconnect Musi
    are not followed, the Recycle Bin and similar folders are skipped);
 3. the library is read once, the songs whose file is missing are found with windows_virtualdj_library.file_checker
    (one directory listing per folder, not one call per song), and each is matched by file name:
-   exactly one file with that name -> relinked; several -> left alone ("ambiguous") unless the song knows its file
-   size and exactly one candidate has that size; none -> "not found";
+   exactly one file with that name -> relinked; several -> the first rule that leaves exactly one file wins:
+   (a) the song's file size; (b) the folder names the old path and a candidate share at the end, when that is at
+   least two in a row and only one candidate shares that many; (c) among the candidates whose own folder has the
+   same name as the old path's folder, the one whose length is within 2 s of the song's length, when only one is
+   (at most 8 such candidates). A length alone never decides. Otherwise left alone ("ambiguous"); none -> "not found";
 4. the relinks are written the way AXIOM writes its library: under AXIOM's Health commit lock, re-reading the
    library first so nothing another writer saved meanwhile is lost, with a timestamped copy of library_cache.json
    kept next to it (newest 3 kept) and utils.file_ops.safe_write_json (file lock + atomic replace).
@@ -22,6 +25,10 @@ Routes (this PC only; /api/windows/ is already refused for laptop engines by win
   POST /api/windows/library/reconnect/start    {folder} -> returns at once; the work runs in a daemon thread
   GET  /api/windows/library/reconnect/status   -> job counters, answered from memory (no library read)
   POST /api/windows/library/reconnect/cancel
+  GET  /api/windows/library/reconnect/result   -> what happened to each missing song of the last run (names, first 200 of each kind)
+  GET  /api/windows/library/reconnect/stale    -> the "already in your library" old entries that are still missing and still
+                                                  have their new file under another entry (the paths the page may offer to remove)
+Removing those old entries uses AXIOM's own POST /api/library/purge_missing {paths}, which keeps them in Health's Restore Bin.
 """
 import glob
 import logging
@@ -48,6 +55,10 @@ BACKUPS_KEPT = 3
 # in_library): linking it would give two library rows the same path. Set True to link it anyway.
 RELINK_ONTO_EXISTING_SONG = False
 MAX_CANDIDATES = 50  # candidates kept per file name; more than this is ambiguous anyway
+LIST_CAP = 200  # names per kind that /result returns
+FOLDERS_SHOWN = 3  # candidate folders listed for each missing song
+DURATION_TOLERANCE = 2.0  # seconds
+DURATION_MAX_CANDIDATES = 8  # reading lengths opens each file, so only a few candidates are tried
 
 
 def on_laptop():
@@ -156,6 +167,98 @@ def pick_by_size(track, candidates):
     return same[0] if len(same) == 1 else None
 
 
+def folder_names(path):
+    """Folder names of a path, last first; the file name and a drive letter are left out. Mac paths work too."""
+    parts = [p for p in str(path).replace('\\', '/').split('/') if p]
+    return [name_key(p) for p in reversed(parts[:-1]) if not p.endswith(':')]
+
+
+def trail_score(old, new):
+    """How many folder names, counted from the end, the two paths share."""
+    score = 0
+    for a, b in zip(folder_names(old), folder_names(new)):
+        if a != b:
+            break
+        score += 1
+    return score
+
+
+def pick_by_folder(track, candidates):
+    """The one candidate that shares the most trailing folder names with the old path, when that is at least two
+    folder names in a row and no other candidate shares as many; otherwise None. One shared folder name is not enough."""
+    scores = [trail_score(track.get('path') or '', path) for path in candidates]
+    best = max(scores, default=0)
+    if best < 2 or scores.count(best) != 1:
+        return None
+    return candidates[scores.index(best)]
+
+
+def known_seconds(track):
+    """The song's length in seconds, from duration_sec, duration_min (minutes) or duration (seconds), or None."""
+    for field, scale in (('duration_sec', 1), ('duration_min', 60), ('duration', 1)):
+        value = track.get(field)
+        if isinstance(value, (int, float)) and not isinstance(value, bool) and value > 0:
+            return float(value) * scale
+    return None
+
+
+def media_length(path):
+    """Length in seconds read from the file itself, or None when it cannot be read."""
+    try:
+        import mutagen
+        found = mutagen.File(path)
+        length = float(found.info.length)
+        return length if length > 0 else None
+    except Exception:
+        return None
+
+
+def pick_by_duration(track, candidates):
+    """Folder plus length: among the candidates whose own folder has the same name as the old path's folder, the one
+    whose length is within the tolerance of the song's length, when exactly one is. A length alone never decides."""
+    seconds = known_seconds(track)
+    if seconds is None:
+        return None
+    old = track.get('path') or ''
+    same_folder = [path for path in candidates if trail_score(old, path) >= 1]
+    if not 1 <= len(same_folder) <= DURATION_MAX_CANDIDATES:
+        return None
+    close = []
+    for path in same_folder:
+        length = media_length(path)
+        if length is not None and abs(length - seconds) <= DURATION_TOLERANCE:
+            close.append(path)
+    return close[0] if len(close) == 1 else None
+
+
+def choose_candidate(track, candidates):
+    """The file a missing song is relinked to, or None when none or several fit."""
+    if len(candidates) == 1:
+        return candidates[0]
+    for rule in (pick_by_size, pick_by_folder, pick_by_duration):
+        chosen = rule(track, candidates)
+        if chosen:
+            return chosen
+    return None
+
+
+def song_name(track):
+    title, artist = str(track.get('title') or '').strip(), str(track.get('artist') or '').strip()
+    if title and artist:
+        return '%s - %s' % (artist, title)
+    return title or ntpath.basename(str(track.get('path') or '').replace('/', '\\')) or str(track.get('filename') or '')
+
+
+def clean_folder(value):
+    """A folder typed or pasted by the user: spaces and one pair of double quotes (Explorer's "Copy as path") removed."""
+    if not isinstance(value, str):
+        return value
+    value = value.strip()
+    if len(value) >= 2 and value[0] == value[-1] == '"':
+        value = value[1:-1].strip()
+    return value
+
+
 def relink_fields(track, new_path):
     track['path'] = new_path
     track['filename'] = ntpath.basename(new_path)
@@ -176,6 +279,8 @@ class ReconnectJob:
         self.state = {'state': 'idle', 'folder': '', 'files_indexed': 0, 'checked': 0, 'total': 0, 'missing': 0, 'relinked': 0,
                       'ambiguous': 0, 'not_found': 0, 'in_library': 0, 'message': '', 'error': ''}
         self.state.update(values)
+        self.details = {'relinked': [], 'in_library': [], 'ambiguous': [], 'not_found': []}  # kept out of state so /status stays small
+        self.committed = {}
 
     def snapshot(self):
         with self.lock:
@@ -277,21 +382,34 @@ class ReconnectJob:
         self.set(checked=len(tracks))
         counts['missing'] = len(missing)
         claims, picks = {}, []
+        details = {'relinked': [], 'in_library': [], 'ambiguous': [], 'not_found': []}
+        infos = {}
         for track in missing:
             candidates = names.get(track_name(track)) or []
-            chosen = candidates[0] if len(candidates) == 1 else pick_by_size(track, candidates) if candidates else None
+            chosen = choose_candidate(track, candidates) if candidates else None
+            folders = []
+            for path in candidates:
+                folder_path = ntpath.dirname(path)
+                if folder_path not in folders:
+                    folders.append(folder_path)
+            info = {'path': track['path'], 'name': song_name(track), 'now': chosen, 'folders': folders[:FOLDERS_SHOWN]}
             if not candidates:
                 counts['not_found'] += 1
+                details['not_found'].append(info)
             elif chosen is None:
                 counts['ambiguous'] += 1
+                details['ambiguous'].append(info)
             elif not RELINK_ONTO_EXISTING_SONG and ntpath.normcase(chosen) in present:
                 counts['in_library'] += 1  # that file is already a song in the library: do not add a second entry for it
+                details['in_library'].append(info)
             else:
                 picks.append((track['path'], chosen))
+                infos[track['path']] = info
                 claims.setdefault(ntpath.normcase(chosen), set()).add(track['path'])
         for old, new in picks:
             if len(claims[ntpath.normcase(new)]) > 1:
                 counts['ambiguous'] += 1  # two missing songs name the same file: which one it is cannot be told
+                details['ambiguous'].append(dict(infos[old], now=None))
             else:
                 moves[old] = new
         self.set(missing=counts['missing'], ambiguous=counts['ambiguous'], not_found=counts['not_found'], in_library=counts['in_library'])
@@ -301,6 +419,16 @@ class ReconnectJob:
                 return self.stopped()
             self.set(state='saving', message='Saving your library')
             relinked = self.commit(moves)
+        for old in self.committed:  # what was really written, not what was planned
+            if old in infos:
+                details['relinked'].append(infos[old])
+        skipped = [old for old in moves if old not in self.committed]  # commit's re-check dropped these (file gone, path taken meanwhile)
+        for old in skipped:
+            counts['ambiguous'] += 1  # not relinked and not in another list: counted with the ones left alone
+            details['ambiguous'].append(dict(infos[old], now=None))
+        with self.lock:
+            self.details = details
+            self.state['ambiguous'] = counts['ambiguous']
         self.set(state='done', relinked=relinked, message=self.summary(relinked))
 
     def commit(self, moves):
@@ -326,6 +454,7 @@ class ReconnectJob:
                 if isfile(old) or not isfile(new) or (not RELINK_ONTO_EXISTING_SONG and ntpath.normcase(new) in taken):
                     continue
                 allowed[old] = new
+            self.committed = dict(allowed)
             changed = 0
             for track in tracks:
                 new_path = allowed.get(track.get('path'))
@@ -401,7 +530,7 @@ def create_blueprint(job):
     @bp.post(ROUTE + '/start')
     def start():
         data = request.get_json(silent=True) or {}
-        ok, message = job.start(data.get('folder') if isinstance(data, dict) else None)
+        ok, message = job.start(clean_folder(data.get('folder')) if isinstance(data, dict) else None)
         if not ok:
             return jsonify(success=False, error=message), 409 if 'already' in message or 'running' in message else 400
         return jsonify(success=True, **job.snapshot())
@@ -409,6 +538,45 @@ def create_blueprint(job):
     @bp.get(ROUTE + '/status')
     def status():
         return jsonify(success=True, **job.snapshot())
+
+    @bp.get(ROUTE + '/result')
+    def result():
+        with job.lock:
+            state = dict(job.state)
+            details = {kind: list(items) for kind, items in job.details.items()}
+        counts = {'missing': state['missing'], 'relinked': state['relinked'], 'in_library': state['in_library'],
+                  'ambiguous': state['ambiguous'], 'not_found': state['not_found']}
+        lists = {kind: items[:LIST_CAP] for kind, items in details.items()}
+        more = {kind: max(0, len(items) - LIST_CAP) for kind, items in details.items()}
+        return jsonify(success=True, state=state['state'], folder=state['folder'], counts=counts, lists=lists, more=more)
+
+    @bp.get(ROUTE + '/stale')
+    def stale():
+        """Old entries of songs that are already in the library at their new place, checked again now."""
+        if on_laptop():
+            return jsonify(success=False, error='Reconnect Music runs on the PC that holds the library.'), 403
+        reason = job.busy_reason()
+        if reason:
+            return jsonify(success=False, error=reason), 409
+        with job.lock:
+            wanted = [dict(item) for item in job.details['in_library']]
+        if not wanted:
+            return jsonify(success=True, paths=[], count=0)
+        app = job.app
+        tracks = [t for t in (app.load_cache(app.CACHE_PATH).get('tracks') or []) if isinstance(t, dict) and isinstance(t.get('path'), str)]
+        isfile = file_checker()
+        by_path = {}
+        for track in tracks:
+            by_path.setdefault(ntpath.normcase(track['path']), []).append(track['path'])
+        paths = []
+        for item in wanted:
+            old, now = item.get('path'), item.get('now')
+            if not old or not now or old not in by_path.get(ntpath.normcase(old), []) or isfile(old):
+                continue
+            others = [p for p in by_path.get(ntpath.normcase(now), []) if p != old]
+            if others and any(isfile(p) for p in others) and old not in paths:
+                paths.append(old)
+        return jsonify(success=True, paths=paths, count=len(paths))
 
     @bp.post(ROUTE + '/cancel')
     def cancel():

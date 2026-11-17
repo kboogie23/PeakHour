@@ -13,6 +13,7 @@
 //   click {selector, [index=0], [text], [timeout=5], [force], [allow_disabled]}
 //   type {selector, text, [clear], [keys=true], [mutation_selector], [settle_ms=300]}
 //                                                       keystrokes; with mutation_selector it measures first/last DOM change
+//   set_files {selector, files:[absolute paths]}         choose files in an <input type=file> (fires its change event)
 //   press {key}                                          Escape, Enter, Tab ...
 //   sleep {seconds}
 //   screenshot {path}
@@ -259,6 +260,16 @@ async function runStep(step, base) {
           const lt = (await ev('__fc.long.slice(window.__fcLongStart||0)')).value || [];
           out.longtask_ms = lt.reduce((mx, x) => Math.max(mx, x.ms), 0);
         }
+        break;
+      }
+      case 'set_files': {   // choose files in an <input type=file> without a dialog; the input gets its change event
+        const doc = await send('DOM.getDocument', { depth: 0 });
+        const root = doc.result && doc.result.root;
+        if (!root) { out.ok = false; out.error = (doc.error && doc.error.message) || 'no document'; break; }
+        const node = await send('DOM.querySelector', { nodeId: root.nodeId, selector: step.selector });
+        if (node.error || !node.result || !node.result.nodeId) { out.ok = false; out.error = 'not found: ' + step.selector + (node.error ? ' (' + node.error.message + ')' : ''); break; }
+        const set = await send('DOM.setFileInputFiles', { files: step.files, nodeId: node.result.nodeId });
+        if (set.error) { out.ok = false; out.error = set.error.message; }
         break;
       }
       case 'screenshot': {

@@ -75,6 +75,10 @@ def build_backend(*, recording_settings, recording_directory, capture_factory=No
     install_reconnect(app)  # Health > Reconnect Music: relink moved songs by file name
     from windows_health_snapshot import install as install_health_snapshot
     install_health_snapshot(app)  # Health opens with its last results; counts again only when the library changed
+    from windows_apply_wording import install as install_apply_wording
+    install_apply_wording(app)  # Health apply results: plain words instead of "[Errno 9]"
+    from windows_playlist_import import install as install_playlist_import
+    install_playlist_import(app)  # Playlists > Import Playlist: m3u, pls, txt, csv, Rekordbox, Serato crate, VirtualDJ list
     from windows_keep_awake import install as install_keep_awake
     install_keep_awake(app)  # after intake: the PC stays awake during Health jobs and imports
     from windows_remote_hub import create_info_blueprint

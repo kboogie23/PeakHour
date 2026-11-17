@@ -22,6 +22,10 @@
   entries as used that way; Windows' utime takes only paths).
 - os.set_blocking is a no-op: the modules that call it wait on the pipe with
   windows_studio's selector first, so their reads never block.
+- os.fsync on a file opened 'rb' (metadata_publisher._atomic_metadata_change, year_publisher._atomic_year_change,
+  health_metadata_publisher.sync_file) fails on Windows with "[Errno 9] Bad file descriptor", so DJ Metadata Publish and
+  the year publish failed for every file. The proxy's fsync (windows_djay._fsync) tries the real fsync first and, on
+  EBADF, reopens the same file for writing and flushes that handle. sync_directory's os.open on a folder works too.
 Only the listed modules see these; the real os module is not modified.
 """
 import errno
@@ -33,7 +37,8 @@ MODULES = ('scanner', 'audio_core', 'studio_daw.pcm', 'studio_daw.prepared_cache
            'studio_daw.drum_analysis_process', 'utils.lite_preview', 'utils.beatgrid_batch',
            'utils.beatgrid_feature_store', 'utils.beatgrid_library', 'utils.beatgrid_mirror',
            'utils.beatgrid_plan_rows', 'utils.djay_grid_batch', 'utils.native_playlist_files',
-           'utils.serato_combined_stage', 'utils.serato_recovery_rows', 'utils.serato_review_collection')
+           'utils.serato_combined_stage', 'utils.serato_recovery_rows', 'utils.serato_review_collection',
+           'metadata_publisher', 'year_publisher', 'health_metadata_publisher')
 
 O_NOFOLLOW = 0x10000000  # bits the Windows C runtime does not use; removed before os.open
 O_NONBLOCK = 0x20000000
