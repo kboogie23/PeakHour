@@ -61,6 +61,9 @@ def build_backend(*, recording_settings, recording_directory, capture_factory=No
     install_year_fixes(app)
     from windows_intake import install as install_intake
     install_intake(app)  # total, percentage and time left for "Adding your music"
+    import scanner
+    from windows_scan_decode import install as install_scan_decode
+    install_scan_decode('.' + str(ext).lower().lstrip('.') for ext in scanner.SUPPORTED_FORMATS)  # BPM/key for video, M4A, WMA
     from windows_performance import install as install_performance
     install_performance(app)  # same answers, faster, for big libraries
     from windows_track_info import install as install_track_info

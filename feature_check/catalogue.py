@@ -121,7 +121,7 @@ FEATURES = [
             covered=('reconnect', 'reconnect_results'), requires=['ui'], mvp=True),
     feature('health.scans_missing', 'Health', 'Health scans, stop, and remove missing songs',
             'Scans start and stop safely, years are fixed in the library only, and missing songs can be removed from the Library.',
-            covered=('year_fixes', 'scan_speed', 'health_scan_speed')),
+            covered=('year_fixes', 'scan_speed', 'health_scan_speed', 'scan_decode')),
     feature('health.metadata_apply', 'Health', 'Apply title and artist fixes',
             'Title/Artist Cleanup and DJ Metadata Publish (which writes the cleaned title and artist into the music files) finish on Windows; '
             'a status bar on the Health review page shows what is running, how far, and the result in plain words (never "[Errno 9]"), '
