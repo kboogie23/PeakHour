@@ -100,6 +100,9 @@ class FastRealpath:
     that cannot be listed (missing drive), links, odd names and `..` get Windows' realpath. Never stat.
     os.path.realpath is patched for every caller (pathlib.resolve(strict=...) passes extra arguments and falls
     back); windows_paths' protected-path check may see answers up to SHARED_TTL old.
+    Health scan (exFAT again: islink/isfile cost 8.6 ms a file, 4.5 minutes per pass over 31,658 songs, and every
+    Health save checks every track): outside an import `islink` answers False for a plain file of a shared-listed
+    folder, and inside listed_files() (the Health job thread) so does `isfile` from the same listing.
     """
     REPARSE_POINT = 0x400
     SHARED_TTL = 5.0  # seconds a folder's listing and real path are trusted
@@ -111,6 +114,8 @@ class FastRealpath:
         self.original = realpath or ntpath.realpath
         self.original_stat = stat or os.stat
         self.original_islink = ntpath.islink
+        self.original_isfile = ntpath.isfile
+        self.listed_extensions = frozenset()  # lower-case, with the dot: the only names isfile answers from the listing
         self.local = threading.local()
         self.shared, self.shared_entries, self.shared_lock = collections.OrderedDict(), 0, threading.Lock()
 
@@ -124,6 +129,18 @@ class FastRealpath:
             yield
         finally:
             self.local.direct = before
+
+    @contextlib.contextmanager
+    def _scanning(self):
+        """While this thread lists a folder and asks Windows' realpath for it, islink/isfile/realpath calls made by
+        that realpath (ntpath calls the patched islink for a broken link) get Windows' answer: no waiting on the
+        folder lock this thread already holds."""
+        before = getattr(self.local, 'scanning', False)
+        self.local.scanning = True
+        try:
+            yield
+        finally:
+            self.local.scanning = before
 
     @contextlib.contextmanager
     def active(self, stat=False):
@@ -146,7 +163,10 @@ class FastRealpath:
                             plain = not entry.is_symlink() and not entry.stat(follow_symlinks=False).st_file_attributes & self.REPARSE_POINT
                         except OSError:
                             plain = False
-                        listing[ntpath.normcase(entry.name)] = (entry.name, plain, entry)
+                        key_name = ntpath.normcase(entry.name)
+                        if key_name in listing:
+                            plain = False  # two names differing only by case: Windows decides
+                        listing[key_name] = (entry.name, plain, entry)
             except OSError:
                 pass
             self.local.listings[key] = listing
@@ -155,7 +175,8 @@ class FastRealpath:
     def _folder(self, folder):
         key = ntpath.normcase(folder)
         if key not in self.local.folders:
-            self.local.folders[key] = self.original(folder)
+            with self._scanning():
+                self.local.folders[key] = self.original(folder)
         return self.local.folders[key]
 
     def _shared_drop(self, key):
@@ -179,31 +200,39 @@ class FastRealpath:
             entry['hits'] += 1
             return entry
 
-    def _shared_realpath(self, path, args, kwargs):
-        """realpath for a thread outside an import, or None to use Windows' realpath."""
-        if args or kwargs or not isinstance(path, (str, os.PathLike)):
+    def _shared_listed(self, path):
+        """(entry, name) when path's folder has a shared listing (listed now if asked about SHARED_AFTER times), else None."""
+        if not isinstance(path, (str, os.PathLike)):
             return None
         text = os.fspath(path)
         if not isinstance(text, str) or '..' in text:
             return None
+        if text.endswith(('\\', '/')) or text.startswith(('\\\\?\\', '\\\\.\\', '//?/', '//./')):
+            return None  # abspath turns these into a listed name, but Windows says they are not files
         folder, name = ntpath.split(ntpath.abspath(text))
         if not name or name.endswith(('.', ' ')) or any(c in name for c in ':*?<>"|~'):
             return None
         entry = self._shared_entry(folder, time.monotonic())
         if entry['hits'] < self.SHARED_AFTER:
             return None
-        with entry['lock']:
+        with entry['lock']:  # one thread lists the folder; shared_lock is not held while scanning
             if entry['listing'] is None:
                 listing = {}
                 try:
-                    with os.scandir(folder) as entries:
-                        for item in entries:
-                            try:
-                                plain = not item.is_symlink() and not item.stat(follow_symlinks=False).st_file_attributes & self.REPARSE_POINT
-                            except OSError:
-                                plain = False
-                            listing[ntpath.normcase(item.name)] = (item.name, plain)
-                    entry['real'] = self.original(folder)
+                    with self._scanning():
+                        with os.scandir(folder) as entries:
+                            for item in entries:
+                                try:
+                                    plain = not item.is_symlink() and not item.stat(follow_symlinks=False).st_file_attributes & self.REPARSE_POINT
+                                    is_file = plain and item.is_file(follow_symlinks=False)
+                                except OSError:
+                                    plain, is_file = False, False
+                                key_name = ntpath.normcase(item.name)
+                                if key_name in listing:  # two names differing only by case: Windows decides
+                                    listing[key_name] = (item.name, False, False)
+                                else:
+                                    listing[key_name] = (item.name, plain, is_file)
+                        entry['real'] = self.original(folder)
                 except OSError:
                     entry['real'], listing = None, {}
                 entry['listing'] = listing
@@ -211,6 +240,16 @@ class FastRealpath:
                     if self.shared.get(ntpath.normcase(folder)) is entry:  # not evicted or replaced meanwhile
                         entry['count'] = len(listing)
                         self.shared_entries += entry['count']
+        return entry, name
+
+    def _shared_realpath(self, path, args, kwargs):
+        """realpath for a thread outside an import, or None to use Windows' realpath."""
+        if args or kwargs:
+            return None
+        listed = self._shared_listed(path)
+        if listed is None:
+            return None
+        entry, name = listed
         if entry['real'] is None:
             return None  # missing or unreadable folder: Windows' realpath (instant for a missing drive)
         found = entry['listing'].get(ntpath.normcase(name))
@@ -221,7 +260,7 @@ class FastRealpath:
         return ntpath.join(entry['real'], found[0]) if found[1] else None
 
     def __call__(self, path, *args, **kwargs):
-        if getattr(self.local, 'direct', False):
+        if getattr(self.local, 'scanning', False) or getattr(self.local, 'direct', False):
             return self.original(path, *args, **kwargs)
         if getattr(self.local, 'folders', None) is None:
             try:
@@ -245,8 +284,21 @@ class FastRealpath:
 
     def islink(self, path):
         """os.path.islink in an active thread: whether the listing marks the entry as a symbolic link (the same
-        answer as lstat; junctions are not links in either). AXIOM's library saves check every track twice."""
-        if getattr(self.local, 'folders', None) is None or not isinstance(path, str):
+        answer as lstat; junctions are not links in either). AXIOM's library saves check every track twice.
+        Outside an import a plain file in a shared-listed folder is not a link (False); all else is Windows' islink."""
+        if getattr(self.local, 'scanning', False):
+            return self.original_islink(path)
+        if getattr(self.local, 'folders', None) is None:
+            if not getattr(self.local, 'direct', False):
+                try:
+                    listed = self._shared_listed(path)
+                    found = listed[0]['listing'].get(ntpath.normcase(listed[1])) if listed else None
+                    if found and found[1]:
+                        return False  # a plain file is not a link; anything else asks Windows
+                except (OSError, ValueError, TypeError):
+                    pass
+            return self.original_islink(path)
+        if not isinstance(path, str):
             return self.original_islink(path)
         try:
             folder, name = ntpath.split(ntpath.abspath(path))
@@ -256,6 +308,35 @@ class FastRealpath:
         except (OSError, ValueError, TypeError):
             pass
         return self.original_islink(path)
+
+    @contextlib.contextmanager
+    def listed_files(self):
+        """os.path.isfile answered from the shared listing in this thread: for the Health scan only."""
+        before = getattr(self.local, 'listed_files', False)
+        self.local.listed_files = True
+        try:
+            yield
+        finally:
+            self.local.listed_files = before
+
+    def isfile(self, path):
+        """os.path.isfile; inside listed_files() a plain entry of a shared-listed folder is answered from the listing
+        (a positive answer may be up to SHARED_TTL old: acceptable only in the Health scan, which never deletes
+        music files). Only names with a media extension (listed_extensions) are answered from the listing: anything
+        else the job calls, such as waiting for a lock or temp file to disappear, must get Windows' answer.
+        Everything else, and every other thread, gets Windows' isfile."""
+        if not getattr(self.local, 'listed_files', False) or getattr(self.local, 'scanning', False):
+            return self.original_isfile(path)
+        try:
+            if ntpath.splitext(os.fspath(path))[1].lower() not in self.listed_extensions:
+                return self.original_isfile(path)
+            listed = self._shared_listed(path)
+            found = listed[0]['listing'].get(ntpath.normcase(listed[1])) if listed else None
+            if found and found[1]:
+                return bool(found[2])
+        except (OSError, ValueError, TypeError):
+            pass
+        return self.original_isfile(path)
 
     def stat(self, path, *args, **kwargs):
         if args or kwargs or not getattr(self.local, 'stat', False) or not isinstance(path, str):
@@ -282,7 +363,12 @@ def install(app):
     if getattr(os.path.islink, '__self__', None) is not FAST_REALPATH:
         FAST_REALPATH.original_islink = os.path.islink
         os.path.islink = FAST_REALPATH.islink
+    if getattr(os.path.isfile, '__self__', None) is not FAST_REALPATH:
+        FAST_REALPATH.original_isfile = os.path.isfile
+        os.path.isfile = FAST_REALPATH.isfile
     import scanner
+    FAST_REALPATH.listed_extensions = frozenset(
+        '.' + ext.lower().lstrip('.') for ext in scanner.SUPPORTED_FORMATS)  # media files only: see isfile
     original = app._run_add_folder_job
     sidecar = getattr(scanner, 'is_metadata_sidecar', lambda name: False)
     latest = {'job': None}
@@ -316,6 +402,13 @@ def install(app):
             if first:
                 values.setdefault('step_started_at', time.time())
         return original_set(job_id, **values)
+
+    health = getattr(app, '_run_unified_health_job', None)
+    if health:
+        def run_unified_health_job(*args, **kwargs):
+            with FAST_REALPATH.listed_files():  # exFAT: each isfile/islink is 8 ms, the scan asks per track
+                return health(*args, **kwargs)
+        app._run_unified_health_job = run_unified_health_job
 
     app._run_add_folder_job = run_add_folder_job
     app._set_add_folder_job = set_add_folder_job

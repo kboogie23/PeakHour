@@ -55,7 +55,12 @@ def getuid():
 
 
 def is_link(path):
-    return os.path.islink(path) or os.path.isjunction(path)
+    try:
+        from windows_intake import FAST_REALPATH
+        islink = FAST_REALPATH.original_islink  # Windows' own check: os.path.islink may answer from a listing up to 5 s old
+    except ImportError:
+        islink = os.path.islink
+    return islink(path) or os.path.isjunction(path)
 
 
 def open_fd(path, flags, mode=0o777, *, dir_fd=None):
