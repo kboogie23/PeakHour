@@ -23,12 +23,12 @@
       const steps = [
         {
           section: 'Arrival',
-          title: 'Welcome to AXIOM.',
-          copy: 'AXIOM helps turn your music folders into ready-to-build DJ sets. This walkthrough stays available from the Help button whenever you need it.',
-          command: 'Start AXIOM',
+          title: 'Welcome to PEAK HOUR.',
+          copy: 'PEAK HOUR helps turn your music folders into ready-to-build DJ sets. This walkthrough stays available from the Help button whenever you need it.',
+          command: 'Start PEAK HOUR',
           tab: 'studio',
           modules: [
-            ['Add Folders', 'Point AXIOM at your music.'],
+            ['Add Folders', 'Point PEAK HOUR at your music.'],
             ['Find Tracks', 'Search like a DJ thinks.'],
             ['Build Sets', 'Line up songs that work together.'],
             ['Export Crates', 'Send finished sets to your DJ app.']
@@ -102,8 +102,8 @@
         {
           section: 'Ready',
           title: 'You are ready.',
-          copy: 'Simple flow: add music, build the set, save it, then export. AXIOM keeps your original music files safe.',
-          command: 'Enter AXIOM',
+          copy: 'Simple flow: add music, build the set, save it, then export. PEAK HOUR keeps your original music files safe.',
+          command: 'Enter PEAK HOUR',
           tab: 'studio',
           modules: [
             ['Add', 'Connect your folders.'],
@@ -124,18 +124,18 @@
             <div class="axiom-step-main">
               <div class="axiom-step-content">
                 <div class="axiom-walkthrough-brand-block">
-                <div class="axiom-walkthrough-brand">AXIOM</div>
+                <div class="axiom-walkthrough-brand">PEAK HOUR</div>
                   <p class="axiom-walkthrough-kicker">Quick Start</p>
                 </div>
                 <span id="axiom-step-ghost" class="axiom-step-ghost" aria-hidden="true">01</span>
                 <div class="axiom-step-copy-block">
                   <p id="axiom-step-page" class="axiom-step-eyebrow">Arrival</p>
-                  <h2 id="axiom-arrival-title" class="axiom-arrival-title">Welcome to AXIOM.</h2>
+                  <h2 id="axiom-arrival-title" class="axiom-arrival-title">Welcome to PEAK HOUR.</h2>
                   <span class="axiom-step-accent" aria-hidden="true"></span>
                   <p id="axiom-step-copy" class="axiom-arrival-copy"></p>
                 </div>
                 <div id="axiom-step-modules" class="axiom-step-modules" aria-label="AXIOM walkthrough modules"></div>
-                <p class="axiom-walkthrough-protection">Your music files stay untouched. AXIOM keeps its notes and fixes inside its own library.</p>
+                <p class="axiom-walkthrough-protection">Your music files stay untouched. PEAK HOUR keeps its notes and fixes inside its own library.</p>
               </div>
             </div>
 
@@ -505,7 +505,7 @@
                         ? 'All Health'
                   : type === 'danger'
                     ? 'Check This Action'
-                    : 'AXIOM Action';
+                    : 'PEAK HOUR Action';
             safety.classList.toggle('hidden', !(variant.startsWith('health') || ['serato', 'djay', 'metadata'].includes(variant)));
 
             confirmBtn.className = `modal-btn flex-1 ${type === 'danger' ? 'modal-btn-danger' : 'modal-btn-primary'}`;

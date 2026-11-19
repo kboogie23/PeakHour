@@ -92,7 +92,7 @@
       event.dataTransfer.dropEffect = 'copy';
       if (!String(encodedTrack || '').trim().startsWith('%7B')) {
         const path = String(encodedTrack || '');
-        const track = trackVisualCache.get(path) || { path, title: path.split('/').pop() || 'Track' };
+        const track = trackVisualCache.get(path) || { path, title: path.split(/[\\/]/).pop() || 'Track' };
         encodedTrack = encodeURIComponent(JSON.stringify({
           path: track.path || path,
           title: track.title || track.filename || 'Track',

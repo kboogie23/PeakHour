@@ -146,3 +146,7 @@ html body:has(#health-top-scan-banner:not(.hidden)) #audio-player#audio-player .
 #library-top-sort-bar .ph-library-filetype { display: inline-flex; align-items: center; gap: 6px; margin-left: 6px; font: 600 11px 'Barlow', sans-serif; letter-spacing: .5px; text-transform: uppercase; color: #b9bcc2; }
 #library-top-sort-bar .ph-library-filetype select { background: #0e0e10; color: #f1f2f3; border: 1px solid #45474b; border-radius: 4px; padding: 4px 6px; font: 600 12px 'Barlow', sans-serif; text-transform: none; letter-spacing: 0; }
 #library-top-sort-bar .ph-library-filetype.active select { border-color: var(--ph-red, #b3262f); }
+/* Day mode: the light grey label was 1.9:1 on the white toolbar */
+body.light-mode #library-top-sort-bar .ph-library-filetype { color: #3c4048; }
+body.light-mode #library-top-sort-bar .ph-library-filetype select { background: #fff; color: #07111f; border-color: #b9bdc4; }
+body.light-mode #library-top-sort-bar .ph-library-filetype.active select { border-color: var(--ph-red, #b3262f); }

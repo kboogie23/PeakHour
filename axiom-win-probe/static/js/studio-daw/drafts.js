@@ -70,6 +70,7 @@
     for(const mixer of [project.masterMixer,...Object.values(project.rowMixer||{})].filter(v=>v!==undefined)){
       if(!object(mixer))throw new Error('Invalid mixer settings.');
       if(mixer.volume!==undefined&&(!Number.isFinite(mixer.volume)||mixer.volume<0||mixer.volume>1))throw new Error('Invalid mixer volume.');
+      if(mixer.pan!==undefined&&(!Number.isFinite(mixer.pan)||mixer.pan<-100||mixer.pan>100))throw new Error('Invalid mixer pan.');
       for(const key of ['gainDb','highDb','midDb','lowDb'])if(mixer[key]!==undefined&&(!Number.isFinite(mixer[key])||mixer[key]<-24||mixer[key]>12))throw new Error('Invalid mixer EQ or gain.');
     }
     if(project.masterMixer?.limiter!==undefined){

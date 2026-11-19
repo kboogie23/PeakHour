@@ -42,7 +42,11 @@
   // Performance collapses the sidebar to icons; the sticker would be clipped there.
   const sidebar=document.getElementById('axiom-sidebar');
   const narrow=!!sidebar&&sidebar.getBoundingClientRect().width<160;
-  tag.hidden=!match||narrow;
+  // Only when it changes: assigning the same value is still an attribute change, and the button-typography observer answers
+  // each one with a pass over every button on the page (this runs every 600 ms; while the Studio DAW played that pass took
+  // a quarter of the main thread and starved the audio scheduler).
+  const hide=!match||narrow;
+  if(tag.hidden!==hide)tag.hidden=hide;
   if(match&&tag.dataset.region!==key){
    tag.dataset.region=key;
    tag.querySelector('strong').textContent=match[2];

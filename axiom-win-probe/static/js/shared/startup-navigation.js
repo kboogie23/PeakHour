@@ -33,8 +33,39 @@ function applyStartupWorkflow() {
   }
 }
 
+// libraryHasTracks stays null when /api/library/stats did not answer (a busy or still-starting server, a dropped
+// request). That is "not known yet", never "no music": onboarding must only appear when the library is known to be empty.
+async function waitForLibraryAnswer() {
+  if (libraryHasTracks !== null) return;
+  document.body.classList.add('library-loading');
+  showToast('Loading your library...');
+  // loadLibraryStats leaves libraryHasTracks null for a failed request and for a 200 without total_tracks.
+  // After about a minute say so (the wait is kept in localStorage only so a test can shorten it) and keep asking slowly.
+  let giveUpMs = 60000;
+  try { giveUpMs = Number(localStorage.getItem('peakhour.libraryWaitMs')) || giveUpMs; } catch (_) { }
+  const started = Date.now();
+  let notice = null;
+  for (let attempt = 1; libraryHasTracks === null; attempt++) {
+    const silent = Date.now() - started >= giveUpMs;
+    if (silent && !notice) {
+      notice = document.createElement('div');
+      notice.id = 'library-server-silent';
+      notice.setAttribute('role', 'alert');
+      notice.textContent = "PEAK HOUR's server isn't answering. Close PEAK HOUR and open it again.";
+      notice.style.cssText = 'position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:100000;padding:12px 18px;border-radius:10px;background:#7f1d1d;color:#fff;font:600 14px sans-serif';
+      document.body.appendChild(notice);
+    }
+    const wait = silent ? Math.min(15000, giveUpMs) : Math.min(1000 * attempt, 8000);
+    await new Promise(resolve => setTimeout(resolve, wait));
+    await loadLibraryStats(false);
+  }
+  notice?.remove();
+  document.body.classList.remove('library-loading');
+}
+
 async function initializeStartupWorkflow() {
   await loadLibraryStats();
+  await waitForLibraryAnswer();
   if (!window.AxiomEntrance?.libraryReady()) applyStartupWorkflow();
   if (axiomReviewMode() || axiomUiPreviewMode()) {
     await maybeStartAxiomUiPreview();

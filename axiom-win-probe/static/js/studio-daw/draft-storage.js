@@ -48,6 +48,7 @@
     set:(key,value)=>database().then(async db=>{
       await transaction(db,'readwrite',store=>store.put(value,key));
       if(await transaction(db,'readonly',store=>store.get(key))!==value)throw new Error('Saved project verification failed.');
+      try{window.dispatchEvent(new Event('axiom-drafts-changed'));}catch{}
     }),
     list:()=>database().then(db=>transaction(db,'readonly',store=>store.getAll())),
     ready:database

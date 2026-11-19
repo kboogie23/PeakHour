@@ -386,7 +386,7 @@
     async function importCSVFromPath(csvPath) {
       if (!ensureLibraryBeforeCsv()) return;
       const requestId = ++studioCsvRequestId;
-      setCSVImportFile(csvPath.split('/').pop());
+      setCSVImportFile(csvPath.split(/[\\/]/).pop());
       setCSVImportLoading(true);
       try {
         const resp = await fetch('/api/studio/upload_csv_path', {

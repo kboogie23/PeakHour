@@ -62,7 +62,7 @@ import axiom_windows_launcher as L
 L.data_root=lambda:pathlib.Path({str(data)!r})
 axiom=L.build_app(8097)
 c=axiom.app.test_client();base='http://127.0.0.1:8097'
-r=c.post('/api/library/add_folder',base_url=base,json={{'folder_path':{str(workspace/'fixtures'/'stress'/'mp3-5000')!r},'async':True,'confirmed_music_preflight':True}}).get_json()
+r=c.post('/api/library/add_folder',base_url=base,headers={{'Origin':base}},json={{'folder_path':{str(workspace/'fixtures'/'stress'/'mp3-5000')!r},'async':True,'confirmed_music_preflight':True}}).get_json()
 seen=[]
 for _ in range(600):
  p=c.get('/api/windows/import-progress',base_url=base).get_json();seen.append(p)

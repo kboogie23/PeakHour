@@ -10,9 +10,15 @@
   dist/PEAK HOUR User Manual.html
                              the user manual (static/manual) as one file, pictures included
 
-Not included: the GPU stem runtime (PyTorch + Demucs, several GB) stays a separate download, and
-the program is not code-signed (that needs a certificate bought by the publisher), so Windows
-SmartScreen will warn on first run.
+Not included: the stem runtime (PyTorch + Demucs, several GB) is too big for Setup. It is installed into the
+data folder (%LOCALAPPDATA%/AXIOM DJ, never the program folder, so upgrades keep it) by windows_stem_installer.py,
+from two places: as the LAST step of install.ps1 (app/windows_stem_setup.py: a small window that offers the
+download, says "already installed - skipped" and shows no window when the engine is there, and can be skipped;
+a failure or a skip never fails Setup; a silent Setup (/Q, or PEAK_HOUR_SETUP_SILENT=1) skips it), and, for
+anyone who skipped, in the app (Studio > Stems > "Install stem engine"). The program is not code-signed (that
+needs a certificate bought by the publisher), so Windows SmartScreen will warn on first run.
+The native window (windows_native_window.py, opt-in with PEAKHOUR_WINDOW=native or window-mode.txt) needs pywebview and its
+packages (native_window_lock.txt) in runtime/ and the licences in THIRD-PARTY-NOTICES.txt; stage() checks both. Edge stays the default.
 Usage: python build_installer.py [--no-setup]
 """
 import json
@@ -27,6 +33,44 @@ APP = WORK / 'axiom-win-probe'
 VENV = WORK / 'axiom-win-env'
 DIST = WORK / 'dist'
 SKIP_APP = {('data', 'theme-cache')}  # rebuilt on first run
+
+# Left out of the packaged Python (runtime/) to keep the installer small. Each entry was checked: nothing in
+# PEAK HOUR (plain source, AXIOM's compiled core in axiom-win-probe/*.pyc, bytecode_inventory/) or in the
+# libraries it loads imports them at run time. Deliberately KEPT even though they look removable:
+#   pandas, pdfplumber, pdfminer, pypdfium2   roster.pyc (AXIOM core) imports pandas and pdfplumber
+#   narwhals                                  sklearn.utils.validation imports it (librosa -> sklearn)
+#   tkinter, tcl/                             windows_dialogs.py uses tkinter
+#   imageio_ffmpeg's ffmpeg.exe AND av.libs   launcher/windows_audio use the exe; windows_media_worker does `import av`
+#   *.pyi stubs                               lazy_loader (librosa, ...) reads them at import: librosa fails without
+#   __pycache__ of libraries                  saves ~10 MB zipped, but every first start would recompile them
+#   dawdreamer/faustlibraries, numba headers  loaded at run time
+# SKIP_*_PATHS entries match only that exact path relative to the copied root (so 'include' removes the base
+# Python's include/ but never numba's or dawdreamer's include folders). SKIP_PACKAGE_NAMES/SUFFIXES/PREFIXES match at any depth.
+SKIP_PYTHON_PATHS = {'include', 'libs', 'Scripts',                        # C headers, import libraries, pip.exe
+                     'Lib/ensurepip', 'Lib/idlelib', 'Lib/lib2to3', 'Lib/turtledemo', 'Lib/venv', 'Lib/msilib',
+                     'Lib/test', 'tcl/tix8.4.3', 'tcl/nmake'}
+SKIP_PACKAGE_PATHS = {'numpy/_core/include', 'numpy/_core/lib', 'numpy/random/lib',  # build-only headers/.lib files
+                      'webview/lib/pywebview-android.jar'}  # pywebview's Android backend: never used on Windows
+SKIP_PACKAGE_NAMES = {'tests', 'pip'}                                     # libraries' own test suites; pip
+SKIP_PACKAGE_SUFFIXES = ('.whl',)                                         # a 0-byte scipy wheel marker
+SKIP_PACKAGE_PREFIXES = ('pip-',)                                         # pip-<v>.dist-info
+SKIP_PYTHON_FILES = ('_ctypes_test.pyd', '_test')                         # CPython's own test extension modules
+# After staging, these must import in the packaged Python (kept) and these must be gone (excluded).
+REQUIRED_MODULES = ('flask', 'numpy', 'sounddevice', 'soundfile', 'pedalboard', 'dawdreamer', 'imageio_ffmpeg', 'defusedxml',
+                    'anthropic', 'openai', 'pandas', 'pdfplumber', 'pdfminer', 'pypdfium2', 'narwhals', 'av', 'scipy', 'sklearn',
+                    'librosa', 'numba', 'llvmlite', 'joblib', 'PIL', 'cryptography', 'keyring', 'mutagen', 'serato_tools',
+                    'mltseratotags', 'rtmidi', 'soxr', 'requests', 'tkinter', '_tkinter', 'sqlite3', 'ssl', 'ctypes', 'unittest')
+EXCLUDED_MODULES = ('pip', 'ensurepip', 'idlelib', 'venv', 'lib2to3')
+# The stem engine's download is installed from these (windows_stem_installer.py: exact versions and SHA-256 of every package); the
+# app folder is copied whole, but the installer must never ship without them.
+REQUIRED_APP_FILES = ('stem_engine_lock_cuda.txt', 'stem_engine_lock_cpu.txt', 'windows_stem_setup.py',  # the last: Setup's stem engine step
+                      'windows_native_window.py', 'windows_window_mode.py',  # the opt-in native window (PEAKHOUR_WINDOW=native)
+                      'native_window_lock.txt', 'THIRD-PARTY-NOTICES.txt')  # its pinned packages, and their licences
+# The native window's libraries come from the build environment's site-packages (copied whole above); native_window_lock.txt pins
+# them. The build checks the INSTALLED VERSIONS against the pins and that they import in the packaged Python. The SHA-256 hashes in
+# that file only document which wheels were used (and let a fresh environment be rebuilt with pip --require-hashes); the build does
+# not re-verify the copied files against them. WebView2 itself is not packaged.
+NATIVE_MODULES = ('webview', 'clr_loader', 'pythonnet', 'clr', 'bottle', 'proxy_tools', 'cffi', 'pycparser', 'typing_extensions')
 SKIP_FILES = {'make_90s_art.py', 'make_peak_hour_logo.py', 'make_region_backgrounds.py', 'make_regions_art.py'}
 
 
@@ -47,21 +91,89 @@ def ignore_app(folder, names):
     return skipped | {name for name in names if name.endswith(('.partial', '.tmp'))}
 
 
+def ignore_runtime(root, skip_paths, package=False):
+    """copytree ignore function for runtime/: the base Python (package=False) or site-packages (package=True)."""
+    root = Path(root)
+
+    def ignore(folder, names):
+        rel = Path(folder).relative_to(root).as_posix()
+        skipped = set()
+        for name in names:
+            path = name if rel == '.' else f'{rel}/{name}'
+            if path in skip_paths:
+                skipped.add(name)
+            elif package and (name in SKIP_PACKAGE_NAMES and (Path(folder) / name).is_dir() or name.endswith(SKIP_PACKAGE_SUFFIXES)
+                              or name.startswith(SKIP_PACKAGE_PREFIXES)):
+                skipped.add(name)
+            elif not package and rel == 'Lib/site-packages' and name.startswith(SKIP_PACKAGE_PREFIXES):
+                skipped.add(name)  # pip-<v>.dist-info of the base Python's own (pip-less) site-packages
+            elif not package and rel == 'DLLs' and name.startswith(SKIP_PYTHON_FILES):
+                skipped.add(name)
+            elif not package and rel == 'tcl' and name.endswith(('.lib', '.sh')):
+                skipped.add(name)
+        return skipped
+    return ignore
+
+
 def stage(target):
     if target.exists():
         shutil.rmtree(target)
     runtime = target / 'runtime'
-    shutil.copytree(base_python(), runtime)
-    shutil.copytree(VENV / 'Lib' / 'site-packages', runtime / 'Lib' / 'site-packages', dirs_exist_ok=True)
+    python = base_python()
+    shutil.copytree(python, runtime, ignore=ignore_runtime(python, SKIP_PYTHON_PATHS | {'Lib/site-packages/pip'}))
+    packages = VENV / 'Lib' / 'site-packages'
+    shutil.copytree(packages, runtime / 'Lib' / 'site-packages', dirs_exist_ok=True,
+                    ignore=ignore_runtime(packages, SKIP_PACKAGE_PATHS, package=True))
     shutil.copytree(APP, target / 'app', ignore=ignore_app)
+    missing = [name for name in REQUIRED_APP_FILES if not (target / 'app' / name).is_file()]
+    if missing:
+        raise SystemExit('The package lacks the stem engine lock file(s): ' + ', '.join(missing))
     shutil.copy2(WORK / 'installer' / 'uninstall.ps1', target / 'uninstall.ps1')
     (target / 'version.txt').write_text(version(), encoding='utf-8')
     # The packaged Python must find the libraries without the workspace's virtual environment.
-    check = subprocess.run([str(runtime / 'python.exe'), '-I', '-c',
-                            'import flask, numpy, sounddevice, soundfile, pedalboard, dawdreamer, imageio_ffmpeg, defusedxml, anthropic, openai; print("ok")'],
-                           capture_output=True, text=True, timeout=120)
+    code = ('import importlib, importlib.util\n'
+            f'for name in {REQUIRED_MODULES!r}: importlib.import_module(name)\n'
+            f'gone = [name for name in {EXCLUDED_MODULES!r} if importlib.util.find_spec(name)]\n'
+            'assert not gone, "excluded modules are still packaged: %s" % gone\n'
+            'print("ok")')
+    check = subprocess.run([str(runtime / 'python.exe'), '-I', '-c', code], capture_output=True, text=True, timeout=300)
     if check.stdout.strip() != 'ok':
         raise SystemExit('The packaged Python cannot load PEAK HOUR\'s libraries:\n' + check.stderr)
+    check_native_window(target)
+    leftovers = [p for p in ('include', 'libs', 'Scripts', 'Lib/ensurepip', 'Lib/idlelib', 'Lib/test') if (runtime / p).exists()]
+    leftovers += [str(p.relative_to(runtime)) for p in (runtime / 'Lib' / 'site-packages').rglob('tests') if p.is_dir()]
+    if leftovers:
+        raise SystemExit('Excluded folders are still in the package: ' + ', '.join(leftovers[:10]))
+
+
+def native_window_pins():
+    """[(name, version)] from native_window_lock.txt."""
+    pins = []
+    for line in (APP / 'native_window_lock.txt').read_text(encoding='utf-8').splitlines():
+        if line and not line.startswith('#'):
+            name, version = line.split()[0].split('==')
+            pins.append((name, version))
+    return pins
+
+
+def check_native_window(target):
+    """In the packaged Python (isolated mode): the native window's libraries are at the pinned versions and import (including
+    `clr`, which starts the .NET runtime, so this needs .NET Framework on the build PC), and windows_window_mode agrees the
+    window can run when the PC has WebView2 and .NET 4.8 (a build PC without those two still passes)."""
+    code = ('import sys, importlib, importlib.metadata\n'
+            f'sys.path.insert(0, {str(target / "app")!r})\n'
+            f'for name, version in {native_window_pins()!r}:\n'
+            '    assert importlib.metadata.version(name) == version, (name, importlib.metadata.version(name), version)\n'
+            f'for name in {NATIVE_MODULES!r}: importlib.import_module(name)\n'
+            'import windows_window_mode as m\n'
+            'assert set(m.failed_probes()) <= {"webview2", "dotnet48"}, m.failed_probes()\n'
+            'ok = {n: (lambda: True) for n in m.PROBE_ORDER}\n'
+            'assert m.choose_window({"PEAKHOUR_WINDOW": "native"}, ok)["mode"] == "native"\n'
+            'assert m.choose_window({}, ok)["mode"] == "edge"\n'
+            'print("ok")')
+    check = subprocess.run([str(target / 'runtime' / 'python.exe'), '-I', '-c', code], capture_output=True, text=True, timeout=300)
+    if check.stdout.strip() != 'ok':
+        raise SystemExit('The packaged Python cannot run the native window:\n' + check.stderr)
 
 
 def pack(folder, archive):
@@ -69,6 +181,27 @@ def pack(folder, archive):
         for path in sorted(folder.rglob('*')):
             if path.is_file():
                 out.write(path, path.relative_to(folder).as_posix())
+
+
+def setup_cmd_text():
+    """setup.cmd: runs install.ps1 on the zip. "setup.cmd /quiet" (what a silent Setup runs) passes -Quiet: no message boxes
+    and no stem engine window."""
+    return ('@echo off\r\nset "PH_QUIET="\r\nif /i "%~1"=="/quiet" set "PH_QUIET=-Quiet"\r\n'
+            'powershell.exe -NoProfile -ExecutionPolicy Bypass -File "%~dp0install.ps1" -Zip "%~dp0PEAK-HOUR.zip" %PH_QUIET%\r\n')
+
+
+def setup_sed_text(exe, work, files):
+    sed = ['[Version]', 'Class=IEXPRESS', 'SEDVersion=3', '[Options]', 'PackagePurpose=InstallApp', 'ShowInstallProgramWindow=0',
+           'HideExtractAnimation=0', 'UseLongFileName=1', 'InsideCompressed=0', 'CAB_FixedSize=0', 'CAB_ResvCodeSigning=0',
+           'RebootMode=N', 'InstallPrompt=%InstallPrompt%', 'DisplayLicense=%DisplayLicense%', 'FinishMessage=%FinishMessage%',
+           'TargetName=%TargetName%', 'FriendlyName=%FriendlyName%', 'AppLaunched=%AppLaunched%', 'PostInstallCmd=%PostInstallCmd%',
+           'AdminQuietInstCmd=%AdminQuietInstCmd%', 'UserQuietInstCmd=%UserQuietInstCmd%', 'SourceFiles=SourceFiles',
+           '[Strings]', 'InstallPrompt=', 'DisplayLicense=', 'FinishMessage=PEAK HOUR is installed. Open it from the Start menu or your desktop.',
+           f'TargetName={exe}', 'FriendlyName=PEAK HOUR Setup', 'AppLaunched=cmd.exe /c setup.cmd', 'PostInstallCmd=<None>',
+           'AdminQuietInstCmd=cmd.exe /c setup.cmd /quiet', 'UserQuietInstCmd=cmd.exe /c setup.cmd /quiet']  # Setup's /Q: no stem engine window
+    sed += [f'FILE{i}="{name}"' for i, name in enumerate(files)]
+    sed += ['[SourceFiles]', f'SourceFiles0={work}\\', '[SourceFiles0]'] + [f'%FILE{i}%=' for i in range(len(files))]
+    return '\r\n'.join(sed) + '\r\n'
 
 
 def setup_exe(archive, exe):
@@ -79,20 +212,9 @@ def setup_exe(archive, exe):
     work.mkdir()
     shutil.copy2(archive, work / 'PEAK-HOUR.zip')
     shutil.copy2(WORK / 'installer' / 'install.ps1', work / 'install.ps1')
-    (work / 'setup.cmd').write_text('@echo off\r\npowershell.exe -NoProfile -ExecutionPolicy Bypass -File "%~dp0install.ps1" '
-                                    '-Zip "%~dp0PEAK-HOUR.zip"\r\n', encoding='ascii')
+    (work / 'setup.cmd').write_text(setup_cmd_text(), encoding='ascii')
     files = ['PEAK-HOUR.zip', 'install.ps1', 'setup.cmd']
-    sed = ['[Version]', 'Class=IEXPRESS', 'SEDVersion=3', '[Options]', 'PackagePurpose=InstallApp', 'ShowInstallProgramWindow=0',
-           'HideExtractAnimation=0', 'UseLongFileName=1', 'InsideCompressed=0', 'CAB_FixedSize=0', 'CAB_ResvCodeSigning=0',
-           'RebootMode=N', 'InstallPrompt=%InstallPrompt%', 'DisplayLicense=%DisplayLicense%', 'FinishMessage=%FinishMessage%',
-           'TargetName=%TargetName%', 'FriendlyName=%FriendlyName%', 'AppLaunched=%AppLaunched%', 'PostInstallCmd=%PostInstallCmd%',
-           'AdminQuietInstCmd=%AdminQuietInstCmd%', 'UserQuietInstCmd=%UserQuietInstCmd%', 'SourceFiles=SourceFiles',
-           '[Strings]', 'InstallPrompt=', 'DisplayLicense=', 'FinishMessage=PEAK HOUR is installed. Open it from the Start menu or your desktop.',
-           f'TargetName={exe}', 'FriendlyName=PEAK HOUR Setup', 'AppLaunched=cmd.exe /c setup.cmd', 'PostInstallCmd=<None>',
-           'AdminQuietInstCmd=', 'UserQuietInstCmd=']
-    sed += [f'FILE{i}="{name}"' for i, name in enumerate(files)]
-    sed += ['[SourceFiles]', f'SourceFiles0={work}\\', '[SourceFiles0]'] + [f'%FILE{i}%=' for i in range(len(files))]
-    (work / 'setup.sed').write_text('\r\n'.join(sed) + '\r\n', encoding='ascii')
+    (work / 'setup.sed').write_text(setup_sed_text(exe, work, files), encoding='ascii')
     # IExpress fails (exit 1) when it has to overwrite the previous setup file, e.g. while it is still being
     # scanned: the previous one is set aside first and put back if the new build fails.
     previous = exe.with_name(exe.name + '.previous')

@@ -7,6 +7,7 @@
 //  - song titles and artists (rows with data-path, track title/artist text),
 //  - the licence window and the AXIOM Lite import (they name AXIOM's products),
 //  - anything inside inputs, code and editable text.
+// Download file names also change (AXIOM_ -> PEAK_HOUR_, .axiom.zip -> .peakhour.zip): see filename().
 (function(){
  'use strict';
  const NAME='PEAK HOUR';
@@ -42,9 +43,20 @@
   [/\bCore Audio\b/g,'Windows audio'],
   [/Slow Mac\b/g,'Slow PC'],
   [/the Mac folder picker/g,'the folder picker'],
+  [/Reinstall the complete AXIOM app for this Mac/g,'Reinstall the complete PEAK HOUR app on this PC'],  // stem engine / decoder / model messages
   [/\b(this|your|another|This|Your|Another) Mac\b/g,'$1 PC'],
  ];
- const rename=text=>typeof text!=='string'||PATH.test(text)?text:PHRASES.reduce((value,[from,to])=>value.replace(from,to),text).replace(WORD,NAME);
+ // A quoted path ('C:\...\.lock') is set aside while the rest of the sentence is renamed, so a message
+ // such as "...: 'C:\Users\x\.cache\..'. AXIOM will try..." still says PEAK HOUR. Any other path-like text left over: unchanged.
+ const PATHRUN=/(['"])(?:[A-Za-z]:[\\/]|\\\\)[^'"\r\n]*\1/g;
+ const swap=value=>PHRASES.reduce((text,[from,to])=>text.replace(from,to),value).replace(WORD,NAME);
+ function rename(text){
+  if(typeof text!=='string')return text;
+  if(!PATH.test(text))return swap(text);
+  const held=[];
+  const masked=text.replace(PATHRUN,found=>'\u0001'+(held.push(found)-1)+'\u0001');
+  return PATH.test(masked)?text:swap(masked).replace(/\u0001(\d+)\u0001/g,(_,index)=>held[Number(index)]);
+ }
  const kept=element=>!element||SKIP_TAGS.has(element.tagName)||!!element.closest(KEEP);
  function fixText(node){
   if(kept(node.parentElement))return;
@@ -82,5 +94,23 @@
  }
  if(document.body)sweep(document.body);
  document.addEventListener('DOMContentLoaded',()=>sweep(document.body));
+ // Download names: AXIOM's own front end names its files AXIOM_*, axiom-* and *.axiom.zip/json.
+ // Only the start of the name (and those two endings) change, so a song title in the middle stays.
+ // Installed on the anchor's download property and setAttribute('download'), which also covers
+ // anchors that are clicked without ever being added to the page.
+ const filename=name=>typeof name!=='string'?name:name
+  .replace(/^AXIOM_/,'PEAK_HOUR_').replace(/^AXIOM-/,'PEAK-HOUR-').replace(/^axiom-/,'peak-hour-').replace(/^AXIOM Project(?=[ .])/,'PEAK HOUR Project')
+  .replace(/\.axiom\.(zip|json)$/i,'.peakhour.$1');
+ const downloadProperty=Object.getOwnPropertyDescriptor(HTMLAnchorElement.prototype,'download');
+ if(downloadProperty&&downloadProperty.set){
+  Object.defineProperty(HTMLAnchorElement.prototype,'download',{configurable:true,enumerable:downloadProperty.enumerable,
+   get(){return downloadProperty.get.call(this);},
+   set(value){downloadProperty.set.call(this,filename(String(value)));}});
+ }
+ const setAttributeOriginal=Element.prototype.setAttribute;
+ Element.prototype.setAttribute=function(name,value){
+  return setAttributeOriginal.call(this,name,String(name).toLowerCase()==='download'?filename(String(value)):value);
+ };
  window.PeakHourRename=rename;
+ window.PeakHourFilename=filename;
 })();

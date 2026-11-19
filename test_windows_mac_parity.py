@@ -72,8 +72,53 @@ try:
  lost=folder/'Lost.mp3';lost.write_bytes(b'x')
  try:M.recycle(str(lost),shell=lambda p:os.remove(p),bin_root=bin_root,wait=0.3);raise AssertionError('unverified accepted')
  except OSError as e:assert 'could not be found in the Recycle Bin' in str(e)
+ # Never delete for good: a removable/network drive, a bin set to delete at once, or a file over the bin size is refused untouched
+ usb=folder/'Usb.mp3';usb.write_bytes(b'x'*2048);calls=[]
+ real_type=M._drive_type;assert real_type(M._volume_root(str(usb)))==M.DRIVE_FIXED
+ for kind in (2,4,5):  # DRIVE_REMOVABLE, DRIVE_REMOTE, DRIVE_CDROM
+  M._drive_type=lambda root,kind=kind:kind
+  try:
+   try:M.recycle(str(usb),shell=calls.append,bin_root=bin_root);raise AssertionError('removable drive accepted')
+   except OSError as e:assert 'no Recycle Bin' in str(e) and 'NOT deleted' in str(e)
+  finally:M._drive_type=real_type
+ assert usb.exists() and usb.read_bytes()==b'x'*2048 and not calls
+ for setting,word in (((1,None),'immediately'),((0,1),'bigger')):
+  M._bin_settings,keep=(lambda root,setting=setting:setting),M._bin_settings
+  try:
+   if word=='bigger':usb.write_bytes(b'x'*(1024*1024+1))
+   try:M.recycle(str(usb),shell=calls.append,bin_root=bin_root);raise AssertionError('bin setting ignored')
+   except OSError as e:assert word in str(e)
+  finally:M._bin_settings=keep
+ assert usb.exists() and not calls
+ M.check_recyclable(str(usb),settings=lambda root:(None,None))  # a plain fixed drive passes
+ assert M.FOF_WANTNUKEWARNING==0x4000
+ # SUBST/no-GUID volume, default-quota estimate, non-numeric registry value
+ def no_guid(root):raise OSError('substituted drive with no Recycle Bin')
+ try:M.check_recyclable(str(usb),settings=no_guid);raise AssertionError('no-GUID accepted')
+ except OSError as e:assert 'Recycle Bin' in str(e)
+ usb.write_bytes(b'x'*1000)
+ try:M.check_recyclable(str(usb),settings=lambda r:(None,None),disk_total=lambda r:10000);raise AssertionError('over 5% accepted')
+ except OSError as e:assert 'probably bigger' in str(e)
+ M.check_recyclable(str(usb),settings=lambda r:(None,None),disk_total=lambda r:100000)  # 1%: fine
+ M.check_recyclable(str(usb),settings=lambda r:(None,500),disk_total=lambda r:1)  # stored size wins over the estimate
+ import winreg
+ sub='Software\\PeakHourTest-'+uuid.uuid4().hex
+ with winreg.CreateKey(winreg.HKEY_CURRENT_USER,sub) as k:
+  winreg.SetValueEx(k,'Bad',0,winreg.REG_SZ,'abc');winreg.SetValueEx(k,'Good',0,winreg.REG_DWORD,7)
+ try:assert M._reg_int(winreg.HKEY_CURRENT_USER,sub,'Bad') is None and M._reg_int(winreg.HKEY_CURRENT_USER,sub,'Good')==7 and M._reg_int(winreg.HKEY_CURRENT_USER,sub,'Nope') is None
+ finally:winreg.DeleteKey(winreg.HKEY_CURRENT_USER,sub)
+ real=M._bin_settings(M._volume_root(str(usb)));assert len(real)==2  # the real lookup works on this fixed drive
  import duplicate_trash
  assert duplicate_trash.apply.__defaults__[-1] is M.recycle and duplicate_trash.mac_trash is M.recycle
+ # the shared Studio renderer (also the macOS edition's) keeps the Mac chart styling: the Magic Set redesign sets it from
+ # windows-magic-set.js (only with body[data-ph-region]). The one change allowed here is the 2% -> Match text bug fix.
+ now=(probe/'static'/'js'/'surfaces'/'studio-render.js').read_text(encoding='utf-8')
+ for mac in ("const gridColor = isLight ? 'rgba(0,0,0,0.1)' : 'rgba(255,255,255,0.05)';","const labelColor = isLight ? '#555555' : '#666';",
+             "padding: { top: 12, right: 14, bottom: 34, left: 8 }","title: { display: true, text: 'BPM'"):
+  assert mac in now,mac
+ for windows in ('pointHitRadius','pointHoverRadius: 11',"weight: '600'","bottom: 6"):
+  assert windows not in now,windows  # HEAD (the Mac styling) has none of these
+ assert "isHarmonic ? 'Match' : '--'" in now and "'2%'" not in now
  shutil.rmtree(folder)
  print('PASS: File Explorer reveal, Windows audio check and Recycle Bin replace the Mac-only versions')
 except BaseException:

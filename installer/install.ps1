@@ -2,14 +2,18 @@
 # Unpacks PEAK-HOUR.zip to %LOCALAPPDATA%\Programs\PEAK HOUR, adds Start menu and desktop shortcuts,
 # and lists PEAK HOUR in Settings > Apps with an Uninstall button. Your music, recordings and
 # PEAK HOUR's own data (%LOCALAPPDATA%\AXIOM DJ) are never touched.
-# Testing switches: -Destination, -StartMenu, -Desktop (other folders), -NoRegistry, -Quiet.
+# The stem engine (Studio > Stems: PyTorch + Demucs, several GB) is too big for this Setup. After PEAK HOUR is in place, a
+# small window (app\windows_stem_setup.py) offers to download it now; it does nothing when the engine is already installed,
+# and the engine lives in the data folder, so an upgrade keeps it. -Quiet, or PEAK_HOUR_SETUP_SILENT=1, skips that step.
+# Testing switches: -Destination, -StartMenu, -Desktop (other folders), -NoRegistry, -Quiet, -NoStemEngine.
 param(
   [string]$Zip = (Join-Path $PSScriptRoot 'PEAK-HOUR.zip'),
   [string]$Destination = (Join-Path $env:LOCALAPPDATA 'Programs\PEAK HOUR'),
   [string]$StartMenu = (Join-Path ([Environment]::GetFolderPath('Programs')) 'PEAK HOUR.lnk'),
   [string]$Desktop = (Join-Path ([Environment]::GetFolderPath('Desktop')) 'PEAK HOUR.lnk'),
   [switch]$NoRegistry,
-  [switch]$Quiet
+  [switch]$Quiet,
+  [switch]$NoStemEngine
 )
 $ErrorActionPreference = 'Stop'
 $UninstallKey = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Uninstall\PEAK HOUR'
@@ -109,4 +113,21 @@ if (-not $NoRegistry) {
   $size = [int]((Get-ChildItem -LiteralPath $Destination -Recurse -File | Measure-Object Length -Sum).Sum / 1KB)
   New-ItemProperty -Force -Path $UninstallKey -Name EstimatedSize -Value $size -PropertyType DWord | Out-Null
 }
-Say "PEAK HOUR $version is installed in $Destination"  # Setup (IExpress) then shows its "PEAK HOUR is installed" message
+Say "PEAK HOUR $version is installed in $Destination"
+
+# Last step: the stem engine. PEAK HOUR is installed and works without it, so nothing here can fail Setup: no window when the
+# engine is already installed (it says "skipped" here), "Skip for now" in the window, any error or non-zero exit is ignored.
+$silent = $Quiet -or ($env:PEAK_HOUR_SETUP_SILENT -and $env:PEAK_HOUR_SETUP_SILENT -notin @('0', 'false', 'no'))
+if (-not $NoStemEngine -and -not $silent) {
+  $stemSetup = Join-Path $app 'windows_stem_setup.py'
+  if (Test-Path -LiteralPath $stemSetup) {
+    try {
+      # python.exe with -NoNewWindow: its one-line result appears in this window, and no second console opens.
+      Start-Process -FilePath (Join-Path $Destination 'runtime\python.exe') -ArgumentList ('"' + $stemSetup + '"') `
+        -WorkingDirectory $app -NoNewWindow -Wait | Out-Null
+    } catch {
+      Say 'The stem engine step could not start. Install it later from Studio: Create Stems.'
+    }
+  }
+}
+# Setup (IExpress) then shows its "PEAK HOUR is installed" message

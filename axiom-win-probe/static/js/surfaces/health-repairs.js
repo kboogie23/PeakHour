@@ -140,8 +140,8 @@
         const passed = checks.filter(check => check.ok).length;
         const total = checks.length;
         const statusCopy = data?.success
-            ? 'Browser parity systems are wired for the currently connected library.'
-            : 'Some browser parity systems need a connected folder or a repair pass.';
+            ? 'Browser checks passed for the currently connected library.'
+            : 'Some browser checks need a connected music folder or a repair pass.';
         const overlay = document.createElement('div');
         overlay.id = 'browser-parity-modal';
         overlay.className = 'browser-parity-modal';
@@ -149,10 +149,10 @@
             <div class="browser-parity-panel" role="dialog" aria-modal="true" aria-labelledby="browser-parity-title">
                 <div class="browser-parity-head">
                     <div>
-                        <div class="browser-parity-kicker">AXIOM Browser Assurance</div>
+                        <div class="browser-parity-kicker">PEAK HOUR Browser Check</div>
                         <div id="browser-parity-title" class="browser-parity-title">Parity Check</div>
                         <div class="browser-parity-copy">${escapeHtml(data?.message || statusCopy)}</div>
-                        <div class="browser-parity-copy">Shim ${escapeHtml(data?.shim_version || 'unknown')} · ${data?.persistent_folder ? 'Persistent folder connected' : 'Folder picker mode'}</div>
+                        <div class="browser-parity-copy">${data?.sampled ? `Checked ${Number(data.sampled).toLocaleString()} sample songs` : 'No songs checked'}${data?.elapsed_ms !== undefined ? ` · ${Number(data.elapsed_ms).toLocaleString()} ms` : ''}</div>
                     </div>
                     <button type="button" class="browser-parity-close" onclick="closeBrowserParityModal()" aria-label="Close browser parity report">x</button>
                 </div>
@@ -184,7 +184,7 @@
                             <div><span class="browser-parity-badge warn">Check</span></div>
                             <div>
                                 <strong>No Report</strong>
-                                <span>AXIOM could not read browser parity details from this session.</span>
+                                <span>PEAK HOUR could not read the browser check details from this session.</span>
                             </div>
                         </div>
                     `}
@@ -202,12 +202,12 @@
     }
 
     async function runBrowserParityCheck() {
-        showToast('Running AXIOM browser parity check...');
+        showToast('Running PEAK HOUR browser check...');
         try {
             const resp = await fetch('/api/browser/self_test', { method: 'POST' });
             const data = await resp.json().catch(() => ({}));
             if (!resp.ok || data.success === false && !Array.isArray(data.checks)) {
-                throw new Error(data.error || data.message || 'Browser parity check failed');
+                throw new Error(data.error || data.message || 'Browser check failed');
             }
             renderBrowserParityModal(data);
         } catch (err) {
@@ -217,17 +217,17 @@
                 playable_tracks: 0,
                 checks: [
                     {
-                        name: 'browser_shim',
+                        name: 'browser_check',
                         ok: false,
-                        detail: 'The browser replacement layer did not answer the parity check. Refresh AXIOM and run the check again.'
+                        detail: 'PEAK HOUR did not answer the browser check. Restart PEAK HOUR and run the check again.'
                     }
                 ],
                 limitations: [
-                    'Browser folder, playback, and Serato handoff features need the AXIOM browser shim to be active.'
+                    'Folder choosing, playback, and DJ software handoff need PEAK HOUR itself to be running.'
                 ],
-                message: err?.message || 'Browser parity check could not complete.'
+                message: err?.message || 'Browser check could not complete.'
             });
-            showToast('Browser parity check needs attention.', true);
+            showToast('Browser check needs attention.', true);
         }
     }
 

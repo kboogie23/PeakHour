@@ -29,6 +29,7 @@ from windows_virtualdj_database import read_database, VirtualDJDatabaseError
 from windows_virtualdj_library import database_paths, MEDIA_EXTENSIONS
 
 TEST_SIZE = 10
+SAVE_EVERY = 25  # songs between progress saves; the finished rows are appended, never rewritten
 AUDIO_EXTENSIONS = {'.mp3', '.wav', '.aif', '.aiff', '.flac', '.m4a', '.aac', '.ogg'}
 ISSUE_TEXT = {
     'audio_drift': 'The beats drift away from the audio later in the song.',
@@ -138,7 +139,12 @@ class VirtualDJGridCheck:
         self._lock = threading.Lock()
         self._cancel = threading.Event()
         self._thread = None
+        self._saved_rows = 0
         self.state = self._load()
+
+    @property
+    def rows_path(self):
+        return self.results_path.with_name(self.results_path.name + '.rows')
 
     def _load(self):
         try:
@@ -146,16 +152,53 @@ class VirtualDJGridCheck:
             if isinstance(saved, dict) and saved.get('kind') == 'axiom_virtualdj_grid_check':
                 if saved.get('status') == 'running':
                     saved['status'] = 'interrupted'
+                    if 'results' not in saved:  # a check that closed mid-run: the rows saved so far
+                        saved['results'] = self._load_rows()
+                        saved['done'] = len(saved['results'])
+                saved.setdefault('results', [])
                 return saved
         except (OSError, ValueError):
             pass
         return {'kind': 'axiom_virtualdj_grid_check', 'status': 'idle', 'results': [], 'total': 0, 'done': 0}
 
-    def _save(self):
+    def _load_rows(self):
+        rows = []
+        try:
+            with open(self.rows_path, encoding='utf-8') as handle:
+                for line in handle:
+                    try:
+                        row = json.loads(line)
+                    except ValueError:
+                        break  # a line cut short by the app closing
+                    if isinstance(row, dict) and 'status' in row:
+                        rows.append(row)
+        except OSError:
+            pass
+        return rows
+
+    def _write(self, state):
         self.results_path.parent.mkdir(parents=True, exist_ok=True)
         stage = self.results_path.with_name(self.results_path.name + '.tmp')
-        stage.write_text(json.dumps(self.state), encoding='utf-8')
+        stage.write_text(json.dumps(state), encoding='utf-8')
         os.replace(stage, self.results_path)
+
+    def _save(self):
+        """Everything, results included: at the start and the end of a check."""
+        self._write(self.state)
+        self._saved_rows = len(self.state['results'])
+        if self.state['status'] != 'running':
+            try:
+                self.rows_path.unlink()
+            except OSError:
+                pass
+
+    def _save_progress(self):
+        """Counters in the main file and only the rows finished since the last save appended to the rows file."""
+        rows = self.state['results'][self._saved_rows:]
+        with open(self.rows_path, 'a', encoding='utf-8') as handle:
+            handle.writelines(json.dumps(row) + '\n' for row in rows)
+        self._saved_rows += len(rows)
+        self._write({k: v for k, v in self.state.items() if k != 'results'})
 
     def engine(self):
         if self._engine is None:
@@ -226,7 +269,12 @@ class VirtualDJGridCheck:
             self.state = {'kind': 'axiom_virtualdj_grid_check', 'status': 'running', 'scope': scope, 'folder': folder,
                           'started_at': time.time(), 'total': len(songs), 'done': 0, 'results': [],
                           'database_errors': errors}
-            self._save()
+            self._saved_rows = 0
+            try:
+                self.rows_path.unlink()
+            except OSError:
+                pass
+            self._write({k: v for k, v in self.state.items() if k != 'results'})
             self._thread = threading.Thread(target=self._run, args=(songs,), name='axiom-vdj-grids', daemon=True)
             self._thread.start()
         return self.snapshot()
@@ -240,8 +288,8 @@ class VirtualDJGridCheck:
                 with self._lock:
                     self.state['results'].append(row)
                     self.state['done'] += 1
-                    if self.state['done'] % 25 == 0:
-                        self._save()
+                    if self.state['done'] % SAVE_EVERY == 0:
+                        self._save_progress()
             with self._lock:
                 self.state['status'] = 'cancelled' if self._cancel.is_set() else 'complete'
                 self.state['finished_at'] = time.time()

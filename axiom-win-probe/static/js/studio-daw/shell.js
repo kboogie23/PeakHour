@@ -917,9 +917,13 @@
     const precise=existing.compileTempoMap(activeProject).bpmAtBeat(beat);
     const card=input.closest?.('.daw-project-tempo'),label=card?.querySelector('span');
     if(card)card.dataset.mode=activeProject.mode==='mixtape'?'mixtape':'edit';
-    if(label)label.textContent=activeProject.mode==='mixtape'?'NOW':'BPM';
-    input.setAttribute('aria-label',activeProject.mode==='mixtape'?'Current automation BPM':'Project BPM');
-    input.title=activeProject.mode==='mixtape'?`Current automation tempo: ${precise} BPM. Type here only if you want one fixed tempo.`:`Exact project tempo: ${precise} BPM. Click to edit.`;
+    // Called on every playback tick: write only what changed (identical text is still a DOM mutation that the page's
+    // observers react to by repainting the whole timeline).
+    const labelText=activeProject.mode==='mixtape'?'NOW':'BPM',ariaLabel=activeProject.mode==='mixtape'?'Current automation BPM':'Project BPM';
+    if(label&&label.textContent!==labelText)label.textContent=labelText;
+    if(input.getAttribute('aria-label')!==ariaLabel)input.setAttribute('aria-label',ariaLabel);
+    const tempoTitle=activeProject.mode==='mixtape'?`Current automation tempo: ${precise} BPM. Type here only if you want one fixed tempo.`:`Exact project tempo: ${precise} BPM. Click to edit.`;
+    if(input.title!==tempoTitle)input.title=tempoTitle;
     if(force||document.activeElement!==input)input.value=String(Math.round(precise));
   }
 
@@ -1441,10 +1445,11 @@
     if(!options.forcePicker)return openSampleBankDialog({focusImport:true});
     const input=document.createElement('input');
     input.type='file';input.accept='audio/*';input.multiple=true;
+    window.AxiomWindowsStudioFormats?.widenPicker?.(input);  // Windows layer: this picker's files are decoded by the server
     input.hidden=true;document.body.append(input);
     input.addEventListener('cancel',()=>input.remove(),{once:true});
     input.onchange=async()=>{
-      const files=[...input.files||[]].filter(file=>/\.(mp3|mp4|m4a|wav|aiff?|flac|aac)$/i.test(file.name));
+      const files=[...input.files||[]].filter(file=>/\.(mp3|mp4|m4a|wav|aiff?|flac|aac)$/i.test(file.name)||window.AxiomWindowsStudioFormats?.test(file.name));
       input.remove();
       if(!files.length){showToast?.('Choose one or more audio sample files.',true);return;}
       const project=activeProject,limit=Math.min(files.length,48);
@@ -1914,7 +1919,7 @@
     importQueue=importQueue.then(async()=>{
       for(const file of files){
         if(project!==activeProject)return;
-        if(file.size>96*1024*1024||! /\.(mp3|mp4|m4a|wav|aiff?|flac|aac)$/i.test(file.name)){
+        if(file.size>96*1024*1024||!(/\.(mp3|mp4|m4a|wav|aiff?|flac|aac)$/i.test(file.name)||window.AxiomWindowsStudioFormats?.test(file.name))){
           showToast(`Not imported: ${file.name}. Use a supported audio file up to 96 MB.`,true);continue;
         }
         showToast(`Importing ${file.name}`);
@@ -2520,7 +2525,7 @@
     if (title) title.textContent = activeProject.title;
     if (subtitle) {
       subtitle.textContent = source === 'set'
-        ? `${activeProject.sourceTracks.length} tracks loaded across the Studio DAW scaffold. Split, stem, layer, and BPM automation work stays inside AXIOM.`
+        ? `${activeProject.sourceTracks.length} tracks loaded in this project. Split, stem, layer, and BPM automation work stays inside AXIOM.`
         : `${track.artist} · ${Math.round(track.bpm)} BPM${track.camelot ? ` · ${track.camelot}` : ''}. Source audio stays untouched.`;
     }
     const note = document.getElementById('studio-daw-performance-note');
@@ -2581,7 +2586,7 @@
   function stemProgressValues(clip) {
     const progress=window.AxiomStems?.progress?.(clip);
     return {
-      mode:progress?.mode==='mps'?'GPU/MPS':progress?.mode==='cpu'?'CPU':'Checking hardware',
+      mode:progress?.mode==='mps'?'GPU/MPS':/cuda/i.test(progress?.mode||'')?'GPU/CUDA':progress?.mode==='cpu'?'CPU':'Checking hardware',  // Windows: the worker reports GPU/CUDA
       detail:progress?.detail||'Starting the local stem engine.',
       elapsed:`${Math.floor((progress?.elapsedSeconds||0)/60)}:${String(Math.floor((progress?.elapsedSeconds||0)%60)).padStart(2,'0')}`,
     };
@@ -2671,8 +2676,8 @@
       </section>` : ''}
       <section class="daw-inspector-section">
         <h4>Range</h4>
-        ${inspectorSlider({ label: 'Fade In', value: clip.fadeInBeats || 0, min: 0, max: fadeMax, step: .25, suffix: ' bars', param: 'fadeInBeats' })}
-        ${inspectorSlider({ label: 'Fade Out', value: clip.fadeOutBeats || 0, min: 0, max: fadeMax, step: .25, suffix: ' bars', param: 'fadeOutBeats' })}
+        ${inspectorSlider({ label: 'Fade In', value: clip.fadeInBeats || 0, min: 0, max: fadeMax, step: .25, suffix: ' beats', param: 'fadeInBeats' })}
+        ${inspectorSlider({ label: 'Fade Out', value: clip.fadeOutBeats || 0, min: 0, max: fadeMax, step: .25, suffix: ' beats', param: 'fadeOutBeats' })}
         ${inspectorSlider({ label: 'Gain', value: clip.mixGainDb || 0, min: -24, max: 12, step: .5, suffix: ' dB', param: 'mixGainDb' })}
         <button type="button" class="daw-inspector-select-clip" aria-pressed="${Boolean(clip.reversed)}" onclick="AxiomStudioDaw.toggleClipReverse('${escapeHtml(clip.id)}')">${clip.reversed ? 'Restore Forward Audio' : 'Reverse Clip Audio'}</button>
       </section>
@@ -3507,12 +3512,13 @@
     return Number.isFinite(span) && span > 0 ? span / 4 : 16;
   }
 
-  function setZoom(nextMode) {
+  function setZoom(nextMode, anchor) {
     stopClipDragScroll();
     focusZoom('arrange');
     const oldSpan=viewBeats || timelineWorkspaceBeats(activeProject);
-    const position=Number(activeProject?.editCursorBeat) || 0;
-    const fraction=Math.max(0,Math.min(1,(position-viewStartBeat)/oldSpan));
+    // anchor {beat, fraction} (Windows Ctrl+wheel) keeps that beat under the pointer; otherwise the edit cursor stays put.
+    const position=anchor ? Number(anchor.beat) || 0 : Number(activeProject?.editCursorBeat) || 0;
+    const fraction=anchor ? Math.max(0,Math.min(1,Number(anchor.fraction) || 0)) : Math.max(0,Math.min(1,(position-viewStartBeat)/oldSpan));
     const span = nextMode === 'bar' ? 4 : nextMode === 'arrange' ? 0 : Number(nextMode);
     viewBeats = Number.isFinite(span) ? Math.max(.25, span) : 0;
     if (span === 0) viewBeats = 0;
@@ -3529,6 +3535,27 @@
     const fullSpan = timelineWorkspaceBeats(activeProject);
     const span = Math.max(.25, (viewBeats || fullSpan) * (direction > 0 ? .8 : 1.25));
     setZoom(span >= fullSpan - 1e-8 ? 0 : span);
+  }
+
+  // Windows layer (windows-studio-zoom.js): Ctrl+wheel / pinch zoom around a point on the lanes, and Ctrl +/-/0.
+  // factor < 1 zooms in; fraction is where the pointer is across the visible lane (0 = left edge, 1 = right edge).
+  function zoomTimelineBy(factor, fraction) {
+    if (!activeProject || !(factor > 0) || !Number.isFinite(factor)) return false;
+    const fullSpan = timelineWorkspaceBeats(activeProject);
+    const oldSpan = viewBeats || fullSpan;
+    const span = Math.min(fullSpan, Math.max(.25, oldSpan * factor));
+    if (Math.abs(span - oldSpan) < 1e-9) return false;
+    const f = Math.max(0, Math.min(1, Number(fraction) || 0));
+    setZoom(span >= fullSpan - 1e-8 ? 0 : span, {beat: viewStartBeat + f * oldSpan, fraction: f});
+    return true;
+  }
+
+  function zoomKey(direction) {
+    if (!direction) {
+      if (zoomTarget === 'source') zoomSource(0); else setZoom(0);
+    } else if (zoomTarget === 'source') zoomSource(direction);
+    else stepZoom(direction);
+    return true;
   }
 
   function panTimeline(direction) {
@@ -4865,9 +4892,12 @@
     const button=document.getElementById('daw-key-sync');if(!button)return;
     const clips=arrangementClips().filter(c=>mixerSelection.has(c.id));
     const synced=clips.filter(c=>c.keySync).length;
-    button.disabled=!clips.length;button.setAttribute('aria-pressed',synced===clips.length&&synced?'true':synced?'mixed':'false');
-    button.textContent='SYNC KEY';
-    button.title=synced===clips.length&&synced?'Key sync on. Click to restore the selected clips\' original pitch.':'Match the selected clips to the anchor song';
+    // Runs on every playback tick: write only what changed (see syncBpmDisplay).
+    const pressed=synced===clips.length&&synced?'true':synced?'mixed':'false',keyTitle=synced===clips.length&&synced?'Key sync on. Click to restore the selected clips\' original pitch.':'Match the selected clips to the anchor song';
+    if(button.disabled!==!clips.length)button.disabled=!clips.length;
+    if(button.getAttribute('aria-pressed')!==pressed)button.setAttribute('aria-pressed',pressed);
+    if(button.textContent!=='SYNC KEY')button.textContent='SYNC KEY';
+    if(button.title!==keyTitle)button.title=keyTitle;
   }
   function keySyncError(message){
     const dialog=document.createElement('dialog');dialog.id='daw-key-sync-error';dialog.className='daw-fx-dialog';
@@ -5407,7 +5437,7 @@
     if (trackOrPath && typeof trackOrPath === 'object') return stableTrackCopy(trackOrPath);
     const path = String(trackOrPath || '');
     const cached = typeof trackVisualCache !== 'undefined' ? trackVisualCache.get(path) : null;
-    return stableTrackCopy(cached || { path, title: path.split('/').pop() || 'Track' });
+    return stableTrackCopy(cached || { path, title: path.split(/[\\/]/).pop() || 'Track' });
   }
 
   function openLibraryTrackMenu(event, trackOrPath) {
@@ -5686,7 +5716,8 @@
     focusZoom,
     zoomSource, sourceWheel, playSourceCue, paintSourcePlayback,
     seekSource,
-    stepZoom,
+    stepZoom,zoomTimelineBy,zoomKey,
+    get surfaceVisible(){return dawSurfaceIsVisible();},
     panTimeline,
     panSource,
     locateSourceStart,

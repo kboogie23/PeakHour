@@ -90,6 +90,25 @@ try:
     for keep in ('.c{filter: brightness(0) saturate(100%) invert(22%) sepia(99%) saturate(2459%) hue-rotate(205deg) brightness(79%) contrast(110%) !important}',
                  '.d{filter: invert(77%) sepia(46%) saturate(940%) hue-rotate(331deg) brightness(106%)}', '.e{filter: blur(2px) hue-rotate(30deg)}'):
         assert T.recolor_text(keep, css=True) == keep, keep
+    # Conditional requests: the ETag the client receives is the one it is compared with, so revalidation gets a 304
+    for url in ('/static/site.css', '/static/app.js', '/static/images/entrance/glow.png'):
+        first = c.get(url); tag = first.headers['ETag']
+        assert first.status_code == 200 and tag.strip('"').startswith(T.THEME_VERSION), (url, tag)
+        again = c.get(url, headers={'If-None-Match': tag})
+        assert again.status_code == 304 and not again.data and again.headers['ETag'] == tag, (url, again.status_code)
+        assert c.get(url, headers={'If-None-Match': '"other"'}).status_code == 200
+    swapped = c2.get('/static/axiom-mark.png'); assert swapped.status_code == 200
+    assert c2.get('/static/axiom-mark.png', headers={'If-None-Match': swapped.headers['ETag']}).status_code == 304
+    # Dynamic pages are recoloured once per distinct content, then served from memory
+    big_page = ('<div style="color:#a3ff00;background:#071005">' + 'word ' * 40 + '</div>\n') * 4000
+    app3 = Flask('t3', static_folder=str(static)); app3.add_url_rule('/big', 'big', lambda: big_page); T.install(app3, folder / 'cache3', static)
+    c3 = app3.test_client(); timings = []
+    for _ in range(4):
+        started = time.perf_counter(); body = c3.get('/big').get_data(as_text=True); timings.append(time.perf_counter() - started)
+        assert '#a3ff00' not in body and '#071005' not in body
+    assert timings[1] < timings[0] / 3, timings
+    print('theme timings: first %.1f ms (recolour), repeats %s ms (cached); revalidation of 3 static assets returned 304' %
+          (timings[0] * 1000, ['%.1f' % (t * 1000) for t in timings[1:]]))
     print('PASS: red & platinum theme recolours AXIOM styles, pages, scripts and artwork; data, other brands and status colours untouched')
 except BaseException:
     traceback.print_exc(); sys.exit(1)

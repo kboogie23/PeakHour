@@ -10,8 +10,10 @@ from pathlib import Path
 def build_backend(*, recording_settings, recording_directory, capture_factory=None,
                   device_query=None, host_query=None, video_cache_root=None,
                   video_allowed_path=None, video_ffmpeg=None,
-                  virtualdj_allowed_path=None, virtualdj_chooser=None, mix_export_chooser=None):
-    from windows_paths import is_safe_location
+                  virtualdj_allowed_path=None, virtualdj_chooser=None, mix_export_chooser=None,
+                  safe_location=None, cache_log=None):
+    from windows_paths import is_safe_location as windows_safe_location
+    is_safe_location = safe_location or windows_safe_location  # a laptop's engine passes deny-all
     import utils.path_ops
     utils.path_ops.is_safe_location = is_safe_location
     if video_cache_root is not None:
@@ -19,6 +21,12 @@ def build_backend(*, recording_settings, recording_directory, capture_factory=No
             raise ValueError('Video preview requires an explicit path policy and FFmpeg executable')
         from windows_video_scan import install_video_scanning
         install_video_scanning(video_cache_root)
+    from windows_cache_fallback import install as install_cache_fallback
+    install_cache_fallback(log=cache_log)  # before app: the Studio blueprints read their cache folders when app is imported
+    from windows_audio_check import install as install_audio_check
+    install_audio_check()  # Studio "Audio check": say why a song is not ready (drive gone, path too long, moved, ...)
+    from windows_studio_formats import install as install_studio_formats
+    install_studio_formats()  # Studio DAW takes ogg, opus, wma, alac and the sound of video files too (FFmpeg decodes them)
     if video_ffmpeg:  # before app: Studio DAW blueprints look up their audio tools when app is imported
         from windows_studio import install as install_studio
         install_studio(video_ffmpeg)
@@ -27,6 +35,9 @@ def build_backend(*, recording_settings, recording_directory, capture_factory=No
     from windows_scan_speed import install as install_scan_speed
     install_scan_speed()
     app = importlib.import_module('app')
+    # The update feed in axiom_build.json lists the Mac releases. Windows has no feed yet, so the update check
+    # answers "not configured" and the startup check stays silent. PEAK_HOUR_UPDATE_MANIFEST_URL sets a feed.
+    app.AXIOM_UPDATE_MANIFEST_URL = os.environ.get('PEAK_HOUR_UPDATE_MANIFEST_URL', '').strip()
     from windows_djay import install as install_windows_djay
     install_windows_djay(app)
     from windows_serato_paths import make_relpath_resolver, make_database_candidates
@@ -42,18 +53,37 @@ def build_backend(*, recording_settings, recording_directory, capture_factory=No
     install_posix()
     from windows_exports import install as install_exports
     install_exports(app)
+    from windows_brand import install as install_brand
+    install_brand(app)  # PEAK HOUR names on downloaded files
     from windows_apps import install as install_apps
     install_apps(app)
     from windows_year_fixes import install as install_year_fixes
     install_year_fixes(app)
     from windows_intake import install as install_intake
     install_intake(app)  # total, percentage and time left for "Adding your music"
+    import scanner
+    from windows_scan_decode import install as install_scan_decode
+    install_scan_decode('.' + str(ext).lower().lstrip('.') for ext in scanner.SUPPORTED_FORMATS)  # BPM/key for video, M4A, WMA
     from windows_performance import install as install_performance
     install_performance(app)  # same answers, faster, for big libraries
+    from windows_track_info import install as install_track_info
+    install_track_info(app)  # Track Information: the library is read and resolved once, not on every open
     from windows_filetypes import install as install_filetypes
     install_filetypes(app)  # Library > Type: audio, video or one file type
+    from windows_studio_durations import install as install_studio_durations
+    install_studio_durations(app)  # Magic Set / Build Around / Autofill answers carry duration_sec (the Time column, Total time)
     from windows_remote_library import install as install_remote_library
     install_remote_library(app)
+    from windows_reconnect import install as install_reconnect
+    install_reconnect(app)  # Health > Reconnect Music: relink moved songs by file name
+    from windows_health_snapshot import install as install_health_snapshot
+    install_health_snapshot(app)  # Health opens with its last results; counts again only when the library changed
+    from windows_apply_wording import install as install_apply_wording
+    install_apply_wording(app)  # Health apply results: plain words instead of "[Errno 9]"
+    from windows_playlist_import import install as install_playlist_import
+    install_playlist_import(app)  # Playlists > Import Playlist: m3u, pls, txt, csv, Rekordbox, Serato crate, VirtualDJ list
+    from windows_keep_awake import install as install_keep_awake
+    install_keep_awake(app)  # after intake: the PC stays awake during Health jobs and imports
     from windows_remote_hub import create_info_blueprint
     app.app.register_blueprint(create_info_blueprint())
     if os.environ.get('AXIOM_THEME', 'red-platinum') != 'classic':  # AXIOM_THEME=classic keeps the original lime look
@@ -86,6 +116,12 @@ def build_backend(*, recording_settings, recording_directory, capture_factory=No
         from windows_video_api import VideoPreviewStore, create_video_blueprint
         app.WINDOWS_VIDEO_STORE = VideoPreviewStore(video_cache_root, video_allowed_path, video_ffmpeg)
         app.app.register_blueprint(create_video_blueprint(app.WINDOWS_VIDEO_STORE))
+    from windows_stem_installer import install as install_stem_installer
+    # "Install stem engine": the status route and the Windows wording of the stems 503 always (so it is never the Mac wording);
+    # install/cancel only with FFmpeg, which the stem worker needs
+    install_stem_installer(app, can_install=bool(video_ffmpeg))
+    from windows_window_snapshot import install as install_window_snapshot
+    install_window_snapshot(app)  # Studio drafts and settings saved through the app itself, for a new window or browser profile
     if video_ffmpeg:
         from windows_mix_export import MixExports, create_mix_export_blueprint
         app.WINDOWS_MIX_EXPORTS = MixExports(video_ffmpeg, **({'chooser': mix_export_chooser} if mix_export_chooser else {}))

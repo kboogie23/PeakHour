@@ -76,6 +76,13 @@
     await sendCancel(operation);
     return true;
   }
+  // The compiled core words some errors for the Mac and passes Windows' raw "[Errno 13] Permission denied: '<path>'" on.
+  function friendly(message) {
+    const text=String(message||'');
+    if(!document.body.hasAttribute('data-ph-region'))return text;
+    if(/Errno 13|Permission denied|Access is denied/i.test(text))return 'Stems could not be saved: Windows denied access to the stem folder. Restart PEAK HOUR and try again.';
+    return text.replace(/\bthis Mac\b/g,'this PC').replace(/\bAXIOM app\b/g,'PEAK HOUR app');
+  }
   async function request(clip,options={}) {
     const project=options.project||window.AxiomStudioDaw.activeProject;
     if(!project?.arrangementClips?.includes(clip))throw new Error('The clip is no longer in this project.');
@@ -100,8 +107,12 @@
       const start=options.coverage?.start??(options.fullSource?0:time(clip.sourceStartBeat)),duration=options.coverage?options.coverage.end-start:options.fullSource?Number(clip.durationSec||clip.duration):time(clip.sourceStartBeat+clip.sourceDurationBeats)-start;
       const coverage={start,end:start+duration};
       const response = await fetch('/api/studio-daw/stems',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({path:clip.path,start:Math.max(0,start),duration,reuseExisting:true,...(options.fullSource?{fullSource:true}:{})})});
-      let data = await response.json();
+      let data = await response.json().catch(()=>({error:`Stem separation could not start (the app answered HTTP ${response.status}).`}));
       if(!response.ok) {
+        if(data.install_required&&!options.engineInstallTried&&window.AxiomStemInstall&&await window.AxiomStemInstall.ensure(data)){
+          related().forEach(item=>{item.stemState='failed';});  // Windows: the engine was just installed; ask again for the same stems
+          return await request(clip,{...options,engineInstallTried:true});
+        }
         const build=data.identity?.build;
         throw new Error((data.error||'Stem separation could not start.')+(build?` Installed build: ${build}.`:''));
       }
@@ -150,10 +161,10 @@
         }
       }
       if(related().length){
-        const mode=operation.progress?.mode==='mps'?'GPU/MPS':operation.progress?.mode==='cpu'?'CPU':'';
+        const mode=operation.progress?.mode==='mps'?'GPU/MPS':/cuda/i.test(operation.progress?.mode||'')?'GPU/CUDA':operation.progress?.mode==='cpu'?'CPU':'';
         showToast(related().some(item=>item.stemState==='stale')?'Clip extended. Choose Create Stems again when you want to refresh stems.':`Stems ready for this clip${mode?` using ${mode} mode`:''}.`);
       }
-    } catch(error) {related().forEach(item=>{item.stemState='failed';});showToast(error.message || 'Stem separation failed',true);}
+    } catch(error) {related().forEach(item=>{item.stemState='failed';});showToast(friendly(error.message) || 'Stem separation failed',true);}
     finally {
       operations.delete(requestKey);
       related().forEach(item=>{delete item.stemCancelRequested;});

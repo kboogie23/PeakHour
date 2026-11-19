@@ -85,7 +85,7 @@
   const el=modal();say('');
   el.querySelectorAll('[data-tab]').forEach(b=>b.classList.toggle('active',b.dataset.tab===name));
   el.querySelectorAll('[data-panel]').forEach(p=>{p.hidden=p.dataset.panel!==name;});
-  if(name==='review')loadSuggestions().then(()=>{if(state.reviewJob?.applying?.state==='running'){busy(true);watchApply();}});
+  if(name==='review')loadSuggestions().then(()=>{if(state.reviewJob?.applying?.state==='running'){busy(true);watchApply();}else if(state.reviewJob?.applying?.state==='interrupted')say(`Saving stopped when PEAK HOUR closed: ${state.reviewJob.applying.applied.toLocaleString()} saved. Tick the rest and apply again.`,true);});
   if(name==='run')preview();
   if(name==='playlist')call('/playlist').then(r=>showPlaylist(r.playlist)).catch(()=>{});
  }
@@ -170,6 +170,7 @@
    $('span',box).style.width=`${pct}%`;
    $('p',box).textContent=running?`${state.tasks[job.task]}: ${job.done.toLocaleString()} of ${job.total.toLocaleString()} tracks checked (${pct}%) with ${job.model}.`
     :job.state==='failed'?`Stopped: ${job.error}`:job.state==='stopped'?`Stopped after ${job.done.toLocaleString()} tracks. The suggestions so far are ready to review.`
+    :job.state==='interrupted'?`Stopped when PEAK HOUR closed, after ${job.done.toLocaleString()} of ${job.total.toLocaleString()} tracks. The suggestions so far are ready to review; you can start a new check.`
     :`Done: ${job.total.toLocaleString()} tracks checked. Open Review & apply.`;
   }
   clearTimeout(timer);
@@ -206,7 +207,8 @@
    const p=r.job&&r.job.applying;
    if(p&&p.state==='running'){say(`Saving ${p.done.toLocaleString()} of ${p.total.toLocaleString()}… you can keep using PEAK HOUR.`);applyTimer=setTimeout(watchApply,1500);return;}
    busy(false);table();
-   if(p){say(`${p.applied.toLocaleString()} change${p.applied===1?'':'s'} saved in PEAK HOUR.${p.failed?` ${p.failed} could not be saved; see the list.`:''}`,p.failed>0);if(p.applied)window.refreshLibrary?.();}
+   if(p&&p.state==='interrupted')say(`Saving stopped when PEAK HOUR closed: ${p.applied.toLocaleString()} saved. Tick the rest and apply again.`,true);
+   else if(p){say(`${p.applied.toLocaleString()} change${p.applied===1?'':'s'} saved in PEAK HOUR.${p.failed?` ${p.failed} could not be saved; see the list.`:''}`,p.failed>0);if(p.applied)window.refreshLibrary?.();}
   }catch(e){busy(false);fail(e);}
  }
  async function open(name){

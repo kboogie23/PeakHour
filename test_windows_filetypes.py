@@ -28,7 +28,11 @@ for ft in ('','audio','video','mp3','vob','avi','m4a','flac'):
     out['list_'+ft]=names('/get-tracks?era=All&preparation=all&sort=default&limit=40&offset=0'+q)
     out['search_'+ft]=names('/api/library/search?q=love&era=All&limit=40'+q)
 out['types']=c.get('/api/windows/library/types',base_url=b).get_json()
+out['types_again']=c.get('/api/windows/library/types',base_url=b).get_json()  # answered from the kept counts while the library file is unchanged
 out['era_check_outside']=axiom._load_library_search_snapshot()[0]['tracks'].__len__()==7
+cache_file=pathlib.Path(axiom.CACHE_PATH);saved=json.loads(cache_file.read_text(encoding='utf-8'))
+saved['tracks'].append(dict(saved['tracks'][0],path=saved['tracks'][0]['path'].rsplit('.',1)[0]+'-new.mp4'));cache_file.write_text(json.dumps(saved),encoding='utf-8')
+out['types_edited']=c.get('/api/windows/library/types',base_url=b).get_json()['video']
 print(json.dumps(out))
 '''
  run=subprocess.run([sys.executable,'-c',script],capture_output=True,text=True,timeout=300,cwd=str(workspace))
@@ -40,6 +44,7 @@ print(json.dumps(out))
  assert out['list_video']==sorted(['clip.mp4','old.vob','show.avi'])==out['search_video']
  assert out['list_mp3']==['one.mp3','two.mp3'] and out['list_vob']==['old.vob'] and out['list_avi']==['show.avi'] and out['list_m4a']==['three.m4a'] and out['list_flac']==[]
  t=out['types'];assert t['audio']==4 and t['video']==3 and {x['type']:x['count'] for x in t['types']}=={'mp3':2,'m4a':1,'wav':1,'mp4':1,'vob':1,'avi':1}
+ assert out['types_again']==t and out['types_edited']==4  # kept counts match; a changed library file is counted again
  assert out['era_check_outside'] is True
  shutil.rmtree(base,ignore_errors=True)
  print('PASS: Library Type filter narrows the list and search to audio, video or one file type; counts per type')

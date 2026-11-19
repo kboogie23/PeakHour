@@ -30,7 +30,7 @@ try:
  assert d.get('success') and d.get('track',{}).get('title')=='Night Fever' and d['track']['bpm']==109.0,json.dumps(d)[:600]
  assert d.get('provider','virtualdj')=='virtualdj' and d.get('active_provider','virtualdj')=='virtualdj' and d['source_label']=='VirtualDJ',{k:d.get(k) for k in ('provider','active_provider','source_label')}
  assert [x['title'] for x in d['history']]==['Cruel Summer'],d['history']
- running.clear()
+ running.clear();__import__('time').sleep(L.SNAPSHOT_TTL+0.2)  # the poll reuses a process check for SNAPSHOT_TTL seconds
  d=client.get('/api/performance/dj/live',headers=h).get_json();assert not d.get('active') or not d.get('success'),d  # VirtualDJ closed: nothing followed
  assert app._mac_process_running is windows_djay.process_running  # still unwrapped after install
  print('PASS: Live Assist follows VirtualDJ history (now playing + history, AXIOM BPM) and labels it VirtualDJ; Serato guards unaffected')

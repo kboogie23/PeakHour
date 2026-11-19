@@ -48,9 +48,27 @@
         const startBpm = parseFloat(document.getElementById('blueprint-start-bpm').value);
         const endBpm = parseFloat(document.getElementById('blueprint-end-bpm').value);
 
-        // Add a point in the middle
-        const midTime = Math.round(setLen / 2);
-        const midBpm = Math.round((startBpm + endBpm) / 2);
+        // A mid point needs the start and end points around it. Without them Generate Set rebuilt the
+        // two end points and silently dropped the mid point.
+        if (graphDots.length < 2 && !anchorTargetDot) applyBpmBlueprint();
+        if (graphDots.length < 2) {
+            graphDots.push({ x: Math.round(setLen / 2), y: Math.round((startBpm + endBpm) / 2) });
+            graphDots.sort((a, b) => a.x - b.x);
+            bpmChartInstance.data.datasets[1].data = graphDots;
+            recalcBpmYAxis();
+            renderMagicSetJourney();
+            return;
+        }
+
+        // Add a point in the middle of the widest gap, so a second press does not stack on the first.
+        let gapStart = graphDots[0], gapEnd = graphDots[1];
+        for (let i = 1; i < graphDots.length; i++) {
+            if (graphDots[i].x - graphDots[i - 1].x > gapEnd.x - gapStart.x) {
+                gapStart = graphDots[i - 1]; gapEnd = graphDots[i];
+            }
+        }
+        const midTime = Math.round((gapStart.x + gapEnd.x) / 2);
+        const midBpm = Math.round((gapStart.y + gapEnd.y) / 2);
 
         graphDots.push({ x: midTime, y: midBpm });
         graphDots.sort((a,b) => a.x - b.x);
@@ -157,7 +175,7 @@
       const btn = document.getElementById('btn-build-around-tracks');
       buildMagicSetAroundWorkingTracks.busy = true;
       setAxiomButtonBusy(btn, true, 'Reading Collective Vibe...');
-      showToast(`Reading ${seeds.length} Working Set tracks, then sequencing the result against your BPM markers...`);
+      showMagicWorkingNotice(`Reading ${seeds.length} Working Set tracks, then sequencing the result against your BPM markers...`);
       try {
         const resp = await fetch('/api/studio/build_around_tracks', {
           method: 'POST',
@@ -172,6 +190,7 @@
           })
         });
         const data = await resp.json().catch(() => ({}));
+        clearMagicWorkingNotice();
         if (!resp.ok || data.success === false) {
           throw new Error(data.error || data.message || 'AXIOM could not build around these tracks.');
         }
@@ -187,6 +206,7 @@
         showStudioTrackAddedPulse({ title: `${Number(data.added_count || 0)} Magic Set tracks` }, currentPlaylist.length, currentPlaylist);
         showToast(data.message || `Kept ${seeds.length} tracks and built around their collective sound.`);
       } catch (error) {
+        clearMagicWorkingNotice();
         showToast(error.message || 'Build Around These Tracks paused.', true);
       } finally {
         buildMagicSetAroundWorkingTracks.busy = false;
@@ -231,9 +251,31 @@
       if (selectedPlaylistId === editingPlaylistId) refreshPlaylistsView();
     }
 
-    function studioGenerationGuard() {
+    // The "Building set..." notice is persistent and outranks the plain result messages ("Filled 12 tracks..."),
+    // so it stayed on screen as WORKING after Magic Set had finished (or failed). Close it before the result is shown.
+    // Only the notice Magic Set itself opened is closed: an export's or a Library scan's progress notice may be on screen by then.
+    let magicWorkingNotice = null;
+    function showMagicWorkingNotice(message) {
+      const player = document.getElementById('audio-player');
+      const before = player ? player.querySelector('.player-notification-surface:not(.is-leaving)') : null;
+      showToast(message);
+      const surface = player ? player.querySelector('.player-notification-surface[data-notification-kind="working"]:not(.is-leaving)') : null;
+      magicWorkingNotice = surface && surface !== before ? surface : null;
+    }
+    function clearMagicWorkingNotice() {
+      const surface = magicWorkingNotice;
+      magicWorkingNotice = null;
+      if (surface && surface.isConnected && surface.dataset.notificationKind === 'working') {
+        surface.querySelector('.player-notification-dismiss')?.click();
+      }
+    }
+
+    // quiet: the caller reports a stale response itself (the Windows Fill buttons), so no toast that could replace another notice.
+    function studioGenerationGuard(quiet = false) {
       const working = currentPlaylist, route = currentRoutePlaylist;
-      const state = () => JSON.stringify({working: currentPlaylist, route: currentRoutePlaylist,
+      // Song order, not whole objects: hydrateStudioTrackVersions() adds fields to the tracks while a request is in flight.
+      const order = list => (Array.isArray(list) ? list : []).map(track => String(track?.path || ''));
+      const state = () => JSON.stringify({working: order(currentPlaylist), route: order(currentRoutePlaylist),
         editing: editingPlaylistId, view: activeStudioView, dots: graphDots,
         anchor: anchorTargetDot, anchorIndex: graphAnchorIndex, brief: setBriefRuntimePayload(),
         duration: document.getElementById('avg-duration-selector')?.value,
@@ -241,30 +283,37 @@
       const requested = state();
       return () => {
         if (currentPlaylist === working && currentRoutePlaylist === route && requested === state()) return true;
-        showToast('Your set or setup changed while Magic Set was building. Your edits were kept; build again to use them.');
+        if (!quiet) showToast('Your set or setup changed while Magic Set was building. Your edits were kept; build again to use them.');
         return false;
       };
     }
 
-    async function autoFillSegment() {
-      if (autoFillSegment.busy) return;
-      if (graphDots.length < 2) return;
-      const segStart = graphDots[graphDots.length - 2];
-      const segEnd   = graphDots[graphDots.length - 1];
+    // Called with no argument it fills the last curve segment, as always. The Windows "Fill" buttons pass
+    // options { segStart, segEnd, bpmAt, maxTracks, quiet }: that time range instead of the last two points, a BPM
+    // lookup for the curve, a cap on the songs added, and no toasts (the caller shows the result and gets it back).
+    async function autoFillSegment(options) {
+      const opts = options && typeof options === 'object' && !options.target && options.segStart && options.segEnd ? options : null;
+      const outcome = { added: [], error: '', stale: false, skipped: false };
+      if (autoFillSegment.busy) { outcome.skipped = true; return outcome; }
+      if (!opts && graphDots.length < 2) return outcome;
+      const segStart = opts ? opts.segStart : graphDots[graphDots.length - 2];
+      const segEnd   = opts ? opts.segEnd : graphDots[graphDots.length - 1];
       const avgDur   = parseFloat(document.getElementById('avg-duration-selector').value);
       let anchorKey  = currentPlaylist.length > 0 ? currentPlaylist[currentPlaylist.length - 1].camelot : null;
 
       const btnAF = null; // btn-autofill removed
-      const stillCurrent = studioGenerationGuard();
+      const stillCurrent = studioGenerationGuard(!!opts);
       autoFillSegment.busy = true;
 
       try {
         const segTime = segEnd.x - segStart.x;
-        const tempoFlip = magicGraphTempoFlipInfo(segStart, segEnd, avgDur);
-        const need    = magicSetTrackEstimate(segTime, segStart.y, segEnd.y, avgDur, tempoFlip?.mode || '');
+        const tempoFlip = opts ? null : magicGraphTempoFlipInfo(segStart, segEnd, avgDur);
+        let need      = magicSetTrackEstimate(segTime, segStart.y, segEnd.y, avgDur, tempoFlip?.mode || '');
+        if (opts && opts.maxTracks > 0) need = Math.min(need, Math.floor(opts.maxTracks));
         if (need < 1) {
-          showToast('Segment too short — move the points further apart', true);
-          return;
+          if (!opts) showToast('Segment too short — move the points further apart', true);
+          outcome.error = 'Segment too short';
+          return outcome;
         }
         const dtTime = segTime / need;
         let addedTracks = [];
@@ -274,8 +323,8 @@
         for (let s = 0; s < need; s++) {
           const tFrom   = segStart.x + s * dtTime;
           const tTo     = segStart.x + (s + 1) * dtTime;
-          const bpmFrom = magicSegmentBpmAt(segStart.y, segEnd.y, s / need, tempoFlip?.mode || '');
-          const bpmTo   = magicSegmentBpmAt(segStart.y, segEnd.y, (s + 1) / need, tempoFlip?.mode || '');
+          const bpmFrom = opts && opts.bpmAt ? opts.bpmAt(tFrom) : magicSegmentBpmAt(segStart.y, segEnd.y, s / need, tempoFlip?.mode || '');
+          const bpmTo   = opts && opts.bpmAt ? opts.bpmAt(tTo) : magicSegmentBpmAt(segStart.y, segEnd.y, (s + 1) / need, tempoFlip?.mode || '');
 
           const start_dot = { time_min: tFrom, bpm: Math.round(bpmFrom * 10) / 10 };
           const end_dot   = { time_min: tTo,   bpm: Math.round(bpmTo   * 10) / 10 };
@@ -287,7 +336,7 @@
           });
           let data;
           try { data = await resp.json(); } catch(je) { data = {}; }
-          if (!stillCurrent()) return;
+          if (!stillCurrent()) { outcome.stale = true; return outcome; }
           if (!resp.ok) {
             const msg = data.error || data.message || data.detail || `HTTP ${resp.status}`;
             throw new Error(`Sub-segment ${s + 1}: ${msg}`);
@@ -309,26 +358,33 @@
           }
         }
 
+        if (opts && opts.maxTracks > 0) addedTracks = addedTracks.slice(0, Math.floor(opts.maxTracks));
         if (addedTracks.length > 0) {
           saveHistory();
           currentPlaylist = dedupePlaylistTracks(currentPlaylist.concat(addedTracks));
+          outcome.added = addedTracks;
           syncEditingPlaylistIfNeeded();
           // graphDots intentionally NOT cleared — allows chaining further segments
           initSortable();
           markMagicSetReady();
-          recalculateAudit();
-          showToast(`Auto-filled ${addedTracks.length} track${addedTracks.length !== 1 ? 's' : ''}`);
-          showStudioTrackAddedPulse({ title: `${addedTracks.length} Magic Set tracks` }, currentPlaylist.length);
-        } else {
+          if (opts) {
+            await recalculateAudit();
+          } else {
+            recalculateAudit();
+            showToast(`Auto-filled ${addedTracks.length} track${addedTracks.length !== 1 ? 's' : ''}`);
+            showStudioTrackAddedPulse({ title: `${addedTracks.length} Magic Set tracks` }, currentPlaylist.length);
+          }
+        } else if (!opts) {
           showToast('No matches found to fill gap', true);
         }
       } catch (e) {
         console.error('autoFillSegment error:', e);
-        showToast(e.message || 'Error filling segment', true);
+        outcome.error = e.message || 'Error filling segment';
+        if (!opts) showToast(outcome.error, true);
       } finally {
         autoFillSegment.busy = false;
       }
-
+      return outcome;
     }
 
     async function fillSetFromBPMPoints() {
@@ -349,7 +405,7 @@
 
       const btn = document.getElementById('btn-magic-set');
       setAxiomButtonBusy(btn, true, 'Building Magic Set...');
-      showToast(`Building set from ${dots.length - 1} BPM segment${dots.length - 2 === 0 ? '' : 's'}...`);
+      showMagicWorkingNotice(`Building set from ${dots.length - 1} BPM segment${dots.length - 2 === 0 ? '' : 's'}...`);
 
       try {
         const points = dots.map((dot, index) => {
@@ -373,6 +429,7 @@
         });
         let data;
         try { data = await resp.json(); } catch (jsonError) { data = {}; }
+        clearMagicWorkingNotice();
         if (!stillCurrent()) return;
         if (!resp.ok || data.error) {
           throw new Error(data.error || data.message || data.detail || `HTTP ${resp.status}`);
@@ -403,6 +460,7 @@
         }
       } catch (err) {
         console.error('fillSetFromBPMPoints error:', err);
+        clearMagicWorkingNotice();
         showToast(err.message || 'Error filling from BPM points', true);
       } finally {
         fillSetFromBPMPoints.busy = false;

@@ -106,7 +106,8 @@
         catalog=result.plugins.slice().sort((a,b)=>(a.manufacturer+' '+a.name).localeCompare(b.manufacturer+' '+b.name));const chosen=select.value;select.replaceChildren();option('','Choose effect');
         catalog.forEach(p=>option(p.id,`${p.manufacturer}: ${p.name}`));
         if(chosen&&!catalog.some(p=>p.id===chosen))option(chosen,c.nativeEffect?.name||'Unavailable effect');
-        select.value=chosen;select.disabled=false;status.textContent=catalog.length?'Choose an effect':'No VST3 effects found. Install VST3 effects in C:\\Program Files\\Common Files\\VST3, then scan again.';if(chosen)await load();
+        if(!catalog.length)select.firstElementChild.textContent='No VST3 plug-ins found';
+        select.value=chosen;select.disabled=false;status.textContent=catalog.length?'Choose an effect':'No VST3 plug-ins found in C:\\Program Files\\Common Files\\VST3. Install a VST3 effect plug-in there (or in %LOCALAPPDATA%\\Programs\\Common\\VST3), then press Scan again.';if(chosen)await load();
       }catch(error){if(token===revision&&dialog.isConnected)status.textContent=error.message;}
       finally{if(token===revision)select.disabled=false;}
     }

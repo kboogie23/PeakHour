@@ -519,7 +519,7 @@
           row.style.display = 'flex'; row.style.justifyContent = 'space-between'; row.style.alignItems = 'center';
           row.style.padding = '8px 0';
           const nameSpan = document.createElement('span');
-          nameSpan.style.color = '#ddd'; nameSpan.innerText = b.replace(/^.*\//, '');
+          nameSpan.style.color = '#ddd'; nameSpan.innerText = b.replace(/^.*[\\/]/, '');
           const btn = document.createElement('button');
           btn.className = 'px-3 py-1 rounded bg-red-600 text-white/90';
           btn.innerText = 'Restore';

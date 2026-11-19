@@ -45,7 +45,7 @@
  async function connectLibrary(){
   if(typeof closeLibrarySourcePicker==='function')closeLibrarySourcePicker();
   const overlay=(fn,options)=>{if(typeof window[fn]==='function')window[fn](options)};
-  overlay('showMusicIntakeOverlay',{indexed:0,total:0,folderName:'VirtualDJ',stage:'Reading VirtualDJ',message:'AXIOM is reading your VirtualDJ databases. VirtualDJ files stay untouched.'});
+  overlay('showMusicIntakeOverlay',{indexed:0,total:0,folderName:'VirtualDJ',stage:'Reading VirtualDJ',message:'PEAK HOUR is reading your VirtualDJ databases. VirtualDJ files stay untouched.'});
   try{
    const response=await fetch(api+'connect_library',{method:'POST',headers:{'Content-Type':'application/json'},body:'{}'});
    const data=await response.json().catch(()=>({}));
@@ -82,7 +82,7 @@
   return new Promise(resolve=>{
    const box=document.createElement('dialog');box.className='axiom-vdj-inspect';box.setAttribute('aria-labelledby','axiom-vdj-export-title');
    const heading=element('h2','Name your VirtualDJ list');heading.id='axiom-vdj-export-title';
-   const intro=element('p',`Fully quit VirtualDJ first. AXIOM adds ${count} track${count===1?'':'s'} as a new list under Lists & Advice > My Lists, in this order. Existing lists are never replaced.`);
+   const intro=element('p',`Fully quit VirtualDJ first. PEAK HOUR adds ${count} track${count===1?'':'s'} as a new list under Lists & Advice > My Lists, in this order. Existing lists are never replaced.`);
    const input=element('input');input.type='text';input.value=defaultName;input.maxLength=120;input.setAttribute('aria-label','VirtualDJ list name');
    const actions=element('div');actions.className='axiom-vdj-actions';
    const cancel=element('button','Cancel');cancel.type='button';const ok=element('button','Add to VirtualDJ');ok.type='button';
@@ -100,7 +100,7 @@
   const tracks=(selection?selection.tracks:(typeof getActiveStudioOutputTracks==='function'?getActiveStudioOutputTracks():[]))||[];
   const paths=tracks.map(t=>t&&t.path).filter(Boolean);
   if(!paths.length){if(typeof showToast==='function')showToast('Set is empty.',true);return}
-  const name=await askListName(selection?.name||`AXIOM ${new Date().toISOString().slice(0,10)}`,paths.length);
+  const name=await askListName(selection?.name||`PEAK HOUR ${new Date().toISOString().slice(0,10)}`,paths.length);
   if(!name)return;
   try{
    const response=await fetch(api+'lists',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name,paths})});

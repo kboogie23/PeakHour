@@ -48,7 +48,7 @@
         const nodeScore = isMissingRequest ? 0 : (trans ? trans.overall : studioEnergyScore(t.energy, i));
         const nodeRating = trans ? trans.rating : studioEnergyRating(nodeScore);
         const nodeBpm = t.bpm ? Math.round(parseFloat(t.bpm)) : '--';
-        const harmonicScore = i === 0 ? 'Anchor' : (isHarmonic ? '2%' : '--');
+        const harmonicScore = i === 0 ? 'Anchor' : (isHarmonic ? 'Match' : '--');
         const matchingSongsLeft = matchingSongsButtonPosition() === 'left';
         const hasAlternateVersions = !t.missing_placeholder && studioTrackHasAlternateVersions(t);
         const versionActionButton = hasAlternateVersions

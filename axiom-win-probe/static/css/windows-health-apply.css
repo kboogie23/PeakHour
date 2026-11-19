@@ -1,0 +1,16 @@
+/* Health apply status bar (windows-health-apply.js). No transitions or animations. */
+.ph-apply-status{flex:0 0 auto;box-sizing:border-box;width:100%;margin:10px 0;padding:14px 18px;border:2px solid;border-radius:10px;font-size:15px;line-height:1.45;display:grid;grid-template-columns:1fr auto;column-gap:16px;row-gap:4px;align-items:center}
+.ph-apply-status[data-state="running"]{background:#1b2330;color:#e8eef7;border-color:#5b7396}
+/* Green here sits just past 140 degrees of hue (a touch of blue): windows_theme.py recolours pure greens (55-140) into red or grey as it serves CSS, and a success bar must stay green */
+.ph-apply-status[data-state="ok"]{background:#123520;color:#eafff2;border-color:#3fa066}
+.ph-apply-status[data-state="partial"]{background:#3a2a00;color:#ffe9a8;border-color:#c99a1c}
+.ph-apply-status[data-state="failed"]{background:#3a1010;color:#ffd9d9;border-color:#c04a4a}
+.ph-apply-title{grid-column:1;font-size:17px;font-weight:800;color:inherit}
+.ph-apply-detail{grid-column:1;font-size:14px;color:inherit;overflow-wrap:anywhere}
+.ph-apply-bar{grid-column:1 / -1;height:10px;margin-top:6px;border-radius:5px;background:rgba(255,255,255,.18);overflow:hidden}
+.ph-apply-fill{height:100%;width:0;background:#8fb6ee}
+.ph-apply-fill.is-waiting{background:repeating-linear-gradient(135deg,#8fb6ee 0,#8fb6ee 12px,#46648f 12px,#46648f 24px)}
+.ph-apply-status:not([data-state="running"]) .ph-apply-bar{display:none}
+.ph-apply-close{grid-column:2;grid-row:1 / span 2;align-self:start;border:1px solid currentColor;border-radius:8px;padding:6px 14px;background:transparent;color:inherit;font:inherit;font-weight:700;cursor:pointer}
+.ph-apply-close:focus-visible{outline:2px solid currentColor;outline-offset:2px}
+.ph-apply-status[data-state="running"] .ph-apply-close{display:none}

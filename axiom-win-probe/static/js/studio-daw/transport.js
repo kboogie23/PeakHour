@@ -41,6 +41,18 @@
     }
     if(text){text.textContent=message?(message.includes('Key Sync')?'Preparing Key Sync…':'Preparing audio…'):'';text.title=message||'';}
   }
+  // The browser words for a stalled or refused request ("signal is aborted without reason", "Failed to fetch") mean nothing to
+  // a DJ; say what happened.
+  function friendlyError(error){
+    const text=String(error?.message||error||'');
+    if(error?.name==='AbortError'||/signal is aborted|aborted without reason/i.test(text))return 'The local audio engine did not answer in time.';
+    if(/failed to fetch|networkerror|load failed/i.test(text))return 'The local audio engine could not be reached.';
+    return text||'Its audio could not be prepared.';
+  }
+  // The late-section recovery, the retry, the wider look-ahead and the "preparing" banner are Windows-edition behaviour.
+  const windowsEdition=()=>document.body.hasAttribute('data-ph-region');
+  // A request that timed out or lost its connection is tried once more before a clip is paused for it.
+  const transientError=error=>error?.name==='AbortError'||/timed out|signal is aborted|failed to fetch|networkerror|load failed|Another clip is being prepared|Previous clip preparation is stopping/i.test(String(error?.message||error));
   const hasPatternAudio=p=>window.AxiomBeatPreview?.hasSamples(p)||window.AxiomInstruments?.hasNotes(p);
   function audibleClockTime() {
     if(!context)return 0;
@@ -160,6 +172,24 @@
   const rowLevel=(p,id,value=p.rowMixer?.[id]?.volume??1)=>p.rowMixer?.[id]?.muted?0:volume(value);
   const clipLevel=(c,value=c.mixVolume??1)=>c.mixMuted?0:volume(value);
   const masterLevel=(p,value=p?.masterMixer?.volume??1)=>p?.masterMixer?.muted?0:volume(value);
+  // Deck pan (-100 left ... 0 centre ... +100 right, project.rowMixer[id].pan). A deck with a pan, or any deck while the
+  // Windows pan control is on the page (so a live change needs no rebuild), gets a stage after its fader: the signal is
+  // forced to stereo (a mono source becomes L=R=x, not -3 dB), then the far side is turned down (balance law), so centre is
+  // unity gain on both sides. Without the field (older projects, the Mac edition, an export of a centred deck) no node exists.
+  const panValue=value=>Number.isFinite(Number(value))?Math.max(-100,Math.min(100,Math.round(Number(value)))):0;
+  function panStage(ctx,owner,p,id) {
+    const lead=owner(ctx.createGain());lead.channelCount=2;lead.channelCountMode='explicit';lead.channelInterpretation='speakers';
+    const split=owner(ctx.createChannelSplitter(2)),merge=owner(ctx.createChannelMerger(2)),left=owner(ctx.createGain()),right=owner(ctx.createGain());
+    lead.connect(split);split.connect(left,0);split.connect(right,1);left.connect(merge,0,0);right.connect(merge,0,1);
+    const side=amount=>amount>=1?0:Math.cos(amount*Math.PI/2);
+    const apply=(initial=false)=>{
+      const pan=panValue(p.rowMixer?.[id]?.pan)/100,l=pan>0?side(pan):1,r=pan<0?side(-pan):1;
+      if(initial){left.gain.value=l;right.gain.value=r;return;}
+      smooth(left.gain,l,ctx);smooth(right.gain,r,ctx);
+    };
+    apply(true);
+    return {apply,connect(fader){fader.connect(lead);return merge;}};
+  }
   function mixerChanged(p) {
     if(project!==p || !context) return;
     if((running||loading)&&!renderingProject&&masterLimiterPresent!==Boolean(p.masterMixer?.limiter)){
@@ -221,7 +251,9 @@
       throw error;
     }
   }
+  let stopEpoch=0;
   function stop(reset=true,reason='user-or-edit') {
+    stopEpoch++;
     if(playheadFrame!==null)window.cancelAnimationFrame?.(playheadFrame);
     playheadFrame=null;
     timingDiagnostics.lastStopReason=reason;
@@ -274,21 +306,29 @@
     // title and buttons after the preview handoff.
     if(window.getAxiomPreviewPlayerContext && window.getAxiomPreviewPlayerContext()!=='studio-daw-preview')return;
     const button=document.querySelector('#audio-player .player-left-zone button:not(.daw-stop-button):not(.daw-pause-button)');
-    button?.setAttribute('aria-label',loading?'Cancel audio preparation':running?'Pause project':'Play project');
-    button?.setAttribute('aria-pressed',String(running));
-    button?.setAttribute('aria-busy',String(loading));
+    // Same values again are still attribute mutations, and the page's observers (button typography, timeline painting) run
+    // a pass over the whole document for each one: write only what changed.
+    setAttribute(button,'aria-label',loading?'Cancel audio preparation':running?'Pause project':'Play project');
+    setAttribute(button,'aria-pressed',String(running));
+    setAttribute(button,'aria-busy',String(loading));
     const toolbarPlay=document.getElementById('daw-toolbar-play');
-    if(toolbarPlay){const icon=loading?'×':running?'Ⅱ':'▶';if(toolbarPlay.textContent!==icon)toolbarPlay.innerHTML=`<span aria-hidden="true">${icon}</span>`;toolbarPlay.setAttribute('aria-label',loading?'Cancel audio preparation':running?'Pause project':'Play project');toolbarPlay.setAttribute('aria-pressed',String(running));}
+    if(toolbarPlay){const icon=loading?'×':running?'Ⅱ':'▶';if(toolbarPlay.textContent!==icon)toolbarPlay.innerHTML=`<span aria-hidden="true">${icon}</span>`;setAttribute(toolbarPlay,'aria-label',loading?'Cancel audio preparation':running?'Pause project':'Play project');setAttribute(toolbarPlay,'aria-pressed',String(running));}
   }
+  function setAttribute(element,name,value){if(element&&element.getAttribute(name)!==value)element.setAttribute(name,value);}
+  let shownPlayheadStep=NaN;
   function drawPlayhead() {
     if(!project||!clock||project!==window.AxiomStudioDaw?.activeProject)return;
     const shell=document.getElementById('studio-daw-shell');
     if(!shell||shell.classList.contains('hidden'))return;
     const currentPosition=running?position():cursor,beat=clock.secondsToBeat(currentPosition);
-    shell.style.setProperty('--project-playhead',String(currentPosition));
+    // Nothing reads this custom property, but a change to it restyles every descendant of the shell. At 60 ms ticks that was
+    // a full restyle of a 45-clip timeline sixteen times a second; a quarter-second step keeps it available to anyone who does.
+    const playheadStep=Math.floor(currentPosition*4);
+    if(playheadStep!==shownPlayheadStep){shownPlayheadStep=playheadStep;shell.style.setProperty('--project-playhead',String(currentPosition));}
     if(running){
       if(!window.getAxiomPreviewPlayerContext||window.getAxiomPreviewPlayerContext()==='studio-daw-preview'){
-        const title=document.getElementById('ap-title');if(title)title.textContent=project.title;
+        // Only when it differs: replacing identical text is still a childList mutation, and the page watches those.
+        const title=document.getElementById('ap-title');if(title&&title.textContent!==project.title)title.textContent=project.title;
       }
       window.AxiomStudioDaw.updateAnchorStatus?.(beat);
     }
@@ -571,6 +611,7 @@
   async function play(p,from=cursor,clipIds=null,offline=false,recording=null,forceStems=false,sourceCue=null) {
     window.AxiomSourceAudition?.stop();
     stop(false,'play-start'); cursor=from;
+    if(Date.now()-(lateResumes[lateResumes.length-1]||0)>180000)lateBoost=0;  // a late section is forgotten after three quiet minutes
     if(!p) return;
     project=p;const token=++generation;loading=true;renderingProject=Boolean(offline);recordingJob=recording;auditionClipIds=offline?null:clipIds;update();
     const isolatedPlayback=!offline&&!recording&&!clipIds&&!forceStems,failedClips=new Map();let activePasses=null;
@@ -581,7 +622,7 @@
       failedClips.set(c.id,String(error.message||error));
       timingDiagnostics.clipFailures=[...failedClips].map(([id,reason])=>({id,reason}));
       for(const pass of activePasses||[])pass.skipClip?.(c);
-      const reason=/PCM|sample-rate conversion|audio block/.test(String(error.message))?'AXIOM could not load this section of its audio.':String(error.message||'Its audio could not be prepared.');
+      const reason=/PCM|sample-rate conversion|audio block/.test(String(error.message))?'AXIOM could not load this section of its audio.':friendlyError(error);
       const recovery=/effect/i.test(reason)?'Bypass the affected effect, then press Play to retry.':c.stemJob?'Choose Create Stems for this clip, then press Play to retry.':'Reconnect its audio or correct the clip, then press Play to retry.';
       const remaining=hasPatternAudio(p)||p.arrangementClips.some(clip=>!clip.muted&&!failedClips.has(clip.id)&&clip.timelineDurationBeats>0);
       window.showToast?.(`${c.label||c.title||'A clip'} paused: ${reason} ${remaining?(running?'Other clips keep playing. ':'AXIOM will try the remaining clips. '):''}${recovery}`,true);
@@ -718,7 +759,8 @@
       const renderLimit=offline&&!tailRegion?from+exportDuration:Infinity;
       if(repeat)from=repeat.start;
       const plannedFrom=Math.min(from,...tapeRanges.map(r=>r.start));from=plannedFrom;
-      const rolling=(!offline||streamExport||bufferedOffline)&&!repeat,lookAhead=12;
+      // Live playback widens this when preparation proves slow (see queueAudio); exports keep it fixed.
+      const rolling=(!offline||streamExport||bufferedOffline)&&!repeat;let lookAhead=12;
       const rollingPatterns=rolling||Boolean(repeat);
       const patternEndSeconds=Math.max(from,...(window.AxiomPatterns?.list(p)||[]).map(c=>clock.beatToSeconds(c.startBeat+c.durationBeats)));
       const patternWindowEnd=(start,limit=Infinity)=>Math.max(start,Math.min(repeat?repeat.end:patternEndSeconds,start+lookAhead,limit,renderLimit));
@@ -734,7 +776,33 @@
         const span=window.AxiomStudioDaw.sourceBeatToSeconds(c,c.sourceStartBeat+c.sourceDurationBeats)-window.AxiomStudioDaw.sourceBeatToSeconds(c,c.sourceStartBeat);
         return Number.isFinite(span)&&span>=.02;
       }):[]);
-      const leases=window.AxiomPreparedCache?.create(error=>{if(token===generation){stop(false,'cache-lease-failed');window.showToast?.(error.message,true);}});cacheLease=leases;
+      // The lease only keeps prepared files from being evicted for two minutes. One slow or failed reply (the renewal runs every
+      // 30 s) used to stop playback with the browser's raw "signal is aborted without reason"; it now stops only when the
+      // server has not confirmed the lease for 75 s (the server holds it for 120 s), with a message that says what happened.
+      // The time comes from the cache itself: only a real server renewal moves it, a skipped one does not.
+      const leases=window.AxiomPreparedCache?.create(error=>{
+        if(token!==generation)return;
+        timingDiagnostics.leaseFailures=(timingDiagnostics.leaseFailures||0)+1;
+        // Try the renewal again at once; a stalled reply is usually a one-off.
+        Promise.resolve(leases?.renew()).then(()=>{},failure=>{
+          if(token!==generation||Date.now()-(leases?.confirmedAt?.()||0)<75000)return;
+          stop(false,'cache-lease-failed');window.showToast?.(friendlyError(failure||error)+' Press Play to resume from the paused position.',true);
+        });
+      });cacheLease=leases;
+      let leaseSlowUntil=0;
+      async function holdLease(url){
+        if(!leases)return;
+        // A file that was never leased fails the clip as before; only a failed renewal of a lease already held is tolerated.
+        if(!leases.confirmedAt?.(url)){await leases.hold(url);return;}
+        const held=leases.hold(url).then(()=>true,error=>{
+          if(/cancelled/i.test(String(error?.message)))return false;
+          timingDiagnostics.leaseFailures=(timingDiagnostics.leaseFailures||0)+1;return false;});
+        // Never let a slow reply hold up the audio. Wait 1.5 s for it; after one that took longer, do not wait at all for the
+        // next 15 s (the replies queue behind each other): the lease finishes, or is renewed, behind the audio.
+        if(Date.now()<leaseSlowUntil)return;
+        const answered=await Promise.race([held,new Promise(resolve=>setTimeout(()=>resolve(null),1500))]);
+        if(answered===null)leaseSlowUntil=Date.now()+15000;
+      }
       const clipEnds=new Map(entries.map(e=>[e.clip.id,clock.beatToSeconds(e.clip.timelineStartBeat+e.clip.timelineDurationBeats)-from]));
       const stats={decodedBytes:0,peakDecodedBytes:0,decodedSources:0,decodedBlocks:0,preparedSources:0,scheduledEntries:0,pendingEntries:0,resamplerBytes:0,peakResamplerBytes:0,workletSourceEntries:0,nativeSourceEntries:0};
       if(rollingPatterns)streamingState=stats;
@@ -833,7 +901,7 @@
         let url=await prepareClip(c,p,token,stem);
         if(c.nativeEffect?.enabled)url=await window.AxiomNativeEffects.prepare(c,url,()=>token!==generation,p);
         if(token!==generation)throw new Error('Playback cancelled');
-        await leases?.hold(url);
+        await holdLease(url);
         if(token!==generation)throw new Error('Playback cancelled');
         preparedURLs.set(key,url);stats.preparedSources++;return url;
       }
@@ -863,7 +931,7 @@
               // Use the exact source position from the compiled entry. A tiny
               // grid-rate residue within one sample is the neutral timing case.
               deferred.push({...entry,stem,pcm:true,rawStem:true,offset:Math.max(0,entry.offset-readyOrigin),rate:1,rateEnd:1,
-                gain:c['stemGain_'+stem]??1,resolve:async()=>{const url=`/api/studio-daw/stems/${encodeURIComponent(c.stemJob)}/${stem}`;await leases?.hold(url);return url;}});
+                gain:c['stemGain_'+stem]??1,resolve:async()=>{const url=`/api/studio-daw/stems/${encodeURIComponent(c.stemJob)}/${stem}`;await holdLease(url);return url;}});
             }
             continue;
           }
@@ -892,7 +960,7 @@
             if(readyOrigin!==null){
               progressiveAudio=true;
               deferred.push({...entry,stem,pcm:true,rawStem:true,offset:Math.max(0,entry.offset-readyOrigin),gain:c['stemGain_'+stem]??1,
-                resolve:async()=>{const url=`/api/studio-daw/stems/${encodeURIComponent(c.stemJob)}/${stem}`;await leases?.hold(url);return url;}});
+                resolve:async()=>{const url=`/api/studio-daw/stems/${encodeURIComponent(c.stemJob)}/${stem}`;await holdLease(url);return url;}});
             }else if(separated&&!offline&&!c.nativeEffect?.enabled&&entry.rate===1&&entry.rateEnd===1){
               // Unit-rate stems need the opening range, not a decoded copy of
               // the whole selection. Rate-shifted voices keep their established
@@ -927,12 +995,28 @@
       const loopEntries=repeat?deferred:null;
       deferred=chunkEntries(deferred);
       deferred.sort((a,b)=>a.when-b.when);let queued=0;
+      // How long the slowest recent entry took from request to decoded buffer. Live playback widens its look-ahead from it.
+      const recentPreparations=[];
+      function notePreparation(began){recentPreparations.push(performance.now()-began);if(recentPreparations.length>8)recentPreparations.shift();}
+      async function retrying(work){
+        try{return await work();}
+        catch(error){
+          if(!windowsEdition()||token!==generation||!transientError(error))throw error;
+          timingDiagnostics.retries=(timingDiagnostics.retries||0)+1;
+          await new Promise(resolve=>setTimeout(resolve,500));
+          if(token!==generation)throw error;
+          return work();
+        }
+      }
       async function loadReady(entry){
         if(failedClips.has(entry.clip.id))return null;
         try{
-          const url=await entry.resolve(),decoded=await buffer(url,entry);
+          const began=performance.now();
+          let url;
+          const decoded=await retrying(async()=>{url=await entry.resolve();return buffer(url,entry);});
           if(token!==generation)throw new Error('Playback cancelled');
           if(!entry.pcmBlock){leases?.forget(url);browserPreparation?.forget(url);}
+          notePreparation(began);
           return {...entry,buffer:decoded.buffer,offset:entry.offset-decoded.startSeconds,cacheKey:decoded.key};
         }catch(error){isolateClip(entry.clip,error);return null;}
       }
@@ -947,10 +1031,11 @@
             for(let i=queued;i<deferred.length&&i<queued+4&&deferred[i].when<until;i++){
               const next=deferred[i];if(!next.pcmBlock||next.rateStream)break;
               if(failedClips.has(next.clip.id)){pending.push(Promise.resolve(null));consumed++;continue;}
-              let url;
-              try{url=await next.resolve();}catch(error){isolateClip(next.clip,error);pending.push(Promise.resolve(null));consumed++;continue;}
-              const read=buffer(url,next).then(decoded=>{
+              let url;const began=performance.now();
+              try{url=await retrying(()=>next.resolve());}catch(error){isolateClip(next.clip,error);pending.push(Promise.resolve(null));consumed++;continue;}
+              const read=retrying(()=>buffer(url,next)).then(decoded=>{
                 if(token!==generation)throw new Error('Playback cancelled');
+                notePreparation(began);
                 return {...next,buffer:decoded.buffer,offset:next.offset-decoded.startSeconds,cacheKey:decoded.key};
               }).catch(error=>{isolateClip(next.clip,error);return null;});
               // A later preparation can fail before this batch is awaited.
@@ -981,7 +1066,8 @@
       if(firstLoopQueue)await firstLoopQueue.fill(lookAhead,entry=>prepared.push(entry));
       // Plain playback needs one PCM block before starting. Keep the longer
       // rolling buffer for refills, exports and pitch/effect preparation.
-      else await prepareUntil(rolling?(!offline&&progressiveAudio?2:!offline&&p.playbackMode!=='preserve-pitch'?4:lookAhead):Infinity);
+      // After a late section (lateBoost) start with a longer runway so the resumed mix is not late again at once.
+      else await prepareUntil(rolling?(!offline&&progressiveAudio?(lateBoost?Math.min(24,lateBoost):2):!offline&&p.playbackMode!=='preserve-pitch'?4:lookAhead):Infinity);
       if(token!==generation) return;
       if(failedClips.size&&!p.arrangementClips.some(c=>!c.muted&&!failedClips.has(c.id)&&c.timelineDurationBeats>0)&&!hasPatternAudio(p))throw new Error(`No playable clips remain. ${[...failedClips.values()][0]} Retry Play after reconnecting the audio or recreating the affected stems.`);
       if(!offline&&omittedStems.some(({clip,stem})=>neededStems(p,clip).includes(stem)))return play(p,from,clipIds,offline,recording,forceStems);
@@ -1030,7 +1116,9 @@
       const buses=new Map();
       function bus(sectionId) {
         if(!buses.has(sectionId)) {
-          const node=taps.get(sectionId)||own(context.createGain()),strip=channel(context,mix,()=>p.rowMixer?.[sectionId],v=>rowLevel(p,sectionId,v),own,automation('deck',sectionId));
+          const pan=panValue(p.rowMixer?.[sectionId]?.pan)!==0||!offline&&window.AxiomWindowsPan?panStage(context,own,p,sectionId):null;
+          if(pan)updateFx.push(()=>pan.apply());
+          const node=taps.get(sectionId)||own(context.createGain()),strip=channel(context,mix,()=>p.rowMixer?.[sectionId],v=>rowLevel(p,sectionId,v),own,automation('deck',sectionId),pan?pan.connect:null);
           strip.sectionId=sectionId;
           if(window.AxiomDawFx)window.AxiomDawFx.connect(context,node,strip.input,{sectionId},p,origin,own,fxCapture,updateFx,{...routing,onerror(){
             if(token!==generation)return;
@@ -1299,12 +1387,22 @@
       let pumping=false;
       function queueAudio(){
         if(!rolling)return;
+        // Live playback: when the slowest recent preparation took a good part of the look-ahead, look further ahead (up to a
+        // minute) so the next clip is ready in time; only the order of preparation changes, never the audio it produces.
+        if(!offline&&windowsEdition()&&recentPreparations.length)lookAhead=Math.min(60,Math.max(12,lateBoost,Math.ceil(2.5*Math.max(...recentPreparations)/1000)+6));
         const nextEntry=deferred[queued],until=audioContext.currentTime+lookAhead-base;
-        if(nextEntry&&base+nextEntry.when<audioContext.currentTime+.01)throw new Error('Audio scheduling fell behind. Press Play to resume from the paused position.');
+        if(nextEntry&&base+nextEntry.when<audioContext.currentTime+.01)throw Object.assign(new Error('Audio scheduling fell behind. Press Play to resume from the paused position.'),{schedulingLate:true});
         if(pumping)return;
         const warm=deferred.slice(queued).find(e=>e.pcm&&!e.rawStem&&!e.rawFrozen&&!failedClips.has(e.clip.id)&&base+e.when<audioContext.currentTime+90&&!preparedURLs.has(e.preparationKey||preparationKey(e.clip,e.stem)));
         if((!nextEntry||nextEntry.when>=until)&&!warm&&!passes[0].needsPatterns(from+until))return;
         pumping=true;
+        // Say so when the next clip is close and not ready yet (a slow render, a busy disk): the banner is the visible
+        // "preparing next clip" state, and it goes away when preparation catches up.
+        let announced=false;
+        const announce=!offline&&windowsEdition()?setTimeout(()=>{
+          const due=deferred[queued];
+          if(token===generation&&!keyPreparation&&due&&base+due.when<audioContext.currentTime+5){announced=true;preparationStatus(`Preparing the next clip: ${due.clip.title||due.clip.label||'Clip'}. Playback continues; it will pause and resume by itself if this takes too long.`);}
+        },1500):0;
         (async()=>{
           await prepareUntil(audioContext.currentTime+lookAhead-base,passes[0].append);
           await passes[0].preparePatterns(from+audioContext.currentTime+lookAhead-base);
@@ -1313,8 +1411,12 @@
           if(warm&&token===generation)try{await warm.resolve();}catch(error){isolateClip(warm.clip,error);}
         })().catch(error=>{
           if(token!==generation)return;
-          stop(false,'audio-preparation-failed');window.showToast?.(error.message,true);
-        }).finally(()=>{pumping=false;});
+          stop(false,'audio-preparation-failed');window.showToast?.(friendlyError(error),true);
+        }).finally(()=>{
+          clearTimeout(announce);
+          if(announced&&token===generation&&!keyPreparation)preparationStatus('');
+          pumping=false;
+        });
       }
       function releaseFinishedAudio(){
         if(!rolling)return;
@@ -1419,7 +1521,15 @@
             }
             releaseFinishedAudio();queueAudio();queueLoops();update();
           }
-        }catch(error){stop(false,repeat?'loop-error':'audio-scheduler-error');window.showToast?.('Playback stopped: '+error.message,true);}
+        }catch(error){
+          // Where the music had got to, before stop() rewinds the clock.
+          const resumeAt=error?.schedulingLate&&running&&context?position():null;
+          stop(false,repeat?'loop-error':'audio-scheduler-error');
+          // A late clip is not the end of the mix: say so, then carry on from exactly here (up to three times in three
+          // minutes, each time looking further ahead); after that the old stop-and-ask message stands.
+          if(resumeAt!==null&&windowsEdition()&&isolatedPlayback&&!repeat&&resumeAfterLateAudio(p,resumeAt))return;
+          window.showToast?.('Playback stopped: '+friendlyError(error),true);
+        }
       },60);
       if(!streamExport){
         if(p.playbackMode==='preserve-pitch'&&deferred.length) window.showToast?.('Playing prepared pitch-preserving audio. Tempo or grid edits require a new preparation pass.');
@@ -1441,6 +1551,22 @@
   function record(p,from,prepare){
     const job={prepare,recorder:null,armed:false,cancelled:false};
     return {ready:play(p,from,null,false,job),stop(){if(recordingJob===job)stop(false,'recording-stop');},cancel(){job.cancelled=true;if(recordingJob===job)stop(false,'recording-cancelled');else job.recorder?.abort();}};
+  }
+  // Audio that arrived too late for the clock (a slow render, a stalled reply) pauses playback. Instead of leaving the DJ with
+  // a silent mix, resume from the paused position by itself: the sections that were being prepared are usually ready by then,
+  // and each resume looks further ahead (lateBoost) than the last.
+  const lateResumes=[];let lateBoost=0;
+  function resumeAfterLateAudio(p,at){
+    const now=Date.now();
+    while(lateResumes.length&&now-lateResumes[0]>180000)lateResumes.shift();
+    if(lateResumes.length>=3){lateBoost=0;return false;}
+    lateResumes.push(now);lateBoost=Math.min(48,12+12*lateResumes.length);
+    const minutes=Math.floor(at/60),secs=String(Math.floor(at%60)).padStart(2,'0');
+    window.showToast?.(`Audio fell behind at ${minutes}:${secs}. Preparing the next section; playback resumes from here by itself.`,true);
+    // Not if the user pressed Stop (stop() moves the epoch) or seeked (the cursor moves) in the meantime.
+    const epoch=stopEpoch,restAt=cursor;
+    setTimeout(()=>{if(epoch===stopEpoch&&cursor===restAt&&!running&&!loading&&project===p&&window.AxiomStudioDaw?.activeProject===p)play(p,at);},250);
+    return true;
   }
   function toggle() {if(running||loading) stop(false,'pause-toggle');else play(window.AxiomStudioDaw.activeProject,cursor);}
   function seekBeat(p,beat) {

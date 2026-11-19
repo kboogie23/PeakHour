@@ -70,9 +70,21 @@ def install(app):
 
     bp = Blueprint('windows_filetypes', __name__)
 
+    counted = {}  # (library file mtime, size) -> counts: the page asks on every Library visit; reading 21,000 songs took 0.3 s each time
+
     @bp.get('/api/windows/library/types')
     def types():
+        try:
+            stat = os.stat(app.CACHE_PATH)
+            key = (stat.st_mtime_ns, stat.st_size)
+        except OSError:
+            key = None
+        if key is not None and counted.get('key') == key:
+            return jsonify(success=True, **counted['counts'])
         cache = app.load_cache(app.CACHE_PATH)
         tracks = app._all_library_cache_tracks(cache) if hasattr(app, '_all_library_cache_tracks') else cache.get('tracks') or []
-        return jsonify(success=True, **type_counts(tracks))
+        counts = type_counts(tracks)
+        if key is not None:
+            counted.update(key=key, counts=counts)
+        return jsonify(success=True, **counts)
     app.app.register_blueprint(bp)

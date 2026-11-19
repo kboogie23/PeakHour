@@ -181,12 +181,80 @@ class _SHFILEOPSTRUCTW(ctypes.Structure):
 
 
 FO_DELETE = 3
-FOF_SILENT, FOF_NOCONFIRMATION, FOF_ALLOWUNDO, FOF_NOERRORUI = 0x4, 0x10, 0x40, 0x400
+FOF_SILENT, FOF_NOCONFIRMATION, FOF_ALLOWUNDO, FOF_NOERRORUI, FOF_WANTNUKEWARNING = 0x4, 0x10, 0x40, 0x400, 0x4000
+DRIVE_FIXED = 3
+POLICY_KEY = r'Software\Microsoft\Windows\CurrentVersion\Policies\Explorer'
+DEFAULT_BIN_SHARE = 0.05
+BIN_KEY = r'Software\Microsoft\Windows\CurrentVersion\Explorer\BitBucket\Volume'
+
+
+def _volume_root(path):
+    buffer = ctypes.create_unicode_buffer(1024)
+    if not ctypes.WinDLL('kernel32').GetVolumePathNameW(path, buffer, 1024):
+        raise OSError('Windows could not tell which drive this file is on. Nothing was moved.')
+    return buffer.value
+
+
+def _drive_type(root):
+    return ctypes.WinDLL('kernel32').GetDriveTypeW(root)
+
+
+def _reg_int(hive, subkey, field):
+    import winreg
+    try:
+        with winreg.OpenKey(hive, subkey) as key:
+            return int(winreg.QueryValueEx(key, field)[0])
+    except (OSError, ValueError, TypeError):
+        return None
+
+
+def _bin_settings(root):
+    """(NukeOnDelete, MaxCapacity in MB) from this volume's Recycle Bin settings and the Explorer policies
+    (NoRecycleFiles, RecycleBinSize); None where unset. Raises OSError for a volume with no GUID (SUBST drive)."""
+    import winreg
+    name = ctypes.create_unicode_buffer(256)
+    if not ctypes.WinDLL('kernel32').GetVolumeNameForVolumeMountPointW(root, name, 256) or '{' not in name.value:
+        raise OSError(f'{root} is a virtual or substituted drive with no Recycle Bin, so the file was NOT deleted.')
+    guid = name.value[name.value.find('{'):name.value.find('}') + 1]
+    volume = BIN_KEY + '\\' + guid
+    nuke = _reg_int(winreg.HKEY_CURRENT_USER, volume, 'NukeOnDelete')
+    sizes = [_reg_int(winreg.HKEY_CURRENT_USER, volume, 'MaxCapacity')]
+    for hive in (winreg.HKEY_CURRENT_USER, winreg.HKEY_LOCAL_MACHINE):
+        if _reg_int(hive, POLICY_KEY, 'NoRecycleFiles') == 1:
+            nuke = 1
+        sizes.append(_reg_int(hive, POLICY_KEY, 'RecycleBinSize'))
+    sizes = [v for v in sizes if v]
+    return nuke, (min(sizes) if sizes else None)
+
+
+def _disk_total(root):
+    total = ctypes.c_ulonglong(0)
+    ok = ctypes.WinDLL('kernel32').GetDiskFreeSpaceExW(root, None, ctypes.byref(total), None)
+    return total.value if ok else 0
+
+
+def check_recyclable(path, drive_type=None, settings=None, disk_total=None):
+    """Raise OSError (file untouched) unless Windows can really put this file in a Recycle Bin: it deletes for
+    good on removable or network drives, with the bin off, or when the file is over its size."""
+    root = _volume_root(path)
+    if (drive_type or _drive_type)(root) != DRIVE_FIXED:
+        raise OSError(f'{root} is a removable or network drive and has no Recycle Bin, so the file was NOT deleted. '
+                      'Delete it in File Explorer if you really want it gone.')
+    nuke, capacity = (settings or _bin_settings)(root)
+    if nuke:
+        raise OSError(f'The Recycle Bin on {root} is set to delete files immediately, so the file was NOT deleted.')
+    size = os.path.getsize(path)
+    if capacity and size > capacity * 1024 * 1024:
+        raise OSError(f'The file is bigger than the Recycle Bin size set for {root} ({capacity} MB), so it was NOT deleted.')
+    total = 0 if capacity else (disk_total or _disk_total)(root)  # no size stored: Windows' default is a share of the drive
+    if total and size > total * DEFAULT_BIN_SHARE:
+        raise OSError(f'The file is probably bigger than the Recycle Bin on {root} allows, so it was NOT deleted.')
 
 
 def _shell_recycle(path):
+    # FOF_WANTNUKEWARNING: last resort; Windows asks instead of deleting silently (the prompt has no owner window)
     operation = _SHFILEOPSTRUCTW(wFunc=FO_DELETE, pFrom=path + '\0\0',
-                                 fFlags=FOF_ALLOWUNDO | FOF_NOCONFIRMATION | FOF_SILENT | FOF_NOERRORUI)
+                                 fFlags=FOF_ALLOWUNDO | FOF_NOCONFIRMATION | FOF_WANTNUKEWARNING | FOF_SILENT | FOF_NOERRORUI)
     result = ctypes.windll.shell32.SHFileOperationW(ctypes.byref(operation))
     if result != 0 or operation.fAnyOperationsAborted:
         raise OSError(f'Windows could not move the file to the Recycle Bin (code {result}).')
@@ -226,7 +294,7 @@ def _recycle_records(drive, root=None):
     return found
 
 
-def recycle(path, shell=_shell_recycle, bin_root=None, wait=3.0):
+def recycle(path, shell=_shell_recycle, bin_root=None, wait=3.0, check=check_recyclable):
     """Move one file to the Recycle Bin; returns where Windows put it (the $R file)."""
     target = os.path.abspath(str(path))
     if not os.path.isfile(target):
@@ -234,6 +302,7 @@ def recycle(path, shell=_shell_recycle, bin_root=None, wait=3.0):
     drive = ntpath.splitdrive(target)[0]
     if len(drive) != 2 or drive[1] != ':':
         raise OSError('Only files on a local drive letter can go to the Recycle Bin.')
+    check(target)
     before = _recycle_records(drive, bin_root)
     shell(target)
     if os.path.exists(target):

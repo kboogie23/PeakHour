@@ -42,7 +42,32 @@ def _attributes(track, section):
     return entries[0].get('attributes', {}) if len(entries) == 1 else {}
 
 
-def axiom_track(track, app):
+def file_checker():
+    """os.path.isfile for many songs: one directory listing per folder instead of one call per file. A song on an
+    external drive costs ~10 ms per isfile, so a 50,000-song database took minutes. Names a listing cannot answer
+    (8.3 short names, trailing dots or spaces) and folders that cannot be listed use os.path.isfile."""
+    listings = {}
+
+    def isfile(path):
+        folder, name = ntpath.split(path)
+        key = ntpath.normcase(folder)
+        names = listings.get(key)
+        if names is None:
+            try:
+                with os.scandir(folder) as entries:
+                    names = {ntpath.normcase(entry.name) for entry in entries if entry.is_file()}
+            except OSError:
+                names = False  # missing drive or folder: answered below
+            listings[key] = names
+        if names is False:
+            return os.path.isfile(path)
+        if ntpath.normcase(name) in names:
+            return True
+        return ('~' in name or name.endswith(('.', ' '))) and os.path.isfile(path)
+    return isfile
+
+
+def axiom_track(track, app, check_file=True, isfile=os.path.isfile):
     """AXIOM library record for one VirtualDJ database song (rekordbox-shaped)."""
     path = track['path']
     tags = _attributes(track, 'Tags')
@@ -61,13 +86,14 @@ def axiom_track(track, app):
         'playlist_names': [], 'cue_count': sum(1 for p in track.get('source_sections', {}).get('Poi', [])
                                                if p.get('attributes', {}).get('Type') == 'cue'),
         'beatgrid_locked': False, 'source': 'virtualdj_database', 'connected_from': 'virtualdj',
-        'needs_relink': not os.path.isfile(path),
+        'needs_relink': not isfile(path) if check_file else True,
     }
 
 
 def read_tracks(app, paths=None):
     """(tracks, databases_read, errors) from every VirtualDJ database."""
     tracks, seen, read, errors = [], set(), 0, []
+    isfile = file_checker()
     for database in (database_paths() if paths is None else paths):
         try:
             inventory = read_database(database)
@@ -82,7 +108,7 @@ def read_tracks(app, paths=None):
                     or key in seen):
                 continue
             seen.add(key)
-            tracks.append(axiom_track(track, app))
+            tracks.append(axiom_track(track, app, isfile=isfile))
     return tracks, read, errors
 
 
@@ -91,13 +117,13 @@ def connect(app, paths=None):
     tracks, read, errors = read_tracks(app, paths)
     if not tracks:
         detail = ' ' + errors[0] if errors else ''
-        return {'success': False, 'error': 'AXIOM could not find VirtualDJ tracks on this PC.' + detail,
+        return {'success': False, 'error': 'PEAK HOUR could not find VirtualDJ tracks on this PC.' + detail,
                 'source_audio_untouched': True, 'dj_source_untouched': True}
     cache, added, updated, policy, trimmed = app._merge_connected_dj_tracks(tracks, 'virtualdj')
     result = {'success': True, 'connection_source': 'virtualdj', 'scanned_count': len(tracks), 'added_count': added,
               'updated_count': updated, 'total_tracks': cache.get('total_tracks', 0), 'databases_read': read,
               'database_errors': errors, 'source_audio_untouched': True, 'dj_source_untouched': True,
-              'message': f'VirtualDJ connected. AXIOM read {len(tracks)} tracks from {read} VirtualDJ '
+              'message': f'VirtualDJ connected. PEAK HOUR read {len(tracks)} tracks from {read} VirtualDJ '
                          f"database{'s' if read != 1 else ''} and added them to your library."}
     result.update(app._track_limit_payload(policy, trimmed))  # as AXIOM's connect_dj_source does
     return result
